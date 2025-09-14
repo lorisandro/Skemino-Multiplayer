@@ -4,6 +4,7 @@ import { MatchmakingManager } from './MatchmakingManager';
 import { RedisManager } from '../services/RedisManager';
 import { DatabaseManager } from '../database/DatabaseManager';
 import { logger } from '../utils/logger';
+import { getGuestUser } from '../routes/auth';
 import jwt from 'jsonwebtoken';
 import {
   GameState,
@@ -16,6 +17,7 @@ export interface AuthenticatedSocket extends Socket {
   userId: string;
   username: string;
   rating: number;
+  isGuest: boolean;
   gameRoomId?: string;
 }
 
@@ -34,7 +36,9 @@ export interface WebSocketEvents {
 
   // Matchmaking
   'matchmaking:join': (timeControl?: string) => void;
+  'matchmaking:join-guest': (options: { timeControl: string; guestRating: number; preferences?: any }) => void;
   'matchmaking:leave': () => void;
+  'matchmaking:leave-guest': () => void;
   'match:found': (gameId: string, opponent: any) => void;
   'match:declined': (gameId: string) => void;
 
@@ -90,21 +94,41 @@ export class SocketManager {
   private async authenticateSocket(socket: Socket, next: (err?: Error) => void): Promise<void> {
     try {
       const token = socket.handshake.auth.token || socket.handshake.headers.authorization;
+      const isGuest = socket.handshake.auth.isGuest;
 
       if (!token) {
         return next(new Error('Authentication required'));
       }
 
       const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
-      const user = await DatabaseManager.getUserById(decoded.userId);
 
-      if (!user) {
-        return next(new Error('User not found'));
+      if (decoded.isGuest || isGuest) {
+        // Handle guest authentication
+        const guestUser = getGuestUser(decoded.userId);
+        if (!guestUser) {
+          return next(new Error('Guest session not found or expired'));
+        }
+
+        (socket as AuthenticatedSocket).userId = guestUser.id;
+        (socket as AuthenticatedSocket).username = guestUser.username;
+        (socket as AuthenticatedSocket).rating = guestUser.rating;
+        (socket as AuthenticatedSocket).isGuest = true;
+
+        logger.info(`🎭 Guest authenticated: ${guestUser.username} (${guestUser.id})`);
+      } else {
+        // Handle registered user authentication
+        const user = await DatabaseManager.getUserById(decoded.userId);
+        if (!user) {
+          return next(new Error('User not found'));
+        }
+
+        (socket as AuthenticatedSocket).userId = user.id;
+        (socket as AuthenticatedSocket).username = user.username;
+        (socket as AuthenticatedSocket).rating = user.rating;
+        (socket as AuthenticatedSocket).isGuest = false;
+
+        logger.info(`🔐 User authenticated: ${user.username} (${user.id})`);
       }
-
-      (socket as AuthenticatedSocket).userId = user.id;
-      (socket as AuthenticatedSocket).username = user.username;
-      (socket as AuthenticatedSocket).rating = user.rating;
 
       next();
     } catch (error) {
@@ -178,7 +202,15 @@ export class SocketManager {
       await this.handleJoinMatchmaking(socket, timeControl);
     });
 
+    socket.on('matchmaking:join-guest', async (options: { timeControl: string; guestRating: number; preferences?: any }) => {
+      await this.handleJoinGuestMatchmaking(socket, options);
+    });
+
     socket.on('matchmaking:leave', () => {
+      this.matchmakingManager.removeFromQueue(socket.userId);
+    });
+
+    socket.on('matchmaking:leave-guest', () => {
       this.matchmakingManager.removeFromQueue(socket.userId);
     });
 
@@ -249,6 +281,53 @@ export class SocketManager {
     } catch (error) {
       logger.error('Error joining matchmaking:', error);
       socket.emit('error', { code: 'MATCHMAKING_ERROR', message: 'Failed to join matchmaking' });
+    }
+  }
+
+  private async handleJoinGuestMatchmaking(
+    socket: AuthenticatedSocket,
+    options: { timeControl: string; guestRating: number; preferences?: any }
+  ): Promise<void> {
+    try {
+      const connection = this.connections.get(socket.userId);
+      if (!connection || connection.status === 'ingame') {
+        socket.emit('error', { code: 'INVALID_STATE', message: 'Cannot join matchmaking while in game' });
+        return;
+      }
+
+      if (!socket.isGuest) {
+        socket.emit('error', { code: 'INVALID_REQUEST', message: 'Guest matchmaking only for guest users' });
+        return;
+      }
+
+      const match = await this.matchmakingManager.addToQueue({
+        userId: socket.userId,
+        username: socket.username,
+        rating: options.guestRating || socket.rating,
+        timeControl: options.timeControl,
+        preferences: {
+          ...options.preferences,
+          maxRatingDifference: options.preferences?.maxRatingDifference || 400, // More flexible for guests
+        }
+      });
+
+      if (match) {
+        // Match found immediately
+        await this.createGameFromMatch(match);
+      } else {
+        socket.emit('matchmaking:guest-queued', {
+          timeControl: options.timeControl,
+          isGuest: true
+        });
+      }
+
+      logger.info(`🎭 Guest ${socket.username} joined ${options.timeControl} matchmaking queue`);
+    } catch (error) {
+      logger.error('Error joining guest matchmaking:', error);
+      socket.emit('matchmaking:guest-error', {
+        code: 'GUEST_MATCHMAKING_ERROR',
+        message: 'Failed to join guest matchmaking'
+      });
     }
   }
 

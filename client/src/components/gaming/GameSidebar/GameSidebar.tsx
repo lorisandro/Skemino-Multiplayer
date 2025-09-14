@@ -9,6 +9,7 @@ import {
   InformationCircleIcon,
   PlayIcon,
 } from '@heroicons/react/24/outline';
+import { PlayTab } from '../PlayTab/PlayTab';
 import type { GameState, Player } from '../../../types/game';
 
 interface GameSidebarProps {
@@ -17,6 +18,7 @@ interface GameSidebarProps {
   currentPlayer: Player | null;
   opponent: Player | null;
   className?: string;
+  onMatchFound?: (gameId: string, opponent: any) => void;
 }
 
 /**
@@ -28,6 +30,7 @@ export const GameSidebar: React.FC<GameSidebarProps> = ({
   currentPlayer,
   opponent,
   className = '',
+  onMatchFound,
 }) => {
   const [activeTab, setActiveTab] = useState<'play' | 'analysis' | 'spectators' | 'settings' | 'chat'>('play');
 
@@ -52,81 +55,12 @@ export const GameSidebar: React.FC<GameSidebarProps> = ({
     { id: '3', user: 'GameWatcher', message: 'Good luck both!', timestamp: Date.now() - 30000 },
   ];
 
-  // Play tab content (Matchmaking)
-  const PlayTab = () => (
-    <div className="p-4 space-y-4">
-      <div>
-        <h4 className="font-semibold text-gray-900 mb-4">Nuova Partita</h4>
-
-        {/* Quick Play Button */}
-        <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors mb-4 flex items-center justify-center space-x-2">
-          <PlayIcon className="w-5 h-5" />
-          <span>Gioca Online</span>
-        </button>
-
-        {/* Time Control Selection */}
-        <div className="space-y-3">
-          <h5 className="font-medium text-gray-700">Controllo Tempo</h5>
-
-          <div className="grid grid-cols-2 gap-2">
-            <button className="p-3 bg-orange-100 hover:bg-orange-200 text-orange-800 rounded-lg text-sm font-medium transition-colors">
-              Bullet
-              <div className="text-xs opacity-75">1+0, 2+1</div>
-            </button>
-            <button className="p-3 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 rounded-lg text-sm font-medium transition-colors">
-              Blitz
-              <div className="text-xs opacity-75">3+2, 5+3</div>
-            </button>
-            <button className="p-3 bg-green-100 hover:bg-green-200 text-green-800 rounded-lg text-sm font-medium transition-colors">
-              Rapid
-              <div className="text-xs opacity-75">10+5, 15+10</div>
-            </button>
-            <button className="p-3 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded-lg text-sm font-medium transition-colors">
-              Classical
-              <div className="text-xs opacity-75">30+30</div>
-            </button>
-          </div>
-        </div>
-
-        {/* Player Status */}
-        <div className="mt-6 p-3 bg-gray-50 rounded-lg">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-600">Status:</span>
-            <span className="font-medium text-green-600">🟢 Online</span>
-          </div>
-          <div className="flex items-center justify-between text-sm mt-1">
-            <span className="text-gray-600">Rating:</span>
-            <span className="font-medium">1650</span>
-          </div>
-        </div>
-
-        {/* Advanced Options */}
-        <details className="mt-4">
-          <summary className="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-900">
-            Opzioni Avanzate
-          </summary>
-          <div className="mt-3 space-y-3">
-            <label className="flex items-center justify-between text-sm">
-              <span>Differenza Rating Max:</span>
-              <select className="text-xs border rounded px-2 py-1">
-                <option>±200</option>
-                <option>±400</option>
-                <option>±600</option>
-                <option>Qualsiasi</option>
-              </select>
-            </label>
-            <label className="flex items-center justify-between text-sm">
-              <span>Colore Preferito:</span>
-              <select className="text-xs border rounded px-2 py-1">
-                <option>Casuale</option>
-                <option>Bianco</option>
-                <option>Nero</option>
-              </select>
-            </label>
-          </div>
-        </details>
-      </div>
-    </div>
+  // Play tab content (Matchmaking) - now using dedicated component
+  const PlayTabContent = () => (
+    <PlayTab
+      currentPlayer={currentPlayer}
+      onMatchFound={onMatchFound}
+    />
   );
 
   // Analysis tab content
@@ -357,7 +291,7 @@ export const GameSidebar: React.FC<GameSidebarProps> = ({
             transition={{ duration: 0.2 }}
             className="h-full overflow-y-auto"
           >
-            {activeTab === 'play' && <PlayTab />}
+            {activeTab === 'play' && <PlayTabContent />}
             {activeTab === 'analysis' && <AnalysisTab />}
             {activeTab === 'spectators' && <SpectatorsTab />}
             {activeTab === 'chat' && <ChatTab />}

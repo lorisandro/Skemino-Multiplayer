@@ -165,22 +165,6 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
         )}
       </motion.div>
 
-      {/* Performance warning for low-end devices */}
-      {!isOptimal && fps < 45 && (
-        <motion.div
-          className="mt-4 px-4 py-2 bg-yellow-100 border border-yellow-300 rounded-lg text-sm text-yellow-800"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1 }}
-        >
-          <div className="flex items-center space-x-2">
-            <span>⚡</span>
-            <span>
-              Performance optimization active - board size reduced for smoother gameplay
-            </span>
-          </div>
-        </motion.div>
-      )}
     </div>
   );
 };
