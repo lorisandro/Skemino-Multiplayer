@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { MatchmakingButton } from '../components/gaming/MatchmakingButton';
-import { GameLayout } from '../components/gaming/GameLayout';
+import { GameInterface } from '../components/gaming/GameInterface';
 import { useGameStore } from '../store/gameStore';
 import { useSocket } from '../hooks/useSocket';
 
@@ -149,18 +149,7 @@ export const MatchmakingDemo: React.FC = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <GameLayout
-            gameId="demo-game"
-            onMakeMove={(card, to) => {
-              console.log('Move made:', card, 'to', to);
-            }}
-            onResign={() => {
-              console.log('Player resigned');
-            }}
-            onOfferDraw={() => {
-              console.log('Draw offered');
-            }}
-          />
+          <GameInterface />
         </motion.div>
       )}
     </div>
