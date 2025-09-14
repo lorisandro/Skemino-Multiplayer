@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { useGamePerformance } from '../../../hooks/useGamePerformance';
+import { useGamePerformance } from '../../../hooks/performance';
 
 interface ResponsiveBoardContainerProps {
   children: React.ReactNode;
