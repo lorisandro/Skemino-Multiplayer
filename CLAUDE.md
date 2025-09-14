@@ -12,28 +12,123 @@ Skèmino is a competitive multiplayer board game platform similar to chess.com, 
 - PSN (Portable Skèmino Notation) for game recording
 - Tournament and matchmaking systems
 
+## 🔄 MANDATORY DEVELOPMENT WORKFLOW (CRITICAL)
+
+### GIT COMMIT REQUIREMENTS (NON-NEGOTIABLE)
+**Claude MUST commit after EVERY significant implementation:**
+
+```bash
+# MANDATORY commit after each task completion
+git add .
+git commit -m "feat(scope): descriptive message"
+git push origin current-branch
+
+# COMMIT TRIGGERS (ALWAYS):
+- ✅ After completing ANY user request
+- ✅ After implementing ANY feature/component
+- ✅ After fixing ANY bug
+- ✅ After major refactoring
+- ✅ Before switching to different task type
+- ✅ At end of each development session
+- ✅ After sub-agent consultation implementation
+```
+
+**Commit Message Convention (STRICT):**
+- `feat(scope): description` - New features/components
+- `fix(scope): description` - Bug fixes
+- `docs(scope): description` - Documentation updates
+- `refactor(scope): description` - Code refactoring
+- `perf(scope): description` - Performance improvements
+- `test(scope): description` - Test additions/modifications
+- `chore(scope): description` - Build/dependency updates
+
+### PROGRESS TRACKING MANDATORY
+**Claude MUST maintain detailed conversation log in:**
+`docs/development-log/chat-history-YYYY-MM-DD.md`
+
+**Log Entry Template (REQUIRED FORMAT):**
+```markdown
+## Session [N]: [HH:MM] - [MAIN_TOPIC]
+
+### 📝 User Request:
+[Exact user request text]
+
+### 🎯 Sub-Agent Consultation:
+- Consulted: [sub-agent-name]
+- Expertise Applied: [key guidance received]
+
+### 🚀 Implementation Summary:
+- [x] Task 1: [specific detail] - Files: [list]
+- [x] Task 2: [specific detail] - Files: [list]
+- [ ] Task 3: [next steps identified]
+
+### 🔗 Git Commit: `[hash]` - "[commit message]"
+
+### 📊 Performance Impact:
+- WebSocket latency: [measurement if applicable]
+- Bundle size: [change if applicable]
+- Memory usage: [impact if applicable]
+
+### 🔄 Status: [COMPLETED/IN_PROGRESS/BLOCKED]
+
+### 🎯 Next Actions:
+- [Specific next implementation steps]
+- [Blockers to resolve]
+- [Sub-agents to consult next]
+
+---
+```
+
+**Tracking Rules (MANDATORY):**
+- Update after EVERY Claude interaction
+- Include ALL modified files with paths
+- Note performance impacts on targets
+- Link every commit hash
+- Identify specific next steps
+- Reference sub-agent consultations
+
 ## 🤖 SUB-AGENT INTEGRATION (CRITICAL)
 
 ### PROACTIVE CONSULTATION REQUIRED
-**ALWAYS consult relevant sub-agents before implementing any feature:**
+**ALWAYS consult relevant sub-agents before implementing ANY feature:**
 
 ```bash
-# Consultation workflow for each implementation:
-1. Identify task type → 2. Consult relevant sub-agent → 3. Apply expertise → 4. Validate with agent
+# Consultation workflow for EVERY implementation:
+1. Identify task type → 2. Consult relevant sub-agent → 3. Apply expertise → 4. Validate with agent → 5. Commit with reference
 ```
 
-### Sub-Agent Consultation Matrix
+Ecco la **Sub-Agent Consultation Matrix** aggiornata con i nomi reali dei file:
+
+### Sub-Agent Consultation Matrix (ACTUAL FILE NAMES)
 | Task Type | Primary Sub-Agent | Secondary Sub-Agent |
 |-----------|------------------|-------------------|
-| Game Rules Implementation | `skemino-multiplayer-architect` | `skemino-rules-expert` |
-| ELO Rating System | `skemino-elo-psn-expert` | `skemino-rating-expert` |
-| WebSocket/Real-time | `skemino-multiplayer-architect` | `skemino-performance-expert` |
-| UI/UX Gaming | `skemino-multiplayer-architect` | - |
-| PSN Notation | `skemino-elo-psn-expert` | `skemino-notation-expert` |
-| Performance Optimization | `skemino-performance-expert` | - |
-| Tournament System | `skemino-league-expert` | - |
-| Architecture Decisions | `skemino-architecture-consultant` | `skemino-multiplayer-architect` |
-| Large Refactoring | `skemino-refactoring-complete-specialist` | - |
+| Game Rules Implementation | `skemino-game-engine` | `skemino-architecture` |
+| UI/UX Gaming & React Components | `skemino-ui` | `skemino-performance` |
+| ELO Rating System | `skemino-elo` | `skemino-rating` |
+| WebSocket/Real-time | `skemino-realtime-specialist` | `skemino-architecture` |
+| PSN Notation | `skemino-game-engine` | `skemino-architecture` |
+| Performance Optimization | `skemino-performance` | `skemino-architecture` |
+| Tournament System | `skemino-league` | `skemino-elo` |
+| Database & Persistence | `skemino-database-specialist` | `skemino-persistenza` |
+| Architecture Decisions | `skemino-architecture` | `skemino-performance` |
+| Large Refactoring | `skemino-refactoring` | `skemino-architecture` |
+| Mobile Gaming Optimization | `skemino-ui` | `skemino-performance` |
+| Frontend Performance | `skemino-ui` | `skemino-performance` |
+| Game Logic Validation | `skemino-game-engine` | `skemino-testing-specialist` |
+| Testing & QA | `skemino-testing-specialist` | `skemino-game-engine` |
+| Real-time Features | `skemino-realtime-specialist` | `skemino-performance` |
+| Data Persistence Strategy | `skemino-persistenza` | `skemino-database-specialist` |
+| Player Rating Algorithms | `skemino-rating` | `skemino-elo` |
+
+### Sub-Agent Command Format (EXACT SYNTAX)
+```bash
+# Use actual file names from .claude/agents/:
+"Consulta skemino-expert per implementazione regole gioco"
+"Usa skemino-ui per componenti React gaming"
+"Applica expertise skemino-performance per ottimizzazione"
+"Chiedi a skemino-architecture per decisioni architetturali"
+"Utilizza skemino-elo per calcoli rating"
+```
 
 ## 🎯 Development Commands
 
@@ -86,8 +181,19 @@ skemino/
 │   └── shared/                  # Shared types and utilities
 ├── tests/                       # Test suites
 ├── docs/                        # Documentation
+│   └── development-log/         # MANDATORY: Chat history tracking
 ├── deployment/                  # Docker/K8s configurations
 └── .claude/                     # Claude Code sub-agents
+    └── agents/                  # Sub-agent knowledge bases
+        ├── skemino-expert.md           # Game rules expert
+        ├── skemino-ui.md               # UI/UX gaming specialist
+        ├── skemino-elo.md              # ELO rating system
+        ├── skemino-performance.md      # Performance optimization
+        ├── skemino-persistenza.md      # Database persistence
+        ├── skemino-rating.md           # Rating management
+        ├── skemino-refactoring.md      # Code refactoring
+        ├── skemino-legue.md            # Tournament system
+        └── skemino-architecture.md     # System architecture
 ```
 
 ### Technology Stack
@@ -135,7 +241,7 @@ skemino/
 
 ## 🚀 Performance Requirements (CRITICAL TARGETS)
 
-- **WebSocket Latency**: <100ms (absolute target - consult `skemino-performance-expert`)
+- **WebSocket Latency**: <100ms (absolute target - consult `skemino-performance`)
 - **UI Rendering**: 60fps gaming experience (always)
 - **Database Queries**: <50ms response time (average)
 - **Concurrent Users**: Support 1000+ simultaneous players
@@ -145,7 +251,7 @@ skemino/
 ## 🛡️ Security & Anti-Cheat Guidelines
 
 ### Server-Authoritative Validation
-- **All moves validated server-side** - consult `skemino-multiplayer-architect`
+- **All moves validated server-side** - consult `skemino-architecture`
 - **No client-side game logic** for critical operations
 - **Move timeouts** to prevent stalling
 - **Input sanitization** for all user data
@@ -195,15 +301,16 @@ tournament_players (tournament_id, player_id, seed, current_score)
 
 ### Git Workflow
 ```bash
-# Branch naming
+# Branch naming convention
 feature/game-board-implementation
 fix/websocket-reconnection-bug
 refactor/elo-calculation-optimization
 
 # Commit format (conventional commits)
 feat(game-engine): implement loop detection algorithm
-fix(websocket): handle disconnection gracefully
+fix(websocket): handle disconnection gracefully  
 docs(api): add authentication endpoint documentation
+perf(ui): optimize card animation rendering
 ```
 
 ### Testing Strategy
@@ -240,37 +347,58 @@ docs(api): add authentication endpoint documentation
 
 ## 🚨 Critical Implementation Rules
 
-### Before ANY Implementation
-1. **Consult relevant sub-agent** for expertise
-2. **Review existing code** for patterns
-3. **Check performance impact** against targets
-4. **Validate TypeScript** strict compliance
-5. **Test thoroughly** before committing
+### Before ANY Implementation (MANDATORY CHECKLIST)
+1. **✅ Consult relevant sub-agent** for expertise first
+2. **✅ Review existing code** for patterns and consistency
+3. **✅ Check performance impact** against critical targets
+4. **✅ Validate TypeScript** strict compliance
+5. **✅ Update chat history log** with session details
+6. **✅ Test thoroughly** before committing
+7. **✅ Commit with descriptive message** following convention
+8. **✅ Update development log** with progress tracking
 
 ### Gaming-Specific Requirements
-- **Server validation** for all game state changes
-- **Immutable state updates** in game engine
-- **Error boundaries** in React components
-- **Graceful degradation** for network issues
-- **Accessibility** considerations for gaming UI
+- **Server validation** for all game state changes (consult `skemino-architecture`)
+- **Immutable state updates** in game engine (consult `skemino-expert`)
+- **Error boundaries** in React components (consult `skemino-ui`)
+- **Graceful degradation** for network issues (consult `skemino-performance`)
+- **Accessibility** considerations for gaming UI (consult `skemino-ui`)
+
+### Sub-Agent Consultation Examples
+```bash
+# Before implementing game rules:
+"Consulta skemino-expert per validazione regole morra cinese"
+
+# Before UI/UX work:
+"Usa skemino-ui per design responsive componenti gaming"
+
+# Before performance optimization:
+"Applica expertise skemino-performance per ottimizzazione WebSocket"
+
+# Before architecture decisions:
+"Chiedi a skemino-architecture per pattern scalabilità multiplayer"
+```
 
 ## 📚 Key Documentation & References
 
 - **Game Rules**: Complete specifications in uploaded images
 - **Sub-Agent Configs**: `.claude/agents/` directory for specialized expertise
+- **Development Log**: `docs/development-log/` for progress tracking
 - **API Documentation**: Auto-generated from OpenAPI specs
 - **Database Docs**: ER diagrams and migration guides
 - **Deployment Guides**: Docker, Kubernetes, and CI/CD setup
 
-## ⚠️ Important Reminders
+## ⚠️ Important Reminders (NON-NEGOTIABLE)
 
-- **Sub-agent consultation is MANDATORY** before implementation
-- **<100ms WebSocket latency** is non-negotiable priority
+- **Sub-agent consultation is MANDATORY** before any implementation
+- **Git commit after every task** is NON-NEGOTIABLE
+- **Chat history tracking** must be maintained in development log
+- **<100ms WebSocket latency** is absolute priority target
 - **Server-authoritative validation** prevents all cheating
 - **PSN notation** required for all game recording
 - **TypeScript strict mode** - zero tolerance for `any` types
 - **Comprehensive error handling** for multiplayer edge cases
-- **Performance monitoring** in all environments
+- **Performance monitoring** against all critical targets
 
 ## 🔧 Troubleshooting Common Issues
 
@@ -278,16 +406,25 @@ docs(api): add authentication endpoint documentation
 1. Check Redis connection for session storage
 2. Verify CORS settings for client domain
 3. Ensure proper error handling in reconnection logic
+4. **Consult**: `skemino-performance` for optimization strategies
 
 ### Game Logic Bugs
 1. Always reproduce in unit tests first
-2. Consult `skemino-rules-expert` for rule clarification
+2. **Consult**: `skemino-expert` for rule clarification
 3. Validate against reference game scenarios
+4. **Consult**: `skemino-architecture` for validation patterns
 
 ### Performance Issues
 1. Profile with Chrome DevTools
 2. Check database query performance
-3. Consult `skemino-performance-expert` for optimization strategies
+3. **Consult**: `skemino-performance` for optimization strategies
+4. Monitor against critical targets (<100ms WebSocket)
+
+### UI/UX Gaming Issues
+1. **Consult**: `skemino-ui` for gaming-specific patterns
+2. Test across devices and screen sizes
+3. Validate accessibility compliance
+4. Check 60fps rendering performance
 
 ## 🚀 Getting Started Checklist
 
@@ -298,4 +435,44 @@ docs(api): add authentication endpoint documentation
 - [ ] Start development servers (client + server)
 - [ ] Verify WebSocket connection in browser
 - [ ] Run test suite to ensure setup is correct
-- [ ] Consult `skemino-multiplayer-architect` for first implementation task
+- [ ] **Create initial chat history log**: `docs/development-log/chat-history-[DATE].md`
+- [ ] **Consult `skemino-architecture`** for first implementation task
+- [ ] **Commit initial setup** with proper message format
+
+## 🎯 Quick Command Reference
+
+### Essential Sub-Agent Commands
+```bash
+# Game Rules & Logic
+"Consulta skemino-expert per [specific game rule question]"
+
+# UI/UX Development  
+"Usa skemino-ui per [component/interface task]"
+
+# Performance Optimization
+"Applica expertise skemino-performance per [optimization task]"
+
+# Architecture Decisions
+"Chiedi a skemino-architecture per [architectural question]"
+
+# Database & Persistence
+"Utilizza skemino-persistenza per [database task]"
+
+# ELO Rating System
+"Consulta skemino-elo per [rating calculation/implementation]"
+```
+
+### Mandatory Git Commands
+```bash
+# After every implementation
+git add .
+git commit -m "feat(scope): descriptive message"
+git push origin current-branch
+
+# Update development log
+# Edit: docs/development-log/chat-history-YYYY-MM-DD.md
+```
+
+---
+
+**🎮 Remember: Skèmino is not just a game - it's a competitive gaming platform that requires chess.com-level quality, performance, and reliability. Every line of code should reflect this standard.**

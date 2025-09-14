@@ -28,7 +28,9 @@
       "Bash(git branch:*)",
       "Bash(gh repo edit:*)",
       "Bash(gh repo delete:*)",
-      "Bash(gh auth:*)"
+      "Bash(gh auth:*)",
+      "Bash(npm create:*)",
+      "Bash(npm install:*)"
     ],
     "deny": [],
     "ask": []
