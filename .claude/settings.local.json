@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(do basename \"$file\")",
+      "Bash(do wc:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(dir:*)",
+      "Read(//e/**)",
+      "Bash(powershell:*)",
+      "Bash(grep:*)",
+      "Bash(bash:*)",
+      "Bash(npx kill-port:*)",
+      "Bash(npm start)",
+      "Bash(find:*)",
+      "Bash(netstat:*)",
+      "Bash(taskkill:*)",
+      "Bash(awk:*)",
+      "Bash(python3:*)",
+      "Bash(node:*)",
+      "Bash(npm run dev:*)",
+      "Bash(git init:*)",
+      "Bash(gh repo create:*)",
+      "Bash(git remote add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
