@@ -12,7 +12,7 @@ const app = express();
 const httpServer = createServer(app);
 const io = new SocketIOServer(httpServer, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:3000',
+    origin: process.env.CLIENT_URL || 'http://localhost:3006',
     credentials: true
   },
   pingTimeout: 20000,
@@ -25,7 +25,7 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(helmet());
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  origin: process.env.CLIENT_URL || 'http://localhost:3006',
   credentials: true
 }));
 app.use(compression());
@@ -150,7 +150,7 @@ io.on('connection', (socket) => {
 httpServer.listen(PORT, () => {
   console.log(`🎮 Skèmino Server running on http://localhost:${PORT}`);
   console.log(`🌐 WebSocket server ready on ws://localhost:${PORT}`);
-  console.log(`📊 Frontend should connect to http://localhost:3000`);
+  console.log(`📊 Frontend should connect to http://localhost:3006`);
   console.log(`✅ Health check: http://localhost:${PORT}/health`);
 });
 

@@ -51,12 +51,24 @@ interface GameStore {
 const initialGameState: GameState = {
   board: new Map(),
   currentTurn: 'white',
-  whiteHand: [],
-  blackHand: [],
+  whiteHand: [
+    { id: 'p1', suit: 'P', value: 1, isRevealed: true },
+    { id: 'p2', suit: 'P', value: 2, isRevealed: true },
+    { id: 'f1', suit: 'F', value: 1, isRevealed: true },
+    { id: 'c1', suit: 'C', value: 1, isRevealed: true },
+    { id: 'p3', suit: 'P', value: 3, isRevealed: true }
+  ],
+  blackHand: [
+    { id: 'p4', suit: 'P', value: 4, isRevealed: false },
+    { id: 'f2', suit: 'F', value: 2, isRevealed: false },
+    { id: 'c2', suit: 'C', value: 2, isRevealed: false },
+    { id: 'p5', suit: 'P', value: 5, isRevealed: false },
+    { id: 'f3', suit: 'F', value: 3, isRevealed: false }
+  ],
   whiteTime: 300,
   blackTime: 300,
   moveHistory: [],
-  status: 'waiting',
+  status: 'playing',
 };
 
 // Initialize board
@@ -87,11 +99,25 @@ export const useGameStore = create<GameStore>()(
     immer((set) => ({
     // Initial state
     gameState: { ...initialGameState, board: initializeBoard() },
-    currentPlayer: null,
-    opponent: null,
+    currentPlayer: {
+      id: 'demo-player',
+      username: 'DemoPlayer',
+      rating: 1500,
+      color: 'white',
+      avatar: null,
+      isReady: true
+    },
+    opponent: {
+      id: 'demo-opponent',
+      username: 'DemoOpponent',
+      rating: 1450,
+      color: 'black',
+      avatar: null,
+      isReady: true
+    },
     selectedCard: null,
     validMoves: [],
-    isMyTurn: false,
+    isMyTurn: true,
 
     // Distribution state
     distributionState: {
