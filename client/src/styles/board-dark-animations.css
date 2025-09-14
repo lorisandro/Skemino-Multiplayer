@@ -1,0 +1,354 @@
+/*
+ * 🎮 SKÈMINO DARK GAMING ANIMATIONS CSS
+ * Professional gaming dark theme animations for competitive Skèmino
+ * Optimized for 60fps performance with hardware acceleration
+ */
+
+/* ===== CSS VARIABLES - DARK GAMING THEME ===== */
+:root {
+  /* Dark Gaming Colors - Professional */
+  --skemino-bg-primary: linear-gradient(135deg, #0a0a0a 0%, #141414 50%, #0f0f0f 100%);
+  --skemino-bg-secondary: linear-gradient(135deg, #1a1a1a 0%, #242424 50%, #1f1f1f 100%);
+  --skemino-border-primary: rgba(75, 85, 99, 0.8);
+  --skemino-border-glow: rgba(255, 255, 255, 0.05);
+
+  /* Quadrant Colors - Dark Enhanced */
+  --q1-color: #06b6d4; /* Cyan - Q I */
+  --q2-color: #10b981; /* Emerald - Q II */
+  --q3-color: #ef4444; /* Red - Q III */
+  --q4-color: #f59e0b; /* Yellow - Q IV */
+
+  /* Performance Metrics Colors */
+  --perf-optimal: #059669;   /* Green - 55+ FPS */
+  --perf-warning: #d97706;   /* Yellow - 30-54 FPS */
+  --perf-critical: #dc2626;  /* Red - <30 FPS */
+
+  /* Shadow Effects - Gaming Enhancement */
+  --shadow-board: 0 25px 50px -12px rgba(0, 0, 0, 0.8),
+                  0 0 0 1px rgba(255, 255, 255, 0.05),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  --shadow-square: 0 4px 14px 0 rgba(0, 0, 0, 0.39);
+  --shadow-vertex: 0 0 30px rgba(255, 255, 255, 0.3);
+
+  /* Animation Timings - 60FPS Optimized */
+  --timing-fast: 0.15s;
+  --timing-normal: 0.3s;
+  --timing-slow: 0.6s;
+  --spring-config: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* ===== BOARD ANIMATIONS - DARK GAMING ===== */
+
+/* Board Entrance Animation - Professional Gaming */
+@keyframes board-appear-dark {
+  0% {
+    opacity: 0;
+    transform: scale(0.85) translateY(40px) rotateX(15deg);
+    filter: blur(8px);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(0.95) translateY(15px) rotateX(5deg);
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0) rotateX(0);
+    filter: blur(0);
+  }
+}
+
+/* Square Hover Effects - Gaming Responsive */
+@keyframes square-hover-glow {
+  0% { box-shadow: var(--shadow-square); }
+  50% { box-shadow: var(--shadow-square), 0 0 20px rgba(59, 130, 246, 0.4); }
+  100% { box-shadow: var(--shadow-square); }
+}
+
+/* Vertex Pulse Animation - Dark Gaming */
+@keyframes vertex-pulse-dark {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.9;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+    box-shadow: 0 0 40px rgba(255,255,255,0.3);
+  }
+}
+
+/* Performance Indicator Animations */
+@keyframes fps-pulse-optimal {
+  0%, 100% {
+    background-color: rgba(5, 150, 105, 0.9);
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+  }
+  50% {
+    background-color: rgba(16, 185, 129, 0.9);
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+  }
+}
+
+@keyframes fps-pulse-warning {
+  0%, 100% {
+    background-color: rgba(217, 119, 6, 0.9);
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+  }
+  50% {
+    background-color: rgba(245, 158, 11, 0.9);
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.6);
+  }
+}
+
+/* Valid Move Indicator - Dark Gaming */
+@keyframes valid-move-glow {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.7;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+    box-shadow: 0 0 25px rgba(59, 130, 246, 0.8);
+  }
+}
+
+/* Connection Status Animation */
+@keyframes connection-warning {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+/* ===== COMPONENT SPECIFIC STYLES ===== */
+
+/* Board Container - Dark Gaming Professional */
+.skemino-board-dark {
+  background: var(--skemino-bg-primary);
+  box-shadow: var(--shadow-board);
+  border: 2px solid var(--skemino-border-primary);
+  animation: board-appear-dark var(--timing-slow) var(--spring-config);
+  will-change: transform, opacity;
+  contain: layout style paint;
+}
+
+/* Square Styling - Dark Gaming Optimized */
+.skemino-square-dark {
+  will-change: transform, box-shadow;
+  contain: layout style paint;
+  transition:
+    transform var(--timing-fast) ease-out,
+    box-shadow var(--timing-fast) ease-out,
+    brightness var(--timing-fast) ease-out;
+}
+
+.skemino-square-dark:hover {
+  animation: square-hover-glow 1s ease-in-out infinite;
+}
+
+/* Vertex Indicators - Dark Gaming Enhanced */
+.skemino-vertex-dark {
+  animation: vertex-pulse-dark 3s ease-in-out infinite;
+  will-change: transform, opacity, box-shadow;
+}
+
+/* Performance Indicators */
+.skemino-perf-optimal {
+  animation: fps-pulse-optimal 2s ease-in-out infinite;
+}
+
+.skemino-perf-warning {
+  animation: fps-pulse-warning 1.5s ease-in-out infinite;
+}
+
+.skemino-perf-critical {
+  animation: connection-warning 1s ease-in-out infinite;
+}
+
+/* Valid Move Indicators */
+.skemino-valid-move {
+  animation: valid-move-glow 1.5s ease-in-out infinite;
+}
+
+/* ===== RESPONSIVE GAMING OPTIMIZATIONS ===== */
+
+/* Mobile Gaming Adjustments */
+@media (max-width: 768px) {
+  :root {
+    --timing-fast: 0.1s;
+    --timing-normal: 0.2s;
+    --timing-slow: 0.4s;
+  }
+
+  .skemino-board-dark {
+    border-width: 1px;
+  }
+
+  .skemino-square-dark {
+    border-radius: 2px;
+  }
+}
+
+/* Tablet Gaming Adjustments */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .skemino-vertex-dark {
+    animation-duration: 2.5s;
+  }
+}
+
+/* Desktop Gaming - High Performance */
+@media (min-width: 1025px) {
+  .skemino-board-dark {
+    backdrop-filter: blur(20px);
+  }
+
+  .skemino-square-dark:hover {
+    transform: scale(1.02) translateZ(0);
+  }
+}
+
+/* Ultra-wide Gaming Monitors */
+@media (min-width: 2560px) {
+  :root {
+    --shadow-board: 0 30px 60px -12px rgba(0, 0, 0, 0.9),
+                    0 0 0 2px rgba(255, 255, 255, 0.08),
+                    inset 0 2px 0 rgba(255, 255, 255, 0.15);
+  }
+}
+
+/* ===== ACCESSIBILITY & REDUCED MOTION ===== */
+
+/* Respect user preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .skemino-vertex-dark {
+    animation: none;
+  }
+
+  .skemino-valid-move {
+    animation: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --skemino-border-primary: rgba(255, 255, 255, 0.8);
+    --skemino-border-glow: rgba(255, 255, 255, 0.2);
+  }
+
+  .skemino-square-dark {
+    border-width: 2px;
+  }
+}
+
+/* ===== PERFORMANCE MONITORING CLASSES ===== */
+
+.skemino-performance-monitor {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: #22c55e;
+}
+
+/* GPU Acceleration Utilities */
+.skemino-gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  will-change: transform;
+}
+
+/* ===== THEME INTEGRATION ===== */
+
+/* Dark theme specific enhancements */
+.dark .skemino-board-dark {
+  background: var(--skemino-bg-primary);
+}
+
+.dark .skemino-square-dark {
+  background: var(--skemino-bg-secondary);
+}
+
+/* Light theme fallback (for theme toggle) */
+.light .skemino-board-dark {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+/* ===== GAMING SPECIFIC UTILITIES ===== */
+
+/* Competitive gaming focus indicators */
+.skemino-focus-ring {
+  ring-offset-color: #0a0a0a;
+  ring-color: #3b82f6;
+  ring-width: 3px;
+  ring-offset-width: 2px;
+}
+
+/* Gaming cursor enhancements */
+.skemino-cursor-gaming {
+  cursor: crosshair;
+}
+
+.skemino-cursor-gaming:hover {
+  cursor: pointer;
+}
+
+/* Loading states for competitive gaming */
+.skemino-loading-state {
+  background: linear-gradient(
+    90deg,
+    rgba(15, 15, 15, 0.1) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(15, 15, 15, 0.1) 100%
+  );
+  background-size: 200% 100%;
+  animation: skemino-loading 1.5s ease-in-out infinite;
+}
+
+@keyframes skemino-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ===== PRINT STYLES (for tournament documentation) ===== */
+@media print {
+  .skemino-board-dark {
+    background: white !important;
+    box-shadow: none !important;
+    border: 2px solid black !important;
+  }
+
+  .skemino-square-dark {
+    background: white !important;
+    border: 1px solid black !important;
+  }
+
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
