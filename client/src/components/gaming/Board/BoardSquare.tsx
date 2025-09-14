@@ -83,11 +83,10 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
     <motion.div
       ref={drop}
       className={`
-        relative border border-gray-400
+        relative border border-gray-400 skemino-square
         ${squareColor} ${getHighlightStyle()}
         cursor-pointer transition-all duration-150
         hover:brightness-110 active:brightness-95
-        will-change-transform
       `}
       style={{
         width: size,
@@ -108,7 +107,7 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
         <div className="absolute inset-0 flex items-center justify-center">
           <motion.div
             className={`
-              w-6 h-6 rounded-full ring-2 ring-white/50 shadow-lg
+              w-6 h-6 rounded-full ring-2 ring-white/50 shadow-lg skemino-vertex
               ${cell === 'a1' ? 'bg-cyan-500 shadow-cyan-500/50' : ''}
               ${cell === 'f1' ? 'bg-emerald-500 shadow-emerald-500/50' : ''}
               ${cell === 'a6' ? 'bg-red-500 shadow-red-500/50' : ''}

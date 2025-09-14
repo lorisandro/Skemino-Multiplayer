@@ -36,7 +36,8 @@
       "Bash(npx tsc:*)",
       "Bash(npm ls:*)",
       "Bash(npm run typecheck:*)",
-      "Bash(npx nodemon:*)"
+      "Bash(npx nodemon:*)",
+      "Bash(timeout 10s npm run dev:server)"
     ],
     "deny": [],
     "ask": []

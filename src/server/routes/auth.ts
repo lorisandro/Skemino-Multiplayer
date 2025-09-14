@@ -2,15 +2,15 @@ import { Router } from 'express';
 
 const router = Router();
 
-router.post('/login', (req, res) => {
+router.post('/login', (_req, res) => {
   res.json({ message: 'Login endpoint' });
 });
 
-router.post('/register', (req, res) => {
+router.post('/register', (_req, res) => {
   res.json({ message: 'Register endpoint' });
 });
 
-router.post('/logout', (req, res) => {
+router.post('/logout', (_req, res) => {
   res.json({ message: 'Logout endpoint' });
 });
 
