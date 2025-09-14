@@ -171,7 +171,6 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
         {process.env.NODE_ENV === 'development' && (
           <div className="absolute -bottom-20 left-0 right-0 text-center">
             <div className="text-xs text-gray-500 space-y-1 bg-white/90 rounded-lg p-2 inline-block">
-              <div>Board Size: {containerSize}px</div>
               <div>Viewport: {typeof window !== 'undefined' ? `${window.innerWidth}x${window.innerHeight}` : 'N/A'}</div>
               <div>Breakpoint: {breakpoint}</div>
               <div>Performance: {fps}fps {isOptimal ? '✓ Optimal' : '⚠️ Sub-optimal'}</div>
