@@ -23,7 +23,7 @@ export const GameBoard: React.FC = () => {
   const { emitMove, connected, latency } = useSocket();
   const { fps, isOptimal, frameTime, memoryUsage } = useGamePerformance();
   const boardRef = useRef<HTMLDivElement>(null);
-  const [boardSize, setBoardSize] = useState(800);
+  const [boardSize, setBoardSize] = useState(1200);
 
   // Responsive board sizing with performance optimization
   useEffect(() => {
@@ -135,8 +135,8 @@ export const GameBoard: React.FC = () => {
   return (
     <ResponsiveBoardContainer
       onSizeChange={setBoardSize}
-      minSize={400}
-      maxSize={800}
+      minSize={600}
+      maxSize={1400}
     >
       {/* Game board container */}
       <div className="relative skemino-board" ref={boardRef}>

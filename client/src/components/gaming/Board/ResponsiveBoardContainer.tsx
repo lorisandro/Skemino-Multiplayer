@@ -16,13 +16,13 @@ interface ResponsiveBoardContainerProps {
  */
 export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> = ({
   children,
-  minSize = 280,
-  maxSize = 800,
+  minSize = 600,
+  maxSize = 1400,
   aspectRatio = 1,
   onSizeChange,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [containerSize, setContainerSize] = useState(800);
+  const [containerSize, setContainerSize] = useState(1200);
   const [breakpoint, setBreakpoint] = useState<'mobile' | 'tablet' | 'desktop'>('desktop');
   const { fps, isOptimal } = useGamePerformance();
 
@@ -70,13 +70,13 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
           baseSize = Math.min(baseSize, width * 0.8, 600);
           break;
         case 'desktop':
-          baseSize = Math.min(baseSize, Math.min(width * 0.6, height * 0.7), 800);
+          baseSize = Math.min(baseSize, Math.min(width * 0.8, height * 0.85), 1400);
           break;
       }
 
       // Performance-based adjustments
-      if (!isOptimal && fps < 45) {
-        baseSize = Math.min(baseSize, 400); // Reduce size for better performance
+      if (!isOptimal && fps < 30) {
+        baseSize = Math.min(baseSize, 800); // Less aggressive size reduction
       }
 
       // Apply aspect ratio
@@ -194,12 +194,12 @@ export function useResponsiveBoardSize(
       } else if (vw < 1024) {
         calculatedSize = Math.min(vw * 0.8, 600);
       } else {
-        calculatedSize = Math.min(vw * 0.7, vh * 0.8, maxSize);
+        calculatedSize = Math.min(vw * 0.8, vh * 0.85, maxSize);
       }
 
       // Performance adjustment
       if (fps < performanceThreshold) {
-        calculatedSize = Math.min(calculatedSize, 400);
+        calculatedSize = Math.min(calculatedSize, 800);
         setIsReduced(true);
       } else {
         setIsReduced(false);

@@ -13,6 +13,8 @@ interface UseSocketReturn {
   emitDrawResponse: (accept: boolean) => void;
   joinGame: (roomId: string) => void;
   leaveGame: () => void;
+  startMatchmaking: (playerData: { playerId: string; username: string; rating: number }) => void;
+  cancelMatchmaking: () => void;
 }
 
 let socket: Socket | null = null;
@@ -27,6 +29,8 @@ export const useSocket = (): UseSocketReturn => {
     setPlayers,
     updateBoard,
     updateTime,
+    setDistributionState,
+    triggerCardDistribution,
   } = useGameStore();
 
   // Initialize socket connection
@@ -154,6 +158,83 @@ export const useSocket = (): UseSocketReturn => {
       console.log('Chat:', data);
     });
 
+    // Matchmaking events
+    socket.on('matchmaking:waiting', (data: { roomId: string; position: number; estimatedWait: number }) => {
+      console.log('Waiting for opponent:', data);
+      setDistributionState?.({ phase: 'waiting', isDistributing: false, currentCard: 0, animationProgress: 0 });
+    });
+
+    socket.on('game:found', (data: { roomId: string; players: any[]; timestamp: number }) => {
+      console.log('Game found:', data);
+      setDistributionState?.({ phase: 'matchmaking', isDistributing: true, currentCard: 0, animationProgress: 0 });
+    });
+
+    socket.on('game:starting', (data: { roomId: string; message: string; timestamp: number }) => {
+      console.log('Game starting:', data);
+      setDistributionState?.({ phase: 'starting', isDistributing: true, currentCard: 0, animationProgress: 0 });
+    });
+
+    // Card distribution events
+    socket.on('cards:distribution-start', (data: { phase: string; timestamp: number }) => {
+      console.log('Distribution started:', data);
+      setDistributionState?.({
+        phase: 'shuffling',
+        isDistributing: true,
+        currentCard: 0,
+        animationProgress: 0
+      });
+    });
+
+    socket.on('cards:distribution-phase', (data: { phase: string; timestamp: number }) => {
+      console.log('Distribution phase:', data);
+      setDistributionState?.({
+        phase: 'dealing',
+        isDistributing: true,
+        currentCard: 0,
+        animationProgress: 0
+      });
+    });
+
+    socket.on('cards:card-dealt', (data: {
+      cardNumber: number;
+      totalCards: number;
+      player: string;
+      cardIndex: number;
+      progress: number;
+      timestamp: number;
+    }) => {
+      console.log('Card dealt:', data);
+      setDistributionState?.({
+        phase: 'dealing',
+        isDistributing: true,
+        currentCard: data.cardNumber,
+        animationProgress: data.progress
+      });
+
+      // Trigger individual card animation
+      triggerCardDistribution?.(data);
+    });
+
+    socket.on('cards:distribution-complete', (data: { gameState: GameState; timestamp: number }) => {
+      console.log('Distribution complete:', data);
+
+      // Set final game state
+      setGameState(data.gameState);
+
+      // Complete distribution animation
+      setDistributionState?.({
+        phase: 'complete',
+        isDistributing: false,
+        currentCard: 10,
+        animationProgress: 100
+      });
+    });
+
+    // Connection events
+    socket.on('connection:established', (data: { socketId: string; timestamp: number; serverTime: string }) => {
+      console.log('Connection established:', data);
+    });
+
     return () => {
       if (socket) {
         socket.off('game:state');
@@ -163,9 +244,17 @@ export const useSocket = (): UseSocketReturn => {
         socket.off('game:over');
         socket.off('draw:offered');
         socket.off('chat:message');
+        socket.off('matchmaking:waiting');
+        socket.off('game:found');
+        socket.off('game:starting');
+        socket.off('cards:distribution-start');
+        socket.off('cards:distribution-phase');
+        socket.off('cards:card-dealt');
+        socket.off('cards:distribution-complete');
+        socket.off('connection:established');
       }
     };
-  }, [setGameState, setPlayers, updateBoard, updateTime]);
+  }, [setGameState, setPlayers, updateBoard, updateTime, setDistributionState, triggerCardDistribution]);
 
   // Emit functions
   const emitMove = useCallback((data: { card: Card; to: BoardCell }) => {
