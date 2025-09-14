@@ -17,7 +17,7 @@ export default defineConfig({
     }
   },
   server: {
-    port: 3007,
+    port: 3000,
     host: true,
     proxy: {
       '/api': {
