@@ -1,4 +1,3 @@
-import React from 'react';
 import { ComponentTest } from './debug/ComponentTest';
 
 // App semplificata per il debug

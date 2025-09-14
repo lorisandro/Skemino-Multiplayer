@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BoardSquare } from './BoardSquare';
+import { SkeminoLogo } from './SkeminoLogo';
 import { useGameStore } from '../../../store/gameStore';
 import { useSocket } from '../../../hooks/useSocket';
 import type { BoardCell } from '../../../types/game';
@@ -17,7 +18,7 @@ export const GameBoard: React.FC = () => {
     selectCard,
   } = useGameStore();
 
-  const { emitMove, connected } = useSocket();
+  const { emitMove, connected, latency } = useSocket();
   const boardRef = useRef<HTMLDivElement>(null);
   const [boardSize, setBoardSize] = useState(600);
 
@@ -99,12 +100,12 @@ export const GameBoard: React.FC = () => {
 
     return (
       <>
-        {/* File coordinates */}
-        <div className="absolute -bottom-6 left-0 w-full flex">
+        {/* File coordinates - Enhanced for gaming */}
+        <div className="absolute -bottom-8 left-0 w-full flex z-40">
           {files.map((file) => (
             <div
               key={file}
-              className="flex-1 text-center text-sm font-medium text-gray-600 dark:text-gray-400"
+              className="flex-1 text-center text-sm font-bold text-gray-800 bg-white/80 backdrop-blur-sm rounded-full mx-1 py-1"
               style={{ width: `${boardSize / 6}px` }}
             >
               {file}
@@ -112,12 +113,12 @@ export const GameBoard: React.FC = () => {
           ))}
         </div>
 
-        {/* Rank coordinates */}
-        <div className="absolute -left-6 top-0 h-full flex flex-col">
+        {/* Rank coordinates - Enhanced for gaming */}
+        <div className="absolute -left-8 top-0 h-full flex flex-col z-40">
           {ranks.map((rank) => (
             <div
               key={rank}
-              className="flex-1 flex items-center justify-center text-sm font-medium text-gray-600 dark:text-gray-400"
+              className="flex-1 flex items-center justify-center text-sm font-bold text-gray-800 bg-white/80 backdrop-blur-sm rounded-full my-1 px-1"
               style={{ height: `${boardSize / 6}px` }}
             >
               {rank}
@@ -129,21 +130,52 @@ export const GameBoard: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 p-4">
-      {/* Game board */}
-      <div className="relative mb-4" ref={boardRef}>
+    <div className="flex flex-col items-center justify-center w-full min-h-[600px] p-4">
+      {/* Game board container */}
+      <div className="relative" ref={boardRef}>
         <motion.div
-          className="relative bg-white dark:bg-slate-800 rounded-lg shadow-2xl p-2"
+          className="relative bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg shadow-2xl p-1 border-2 border-gray-300"
           style={{ width: boardSize, height: boardSize }}
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-amber-100/10 to-amber-300/10 dark:from-amber-900/10 dark:to-amber-700/10 rounded-lg" />
+          {/* Board background with Skèmino styling */}
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-50/30 to-gray-100/30 rounded-lg" />
 
           {/* Board grid */}
-          <div className="relative z-10">
+          <div className="relative z-10 border border-gray-400 rounded">
             {renderBoard()}
+          </div>
+
+          {/* Central Skèmino Logo */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+            <div className="bg-white/90 backdrop-blur-sm rounded-lg p-4 shadow-lg border border-gray-200">
+              <SkeminoLogo size={80} animated={true} />
+            </div>
+          </div>
+
+          {/* Vertex control indicators */}
+          <div className="absolute -top-8 left-0 right-0 flex justify-between px-4 z-30">
+            <div className="flex items-center space-x-2 text-sm font-medium">
+              <div className="w-3 h-3 bg-cyan-500 rounded-full"></div>
+              <span className="text-gray-700">Q I</span>
+            </div>
+            <div className="flex items-center space-x-2 text-sm font-medium">
+              <div className="w-3 h-3 bg-emerald-500 rounded-full"></div>
+              <span className="text-gray-700">Q II</span>
+            </div>
+          </div>
+
+          <div className="absolute -bottom-8 left-0 right-0 flex justify-between px-4 z-30">
+            <div className="flex items-center space-x-2 text-sm font-medium">
+              <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+              <span className="text-gray-700">Q III</span>
+            </div>
+            <div className="flex items-center space-x-2 text-sm font-medium">
+              <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+              <span className="text-gray-700">Q IV</span>
+            </div>
           </div>
 
           {/* Coordinates */}
@@ -151,11 +183,34 @@ export const GameBoard: React.FC = () => {
 
           {/* Connection status */}
           {!connected && (
-            <div className="absolute top-2 right-2 px-2 py-1 bg-red-500 text-white text-xs rounded-full animate-pulse">
+            <div className="absolute top-2 right-2 px-2 py-1 bg-red-500 text-white text-xs rounded-full animate-pulse z-40">
               Disconnected
             </div>
           )}
+
+          {/* Performance indicator */}
+          <div className="absolute top-2 left-2 px-2 py-1 bg-black/70 text-green-400 text-xs rounded z-40 font-mono">
+            60FPS
+          </div>
         </motion.div>
+      </div>
+
+      {/* Board statistics for competitive gaming */}
+      <div className="mt-4 flex space-x-6 text-sm text-gray-600">
+        <div className="flex items-center space-x-1">
+          <span className="font-medium">Latency:</span>
+          <span className={`font-mono ${connected && latency < 100 ? 'text-green-600' : 'text-red-600'}`}>
+            {connected ? `${latency}ms` : 'N/A'}
+          </span>
+        </div>
+        <div className="flex items-center space-x-1">
+          <span className="font-medium">Board:</span>
+          <span className="font-mono text-blue-600">6×6</span>
+        </div>
+        <div className="flex items-center space-x-1">
+          <span className="font-medium">Vertices:</span>
+          <span className="font-mono text-purple-600">4 Active</span>
+        </div>
       </div>
     </div>
   );

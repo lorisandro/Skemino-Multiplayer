@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
+import { devtools } from 'zustand/middleware';
 import type { GameState, Player, Card, BoardCell, PlayerColor, Move, BoardPosition } from '../types/game';
 
 interface GameStore {
@@ -68,7 +69,8 @@ const initializeBoard = (): Map<BoardCell, BoardPosition> => {
 };
 
 export const useGameStore = create<GameStore>()(
-  immer((set, get) => ({
+  devtools(
+    immer((set) => ({
     // Initial state
     gameState: { ...initialGameState, board: initializeBoard() },
     currentPlayer: null,
@@ -216,5 +218,7 @@ export const useGameStore = create<GameStore>()(
         draft.highlightedCells = [];
         draft.lastMove = null;
       }),
-  }))
+    })),
+    { name: 'skemino-game-store' }
+  )
 );

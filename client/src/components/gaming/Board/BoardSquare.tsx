@@ -37,20 +37,28 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
     }),
   }), [isValidMove, isMyTurn, onClick]);
 
-  // Square color based on coordinates
+  // Square color based on Skèmino specifications
   const squareColor = useMemo(() => {
+    // Vertex colors based on Skèmino design
+    if (isVertex) {
+      switch (cell) {
+        case 'a1': return 'bg-gradient-to-br from-cyan-400 to-cyan-600'; // Azzurro
+        case 'f1': return 'bg-gradient-to-br from-emerald-400 to-emerald-600'; // Verde
+        case 'a6': return 'bg-gradient-to-br from-red-400 to-red-600'; // Rosso
+        case 'f6': return 'bg-gradient-to-br from-yellow-400 to-yellow-600'; // Giallo
+        default: return 'bg-gradient-to-br from-gray-800 to-gray-900'; // Nero per altri vertici
+      }
+    }
+
+    // Standard squares: alternating black/white pattern
     const file = cell.charCodeAt(0) - 97; // 0-5
     const rank = parseInt(cell[1]) - 1; // 0-5
     const isDark = (file + rank) % 2 === 0;
 
-    if (isVertex) {
-      return 'bg-gradient-to-br from-amber-200 to-amber-300 dark:from-amber-700 dark:to-amber-800';
-    }
-
     if (isDark) {
-      return 'bg-slate-200 dark:bg-slate-700';
+      return 'bg-gradient-to-br from-gray-900 to-black'; // Nero
     } else {
-      return 'bg-slate-100 dark:bg-slate-600';
+      return 'bg-gradient-to-br from-white to-gray-50'; // Bianco
     }
   }, [cell, isVertex]);
 
@@ -75,23 +83,56 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
     <motion.div
       ref={drop}
       className={`
-        relative border border-slate-300 dark:border-slate-500
+        relative border border-gray-400
         ${squareColor} ${getHighlightStyle()}
-        cursor-pointer transition-all duration-200
-        hover:brightness-110
+        cursor-pointer transition-all duration-150
+        hover:brightness-110 active:brightness-95
+        will-change-transform
       `}
-      style={{ width: size, height: size }}
+      style={{
+        width: size,
+        height: size,
+        contain: 'layout style paint'
+      }}
       onClick={onClick}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
+      transition={{
+        type: "spring",
+        stiffness: 400,
+        damping: 25
+      }}
     >
-      {/* Vertex indicator */}
+      {/* Vertex indicator - Enhanced for Skèmino design */}
       {isVertex && (
-        <div className="absolute top-1 left-1 w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <motion.div
+            className={`
+              w-6 h-6 rounded-full ring-2 ring-white/50 shadow-lg
+              ${cell === 'a1' ? 'bg-cyan-500 shadow-cyan-500/50' : ''}
+              ${cell === 'f1' ? 'bg-emerald-500 shadow-emerald-500/50' : ''}
+              ${cell === 'a6' ? 'bg-red-500 shadow-red-500/50' : ''}
+              ${cell === 'f6' ? 'bg-yellow-500 shadow-yellow-500/50' : ''}
+            `}
+            animate={{
+              scale: [1, 1.1, 1],
+              opacity: [0.8, 1, 0.8]
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+        </div>
       )}
 
-      {/* Cell label */}
-      <div className="absolute top-0 right-1 text-xs font-mono text-slate-500 dark:text-slate-400 opacity-50">
+      {/* Cell label - Enhanced visibility for competitive gaming */}
+      <div className={`
+        absolute top-0.5 right-0.5 text-xs font-mono font-bold tracking-wide
+        ${isVertex ? 'text-white drop-shadow-lg' : 'text-gray-600'}
+        opacity-70 hover:opacity-100 transition-opacity duration-200
+      `}>
         {cell}
       </div>
 

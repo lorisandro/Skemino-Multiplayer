@@ -35,12 +35,13 @@ export const useSocket = (): UseSocketReturn => {
       setConnecting(true);
 
       try {
-        socket = io(import.meta.env.VITE_SOCKET_URL || 'http://localhost:3001', {
+        socket = io(import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000', {
           transports: ['websocket', 'polling'],
           reconnection: true,
           reconnectionDelay: 1000,
           reconnectionAttempts: 5,
           timeout: 10000,
+          forceNew: true,
         });
 
       // Connection events
@@ -154,13 +155,15 @@ export const useSocket = (): UseSocketReturn => {
     });
 
     return () => {
-      socket.off('game:state');
-      socket.off('game:players');
-      socket.off('move:made');
-      socket.off('time:update');
-      socket.off('game:over');
-      socket.off('draw:offered');
-      socket.off('chat:message');
+      if (socket) {
+        socket.off('game:state');
+        socket.off('game:players');
+        socket.off('move:made');
+        socket.off('time:update');
+        socket.off('game:over');
+        socket.off('draw:offered');
+        socket.off('chat:message');
+      }
     };
   }, [setGameState, setPlayers, updateBoard, updateTime]);
 

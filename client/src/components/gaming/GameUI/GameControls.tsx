@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  PlayIcon,
-  PauseIcon,
   FlagIcon,
   HandRaisedIcon,
   ChatBubbleLeftIcon,

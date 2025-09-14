@@ -17,15 +17,15 @@ export default defineConfig({
     }
   },
   server: {
-    port: 3003,
+    port: 3007,
     host: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:3001',
+        target: 'http://localhost:5000',
         changeOrigin: true
       },
       '/socket.io': {
-        target: 'http://localhost:3001',
+        target: 'http://localhost:5000',
         ws: true,
         changeOrigin: true
       }

@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Skèmino Gaming Performance Optimizations */
 * {
   margin: 0;
   padding: 0;
@@ -14,13 +15,127 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Gaming Performance Optimizations */
+  overflow-x: hidden;
+  will-change: scroll-position;
+  transform: translateZ(0);
 }
 
 #root {
   min-height: 100vh;
+  /* Force hardware acceleration for better gaming performance */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+/* Skèmino Gaming-Specific CSS Classes */
+@layer components {
+  /* 60FPS Gaming Board Container */
+  .skemino-board {
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+    contain: layout style paint;
+  }
+
+  /* Performance-optimized square animations */
+  .skemino-square {
+    transform: translateZ(0);
+    will-change: transform, opacity;
+    contain: layout style paint;
+    isolation: isolate;
+  }
+
+  /* Card animations for smooth 60fps */
+  .skemino-card {
+    transform: translateZ(0);
+    will-change: transform, opacity, filter;
+    backface-visibility: hidden;
+    contain: layout style paint;
+  }
+
+  /* Vertex indicators with optimized animations */
+  .skemino-vertex {
+    animation: vertex-pulse 2s ease-in-out infinite;
+    contain: layout style paint;
+  }
+
+  /* Gaming UI text with enhanced readability */
+  .skemino-ui-text {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Responsive gaming layout optimizations */
+  .skemino-responsive {
+    transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+  }
+}
+
+/* Gaming-optimized keyframes */
+@keyframes vertex-pulse {
+  0%, 100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes board-appear {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) rotateX(10deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotateX(0deg);
+  }
+}
+
+/* Mobile gaming optimizations */
+@media (max-width: 768px) {
+  body {
+    /* Prevent zoom on iOS double-tap */
+    touch-action: manipulation;
+    /* Disable text selection on gaming elements */
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .skemino-board {
+    /* Optimize for mobile gaming */
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* High DPI display optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .skemino-vertex {
+    /* Crisp vertices on retina displays */
+    -webkit-font-smoothing: subpixel-antialiased;
+  }
+}
+
+/* Reduce motion for accessibility while maintaining gaming performance */
+@media (prefers-reduced-motion: reduce) {
+  .skemino-vertex {
+    animation: none;
+  }
+
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }
