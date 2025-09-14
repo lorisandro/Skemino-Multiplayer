@@ -110,7 +110,7 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
     };
   }, [breakpoint, fps, isOptimal, minSize, maxSize, aspectRatio, onSizeChange]);
 
-  // Container styles based on breakpoint
+  // Container styles based on breakpoint with enhanced scaling
   const getContainerClasses = () => {
     const baseClasses = 'flex flex-col items-center justify-center w-full';
 
@@ -118,15 +118,15 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
       case 'mobile':
         return `${baseClasses} min-h-screen px-2 py-4`;
       case 'tablet':
-        return `${baseClasses} min-h-[600px] px-4 py-6`;
+        return `${baseClasses} min-h-[700px] px-4 py-6`;
       case 'desktop':
-        return `${baseClasses} min-h-[600px] px-6 py-8`;
+        return `${baseClasses} min-h-[800px] px-6 py-8`;
       default:
-        return `${baseClasses} min-h-[600px] p-4`;
+        return `${baseClasses} min-h-[800px] p-4`;
     }
   };
 
-  // Motion variants for different breakpoints
+  // Motion variants for different breakpoints with enhanced scaling
   const containerVariants = {
     mobile: {
       scale: 1,
@@ -140,8 +140,15 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
     },
     desktop: {
       scale: 1,
-      y: -40,
-      transition: { duration: 0.5, ease: 'easeOut' }
+      y: -30,
+      transition: {
+        duration: containerSize > 1600 ? 0.6 : 0.5,
+        ease: 'easeOut',
+        // Optimize for larger boards
+        type: containerSize > 1800 ? 'spring' : 'tween',
+        stiffness: containerSize > 1800 ? 100 : undefined,
+        damping: containerSize > 1800 ? 20 : undefined
+      }
     },
   };
 
@@ -160,13 +167,17 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
       >
         {children}
 
-        {/* Debug info for development */}
+        {/* Enhanced debug info for development */}
         {process.env.NODE_ENV === 'development' && (
-          <div className="absolute -bottom-16 left-0 right-0 text-center">
-            <div className="text-xs text-gray-500 space-y-1">
-              <div>Size: {containerSize}px</div>
+          <div className="absolute -bottom-20 left-0 right-0 text-center">
+            <div className="text-xs text-gray-500 space-y-1 bg-white/90 rounded-lg p-2 inline-block">
+              <div>Board Size: {containerSize}px</div>
+              <div>Viewport: {typeof window !== 'undefined' ? `${window.innerWidth}x${window.innerHeight}` : 'N/A'}</div>
               <div>Breakpoint: {breakpoint}</div>
-              <div>Performance: {fps}fps {isOptimal ? '✓' : '⚠️'}</div>
+              <div>Performance: {fps}fps {isOptimal ? '✓ Optimal' : '⚠️ Sub-optimal'}</div>
+              <div className={containerSize > 1600 ? 'text-green-600 font-medium' : 'text-blue-600'}>
+                {containerSize > 1600 ? '🎯 Large Board Mode' : '📱 Standard Mode'}
+              </div>
             </div>
           </div>
         )}

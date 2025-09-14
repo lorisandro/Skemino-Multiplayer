@@ -169,6 +169,28 @@ export const useSocket = (): UseSocketReturn => {
     socket.on('game:found', (data: { roomId: string; players: any[]; timestamp: number }) => {
       console.log('Game found:', data);
       setDistributionState?.({ phase: 'matchmaking', isDistributing: true, currentCard: 0, animationProgress: 0 });
+
+      // Set players from matchmaking data
+      if (data.players && data.players.length === 2) {
+        const [player1, player2] = data.players;
+        const currentPlayerData = player1.color === 'white' ? player1 : player2;
+        const opponentData = player1.color === 'white' ? player2 : player1;
+
+        setPlayers(
+          {
+            id: currentPlayerData.playerId || currentPlayerData.socketId,
+            username: currentPlayerData.username,
+            rating: currentPlayerData.rating,
+            color: currentPlayerData.color,
+          },
+          {
+            id: opponentData.playerId || opponentData.socketId,
+            username: opponentData.username,
+            rating: opponentData.rating,
+            color: opponentData.color,
+          }
+        );
+      }
     });
 
     socket.on('game:starting', (data: { roomId: string; message: string; timestamp: number }) => {

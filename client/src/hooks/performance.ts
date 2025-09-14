@@ -20,19 +20,31 @@ interface UseGamePerformanceReturn extends PerformanceMetrics {
  */
 export const PerformanceUtils = {
   /**
-   * Calculate optimal board size based on viewport and performance
+   * Calculate optimal board size based on viewport and performance for enhanced scaling
    */
   getOptimalBoardSize: (viewportWidth: number, viewportHeight: number, currentFps: number): number => {
-    const baseSize = Math.min(viewportWidth * 0.7, viewportHeight * 0.8);
+    const baseSize = Math.min(viewportWidth * 0.8, viewportHeight * 0.85);
 
-    // Reduce size if performance is poor
-    if (currentFps < 30) {
-      return Math.min(baseSize * 0.6, 300);
-    } else if (currentFps < 45) {
-      return Math.min(baseSize * 0.8, 450);
+    // Enhanced size scaling for larger displays
+    let scaleFactor = 1;
+    if (viewportWidth > 2560) {
+      scaleFactor = 0.7; // Conservative for ultra-wide displays
+    } else if (viewportWidth > 1920) {
+      scaleFactor = 0.85; // Moderate scaling for large displays
     }
 
-    return Math.min(baseSize, 800);
+    const adjustedBaseSize = baseSize * scaleFactor;
+
+    // Performance-based adjustments with larger board support
+    if (currentFps < 30) {
+      return Math.min(adjustedBaseSize * 0.7, 1000); // Increased minimum for poor performance
+    } else if (currentFps < 45) {
+      return Math.min(adjustedBaseSize * 0.85, 1400); // Better support for sub-optimal performance
+    } else if (currentFps >= 60) {
+      return Math.min(adjustedBaseSize, 2000); // Maximum size for optimal performance
+    }
+
+    return Math.min(adjustedBaseSize, 1600); // Default enhanced size
   },
 
   /**
