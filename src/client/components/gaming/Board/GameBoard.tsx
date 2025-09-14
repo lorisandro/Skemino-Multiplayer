@@ -54,11 +54,39 @@ export const GameBoard = memo(({
         <span className="memory-usage">Memory: {memoryUsage}MB</span>
       </div>
 
+      {/* Coordinate Labels - Top */}
+      <div className="coordinates-top">
+        {['a', 'b', 'c', 'd', 'e', 'f'].map(letter => (
+          <span key={`top-${letter}`} className="coord-label">{letter}</span>
+        ))}
+      </div>
+
+      {/* Coordinate Labels - Left */}
+      <div className="coordinates-left">
+        {[6, 5, 4, 3, 2, 1].map(number => (
+          <span key={`left-${number}`} className="coord-label">{number}</span>
+        ))}
+      </div>
+
+      {/* Coordinate Labels - Right */}
+      <div className="coordinates-right">
+        {[6, 5, 4, 3, 2, 1].map(number => (
+          <span key={`right-${number}`} className="coord-label">{number}</span>
+        ))}
+      </div>
+
       <div className="game-board-wrapper">
         <div className="game-board">
           {boardSquares}
           <SkeminoLogo />
         </div>
+      </div>
+
+      {/* Coordinate Labels - Bottom */}
+      <div className="coordinates-bottom">
+        {['a', 'b', 'c', 'd', 'e', 'f'].map(letter => (
+          <span key={`bottom-${letter}`} className="coord-label">{letter}</span>
+        ))}
       </div>
     </div>
   );

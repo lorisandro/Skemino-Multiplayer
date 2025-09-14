@@ -12,10 +12,10 @@ interface BoardSquareProps {
 }
 
 const VERTEX_COLORS = {
-  'a1': { bg: '#1e1e1e', circle: '#5DADE2' }, // Azzurro
-  'f1': { bg: '#1e1e1e', circle: '#58D68D' }, // Verde
-  'a6': { bg: '#1e1e1e', circle: '#EC7063' }, // Rosso
-  'f6': { bg: '#1e1e1e', circle: '#F4D03F' }  // Giallo
+  'a1': { bg: '#000000', circle: '#5DADE2' }, // Azzurro su nero
+  'f1': { bg: '#000000', circle: '#58D68D' }, // Verde su nero
+  'a6': { bg: '#000000', circle: '#EC7063' }, // Rosso su nero
+  'f6': { bg: '#000000', circle: '#F4D03F' }  // Giallo su nero
 };
 
 export const BoardSquare = memo(({
