@@ -54,12 +54,17 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
 
       const { width, height } = container.getBoundingClientRect();
 
-      // Base size calculation
+      // Enhanced base size calculation for larger displays
       let baseSize = Math.min(
-        width * 0.9,
-        (height - 200) * 0.9, // Account for UI elements
+        width * 0.8,
+        (height - 160) * 0.85, // Optimized for larger boards with UI elements
         maxSize
       );
+
+      // Additional scaling for ultra-wide displays (>2560px)
+      if (width > 2560) {
+        baseSize = Math.min(baseSize, width * 0.6); // More conservative on ultra-wide
+      }
 
       // Apply breakpoint-specific adjustments
       switch (breakpoint) {

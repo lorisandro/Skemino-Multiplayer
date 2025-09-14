@@ -29,9 +29,11 @@ export const useSocket = (): UseSocketReturn => {
     setPlayers,
     updateBoard,
     updateTime,
-    setDistributionState,
-    triggerCardDistribution,
   } = useGameStore();
+
+  // Access distribution methods separately to avoid undefined errors
+  const setDistributionState = useGameStore(state => state.setDistributionState);
+  const triggerCardDistribution = useGameStore(state => state.triggerCardDistribution);
 
   // Initialize socket connection
   useEffect(() => {
