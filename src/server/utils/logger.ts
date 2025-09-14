@@ -100,75 +100,77 @@ if (!fs.existsSync(logsDir)) {
   fs.mkdirSync(logsDir, { recursive: true });
 }
 
-// Add game-specific logging methods
-logger.gameStart = (gameId: string, players: { white: string; black: string }) => {
-  logger.info(`🎮 Game Started: ${gameId}`, {
-    event: 'game_start',
-    gameId,
-    whitePlayer: players.white,
-    blackPlayer: players.black
-  });
-};
+// Game-specific logging helper functions
+export const gameLogger = {
+  gameStart: (gameId: string, players: { white: string; black: string }) => {
+    logger.info(`🎮 Game Started: ${gameId}`, {
+      event: 'game_start',
+      gameId,
+      whitePlayer: players.white,
+      blackPlayer: players.black
+    });
+  },
 
-logger.gameMove = (gameId: string, player: string, move: string, timeMs: number) => {
-  logger.info(`📝 Move: ${move} by ${player} (${timeMs}ms)`, {
-    event: 'game_move',
-    gameId,
-    player,
-    move,
-    thinkTime: timeMs
-  });
-};
+  gameMove: (gameId: string, player: string, move: string, timeMs: number) => {
+    logger.info(`📝 Move: ${move} by ${player} (${timeMs}ms)`, {
+      event: 'game_move',
+      gameId,
+      player,
+      move,
+      thinkTime: timeMs
+    });
+  },
 
-logger.gameEnd = (gameId: string, result: string, duration: number) => {
-  logger.info(`🏁 Game Ended: ${gameId} - ${result} (${duration}s)`, {
-    event: 'game_end',
-    gameId,
-    result,
-    duration
-  });
-};
+  gameEnd: (gameId: string, result: string, duration: number) => {
+    logger.info(`🏁 Game Ended: ${gameId} - ${result} (${duration}s)`, {
+      event: 'game_end',
+      gameId,
+      result,
+      duration
+    });
+  },
 
-logger.playerConnect = (playerId: string, username: string) => {
-  logger.info(`🔌 Player Connected: ${username}`, {
-    event: 'player_connect',
-    playerId,
-    username
-  });
-};
+  playerConnect: (playerId: string, username: string) => {
+    logger.info(`🔌 Player Connected: ${username}`, {
+      event: 'player_connect',
+      playerId,
+      username
+    });
+  },
 
-logger.playerDisconnect = (playerId: string, username: string, reason: string) => {
-  logger.info(`🔌 Player Disconnected: ${username} - ${reason}`, {
-    event: 'player_disconnect',
-    playerId,
-    username,
-    reason
-  });
-};
+  playerDisconnect: (playerId: string, username: string, reason: string) => {
+    logger.info(`🔌 Player Disconnected: ${username} - ${reason}`, {
+      event: 'player_disconnect',
+      playerId,
+      username,
+      reason
+    });
+  },
 
-logger.matchmaking = (event: string, data: any) => {
-  logger.info(`🎯 Matchmaking: ${event}`, {
-    event: 'matchmaking',
-    action: event,
-    ...data
-  });
-};
+  matchmaking: (event: string, data: any) => {
+    logger.info(`🎯 Matchmaking: ${event}`, {
+      event: 'matchmaking',
+      action: event,
+      ...data
+    });
+  },
 
-logger.performance = (metric: string, value: number, unit: string = 'ms') => {
-  logger.debug(`⚡ Performance: ${metric} = ${value}${unit}`, {
-    event: 'performance',
-    metric,
-    value,
-    unit
-  });
-};
+  performance: (metric: string, value: number, unit: string = 'ms') => {
+    logger.debug(`⚡ Performance: ${metric} = ${value}${unit}`, {
+      event: 'performance',
+      metric,
+      value,
+      unit
+    });
+  },
 
-logger.security = (event: string, details: any) => {
-  logger.warn(`🛡️ Security: ${event}`, {
-    event: 'security',
-    action: event,
-    ...details
-  });
+  security: (event: string, details: any) => {
+    logger.warn(`🛡️ Security: ${event}`, {
+      event: 'security',
+      action: event,
+      ...details
+    });
+  }
 };
 
 // Performance monitoring
@@ -177,7 +179,7 @@ export const createPerformanceLogger = (operation: string) => {
   return {
     end: (additionalData?: any) => {
       const duration = Date.now() - start;
-      logger.performance(operation, duration, 'ms');
+      gameLogger.performance(operation, duration, 'ms');
       if (additionalData) {
         logger.debug(`${operation} completed`, additionalData);
       }

@@ -6,12 +6,14 @@ export interface User {
   id: string;
   username: string;
   email: string;
+  passwordHash?: string;
   rating: number;
   level: number;
   gamesPlayed: number;
   wins: number;
   losses: number;
   draws: number;
+  lastLogin?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -126,6 +128,7 @@ export class DatabaseManager {
           wins INTEGER DEFAULT 0,
           losses INTEGER DEFAULT 0,
           draws INTEGER DEFAULT 0,
+          last_login TIMESTAMP,
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
         );
@@ -234,6 +237,65 @@ export class DatabaseManager {
     } catch (error) {
       logger.error('Error getting user by username:', error);
       return null;
+    }
+  }
+
+  public static async getUserByEmail(email: string): Promise<User | null> {
+    try {
+      const client = await this.getClient();
+      const result = await client.query(
+        'SELECT * FROM users WHERE email = $1',
+        [email]
+      );
+      client.release();
+
+      return result.rows.length > 0 ? this.mapUserRow(result.rows[0]) : null;
+    } catch (error) {
+      logger.error('Error getting user by email:', error);
+      return null;
+    }
+  }
+
+  public static async createUser(userData: {
+    username: string;
+    email: string;
+    passwordHash: string;
+    rating?: number;
+  }): Promise<User | null> {
+    try {
+      const client = await this.getClient();
+      const result = await client.query(`
+        INSERT INTO users (username, email, password_hash, rating, level, games_played, wins, losses, draws)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        RETURNING *
+      `, [
+        userData.username,
+        userData.email,
+        userData.passwordHash,
+        userData.rating || 1200,
+        1, // Initial level
+        0, 0, 0, 0 // Initial stats
+      ]);
+      client.release();
+
+      return result.rows.length > 0 ? this.mapUserRow(result.rows[0]) : null;
+    } catch (error) {
+      logger.error('Error creating user:', error);
+      return null;
+    }
+  }
+
+  public static async updateUserLastLogin(userId: string): Promise<void> {
+    try {
+      const client = await this.getClient();
+      await client.query(
+        'UPDATE users SET last_login = NOW(), updated_at = NOW() WHERE id = $1',
+        [userId]
+      );
+      client.release();
+    } catch (error) {
+      logger.error('Error updating user last login:', error);
+      throw error;
     }
   }
 
@@ -532,12 +594,14 @@ export class DatabaseManager {
       id: row.id,
       username: row.username,
       email: row.email,
+      passwordHash: row.password_hash,
       rating: row.rating,
       level: row.level,
       gamesPlayed: row.games_played,
       wins: row.wins,
       losses: row.losses,
       draws: row.draws,
+      lastLogin: row.last_login,
       createdAt: row.created_at,
       updatedAt: row.updated_at
     };

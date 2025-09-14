@@ -1,6 +1,22 @@
-chunk-GKJBSOWT.js?v=2628c91b:21551 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
-react-router-dom.js?v=2628c91b:4393 ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
-warnOnce @ react-router-dom.js?v=2628c91b:4393
-react-router-dom.js?v=2628c91b:4393 ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
-warnOnce @ react-router-dom.js?v=2628c91b:4393
-useSocket.ts:49 Connected to server
+chunk-GKJBSOWT.js?v=262f0b99:21551 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+socket__io-client.js?v=262f0b99:1059 WebSocket connection to 'ws://localhost:5000/socket.io/?EIO=4&transport=websocket' failed: 
+createSocket @ socket__io-client.js?v=262f0b99:1059
+useSocket.ts:66 Connection error: TransportError: websocket error
+    at WS.onError (socket__io-client.js?v=262f0b99:495:33)
+    at ws.onerror (socket__io-client.js?v=262f0b99:1010:35)
+(anonime) @ useSocket.ts:66
+socket__io-client.js?v=262f0b99:1059 WebSocket connection to 'ws://localhost:5000/socket.io/?EIO=4&transport=websocket' failed: 
+createSocket @ socket__io-client.js?v=262f0b99:1059
+useSocket.ts:66 Connection error: TransportError: websocket error
+    at WS.onError (socket__io-client.js?v=262f0b99:495:33)
+    at ws.onerror (socket__io-client.js?v=262f0b99:1010:35)
+(anonime) @ useSocket.ts:66
+Emitter.emit @ socket__io-client.js?v=262f0b99:354
+onerror @ socket__io-client.js?v=262f0b99:2560
+Emitter.emit @ socket__io-client.js?v=262f0b99:354
+onError @ socket__io-client.js?v=262f0b99:3137
+Emitter.emit @ socket__io-client.js?v=262f0b99:354
+_onError @ socket__io-client.js?v=262f0b99:1597
+Emitter.emit @ socket__io-client.js?v=262f0b99:354
+onError @ socket__io-client.js?v=262f0b99:495
+ws.onerror @ socket__io-client.js?v=262f0b99:1010

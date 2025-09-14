@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
+import * as jwt from 'jsonwebtoken';
+import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import { DatabaseManager } from '../database/DatabaseManager';
 import { logger } from '../utils/logger';
@@ -108,7 +108,7 @@ router.post('/login', async (req: Request, res: Response) => {
     }
 
     // Verify password
-    const isValidPassword = await bcrypt.compare(password, user.password_hash);
+    const isValidPassword = await bcrypt.compare(password, user.passwordHash!);
     if (!isValidPassword) {
       return res.status(401).json({
         success: false,
@@ -134,7 +134,7 @@ router.post('/login', async (req: Request, res: Response) => {
 
     logger.info(`🔐 User logged in: ${user.username} (${user.id})`);
 
-    res.json({
+    return res.json({
       success: true,
       token,
       user: {
@@ -150,7 +150,7 @@ router.post('/login', async (req: Request, res: Response) => {
 
   } catch (error) {
     logger.error('Error during login:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: 'Internal server error'
     });
@@ -202,9 +202,16 @@ router.post('/register', async (req: Request, res: Response) => {
     const newUser = await DatabaseManager.createUser({
       username,
       email,
-      password_hash: passwordHash,
+      passwordHash: passwordHash,
       rating: 1200, // Default starting rating
     });
+
+    if (!newUser) {
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to create user'
+      });
+    }
 
     // Generate JWT token
     const token = jwt.sign(
@@ -221,7 +228,7 @@ router.post('/register', async (req: Request, res: Response) => {
 
     logger.info(`✨ New user registered: ${username} (${newUser.id})`);
 
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       token,
       user: {
@@ -237,7 +244,7 @@ router.post('/register', async (req: Request, res: Response) => {
 
   } catch (error) {
     logger.error('Error during registration:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: 'Internal server error'
     });
@@ -245,17 +252,17 @@ router.post('/register', async (req: Request, res: Response) => {
 });
 
 // Logout
-router.post('/logout', (req: Request, res: Response) => {
+router.post('/logout', (_req: Request, res: Response) => {
   try {
     // In a more sophisticated setup, we'd invalidate the JWT token
     // For now, we just return success and let the client handle token removal
-    res.json({
+    return res.json({
       success: true,
       message: 'Logout successful'
     });
   } catch (error) {
     logger.error('Error during logout:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: 'Internal server error'
     });
@@ -286,7 +293,7 @@ router.get('/me', async (req: Request, res: Response) => {
         });
       }
 
-      res.json({
+      return res.json({
         success: true,
         user: {
           id: guestUser.id,
@@ -305,7 +312,7 @@ router.get('/me', async (req: Request, res: Response) => {
         });
       }
 
-      res.json({
+      return res.json({
         success: true,
         user: {
           id: user.id,
@@ -320,7 +327,7 @@ router.get('/me', async (req: Request, res: Response) => {
 
   } catch (error) {
     logger.error('Error getting current user:', error);
-    res.status(401).json({
+    return res.status(401).json({
       success: false,
       message: 'Invalid token'
     });
@@ -373,9 +380,16 @@ router.post('/convert-guest', async (req: Request, res: Response) => {
     const newUser = await DatabaseManager.createUser({
       username: guestUser.username,
       email,
-      password_hash: passwordHash,
+      passwordHash: passwordHash,
       rating: guestUser.rating, // Preserve guest rating
     });
+
+    if (!newUser) {
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to create user account'
+      });
+    }
 
     // Clean up guest session
     guestSessions.delete(decoded.userId);
@@ -395,7 +409,7 @@ router.post('/convert-guest', async (req: Request, res: Response) => {
 
     logger.info(`🔄 Guest converted to registered user: ${guestUser.username} → ${newUser.id}`);
 
-    res.json({
+    return res.json({
       success: true,
       token,
       user: {
@@ -411,7 +425,7 @@ router.post('/convert-guest', async (req: Request, res: Response) => {
 
   } catch (error) {
     logger.error('Error converting guest account:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: 'Failed to convert guest account'
     });
@@ -428,3 +442,4 @@ export const getGuestUser = (guestId: string): GuestUser | null => {
 };
 
 export default router;
+export { router as authRouter };

@@ -35,7 +35,9 @@
   "author": "Skèmino Development Team",
   "license": "MIT",
   "dependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/knex": "^0.15.2",
+    "bcrypt": "^6.0.0",
     "bcryptjs": "^2.4.3",
     "bull": "^4.11.5",
     "compression": "^1.7.4",
