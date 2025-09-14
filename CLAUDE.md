@@ -46,6 +46,12 @@ git push origin current-branch
 **Claude MUST maintain detailed conversation log in:**
 `docs/development-log/chat-history-YYYY-MM-DD.md`
 
+**📌 CURRENT ACTIVE LOG FILE (UPDATE THIS DAILY):**
+```
+CURRENT LOG: docs/development-log/chat-history-2025-01-14.md
+```
+*This file MUST be updated after EVERY interaction with user*
+
 **Log Entry Template (REQUIRED FORMAT):**
 ```markdown
 ## Session [N]: [HH:MM] - [MAIN_TOPIC]
@@ -392,7 +398,8 @@ perf(ui): optimize card animation rendering
 
 - **Sub-agent consultation is MANDATORY** before any implementation
 - **Git commit after every task** is NON-NEGOTIABLE
-- **Chat history tracking** must be maintained in development log
+- **Chat history tracking** must be maintained in: `docs/development-log/chat-history-2025-01-14.md`
+- **UPDATE LOG FILE DAILY**: Change date in filename and update CLAUDE.md reference
 - **<100ms WebSocket latency** is absolute priority target
 - **Server-authoritative validation** prevents all cheating
 - **PSN notation** required for all game recording
@@ -469,8 +476,18 @@ git add .
 git commit -m "feat(scope): descriptive message"
 git push origin current-branch
 
-# Update development log
-# Edit: docs/development-log/chat-history-YYYY-MM-DD.md
+# Update development log (CURRENT ACTIVE FILE)
+# MUST EDIT: docs/development-log/chat-history-2025-01-14.md
+# ⚠️ UPDATE THIS PATH DAILY IN CLAUDE.MD
+```
+
+### 📋 Daily Log File Management
+```bash
+# Start of new day workflow:
+1. Create new log file: docs/development-log/chat-history-[NEW-DATE].md
+2. Update CLAUDE.md line 51 with new filename
+3. Update CLAUDE.md line 401 with new filename
+4. Continue logging all sessions in the new file
 ```
 
 ---
