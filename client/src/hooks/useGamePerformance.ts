@@ -170,16 +170,29 @@ export const PerformanceUtils = {
   },
 
   /**
-   * Get optimal board size based on performance
+   * Get optimal board size based on performance with 2K support
    */
   getOptimalBoardSize: (containerWidth: number, containerHeight: number, targetFps = 60) => {
-    const baseSize = Math.min(containerWidth * 0.9, containerHeight * 0.7, 800);
+    // Enhanced base size calculation for 2K displays
+    let baseSize: number;
 
-    // Reduce size if performance is poor
+    if (containerWidth >= 1920) {
+      // 2K+ displays - significantly larger base sizes
+      baseSize = Math.min(
+        containerWidth * 0.75,
+        containerHeight * 0.85,
+        containerWidth >= 2560 ? 1800 : 1600 // Increased max sizes for better 2K experience
+      );
+    } else {
+      // Standard displays
+      baseSize = Math.min(containerWidth * 0.7, containerHeight * 0.75, 1200);
+    }
+
+    // Performance-based adjustments (less aggressive for modern hardware)
     if ('memory' in performance) {
       const memory = (performance as any).memory;
-      if (memory && memory.usedJSHeapSize > 100 * 1024 * 1024) { // > 100MB
-        return Math.min(baseSize, 600);
+      if (memory && memory.usedJSHeapSize > 300 * 1024 * 1024) { // Further increased threshold to 300MB for 2K
+        baseSize = Math.min(baseSize, containerWidth >= 1920 ? 1400 : 1000);
       }
     }
 

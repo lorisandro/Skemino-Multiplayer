@@ -7,6 +7,7 @@ import { useGameStore } from '../../../store/gameStore';
 import { useSocket } from '../../../hooks/useSocket';
 import { useGamePerformance, PerformanceUtils } from '../../../hooks/performance';
 import type { BoardCell } from '../../../types/game';
+import '../../../styles/board-dark-animations.css';
 
 export const GameBoard: React.FC = () => {
   const {
@@ -23,15 +24,22 @@ export const GameBoard: React.FC = () => {
   const { emitMove, connected, latency } = useSocket();
   const { fps, isOptimal, frameTime, memoryUsage } = useGamePerformance();
   const boardRef = useRef<HTMLDivElement>(null);
-  const [boardSize, setBoardSize] = useState(1600);
+  const [boardSize, setBoardSize] = useState(1200);
+  const [is2K, setIs2K] = useState(false);
 
-  // Responsive board sizing with performance optimization
+  // Responsive board sizing with performance optimization and 2K detection
   useEffect(() => {
     const updateBoardSize = () => {
       if (boardRef.current) {
         const container = boardRef.current.parentElement;
         if (container) {
           const { width, height } = container.getBoundingClientRect();
+          const screenWidth = window.innerWidth;
+
+          // Detect 2K displays
+          const is2KDisplay = screenWidth >= 1920 && screenWidth <= 2880 && window.innerHeight >= 1080;
+          setIs2K(is2KDisplay);
+
           const size = PerformanceUtils.getOptimalBoardSize(width, height, fps);
           setBoardSize(size);
         }
@@ -41,7 +49,7 @@ export const GameBoard: React.FC = () => {
     updateBoardSize();
     window.addEventListener('resize', updateBoardSize);
     return () => window.removeEventListener('resize', updateBoardSize);
-  }, []);
+  }, [fps]);
 
   const handleSquareClick = (cell: BoardCell) => {
     if (!isMyTurn || !selectedCard || !validMoves.includes(cell)) return;
@@ -88,7 +96,7 @@ export const GameBoard: React.FC = () => {
             isValidMove={isValidMove}
             isVertex={isVertex}
             onClick={() => handleSquareClick(cell)}
-            size={(boardSize - 16) / 6} // Account for padding
+            size={(boardSize - (is2K ? 24 : 16)) / 6} // Account for enhanced 2K padding
           />
         );
       }
@@ -100,20 +108,23 @@ export const GameBoard: React.FC = () => {
   return (
     <ResponsiveBoardContainer
       onSizeChange={setBoardSize}
-      minSize={800}
-      maxSize={2000}
+      minSize={is2K ? 1200 : 800}
+      maxSize={is2K ? 1800 : 1400}
     >
       {/* Game board container */}
       <div className="relative skemino-board" ref={boardRef}>
         <motion.div
-          className="relative bg-gradient-to-br from-gray-900 to-black rounded-xl shadow-2xl border-2 border-gray-700 skemino-board-dark"
+          className={`relative bg-gradient-to-br from-gray-900 to-black rounded-xl shadow-2xl border-2 border-gray-700 skemino-board-dark ${is2K ? 'border-3' : ''}`}
           style={{
             width: boardSize,
             height: boardSize,
-            padding: '8px',
+            padding: is2K ? '12px' : '8px', // Enhanced padding for 2K
             background: 'linear-gradient(135deg, #0a0a0a 0%, #141414 50%, #0f0f0f 100%)',
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-            animation: 'board-appear-dark 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
+            boxShadow: is2K
+              ? '0 35px 70px -12px rgba(0, 0, 0, 0.9), 0 0 0 2px rgba(255, 255, 255, 0.08), inset 0 2px 0 rgba(255, 255, 255, 0.12)' // Enhanced shadows for 2K
+              : '0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+            animation: 'board-appear-dark 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+            borderWidth: is2K ? '3px' : '2px' // Thicker borders for 2K visibility
           }}
           initial={{ scale: 0.95, opacity: 0, y: 20 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
