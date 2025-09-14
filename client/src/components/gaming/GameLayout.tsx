@@ -4,6 +4,7 @@ import { HandArea } from './Cards/HandArea';
 import { BoardSquare } from './Board/BoardSquare';
 import { useGameStore } from '../../store/gameStore';
 import { useCardDistribution, useResponsiveCardLayout, useCardSounds } from '../../hooks/useCardDistribution';
+import { useSocket } from '../../hooks/useSocket';
 import type { BoardCell } from '../../types/game';
 
 interface GameLayoutProps {
@@ -26,12 +27,14 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
     selectedCard,
     validMoves,
     isMyTurn,
+    distributionState,
     selectCard,
   } = useGameStore();
 
-  const { distributionState, startDistribution, canInteract } = useCardDistribution();
+  const { startDistribution, canInteract } = useCardDistribution();
   const layout = useResponsiveCardLayout();
   const { playSound } = useCardSounds();
+  const { connected, startMatchmaking } = useSocket();
 
   // Board setup
   const files = ['a', 'b', 'c', 'd', 'e', 'f'];
@@ -69,38 +72,48 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
     playSound('deal');
   };
 
-  // Demo: Start distribution on mount (replace with real game start)
+  // Auto-start demo matchmaking when no players are present
   useEffect(() => {
-    if (gameState?.status === 'waiting' && gameState.whiteHand.length === 0) {
-      // Generate demo cards for distribution
-      const generateDemoCards = (color: 'white' | 'black') => {
-        return Array.from({ length: 5 }, (_, i) => ({
-          id: `${color}-${i}`,
-          suit: ['P', 'F', 'C'][i % 3] as any,
-          value: String(i + 1) as any,
-        }));
+    if (connected && !currentPlayer && !opponent && !distributionState.isDistributing) {
+      // Demo player data - replace with real user data
+      const demoPlayer = {
+        playerId: `player_${Math.random().toString(36).substr(2, 9)}`,
+        username: `Player${Math.floor(Math.random() * 1000)}`,
+        rating: 1200 + Math.floor(Math.random() * 800), // Random rating 1200-2000
       };
 
-      const whiteCards = generateDemoCards('white');
-      const blackCards = generateDemoCards('black');
-
-      setTimeout(() => {
-        playSound('shuffle');
-        startDistribution(whiteCards, blackCards);
-      }, 1000);
+      console.log('Starting demo matchmaking with:', demoPlayer);
+      startMatchmaking(demoPlayer);
     }
-  }, [gameState?.status, startDistribution, playSound]);
+  }, [connected, currentPlayer, opponent, distributionState.isDistributing, startMatchmaking]);
 
-  if (!gameState || !currentPlayer || !opponent) {
+  // Show matchmaking/loading state
+  if (!connected || !currentPlayer || !opponent) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-gray-50 to-gray-100">
         <motion.div
-          className="text-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          className="text-center bg-white rounded-lg p-8 shadow-lg"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
         >
-          <div className="text-xl font-semibold mb-4">Setting up game...</div>
-          <div className="animate-spin w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full mx-auto" />
+          <div className="text-xl font-semibold mb-4">
+            {!connected && 'Connecting to server...'}
+            {connected && !currentPlayer && 'Finding opponent...'}
+            {connected && currentPlayer && !opponent && 'Waiting for opponent...'}
+          </div>
+          <div className="animate-spin w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full mx-auto mb-4" />
+
+          {distributionState.phase === 'waiting' && (
+            <div className="text-sm text-gray-600">
+              Searching for players with similar rating...
+            </div>
+          )}
+
+          {distributionState.phase === 'matchmaking' && (
+            <div className="text-sm text-green-600 font-medium">
+              Opponent found! Preparing game...
+            </div>
+          )}
         </motion.div>
       </div>
     );
@@ -108,33 +121,78 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
 
   return (
     <div className="game-layout min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden">
-      {/* Distribution overlay */}
+      {/* Real-time distribution overlay */}
       <AnimatePresence>
         {distributionState.isDistributing && (
           <motion.div
-            className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
           >
-            <div className="bg-white rounded-lg p-8 text-center shadow-2xl">
-              <h3 className="text-xl font-semibold mb-4">
-                {distributionState.phase === 'shuffling' ? 'Shuffling deck...' : 'Dealing cards...'}
+            <motion.div
+              className="bg-white rounded-lg p-8 text-center shadow-2xl max-w-md w-full mx-4"
+              initial={{ scale: 0.8, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.8, y: 20 }}
+              transition={{ type: "spring", damping: 20, stiffness: 300 }}
+            >
+              <h3 className="text-xl font-semibold mb-4 text-gray-800">
+                {distributionState.phase === 'starting' && 'Game Starting...'}
+                {distributionState.phase === 'shuffling' && 'Shuffling Deck...'}
+                {distributionState.phase === 'dealing' && 'Dealing Cards...'}
               </h3>
-              <div className="w-64 h-2 bg-gray-200 rounded-full overflow-hidden">
+
+              {/* Progress bar with smooth animation */}
+              <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden mb-4">
                 <motion.div
-                  className="h-full bg-blue-500"
+                  className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"
                   initial={{ width: 0 }}
                   animate={{ width: `${distributionState.animationProgress}%` }}
-                  transition={{ duration: 0.3 }}
+                  transition={{
+                    duration: distributionState.phase === 'shuffling' ? 0.1 : 0.2,
+                    ease: "easeOut"
+                  }}
                 />
               </div>
-              <p className="text-sm text-gray-600 mt-2">
-                {distributionState.phase === 'dealing' &&
-                  `Card ${distributionState.currentCard}/10`
-                }
-              </p>
-            </div>
+
+              {/* Phase-specific information */}
+              {distributionState.phase === 'shuffling' && (
+                <div className="text-sm text-gray-600">
+                  Preparing 39 Skèmino cards...
+                </div>
+              )}
+
+              {distributionState.phase === 'dealing' && (
+                <div className="space-y-2">
+                  <div className="text-sm font-medium text-gray-700">
+                    Card {distributionState.currentCard} of 10
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    5 cards per player
+                  </div>
+                </div>
+              )}
+
+              {/* Animated card icons */}
+              <div className="flex justify-center gap-2 mt-4">
+                {Array.from({ length: 5 }, (_, i) => (
+                  <motion.div
+                    key={i}
+                    className={`w-3 h-4 rounded-sm ${
+                      distributionState.currentCard > i * 2
+                        ? 'bg-blue-500'
+                        : 'bg-gray-300'
+                    }`}
+                    animate={{
+                      scale: distributionState.currentCard === i * 2 + 1 ? [1, 1.2, 1] : 1
+                    }}
+                    transition={{ duration: 0.3 }}
+                  />
+                ))}
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

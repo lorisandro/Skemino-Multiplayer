@@ -23,7 +23,7 @@ export const GameBoard: React.FC = () => {
   const { emitMove, connected, latency } = useSocket();
   const { fps, isOptimal, frameTime, memoryUsage } = useGamePerformance();
   const boardRef = useRef<HTMLDivElement>(null);
-  const [boardSize, setBoardSize] = useState(1200);
+  const [boardSize, setBoardSize] = useState(1600);
 
   // Responsive board sizing with performance optimization
   useEffect(() => {
@@ -95,48 +95,12 @@ export const GameBoard: React.FC = () => {
     ));
   };
 
-  const renderCoordinates = () => {
-    const files = ['a', 'b', 'c', 'd', 'e', 'f'];
-    const ranks = currentPlayer?.color === 'white'
-      ? ['6', '5', '4', '3', '2', '1']
-      : ['1', '2', '3', '4', '5', '6'];
-
-    return (
-      <>
-        {/* File coordinates - Enhanced for gaming */}
-        <div className="absolute -bottom-8 left-0 w-full flex z-40">
-          {files.map((file) => (
-            <div
-              key={file}
-              className="flex-1 text-center text-sm font-bold text-gray-800 bg-white/80 backdrop-blur-sm rounded-full mx-1 py-1"
-              style={{ width: `${boardSize / 6}px` }}
-            >
-              {file}
-            </div>
-          ))}
-        </div>
-
-        {/* Rank coordinates - Enhanced for gaming */}
-        <div className="absolute -left-8 top-0 h-full flex flex-col z-40">
-          {ranks.map((rank) => (
-            <div
-              key={rank}
-              className="flex-1 flex items-center justify-center text-sm font-bold text-gray-800 bg-white/80 backdrop-blur-sm rounded-full my-1 px-1"
-              style={{ height: `${boardSize / 6}px` }}
-            >
-              {rank}
-            </div>
-          ))}
-        </div>
-      </>
-    );
-  };
 
   return (
     <ResponsiveBoardContainer
       onSizeChange={setBoardSize}
-      minSize={600}
-      maxSize={1400}
+      minSize={800}
+      maxSize={2000}
     >
       {/* Game board container */}
       <div className="relative skemino-board" ref={boardRef}>
@@ -183,8 +147,7 @@ export const GameBoard: React.FC = () => {
             </div>
           </div>
 
-          {/* Coordinates */}
-          {renderCoordinates()}
+          {/* Coordinates removed */}
 
           {/* Connection status */}
           {!connected && (

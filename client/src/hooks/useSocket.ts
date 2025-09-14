@@ -293,6 +293,18 @@ export const useSocket = (): UseSocketReturn => {
     }
   }, []);
 
+  const startMatchmaking = useCallback((playerData: { playerId: string; username: string; rating: number }) => {
+    if (socket?.connected) {
+      socket.emit('matchmaking:start', playerData);
+    }
+  }, []);
+
+  const cancelMatchmaking = useCallback(() => {
+    if (socket?.connected) {
+      socket.emit('matchmaking:cancel');
+    }
+  }, []);
+
   return {
     connected,
     connecting,
@@ -303,5 +315,7 @@ export const useSocket = (): UseSocketReturn => {
     emitDrawResponse,
     joinGame,
     leaveGame,
+    startMatchmaking,
+    cancelMatchmaking,
   };
 };

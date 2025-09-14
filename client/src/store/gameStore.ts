@@ -3,6 +3,13 @@ import { immer } from 'zustand/middleware/immer';
 import { devtools } from 'zustand/middleware';
 import type { GameState, Player, Card, BoardCell, PlayerColor, Move, BoardPosition } from '../types/game';
 
+interface DistributionState {
+  isDistributing: boolean;
+  currentCard: number;
+  phase: 'waiting' | 'matchmaking' | 'starting' | 'shuffling' | 'dealing' | 'complete';
+  animationProgress: number;
+}
+
 interface GameStore {
   // Game state
   gameState: GameState | null;
@@ -11,6 +18,9 @@ interface GameStore {
   selectedCard: Card | null;
   validMoves: BoardCell[];
   isMyTurn: boolean;
+
+  // Distribution state
+  distributionState: DistributionState;
 
   // UI state
   isDragging: boolean;
@@ -32,6 +42,10 @@ interface GameStore {
   updateTime: (color: PlayerColor, time: number) => void;
   toggleSound: () => void;
   reset: () => void;
+
+  // Distribution actions
+  setDistributionState: (state: Partial<DistributionState>) => void;
+  triggerCardDistribution: (data: any) => void;
 }
 
 const initialGameState: GameState = {
@@ -78,6 +92,16 @@ export const useGameStore = create<GameStore>()(
     selectedCard: null,
     validMoves: [],
     isMyTurn: false,
+
+    // Distribution state
+    distributionState: {
+      isDistributing: false,
+      currentCard: 0,
+      phase: 'waiting',
+      animationProgress: 0,
+    },
+
+    // UI state
     isDragging: false,
     highlightedCells: [],
     lastMove: null,
@@ -214,9 +238,33 @@ export const useGameStore = create<GameStore>()(
         draft.selectedCard = null;
         draft.validMoves = [];
         draft.isMyTurn = false;
+        draft.distributionState = {
+          isDistributing: false,
+          currentCard: 0,
+          phase: 'waiting',
+          animationProgress: 0,
+        };
         draft.isDragging = false;
         draft.highlightedCells = [];
         draft.lastMove = null;
+      }),
+
+    // Distribution actions
+    setDistributionState: (state) =>
+      set((draft) => {
+        Object.assign(draft.distributionState, state);
+      }),
+
+    triggerCardDistribution: (data) =>
+      set((draft) => {
+        // Handle individual card distribution animation
+        console.log('Card distribution triggered:', data);
+
+        // Update cards progressively based on server events
+        if (draft.gameState && data.player && data.cardIndex !== undefined) {
+          // This will be handled by the distribution overlay
+          // Real card data comes via cards:distribution-complete
+        }
       }),
     })),
     { name: 'skemino-game-store' }

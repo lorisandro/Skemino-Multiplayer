@@ -16,13 +16,13 @@ interface ResponsiveBoardContainerProps {
  */
 export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> = ({
   children,
-  minSize = 600,
-  maxSize = 1400,
+  minSize = 800,
+  maxSize = 2000,
   aspectRatio = 1,
   onSizeChange,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [containerSize, setContainerSize] = useState(1200);
+  const [containerSize, setContainerSize] = useState(1600);
   const [breakpoint, setBreakpoint] = useState<'mobile' | 'tablet' | 'desktop'>('desktop');
   const { fps, isOptimal } = useGamePerformance();
 
@@ -64,19 +64,21 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
       // Apply breakpoint-specific adjustments
       switch (breakpoint) {
         case 'mobile':
-          baseSize = Math.min(baseSize, width * 0.95, 320);
+          baseSize = Math.min(baseSize, width * 0.95, 500);
           break;
         case 'tablet':
-          baseSize = Math.min(baseSize, width * 0.8, 600);
+          baseSize = Math.min(baseSize, width * 0.85, 1000);
           break;
         case 'desktop':
-          baseSize = Math.min(baseSize, Math.min(width * 0.8, height * 0.85), 1400);
+          baseSize = Math.min(baseSize, Math.min(width * 0.85, height * 0.90), 2000);
           break;
       }
 
-      // Performance-based adjustments
+      // Performance-based adjustments with enhanced scaling
       if (!isOptimal && fps < 30) {
-        baseSize = Math.min(baseSize, 800); // Less aggressive size reduction
+        baseSize = Math.min(baseSize, 1200); // Less aggressive size reduction for larger boards
+      } else if (!isOptimal && fps < 45) {
+        baseSize = Math.min(baseSize, 1600); // Moderate reduction for sub-optimal performance
       }
 
       // Apply aspect ratio
@@ -173,11 +175,11 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
  * Hook for responsive board sizing
  */
 export function useResponsiveBoardSize(
-  minSize = 280,
-  maxSize = 800,
+  minSize = 400,
+  maxSize = 1800,
   performanceThreshold = 45
 ) {
-  const [size, setSize] = useState(600);
+  const [size, setSize] = useState(1400);
   const [isReduced, setIsReduced] = useState(false);
   const { fps } = useGamePerformance();
 
@@ -188,18 +190,18 @@ export function useResponsiveBoardSize(
 
       let calculatedSize: number;
 
-      // Breakpoint-based sizing
+      // Breakpoint-based sizing with enhanced scaling
       if (vw < 768) {
-        calculatedSize = Math.min(vw * 0.95, 320);
+        calculatedSize = Math.min(vw * 0.95, 500);
       } else if (vw < 1024) {
-        calculatedSize = Math.min(vw * 0.8, 600);
+        calculatedSize = Math.min(vw * 0.85, 1000);
       } else {
-        calculatedSize = Math.min(vw * 0.8, vh * 0.85, maxSize);
+        calculatedSize = Math.min(vw * 0.85, vh * 0.90, maxSize);
       }
 
-      // Performance adjustment
+      // Performance adjustment with larger board support
       if (fps < performanceThreshold) {
-        calculatedSize = Math.min(calculatedSize, 800);
+        calculatedSize = Math.min(calculatedSize, 1200);
         setIsReduced(true);
       } else {
         setIsReduced(false);
