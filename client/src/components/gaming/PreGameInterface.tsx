@@ -9,9 +9,9 @@ import {
   XMarkIcon,
   CogIcon,
 } from '@heroicons/react/24/outline';
-import { useGameStore } from '../../../store/gameStore';
-import { useSocket } from '../../../hooks/useSocket';
-import type { Player, DistributionState } from '../../../types/game';
+import { useGameStore } from '../../store/gameStore';
+import { useSocket } from '../../hooks/useSocket';
+import type { Player, DistributionState } from '../../types/game';
 
 export interface PreGameInterfaceProps {
   gameState: 'waiting' | 'matched' | 'distributing' | 'ready' | 'starting';
