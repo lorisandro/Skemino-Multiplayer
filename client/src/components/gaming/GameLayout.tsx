@@ -4,7 +4,6 @@ import { HandArea } from './Cards/HandArea';
 import { BoardSquare } from './Board/BoardSquare';
 import { useGameStore } from '../../store/gameStore';
 import { useCardDistribution, useResponsiveCardLayout, useCardSounds } from '../../hooks/useCardDistribution';
-import { useSocket } from '../../hooks/useSocket';
 import type { BoardCell } from '../../types/game';
 
 interface GameLayoutProps {
@@ -34,7 +33,6 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
   const { startDistribution, canInteract } = useCardDistribution();
   const layout = useResponsiveCardLayout();
   const { playSound } = useCardSounds();
-  const { connected, startMatchmaking } = useSocket();
 
   // Board setup
   const files = ['a', 'b', 'c', 'd', 'e', 'f'];
@@ -72,23 +70,8 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
     playSound('deal');
   };
 
-  // Auto-start demo matchmaking when no players are present
-  useEffect(() => {
-    if (connected && !currentPlayer && !opponent && !distributionState.isDistributing) {
-      // Demo player data - replace with real user data
-      const demoPlayer = {
-        playerId: `player_${Math.random().toString(36).substr(2, 9)}`,
-        username: `Player${Math.floor(Math.random() * 1000)}`,
-        rating: 1200 + Math.floor(Math.random() * 800), // Random rating 1200-2000
-      };
-
-      console.log('Starting demo matchmaking with:', demoPlayer);
-      startMatchmaking(demoPlayer);
-    }
-  }, [connected, currentPlayer, opponent, distributionState.isDistributing, startMatchmaking]);
-
-  // Show matchmaking/loading state
-  if (!connected || !currentPlayer || !opponent) {
+  // Show loading state only if no game state exists
+  if (!gameState || !currentPlayer || !opponent) {
     return (
       <div className="flex items-center justify-center h-screen bg-gradient-to-br from-gray-50 to-gray-100">
         <motion.div
@@ -97,23 +80,12 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
           animate={{ opacity: 1, scale: 1 }}
         >
           <div className="text-xl font-semibold mb-4">
-            {!connected && 'Connecting to server...'}
-            {connected && !currentPlayer && 'Finding opponent...'}
-            {connected && currentPlayer && !opponent && 'Waiting for opponent...'}
+            Waiting for game to start...
           </div>
           <div className="animate-spin w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full mx-auto mb-4" />
-
-          {distributionState.phase === 'waiting' && (
-            <div className="text-sm text-gray-600">
-              Searching for players with similar rating...
-            </div>
-          )}
-
-          {distributionState.phase === 'matchmaking' && (
-            <div className="text-sm text-green-600 font-medium">
-              Opponent found! Preparing game...
-            </div>
-          )}
+          <div className="text-sm text-gray-600">
+            Start a new game from the sidebar to begin playing.
+          </div>
         </motion.div>
       </div>
     );
