@@ -23,7 +23,7 @@ export const GameBoard: React.FC = () => {
   const { emitMove, connected, latency } = useSocket();
   const { fps, isOptimal, frameTime, memoryUsage } = useGamePerformance();
   const boardRef = useRef<HTMLDivElement>(null);
-  const [boardSize, setBoardSize] = useState(600);
+  const [boardSize, setBoardSize] = useState(800);
 
   // Responsive board sizing with performance optimization
   useEffect(() => {
@@ -133,7 +133,11 @@ export const GameBoard: React.FC = () => {
   };
 
   return (
-    <ResponsiveBoardContainer onSizeChange={setBoardSize}>
+    <ResponsiveBoardContainer
+      onSizeChange={setBoardSize}
+      minSize={400}
+      maxSize={800}
+    >
       {/* Game board container */}
       <div className="relative skemino-board" ref={boardRef}>
         <motion.div
@@ -155,12 +159,6 @@ export const GameBoard: React.FC = () => {
             {renderBoard()}
           </div>
 
-          {/* Central Skèmino Logo */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-            <div className="bg-white/90 backdrop-blur-sm rounded-lg p-4 shadow-lg border border-gray-200">
-              <SkeminoLogo size={80} animated={true} />
-            </div>
-          </div>
 
           {/* Vertex control indicators */}
           <div className="absolute -top-8 left-0 right-0 flex justify-between px-4 z-30">

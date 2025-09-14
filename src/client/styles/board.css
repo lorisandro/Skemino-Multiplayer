@@ -244,25 +244,25 @@
 .diamond-blue {
   top: 0;
   left: 0;
-  background: linear-gradient(135deg, #5DADE2, #3498DB);
+  background: #5DADE2; /* Corrispondente al vertice a1 */
 }
 
 .diamond-green {
   top: 0;
   right: 0;
-  background: linear-gradient(225deg, #58D68D, #27AE60);
+  background: #58D68D; /* Corrispondente al vertice f1 */
 }
 
 .diamond-red {
   bottom: 0;
   left: 0;
-  background: linear-gradient(45deg, #EC7063, #E74C3C);
+  background: #EC7063; /* Corrispondente al vertice a6 */
 }
 
 .diamond-yellow {
   bottom: 0;
   right: 0;
-  background: linear-gradient(315deg, #F4D03F, #F39C12);
+  background: #F4D03F; /* Corrispondente al vertice f6 */
 }
 
 .logo-text {
@@ -311,7 +311,14 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .skemino-board-container {
-    padding: 0.5rem;
+    padding: 1rem;
+    grid-template-columns: 1.5rem 1fr 1.5rem;
+    grid-template-rows: 1.5rem 1fr 1.5rem;
+    gap: 0.25rem;
+  }
+
+  .coord-label {
+    font-size: 0.875rem;
   }
 
   .performance-overlay {
@@ -332,6 +339,18 @@
   }
 
   .card-number {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .skemino-board-container {
+    padding: 0.5rem;
+    grid-template-columns: 1rem 1fr 1rem;
+    grid-template-rows: 1rem 1fr 1rem;
+  }
+
+  .coord-label {
     font-size: 0.75rem;
   }
 }

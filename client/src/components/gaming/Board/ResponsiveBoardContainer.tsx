@@ -22,7 +22,7 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
   onSizeChange,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [containerSize, setContainerSize] = useState(600);
+  const [containerSize, setContainerSize] = useState(800);
   const [breakpoint, setBreakpoint] = useState<'mobile' | 'tablet' | 'desktop'>('desktop');
   const { fps, isOptimal } = useGamePerformance();
 
@@ -70,7 +70,7 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
           baseSize = Math.min(baseSize, width * 0.8, 600);
           break;
         case 'desktop':
-          baseSize = Math.min(baseSize, Math.min(width * 0.7, height * 0.8));
+          baseSize = Math.min(baseSize, Math.min(width * 0.6, height * 0.7), 800);
           break;
       }
 

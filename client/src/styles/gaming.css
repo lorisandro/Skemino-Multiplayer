@@ -1,0 +1,149 @@
+/* Gaming-optimized styles for Skèmino */
+
+/* GPU acceleration for smooth animations */
+.hand-area,
+.card-wrapper,
+.skemino-square {
+  will-change: transform;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+/* Card fan layout optimizations */
+.hand-area[data-layout="fan"] {
+  perspective: 1000px;
+  perspective-origin: center bottom;
+}
+
+.hand-area[data-layout="fan"] .card-wrapper {
+  transform-origin: center bottom;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hand-area[data-layout="fan"] .card-wrapper:hover {
+  transform: translateY(-12px) scale(1.05) !important;
+  z-index: 100;
+}
+
+/* Board square hover effects */
+.skemino-square {
+  position: relative;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.skemino-square::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.skemino-square:hover::before {
+  opacity: 1;
+}
+
+/* Vertex pulse animation */
+.skemino-vertex {
+  animation: vertex-pulse 2s ease-in-out infinite;
+}
+
+@keyframes vertex-pulse {
+  0%, 100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+/* Card distribution animations */
+.card-distribution-overlay {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Performance optimizations */
+@media (prefers-reduced-motion: reduce) {
+  .hand-area,
+  .card-wrapper,
+  .skemino-square {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* Touch optimizations for mobile */
+@media (hover: none) and (pointer: coarse) {
+  .hand-area[data-layout="grid"] .card-wrapper {
+    min-width: 44px;
+    min-height: 60px;
+  }
+
+  .skemino-square {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .card-wrapper {
+    border: 2px solid currentColor;
+  }
+
+  .skemino-square {
+    border-width: 2px;
+  }
+}
+
+/* Focus indicators for accessibility */
+.card-wrapper:focus-visible,
+.skemino-square:focus-visible {
+  outline: 3px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Responsive breakpoints for precise control */
+@media (max-width: 479px) {
+  .hand-area[data-layout="grid"] {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+  }
+}
+
+@media (min-width: 480px) and (max-width: 767px) {
+  .hand-area[data-layout="grid"] {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hand-area[data-layout="linear"] {
+    gap: 8px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hand-area[data-layout="fan"] {
+    height: 200px;
+    width: 180px;
+  }
+}
+
+/* Pattern background for card backs */
+.bg-pattern {
+  background-image:
+    radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 2px, transparent 2px),
+    radial-gradient(circle at 75% 75%, rgba(255,255,255,0.1) 2px, transparent 2px);
+  background-size: 20px 20px;
+}
+
+/* Gaming cursor */
+.gaming-cursor {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/></svg>') 12 12, auto;
+}

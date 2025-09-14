@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { Router } from './Router';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import './styles/index.css';
+import './styles/gaming.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
