@@ -51,24 +51,12 @@ interface GameStore {
 const initialGameState: GameState = {
   board: new Map(),
   currentTurn: 'white',
-  whiteHand: [
-    { id: 'p1', suit: 'P', value: 1, isRevealed: true },
-    { id: 'p2', suit: 'P', value: 2, isRevealed: true },
-    { id: 'f1', suit: 'F', value: 1, isRevealed: true },
-    { id: 'c1', suit: 'C', value: 1, isRevealed: true },
-    { id: 'p3', suit: 'P', value: 3, isRevealed: true }
-  ],
-  blackHand: [
-    { id: 'p4', suit: 'P', value: 4, isRevealed: false },
-    { id: 'f2', suit: 'F', value: 2, isRevealed: false },
-    { id: 'c2', suit: 'C', value: 2, isRevealed: false },
-    { id: 'p5', suit: 'P', value: 5, isRevealed: false },
-    { id: 'f3', suit: 'F', value: 3, isRevealed: false }
-  ],
+  whiteHand: [],
+  blackHand: [],
   whiteTime: 300,
   blackTime: 300,
   moveHistory: [],
-  status: 'playing',
+  status: 'waiting',
 };
 
 // Initialize board
@@ -105,7 +93,7 @@ export const useGameStore = create<GameStore>()(
       rating: 1500,
       color: 'white',
       avatar: null,
-      isReady: true
+      isReady: false
     },
     opponent: {
       id: 'demo-opponent',
@@ -113,11 +101,11 @@ export const useGameStore = create<GameStore>()(
       rating: 1450,
       color: 'black',
       avatar: null,
-      isReady: true
+      isReady: false
     },
     selectedCard: null,
     validMoves: [],
-    isMyTurn: true,
+    isMyTurn: false,
 
     // Distribution state
     distributionState: {
