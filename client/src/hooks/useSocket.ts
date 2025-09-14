@@ -34,12 +34,14 @@ export const useSocket = (): UseSocketReturn => {
     if (!socket) {
       setConnecting(true);
 
-      socket = io(import.meta.env.VITE_SOCKET_URL || 'http://localhost:3001', {
-        transports: ['websocket'],
-        reconnection: true,
-        reconnectionDelay: 1000,
-        reconnectionAttempts: 5,
-      });
+      try {
+        socket = io(import.meta.env.VITE_SOCKET_URL || 'http://localhost:3001', {
+          transports: ['websocket', 'polling'],
+          reconnection: true,
+          reconnectionDelay: 1000,
+          reconnectionAttempts: 5,
+          timeout: 10000,
+        });
 
       // Connection events
       socket.on('connect', () => {
@@ -53,29 +55,33 @@ export const useSocket = (): UseSocketReturn => {
         setConnected(false);
       });
 
-      socket.on('connect_error', (error) => {
-        console.error('Connection error:', error);
+        socket.on('connect_error', (error) => {
+          console.error('Connection error:', error);
+          setConnecting(false);
+        });
+
+        // Latency measurement
+        socket.on('pong', () => {
+          const now = Date.now();
+          const roundTripTime = now - (socket as any).lastPing;
+          setLatency(Math.round(roundTripTime / 2));
+        });
+
+        // Ping every 5 seconds
+        const pingInterval = setInterval(() => {
+          if (socket?.connected) {
+            (socket as any).lastPing = Date.now();
+            socket.emit('ping');
+          }
+        }, 5000);
+
+        return () => {
+          clearInterval(pingInterval);
+        };
+      } catch (error) {
+        console.error('Failed to initialize socket:', error);
         setConnecting(false);
-      });
-
-      // Latency measurement
-      socket.on('pong', () => {
-        const now = Date.now();
-        const roundTripTime = now - (socket as any).lastPing;
-        setLatency(Math.round(roundTripTime / 2));
-      });
-
-      // Ping every 5 seconds
-      const pingInterval = setInterval(() => {
-        if (socket?.connected) {
-          (socket as any).lastPing = Date.now();
-          socket.emit('ping');
-        }
-      }, 5000);
-
-      return () => {
-        clearInterval(pingInterval);
-      };
+      }
     }
   }, []);
 

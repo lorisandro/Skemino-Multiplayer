@@ -103,8 +103,6 @@ CURRENT LOG: docs/development-log/chat-history-2025-01-14.md
 1. Identify task type → 2. Consult relevant sub-agent → 3. Apply expertise → 4. Validate with agent → 5. Commit with reference
 ```
 
-Ecco la **Sub-Agent Consultation Matrix** aggiornata con i nomi reali dei file:
-
 ### Sub-Agent Consultation Matrix (ACTUAL FILE NAMES)
 | Task Type | Primary Sub-Agent | Secondary Sub-Agent |
 |-----------|------------------|-------------------|
@@ -114,26 +112,33 @@ Ecco la **Sub-Agent Consultation Matrix** aggiornata con i nomi reali dei file:
 | WebSocket/Real-time | `skemino-realtime-specialist` | `skemino-architecture` |
 | PSN Notation | `skemino-game-engine` | `skemino-architecture` |
 | Performance Optimization | `skemino-performance` | `skemino-architecture` |
-| Tournament System | `skemino-league` | `skemino-elo` |
+| Tournament System | `skemino-legue` | `skemino-elo` |
 | Database & Persistence | `skemino-database-specialist` | `skemino-persistenza` |
 | Architecture Decisions | `skemino-architecture` | `skemino-performance` |
 | Large Refactoring | `skemino-refactoring` | `skemino-architecture` |
-| Mobile Gaming Optimization | `skemino-ui` | `skemino-performance` |
+| Mobile Gaming Optimization | `skemino-mobile-specialist` | `skemino-performance` |
 | Frontend Performance | `skemino-ui` | `skemino-performance` |
 | Game Logic Validation | `skemino-game-engine` | `skemino-testing-specialist` |
 | Testing & QA | `skemino-testing-specialist` | `skemino-game-engine` |
 | Real-time Features | `skemino-realtime-specialist` | `skemino-performance` |
 | Data Persistence Strategy | `skemino-persistenza` | `skemino-database-specialist` |
 | Player Rating Algorithms | `skemino-rating` | `skemino-elo` |
+| Analytics & Metrics | `skemino-analytics-specialist` | `skemino-performance` |
+| Social Features | `skemino-social-specialist` | `skemino-ui` |
 
 ### Sub-Agent Command Format (EXACT SYNTAX)
 ```bash
 # Use actual file names from .claude/agents/:
-"Consulta skemino-expert per implementazione regole gioco"
+"Consulta skemino-game-engine per implementazione regole gioco"
 "Usa skemino-ui per componenti React gaming"
 "Applica expertise skemino-performance per ottimizzazione"
 "Chiedi a skemino-architecture per decisioni architetturali"
 "Utilizza skemino-elo per calcoli rating"
+"Consulta skemino-realtime-specialist per WebSocket"
+"Usa skemino-database-specialist per gestione database"
+"Applica skemino-testing-specialist per testing strategy"
+"Consulta skemino-analytics-specialist per metriche"
+"Utilizza skemino-social-specialist per funzioni social"
 ```
 
 ## 🎯 Development Commands
@@ -191,15 +196,21 @@ skemino/
 ├── deployment/                  # Docker/K8s configurations
 └── .claude/                     # Claude Code sub-agents
     └── agents/                  # Sub-agent knowledge bases
-        ├── skemino-expert.md           # Game rules expert
-        ├── skemino-ui.md               # UI/UX gaming specialist
-        ├── skemino-elo.md              # ELO rating system
-        ├── skemino-performance.md      # Performance optimization
-        ├── skemino-persistenza.md      # Database persistence
-        ├── skemino-rating.md           # Rating management
-        ├── skemino-refactoring.md      # Code refactoring
-        ├── skemino-legue.md            # Tournament system
-        └── skemino-architecture.md     # System architecture
+        ├── skemino-analytics-specialist.md     # Analytics & metrics expert
+        ├── skemino-architecture.md             # System architecture expert
+        ├── skemino-database-specialist.md      # Database specialist
+        ├── skemino-elo.md                      # ELO rating system expert
+        ├── skemino-game-engine.md              # Core game logic expert
+        ├── skemino-legue.md                    # Tournament system expert
+        ├── skemino-mobile-specialist.md        # Mobile optimization expert
+        ├── skemino-performance.md              # Performance optimization expert
+        ├── skemino-persistenza.md              # Data persistence expert
+        ├── skemino-rating.md                   # Player rating expert
+        ├── skemino-realtime-specialist.md      # Real-time features expert
+        ├── skemino-refactoring.md              # Code refactoring expert
+        ├── skemino-social-specialist.md        # Social features expert
+        ├── skemino-testing-specialist.md       # Testing & QA expert
+        └── skemino-ui.md                       # UI/UX gaming expert
 ```
 
 ### Technology Stack
@@ -365,7 +376,7 @@ perf(ui): optimize card animation rendering
 
 ### Gaming-Specific Requirements
 - **Server validation** for all game state changes (consult `skemino-architecture`)
-- **Immutable state updates** in game engine (consult `skemino-expert`)
+- **Immutable state updates** in game engine (consult `skemino-game-engine`)
 - **Error boundaries** in React components (consult `skemino-ui`)
 - **Graceful degradation** for network issues (consult `skemino-performance`)
 - **Accessibility** considerations for gaming UI (consult `skemino-ui`)
@@ -373,7 +384,7 @@ perf(ui): optimize card animation rendering
 ### Sub-Agent Consultation Examples
 ```bash
 # Before implementing game rules:
-"Consulta skemino-expert per validazione regole morra cinese"
+"Consulta skemino-game-engine per validazione regole morra cinese"
 
 # Before UI/UX work:
 "Usa skemino-ui per design responsive componenti gaming"
@@ -383,6 +394,12 @@ perf(ui): optimize card animation rendering
 
 # Before architecture decisions:
 "Chiedi a skemino-architecture per pattern scalabilità multiplayer"
+
+# Before database work:
+"Utilizza skemino-database-specialist per schema design"
+
+# Before real-time implementation:
+"Consulta skemino-realtime-specialist per sincronizzazione gaming"
 ```
 
 ## 📚 Key Documentation & References
@@ -417,7 +434,7 @@ perf(ui): optimize card animation rendering
 
 ### Game Logic Bugs
 1. Always reproduce in unit tests first
-2. **Consult**: `skemino-expert` for rule clarification
+2. **Consult**: `skemino-game-engine` for rule clarification
 3. Validate against reference game scenarios
 4. **Consult**: `skemino-architecture` for validation patterns
 
@@ -451,7 +468,7 @@ perf(ui): optimize card animation rendering
 ### Essential Sub-Agent Commands
 ```bash
 # Game Rules & Logic
-"Consulta skemino-expert per [specific game rule question]"
+"Consulta skemino-game-engine per [specific game rule question]"
 
 # UI/UX Development  
 "Usa skemino-ui per [component/interface task]"
@@ -463,10 +480,22 @@ perf(ui): optimize card animation rendering
 "Chiedi a skemino-architecture per [architectural question]"
 
 # Database & Persistence
-"Utilizza skemino-persistenza per [database task]"
+"Utilizza skemino-database-specialist per [database task]"
 
 # ELO Rating System
 "Consulta skemino-elo per [rating calculation/implementation]"
+
+# Real-time Features
+"Consulta skemino-realtime-specialist per [WebSocket/real-time task]"
+
+# Testing & QA
+"Utilizza skemino-testing-specialist per [testing strategy]"
+
+# Analytics & Metrics
+"Consulta skemino-analytics-specialist per [analytics implementation]"
+
+# Social Features
+"Usa skemino-social-specialist per [social functionality]"
 ```
 
 ### Mandatory Git Commands

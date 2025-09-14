@@ -1,6 +1,6 @@
 // Client-side game types
 export type CardSuit = 'P' | 'F' | 'C';
-export type CardValue = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | 'J' | 'Q' | 'K';
+export type CardValue = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12' | '13' | '?' | 'J' | 'Q' | 'K';
 export type PlayerColor = 'white' | 'black';
 export type BoardCell = 'a1' | 'a2' | 'a3' | 'a4' | 'a5' | 'a6' |
                         'b1' | 'b2' | 'b3' | 'b4' | 'b5' | 'b6' |
@@ -14,6 +14,7 @@ export interface Card {
   suit: CardSuit;
   value: CardValue;
   displayName?: string;
+  isStronger?: boolean;
 }
 
 export interface BoardPosition {

@@ -1,10 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BoardSquare } from './BoardSquare';
-import { PlayerHand } from '../Cards/PlayerHand';
-import { GameControls } from '../GameUI/GameControls';
 import { useGameStore } from '../../../store/gameStore';
 import { useSocket } from '../../../hooks/useSocket';
 import type { BoardCell } from '../../../types/game';
@@ -133,60 +129,34 @@ export const GameBoard: React.FC = () => {
   };
 
   return (
-    <DndProvider backend={HTML5Backend}>
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 p-4">
-        {/* Opponent's hand */}
-        <div className="mb-4">
-          <PlayerHand
-            cards={currentPlayer?.color === 'white' ? gameState?.blackHand || [] : gameState?.whiteHand || []}
-            player={opponent}
-            isOpponent={true}
-          />
-        </div>
+    <div className="flex flex-col items-center justify-center w-full bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 p-4">
+      {/* Game board */}
+      <div className="relative mb-4" ref={boardRef}>
+        <motion.div
+          className="relative bg-white dark:bg-slate-800 rounded-lg shadow-2xl p-2"
+          style={{ width: boardSize, height: boardSize }}
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-amber-100/10 to-amber-300/10 dark:from-amber-900/10 dark:to-amber-700/10 rounded-lg" />
 
-        {/* Game board */}
-        <div className="relative mb-4" ref={boardRef}>
-          <motion.div
-            className="relative bg-white dark:bg-slate-800 rounded-lg shadow-2xl p-2"
-            style={{ width: boardSize, height: boardSize }}
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-amber-100/10 to-amber-300/10 dark:from-amber-900/10 dark:to-amber-700/10 rounded-lg" />
+          {/* Board grid */}
+          <div className="relative z-10">
+            {renderBoard()}
+          </div>
 
-            {/* Board grid */}
-            <div className="relative z-10">
-              {renderBoard()}
+          {/* Coordinates */}
+          {renderCoordinates()}
+
+          {/* Connection status */}
+          {!connected && (
+            <div className="absolute top-2 right-2 px-2 py-1 bg-red-500 text-white text-xs rounded-full animate-pulse">
+              Disconnected
             </div>
-
-            {/* Coordinates */}
-            {renderCoordinates()}
-
-            {/* Connection status */}
-            {!connected && (
-              <div className="absolute top-2 right-2 px-2 py-1 bg-red-500 text-white text-xs rounded-full animate-pulse">
-                Disconnected
-              </div>
-            )}
-          </motion.div>
-        </div>
-
-        {/* Current player's hand */}
-        <div className="mb-4">
-          <PlayerHand
-            cards={currentPlayer?.color === 'white' ? gameState?.whiteHand || [] : gameState?.blackHand || []}
-            player={currentPlayer}
-            isOpponent={false}
-            onCardSelect={selectCard}
-            selectedCard={selectedCard}
-            canSelect={isMyTurn}
-          />
-        </div>
-
-        {/* Game controls */}
-        <GameControls />
+          )}
+        </motion.div>
       </div>
-    </DndProvider>
+    </div>
   );
 };
