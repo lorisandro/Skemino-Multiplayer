@@ -81,9 +81,9 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
         {/* Main Game Area - Optimized for 2K displays */}
         <div className="flex-1 flex overflow-hidden">
           {/* Left Sidebar - Combined players with card slots */}
-          <div className="w-64 bg-slate-900 border-r border-slate-700 flex flex-col">
+          <div className="w-64 bg-gradient-to-b from-slate-900 via-gray-900 to-slate-900 border-r border-gray-800/50 flex flex-col shadow-2xl">
             {/* Opponent Area - Top half */}
-            <div className="flex-1 border-b border-slate-700">
+            <div className="flex-1 border-b border-gray-800/50 backdrop-blur-sm bg-black/20 p-3">
               <PlayerArea
                 player={opponent}
                 hand={opponentHand}
@@ -96,7 +96,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
             </div>
 
             {/* Current Player Area - Bottom half */}
-            <div className="flex-1">
+            <div className="flex-1 backdrop-blur-sm bg-black/30 p-3">
               <PlayerArea
                 player={currentPlayer}
                 hand={playerHand}
@@ -148,9 +148,9 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
         {/* Main Game Area */}
         <div className="flex-1 flex overflow-hidden">
           {/* Left Sidebar - Combined players with card slots */}
-          <div className="w-72 bg-slate-800 border-r border-slate-700 flex flex-col">
+          <div className="w-72 bg-gradient-to-b from-slate-900 via-gray-900 to-slate-900 border-r border-gray-800/50 flex flex-col shadow-2xl">
             {/* Opponent Area - Top half */}
-            <div className="flex-1 border-b border-slate-700">
+            <div className="flex-1 border-b border-gray-800/50 backdrop-blur-sm bg-black/20 p-4">
               <PlayerArea
                 player={opponent}
                 hand={opponentHand}
@@ -163,7 +163,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
             </div>
 
             {/* Current Player Area - Bottom half */}
-            <div className="flex-1">
+            <div className="flex-1 backdrop-blur-sm bg-black/30 p-3">
               <PlayerArea
                 player={currentPlayer}
                 hand={playerHand}
