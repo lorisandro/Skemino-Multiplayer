@@ -110,6 +110,13 @@
   text-transform: uppercase;
   pointer-events: none;
   user-select: none;
+
+  /* Sfondino semitrasparente per migliore leggibilità */
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.375rem;
+  backdrop-filter: blur(2px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .skemino-cell-label-vertex {
