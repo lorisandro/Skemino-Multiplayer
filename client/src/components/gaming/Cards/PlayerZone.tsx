@@ -154,7 +154,7 @@ export const PlayerZone: React.FC<PlayerZoneProps> = ({
                     </motion.div>
                   ) : (
                     // Opponent's card (face down)
-                    <div className="w-10 h-14 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-md shadow-md border border-slate-600 flex items-center justify-center">
+                    <div className="w-12 h-[67px] bg-gradient-to-br from-indigo-600 to-purple-600 rounded-md shadow-md border border-slate-600 flex items-center justify-center">
                       <div className="text-white text-lg opacity-70">🂠</div>
                     </div>
                   )}
@@ -168,7 +168,7 @@ export const PlayerZone: React.FC<PlayerZoneProps> = ({
                 {Array.from({ length: 5 - cardState.activeCards.length }, (_, i) => (
                   <div
                     key={`empty-${i}`}
-                    className="w-10 h-14 border-2 border-dashed border-slate-600 rounded-md flex items-center justify-center opacity-30"
+                    className="w-12 h-[67px] border-2 border-dashed border-slate-600 rounded-md flex items-center justify-center opacity-30"
                   >
                     <div className="text-slate-500 text-xs">•</div>
                   </div>
@@ -239,7 +239,7 @@ export const PlayerZone: React.FC<PlayerZoneProps> = ({
                         </motion.div>
                       ) : (
                         // Opponent's reserve card (face down)
-                        <div className="w-10 h-14 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-md shadow-md border border-slate-600 flex items-center justify-center opacity-60">
+                        <div className="w-12 h-[67px] bg-gradient-to-br from-purple-600 to-indigo-600 rounded-md shadow-md border border-slate-600 flex items-center justify-center opacity-60">
                           <div className="text-white text-lg opacity-50">🂠</div>
                         </div>
                       )}
