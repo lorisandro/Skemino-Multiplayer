@@ -130,6 +130,10 @@ const DashboardPage: React.FC = () => {
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
                       {user.displayName || user.username}
                     </span>
+                    {/* Debug temporaneo */}
+                    <span className="text-xs text-gray-400 ml-2">
+                      (CC: {user.countryCode || 'undefined'})
+                    </span>
                   </span>
                 ) : (
                   <>Benvenuto su <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-600">Skèmino</span></>

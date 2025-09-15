@@ -12,7 +12,8 @@ interface BoardSquareProps {
   isValidMove: boolean;
   isVertex: boolean;
   onClick: () => void;
-  size: number;
+  size?: number;
+  zoomResistant?: boolean;
 }
 
 export const BoardSquare: React.FC<BoardSquareProps> = ({
@@ -22,6 +23,7 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
   isVertex,
   onClick,
   size,
+  zoomResistant = false,
 }) => {
   const { selectedCard, isMyTurn } = useGameStore();
 
@@ -40,35 +42,39 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
 
   // Square color based on Skèmino Dark Gaming specifications
   const squareColor = useMemo(() => {
+    // Base classes
+    const baseClass = zoomResistant ? 'skemino-cell-zoom-resistant' : 'skemino-square-dark';
+
     // Vertex colors with gradient center - Custom colors requested
     if (isVertex) {
+      const vertexClass = zoomResistant ? 'skemino-vertex-zoom-resistant' : '';
       switch (cell) {
-        case 'a1': return 'skemino-vertex-blue'; // Blue with gradient center
-        case 'f1': return 'skemino-vertex-green'; // Green with gradient center
-        case 'a6': return 'skemino-vertex-red'; // Red with gradient center
-        case 'f6': return 'skemino-vertex-yellow'; // Yellow with gradient center
-        default: return ''; // Altri vertici dark
+        case 'a1': return `${baseClass} ${vertexClass} skemino-vertex-a1`; // Blue with gradient center
+        case 'f1': return `${baseClass} ${vertexClass} skemino-vertex-f1`; // Green with gradient center
+        case 'a6': return `${baseClass} ${vertexClass} skemino-vertex-a6`; // Red with gradient center
+        case 'f6': return `${baseClass} ${vertexClass} skemino-vertex-f6`; // Yellow with gradient center
+        default: return baseClass; // Altri vertici dark
       }
     }
 
     // Central strategic cells with specific diagonal patterns
     if (cell === 'c3') {
-      return 'skemino-central-c3'; // c3: Blue/Black diagonal
+      return `${baseClass} skemino-central-c3`; // c3: Blue/Black diagonal
     }
     if (cell === 'c4') {
-      return 'skemino-central-c4'; // c4: Red/Black diagonal
+      return `${baseClass} skemino-central-c4`; // c4: Red/Black diagonal
     }
     if (cell === 'd3') {
-      return 'skemino-central-d3'; // d3: Green/Black diagonal
+      return `${baseClass} skemino-central-d3`; // d3: Green/Black diagonal
     }
     if (cell === 'd4') {
-      return 'skemino-central-d4'; // d4: Yellow/Black diagonal
+      return `${baseClass} skemino-central-d4`; // d4: Yellow/Black diagonal
     }
 
     // Standard squares: Pure white circular gradient for all non-vertex cells
     // Professional gaming board style with subtle white depth gradient
-    return 'skemino-cell-gradient'; // Apply white circular gradient with gray center
-  }, [cell, isVertex]);
+    return `${baseClass} ${zoomResistant ? '' : 'skemino-cell-gradient'}`; // Apply white circular gradient with gray center
+  }, [cell, isVertex, zoomResistant]);
 
   // Dark Gaming Highlight styles - Pure CSS Professional competitive
   const getHighlightStyle = () => {
@@ -87,17 +93,29 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
     return '';
   };
 
+  // Get classes for algebraic notation if zoom resistant
+  const getNotationClasses = () => {
+    if (zoomResistant) {
+      return 'skemino-notation-zoom-resistant';
+    }
+    return '';
+  };
+
   return (
     <motion.div
       ref={drop}
       className={`
-        skemino-square-dark
-        ${squareColor} ${getHighlightStyle()}
+        ${squareColor} ${getHighlightStyle()} ${getNotationClasses()}
+        ${isValidMove && selectedCard ? 'valid-move' : ''}
       `}
+      data-notation={cell} // For CSS content display
       style={{
-        '--square-size': `${size}px`,
-        width: `${size}px`,
-        height: `${size * 1.4}px`
+        // Only use size for legacy mode
+        ...(!zoomResistant && size && {
+          '--square-size': `${size}px`,
+          width: `${size}px`,
+          height: `${size * 1.4}px`
+        })
       } as React.CSSProperties}
       onClick={onClick}
       whileHover={{
@@ -115,12 +133,14 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
       }}
     >
 
-      {/* Cell label - Dark Gaming Enhanced visibility */}
-      <div className={`skemino-cell-label ${isVertex ? 'skemino-cell-label-vertex' : 'skemino-cell-label-normal'}`}>
-        <span className={`${!isVertex ? 'bg-white/85 px-1.5 py-0.5 rounded text-xs backdrop-blur-sm' : ''}`}>
-          {cell}
-        </span>
-      </div>
+      {/* Cell label - Show only for legacy mode (zoom-resistant uses CSS notation) */}
+      {!zoomResistant && (
+        <div className={`skemino-cell-label ${isVertex ? 'skemino-cell-label-vertex' : 'skemino-cell-label-normal'}`}>
+          <span className={`${!isVertex ? 'bg-white/85 px-1.5 py-0.5 rounded text-xs backdrop-blur-sm' : ''}`}>
+            {cell}
+          </span>
+        </div>
+      )}
 
       {/* Valid move indicator - Dark Gaming Enhanced */}
       <AnimatePresence>
