@@ -66,8 +66,8 @@ export const CardHand: React.FC<CardHandProps> = ({
       case 'grid':
         // For 10 cards, use 5 columns x 2 rows
         return maxCards === 10
-          ? `${baseClasses} grid grid-cols-5 grid-rows-2 gap-2 w-full`
-          : `${baseClasses} grid grid-cols-3 grid-rows-2 gap-2 w-full`;
+          ? `${baseClasses} grid grid-cols-5 grid-rows-2 gap-4 w-full`
+          : `${baseClasses} grid grid-cols-3 grid-rows-2 gap-3 w-full`;
       case 'linear':
         return `${baseClasses} flex ${orientation === 'horizontal' ? 'flex-row space-x-2' : 'flex-col space-y-2'} justify-center items-center`;
       case 'stack':
@@ -198,7 +198,7 @@ export const CardHand: React.FC<CardHandProps> = ({
               isSelected={card ? selectedCard?.id === card.id : false}
               isHidden={showHidden}
               onClick={() => handleCardClick(card, index)}
-              size={compact ? "small" : "medium"}
+              size={compact ? "medium" : "large"}
             />
           </motion.div>
         ))}
@@ -233,7 +233,7 @@ export const CardHand: React.FC<CardHandProps> = ({
                 isSelected={card ? selectedCard?.id === card.id : false}
                 isHidden={showHidden}
                 onClick={() => handleCardClick(card, index)}
-                size={compact ? "small" : "medium"}
+                size={compact ? "medium" : "large"}
               />
             </motion.div>
           ))}
@@ -265,7 +265,7 @@ export const CardHand: React.FC<CardHandProps> = ({
               isSelected={card ? selectedCard?.id === card.id : false}
               isHidden={showHidden}
               onClick={() => handleCardClick(card, index)}
-              size={compact ? "small" : "medium"}
+              size={compact ? "medium" : "large"}
             />
           </motion.div>
         ))}

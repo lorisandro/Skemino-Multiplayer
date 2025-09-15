@@ -132,31 +132,12 @@ export const SkeminoCard: React.FC<SkeminoCardProps> = ({
       <div
         className={`
           ${getDimensions()}
-          bg-gray-100/50
-          border-2 border-dashed border-gray-400
+          bg-gray-200/30
+          border-2 border-dashed border-gray-300
           rounded-lg
-          flex items-center justify-center
-          relative
           ${className}
         `}
-      >
-        {/* Empty slot indicator */}
-        <div className="absolute inset-2 rounded-md flex items-center justify-center">
-          <svg
-            className="w-8 h-10 text-gray-400 opacity-50"
-            fill="none"
-            viewBox="0 0 24 32"
-            stroke="currentColor"
-            strokeWidth="1.5"
-          >
-            {/* Card outline shape */}
-            <rect x="2" y="2" width="20" height="28" rx="2" ry="2" />
-            {/* Plus symbol to indicate empty slot */}
-            <line x1="12" y1="10" x2="12" y2="22" />
-            <line x1="7" y1="16" x2="17" y2="16" />
-          </svg>
-        </div>
-      </div>
+      />
     );
   }
 
