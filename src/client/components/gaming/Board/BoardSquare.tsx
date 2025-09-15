@@ -15,10 +15,10 @@ interface BoardSquareProps {
 }
 
 const VERTEX_COLORS = {
-  'a1': { bg: '#000000', circle: '#5DADE2' }, // Azzurro su nero
-  'f1': { bg: '#000000', circle: '#58D68D' }, // Verde su nero
-  'a6': { bg: '#000000', circle: '#EC7063' }, // Rosso su nero
-  'f6': { bg: '#000000', circle: '#F4D03F' }  // Giallo su nero
+  'a1': { bg: 'linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 50%, #2a2a2a 100%)', circle: '#5DADE2' }, // Azzurro su grigio scuro
+  'f1': { bg: 'linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 50%, #2a2a2a 100%)', circle: '#58D68D' }, // Verde su grigio scuro
+  'a6': { bg: 'linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 50%, #2a2a2a 100%)', circle: '#EC7063' }, // Rosso su grigio scuro
+  'f6': { bg: 'linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 50%, #2a2a2a 100%)', circle: '#F4D03F' }  // Giallo su grigio scuro
 };
 
 export const BoardSquare = memo(({
@@ -39,26 +39,34 @@ export const BoardSquare = memo(({
   const squareStyle = useMemo(() => {
     if (isVertex) {
       return {
-        backgroundColor: isVertex.bg,
+        background: isVertex.bg,
         position: 'relative' as const,
-        border: '1px solid #000'
+        border: '1px solid #666'
       };
     }
 
-    // Caselle del diamante centrale hanno sfondo nero
+    // Caselle del diamante centrale - stile identico alle altre
     if (isCentralDiamond) {
       return {
-        backgroundColor: '#000000',
-        border: '1px solid #333',
+        background: 'linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 50%, #2a2a2a 100%)',
+        border: '1px solid #666',
         position: 'relative' as const
       };
     }
 
-    // Tutte le caselle standard sono bianche con gradiente al centro
-    return {
-      background: 'radial-gradient(circle at center, #ffffff 0%, #f5f5f5 100%)',
-      border: '1px solid #e0e0e0'
-    };
+    // Pattern a scacchiera grigio identico al GameBoard principale
+    const isDark = (row + col) % 2 === 0;
+    if (isDark) {
+      return {
+        background: 'linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 50%, #1a1a1a 100%)', // Caselle scure
+        border: '1px solid #666'
+      };
+    } else {
+      return {
+        background: 'linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 50%, #3a3a3a 100%)', // Caselle chiare
+        border: '1px solid #666'
+      };
+    }
   }, [row, col, isVertex, isCentralDiamond]);
 
   const handleClick = () => {
@@ -78,7 +86,12 @@ export const BoardSquare = memo(({
         ${isPlayerTurn ? 'square-interactive' : ''}
         ${card ? 'square-occupied' : ''}
       `}
-      style={squareStyle}
+      style={{
+        ...squareStyle,
+        background: isVertex ? squareStyle.background :
+          isCentralDiamond ? squareStyle.background :
+          squareStyle.background + ', radial-gradient(circle at center, rgba(255,255,255,0.02) 0%, transparent 70%)'
+      }}
       onClick={handleClick}
       data-position={position}
     >

@@ -1,0 +1,5 @@
+# Ignora tutti i file avatar caricati dagli utenti
+*
+# Ma mantieni questo file .gitignore
+!.gitignore
+# E mantieni il file .gitkeep 

@@ -283,14 +283,7 @@
 
 /* ===== THEME INTEGRATION ===== */
 
-/* Dark theme specific enhancements */
-.dark .skemino-board-dark {
-  background: var(--skemino-bg-primary);
-}
-
-.dark .skemino-square-dark {
-  background: var(--skemino-bg-secondary);
-}
+/* Dark theme specific enhancements - removed problematic overrides */
 
 /* Light theme fallback (for theme toggle) */
 .light .skemino-board-dark {
