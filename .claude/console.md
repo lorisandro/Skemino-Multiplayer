@@ -4,4 +4,3 @@ LoginPage.tsx:25 Browser extension interference detected: Object
 LoginPage.tsx:25 Browser extension interference detected: Object
 (anonime) @ LoginPage.tsx:25
 api/auth/login:1  Failed to load resource: the server responded with a status of 401 (Unauthorized)
-api/auth/login:1  Failed to load resource: the server responded with a status of 401 (Unauthorized)

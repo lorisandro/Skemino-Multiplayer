@@ -22,9 +22,15 @@ export const useAuth = (): AuthContextType => {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        // Check for existing token
-        const token = localStorage.getItem('skemino_auth_token');
-        const userData = localStorage.getItem('skemino_user_data');
+        // Check for existing token in localStorage first (persistent login)
+        let token = localStorage.getItem('skemino_auth_token');
+        let userData = localStorage.getItem('skemino_user_data');
+
+        // If not found in localStorage, check sessionStorage (guest or temporary sessions)
+        if (!token || !userData) {
+          token = sessionStorage.getItem('skemino_auth_token');
+          userData = sessionStorage.getItem('skemino_user_data');
+        }
 
         if (token && userData) {
           const parsedUser = JSON.parse(userData);
@@ -36,9 +42,11 @@ export const useAuth = (): AuthContextType => {
             setUser(parsedUser);
             setIsAuthenticated(true);
           } else {
-            // Token expired, clean up
+            // Token expired, clean up both storages
             localStorage.removeItem('skemino_auth_token');
             localStorage.removeItem('skemino_user_data');
+            sessionStorage.removeItem('skemino_auth_token');
+            sessionStorage.removeItem('skemino_user_data');
           }
         }
       } catch (error) {
@@ -186,18 +194,26 @@ export const useAuth = (): AuthContextType => {
     setIsLoading(true);
 
     try {
-      // Clear storage
+      // Clear all auth storage
       localStorage.removeItem('skemino_auth_token');
       localStorage.removeItem('skemino_user_data');
       sessionStorage.removeItem('skemino_auth_token');
       sessionStorage.removeItem('skemino_user_data');
+      sessionStorage.removeItem('skemino_guest_session'); // Legacy guest session cleanup
 
       // Reset state
       setUser(null);
       setIsAuthenticated(false);
 
-      // Simulate API call to invalidate token
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Optionally call backend logout endpoint to invalidate token server-side
+      // This would be particularly important for guest sessions
+      try {
+        // In a real implementation, call authService.logout() here
+        await new Promise(resolve => setTimeout(resolve, 300));
+      } catch (logoutError) {
+        console.warn('Server logout failed:', logoutError);
+        // Don't fail the entire logout process if server logout fails
+      }
 
     } catch (error) {
       console.error('Logout error:', error);
@@ -285,56 +301,29 @@ export const useAuth = (): AuthContextType => {
     }
   }, []);
 
-  // Create guest user
+  // Create guest user using backend service
   const loginAsGuest = useCallback(async (): Promise<AuthResponse> => {
     setIsLoading(true);
 
     try {
-      const guestUser: User = {
-        id: `guest_${Date.now()}`,
-        username: `Guest${Math.floor(Math.random() * 10000)}`,
-        email: '',
-        displayName: `Guest Player`,
-        countryCode: 'IT', // Default to Italy for guest users
-        rating: 1000 + Math.floor(Math.random() * 200), // Slightly randomized guest rating
-        level: {
-          name: 'Ospite',
-          tier: 'Principiante',
-          ratingRange: { min: 1000, max: 1199 },
-          color: '#6B7280',
-          icon: '👤'
-        },
-        isEmailVerified: false,
-        isOnline: true,
-        lastActive: new Date(),
-        registrationDate: new Date(),
-        preferences: {
-          theme: 'dark',
-          language: 'it',
-          soundEnabled: true,
-          notificationsEnabled: false,
-          autoAcceptRematch: false,
-          showRatingChanges: false,
-          boardTheme: 'dark',
-          cardTheme: 'classic'
-        },
-        statistics: {
-          totalGames: 0,
-          gamesWon: 0,
-          gamesLost: 0,
-          gamesDraw: 0,
-          averageGameDuration: 0,
-          longestWinStreak: 0,
-          currentWinStreak: 0,
-          favoriteTimeControl: 'Casual',
-          averageAccuracy: 0,
-          totalPlayTime: 0
-        },
-        achievements: []
-      };
+      // Use real auth service for guest login
+      const response = await authService.loginAsGuest();
 
-      // Store guest session (session storage only)
-      sessionStorage.setItem('skemino_guest_session', JSON.stringify(guestUser));
+      if (!response.success) {
+        return {
+          success: false,
+          message: response.message || 'Errore durante la creazione della sessione ospite',
+          errors: { guest: response.message || 'Sessione ospite non disponibile' }
+        };
+      }
+
+      // Use the real guest user data from the service
+      const guestUser = response.user as User;
+      const authToken = response.token || `guest_token_${Date.now()}`;
+
+      // Store guest session (session storage only for temporary session)
+      sessionStorage.setItem('skemino_auth_token', authToken);
+      sessionStorage.setItem('skemino_user_data', JSON.stringify(guestUser));
 
       setUser(guestUser);
       setIsAuthenticated(true);
@@ -342,14 +331,16 @@ export const useAuth = (): AuthContextType => {
       return {
         success: true,
         user: guestUser,
-        message: 'Sessione ospite creata'
+        token: authToken,
+        message: response.message || 'Sessione ospite creata con successo'
       };
 
     } catch (error) {
       console.error('Guest login error:', error);
       return {
         success: false,
-        message: 'Errore durante la creazione della sessione ospite'
+        message: error instanceof Error ? error.message : 'Errore durante la creazione della sessione ospite',
+        errors: { guest: 'Errore di connessione. Riprova.' }
       };
     } finally {
       setIsLoading(false);
