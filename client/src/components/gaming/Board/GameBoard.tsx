@@ -153,7 +153,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ demoMode = false }) => {
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
             >
-              <div className="w-4 h-4 bg-gradient-to-br from-red-400 to-red-600 rounded-full shadow-lg shadow-red-500/50 animate-pulse"></div>
+              <div className="w-4 h-4 bg-gradient-to-br from-red-400 to-red-600 rounded-full animate-pulse"></div>
               <span className="text-red-300 font-semibold text-sm tracking-wide">Q III</span>
             </motion.div>
             <motion.div
@@ -161,7 +161,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ demoMode = false }) => {
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
             >
-              <div className="w-4 h-4 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full shadow-lg shadow-yellow-500/50 animate-pulse"></div>
+              <div className="w-4 h-4 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full animate-pulse"></div>
               <span className="text-yellow-300 font-semibold text-sm tracking-wide">Q IV</span>
             </motion.div>
           </div>
@@ -172,7 +172,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ demoMode = false }) => {
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
             >
-              <div className="w-4 h-4 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-full shadow-lg shadow-cyan-500/50 animate-pulse"></div>
+              <div className="w-4 h-4 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-full animate-pulse"></div>
               <span className="text-cyan-300 font-semibold text-sm tracking-wide">Q I</span>
             </motion.div>
             <motion.div
@@ -180,7 +180,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ demoMode = false }) => {
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
             >
-              <div className="w-4 h-4 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full shadow-lg shadow-emerald-500/50 animate-pulse"></div>
+              <div className="w-4 h-4 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full animate-pulse"></div>
               <span className="text-emerald-300 font-semibold text-sm tracking-wide">Q II</span>
             </motion.div>
           </div>
