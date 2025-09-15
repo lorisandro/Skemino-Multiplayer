@@ -802,17 +802,26 @@ div.skemino-square-dark.skemino-central-d4,
 
 /* ===== ZOOM-RESISTANT BOARD CONTAINER ===== */
 
-/* Main zoom-resistant board container using viewport-based sizing */
+/* Main zoom-resistant board container with proper spacing */
 .skemino-board-zoom-resistant {
+  /* Container setup for zoom resistance */
+  container-type: size;
+  container-name: gameboard;
+
   /* Fixed rem-based sizing - immune to browser zoom */
   width: 35rem;  /* Default size */
   height: 49rem; /* Height calculated for 6x6 grid with 1:1.4 aspect ratio cells */
 
-  /* Centering and positioning */
+  /* Centering and positioning with padding for black space around board */
   position: relative;
   margin: 0 auto;
+  padding: 1rem; /* Black space around the actual board */
 
-  /* Dark gaming theme */
+  /* Ensure perfect horizontal centering */
+  left: 50%;
+  transform: translateX(-50%);
+
+  /* Dark gaming theme - this creates the black area around the board */
   background: var(--skemino-bg-primary);
   border: 2px solid var(--skemino-border-primary);
   border-radius: 0.75rem;
@@ -822,26 +831,6 @@ div.skemino-square-dark.skemino-central-d4,
   transform: translateZ(0);
   will-change: transform;
   contain: layout style paint;
-}
-
-/* Ensure parent containers have uniform black background */
-.skemino-board-zoom-resistant::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: #000000;
-  z-index: -1;
-}
-
-/* Additional wrapper class for uniform black background */
-.skemino-uniform-black-bg {
-  background: #000000 !important;
-  min-height: 100vh;
-  width: 100%;
-  position: relative;
 }
 
 /* Zoom-resistant grid container */

@@ -20,9 +20,9 @@ export const ZoomResistantBoardContainer: React.FC<ZoomResistantBoardContainerPr
 }) => {
   const { currentBreakpoint, isMobile } = useBreakpoints();
 
-  // Container classes based on breakpoint and mode with uniform black background
+  // Container classes based on breakpoint and mode
   const getContainerClasses = () => {
-    const baseClasses = 'flex flex-col items-center justify-center w-full h-full bg-black';
+    const baseClasses = 'flex flex-col items-center justify-center w-full';
 
     if (demoMode) {
       return `${baseClasses} min-h-screen px-2 py-4`;
