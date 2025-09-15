@@ -42,9 +42,6 @@ export const MatchmakingDemo: React.FC = () => {
     // Reset game store state
   };
 
-  const handleShowSettings = () => {
-    console.log('Show settings...');
-  };
 
   return (
     <div className="min-h-screen">
@@ -147,7 +144,6 @@ export const MatchmakingDemo: React.FC = () => {
             distributionState={distributionState}
             onStartGame={handleStartGame}
             onLeaveMatch={handleLeaveMatch}
-            onShowSettings={handleShowSettings}
           />
         </motion.div>
       )}

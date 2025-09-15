@@ -7,7 +7,6 @@ import {
   CheckCircleIcon,
   PlayIcon,
   XMarkIcon,
-  CogIcon,
 } from '@heroicons/react/24/outline';
 import { useGameStore } from '../../store/gameStore';
 import { useSocket } from '../../hooks/useSocket';
@@ -20,7 +19,6 @@ export interface PreGameInterfaceProps {
   distributionState: DistributionState;
   onStartGame: () => void;
   onLeaveMatch: () => void;
-  onShowSettings?: () => void;
   className?: string;
 }
 
@@ -35,7 +33,6 @@ export const PreGameInterface: React.FC<PreGameInterfaceProps> = ({
   distributionState,
   onStartGame,
   onLeaveMatch,
-  onShowSettings,
   className = '',
 }) => {
   const { connected, latency } = useSocket();
@@ -117,17 +114,8 @@ export const PreGameInterface: React.FC<PreGameInterfaceProps> = ({
         </div>
       </div>
 
-      {/* Settings & Exit */}
-      <div className="border-t border-gray-800 p-2 space-y-1">
-        {onShowSettings && (
-          <button
-            onClick={onShowSettings}
-            className="w-full flex items-center space-x-3 px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
-          >
-            <CogIcon className="w-5 h-5" />
-            <span className="hidden lg:block text-sm">Impostazioni</span>
-          </button>
-        )}
+      {/* Exit */}
+      <div className="border-t border-gray-800 p-2">
         <button
           onClick={onLeaveMatch}
           className="w-full flex items-center space-x-3 px-3 py-2 text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded-lg transition-colors"
