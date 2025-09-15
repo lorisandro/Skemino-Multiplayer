@@ -9,6 +9,9 @@ interface BoardSquareProps {
   isHighlighted: boolean;
   isSelected: boolean;
   isPlayerTurn: boolean;
+  isSpecialVertex?: boolean;
+  vertexColor?: string;
+  isCentralDiamond?: boolean;
 }
 
 const VERTEX_COLORS = {
@@ -26,7 +29,10 @@ export const BoardSquare = memo(({
   onClick,
   isHighlighted,
   isSelected,
-  isPlayerTurn
+  isPlayerTurn,
+  isSpecialVertex,
+  vertexColor,
+  isCentralDiamond
 }: BoardSquareProps) => {
   const isVertex = VERTEX_COLORS[position as keyof typeof VERTEX_COLORS];
 
@@ -39,12 +45,21 @@ export const BoardSquare = memo(({
       };
     }
 
+    // Caselle del diamante centrale hanno sfondo nero
+    if (isCentralDiamond) {
+      return {
+        backgroundColor: '#000000',
+        border: '1px solid #333',
+        position: 'relative' as const
+      };
+    }
+
     // Tutte le caselle standard sono grigie chiare
     return {
       backgroundColor: '#e8e8e8',
       border: '1px solid #d0d0d0'
     };
-  }, [row, col, isVertex]);
+  }, [row, col, isVertex, isCentralDiamond]);
 
   const handleClick = () => {
     if (isPlayerTurn) {

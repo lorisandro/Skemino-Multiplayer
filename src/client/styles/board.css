@@ -172,8 +172,8 @@
   margin-top: 0.125rem;
 }
 
-/* Skèmino Logo Container */
-.skemino-logo-container {
+/* Diamante Centrale - copre esattamente c3, d3, c4, d4 */
+.central-diamond {
   position: absolute;
   top: 50%;
   left: 50%;

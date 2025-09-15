@@ -1,6 +1,5 @@
 import React, { memo, useMemo } from 'react';
 import { BoardSquare } from './BoardSquare';
-import { SkeminoLogo } from './SkeminoLogo';
 
 interface GameBoardProps {
   gameState?: any;
@@ -18,6 +17,27 @@ export const GameBoard = memo(({
   isPlayerTurn = false
 }: GameBoardProps) => {
 
+  // Funzione helper per determinare se una casella è un vertice speciale
+  const isSpecialVertex = (position: string) => {
+    return ['a1', 'f1', 'a6', 'f6'].includes(position);
+  };
+
+  // Funzione helper per ottenere il colore del cerchio per i vertici speciali
+  const getVertexCircleColor = (position: string) => {
+    const colors = {
+      'a1': '#5DADE2', // azzurro
+      'f1': '#58D68D', // verde
+      'a6': '#EC7063', // rosso
+      'f6': '#F4D03F'  // giallo
+    };
+    return colors[position as keyof typeof colors];
+  };
+
+  // Funzione helper per determinare se una casella fa parte del diamante centrale
+  const isCentralDiamond = (position: string) => {
+    return ['c3', 'd3', 'c4', 'd4'].includes(position);
+  };
+
   const boardSquares = useMemo(() => {
     const squares = [];
     for (let row = 0; row < 6; row++) {
@@ -25,6 +45,8 @@ export const GameBoard = memo(({
         const position = `${String.fromCharCode(97 + col)}${6 - row}`;
         const isHighlighted = highlightedSquares.has(position);
         const isSelected = selectedSquare === position;
+        const isVertex = isSpecialVertex(position);
+        const isDiamond = isCentralDiamond(position);
 
         squares.push(
           <BoardSquare
@@ -37,6 +59,9 @@ export const GameBoard = memo(({
             isHighlighted={isHighlighted}
             isSelected={isSelected}
             isPlayerTurn={isPlayerTurn}
+            isSpecialVertex={isVertex}
+            vertexColor={isVertex ? getVertexCircleColor(position) : undefined}
+            isCentralDiamond={isDiamond}
           />
         );
       }
@@ -71,7 +96,20 @@ export const GameBoard = memo(({
       <div className="game-board-wrapper">
         <div className="game-board">
           {boardSquares}
-          <SkeminoLogo />
+
+          {/* Diamante centrale con triangoli colorati e logo */}
+          <div className="central-diamond">
+            {/* Triangoli colorati */}
+            <div className="diamond-triangle triangle-north" />
+            <div className="diamond-triangle triangle-east" />
+            <div className="diamond-triangle triangle-south" />
+            <div className="diamond-triangle triangle-west" />
+
+            {/* Logo Skèmino centrale */}
+            <div className="skemino-logo">
+              <span className="logo-text">Skèmino</span>
+            </div>
+          </div>
         </div>
       </div>
 

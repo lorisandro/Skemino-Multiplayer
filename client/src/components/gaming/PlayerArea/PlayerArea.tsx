@@ -41,17 +41,21 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
   // Calculate hand size for display (always show 10 cards - 2 rows of 5)
   const displayHand = showCards ? hand : Array(10).fill(null);
 
-  // Animation variants for player area
+  // Animation variants for player area (Gaming-optimized dark theme)
   const areaVariants = {
     active: {
-      backgroundColor: 'rgba(34, 197, 94, 0.05)',
-      borderColor: 'rgb(34, 197, 94)',
-      transition: { duration: 0.3 }
+      backgroundColor: 'rgba(15, 23, 42, 0.95)', // slate-900 with transparency
+      borderColor: 'rgb(34, 197, 94)', // green-500
+      boxShadow: '0 0 20px rgba(34, 197, 94, 0.3)',
+      scale: 1.01,
+      transition: { duration: 0.4, ease: "easeOut" }
     },
     inactive: {
-      backgroundColor: 'rgba(255, 255, 255, 1)',
-      borderColor: 'rgb(226, 232, 240)',
-      transition: { duration: 0.3 }
+      backgroundColor: 'rgba(30, 41, 59, 0.95)', // slate-800 with transparency
+      borderColor: 'rgb(71, 85, 105)', // slate-600
+      boxShadow: '0 0 0px rgba(34, 197, 94, 0)',
+      scale: 1,
+      transition: { duration: 0.4, ease: "easeOut" }
     }
   };
 
@@ -59,7 +63,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
   if (mobile) {
     return (
       <motion.div
-        className={`h-full bg-white border-2 ${className}`}
+        className={`h-full border-2 backdrop-blur-sm ${className}`}
         variants={areaVariants}
         animate={isCurrentTurn ? 'active' : 'inactive'}
       >
