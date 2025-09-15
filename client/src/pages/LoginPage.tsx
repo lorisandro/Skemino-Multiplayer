@@ -16,11 +16,18 @@ const LoginPage: React.FC = () => {
     setIsLoading(true);
     setError('');
 
+    console.log('Form Data:', formData);
+    console.log('Email:', formData.email);
+    console.log('Password:', formData.password);
+    console.log('Both filled?', formData.email && formData.password);
+
     // Simulazione login
     setTimeout(() => {
       if (formData.email && formData.password) {
-        navigate('/game');
+        console.log('Login successful, navigating to dashboard');
+        navigate('/dashboard');
       } else {
+        console.log('Missing email or password');
         setError('Email e password sono obbligatori');
       }
       setIsLoading(false);
@@ -30,7 +37,7 @@ const LoginPage: React.FC = () => {
   const handleSocialLogin = (provider: string) => {
     setIsLoading(true);
     setTimeout(() => {
-      navigate('/game');
+      navigate('/dashboard');
     }, 1000);
   };
 

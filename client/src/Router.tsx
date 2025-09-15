@@ -4,6 +4,8 @@ import AppDebug from './App.debug';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import DashboardPage from './pages/DashboardPage';
+import PreGamePage from './pages/PreGamePage';
 
 const GamePage = () => {
   return <App />;
@@ -19,7 +21,7 @@ const RegisterPageWrapper = () => {
   const handleRegister = (credentials: any) => {
     console.log('Registration attempt:', credentials);
     // TODO: Implement actual registration logic
-    navigate('/login');
+    navigate('/dashboard');
   };
 
   const handleSocialLogin = (provider: string) => {
@@ -48,6 +50,8 @@ export function Router() {
         <Route path="/home" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPageWrapper />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/pregame" element={<PreGamePage />} />
         <Route path="/game" element={<GamePage />} />
         <Route path="/game/:roomId" element={<GamePage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
