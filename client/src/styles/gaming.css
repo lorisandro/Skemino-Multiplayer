@@ -147,3 +147,34 @@
 .gaming-cursor {
   cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/></svg>') 12 12, auto;
 }
+
+/* FORCE GRAY BOARD SQUARES - Override any black backgrounds */
+.skemino-square-dark,
+.board-square,
+.square-vertex,
+.square-central-diamond {
+  background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 50%, #4a4a4a 100%) !important;
+  border-color: #666 !important;
+}
+
+/* Additional specificity override for Tailwind conflicts */
+div[class*="bg-gradient-to-br"]:not([class*="cyan"]):not([class*="emerald"]):not([class*="red"]):not([class*="yellow"]) {
+  background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 50%, #4a4a4a 100%) !important;
+}
+
+/* CRITICAL: Prevent any black backgrounds on board squares */
+div[class*="skemino-square"],
+div[data-position],
+.game-board > div,
+.grid div[class*="border"] {
+  background-color: transparent !important;
+}
+
+/* Force standard squares to use gray alternating pattern */
+.grid div[class*="border"]:nth-child(odd) {
+  background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 50%, #4a4a4a 100%) !important;
+}
+
+.grid div[class*="border"]:nth-child(even) {
+  background: linear-gradient(135deg, #5a5a5a 0%, #4a4a4a 50%, #5a5a5a 100%) !important;
+}
