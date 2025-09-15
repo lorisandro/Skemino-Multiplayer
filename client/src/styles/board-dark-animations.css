@@ -836,10 +836,10 @@ div.skemino-square-dark.skemino-central-d4,
 
 /* Zoom-resistant grid container */
 .skemino-grid-zoom-resistant {
-  /* CSS Grid for perfect 6x6 layout */
+  /* CSS Grid for perfect 6x6 layout with 5:7 cell proportions */
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  grid-template-rows: repeat(6, 1fr);
+  grid-template-rows: repeat(6, 1.4fr); /* 1.4fr for each row to create 5:7 proportions */
 
   /* Rem-based spacing */
   gap: 0.125rem;
@@ -856,8 +856,12 @@ div.skemino-square-dark.skemino-central-d4,
 
 /* Zoom-resistant board cells */
 .skemino-cell-zoom-resistant {
-  /* Playing card proportions for strategic gaming board */
-  aspect-ratio: 5 / 7; /* Playing card aspect ratio for elongated cell look */
+  /* Remove aspect-ratio to let grid control proportions perfectly */
+  /* The grid container dimensions will determine cell proportions */
+
+  /* Ensure cells fill their grid area completely */
+  width: 100%;
+  height: 100%;
 
   /* Base white gradient styling for normal cells */
   background: radial-gradient(ellipse at center,
