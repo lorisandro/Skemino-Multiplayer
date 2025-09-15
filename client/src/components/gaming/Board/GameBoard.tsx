@@ -123,16 +123,13 @@ export const GameBoard: React.FC = () => {
             boxShadow: is2K
               ? '0 35px 70px -12px rgba(0, 0, 0, 0.9), 0 0 0 2px rgba(255, 255, 255, 0.08), inset 0 2px 0 rgba(255, 255, 255, 0.12)' // Enhanced shadows for 2K
               : '0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-            animation: 'board-appear-dark 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
             borderWidth: is2K ? '3px' : '2px' // Thicker borders for 2K visibility
           }}
-          initial={{ scale: 0.95, opacity: 0, y: 20 }}
+          initial={{ scale: 1, opacity: 1, y: 0 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
           transition={{
-            duration: 0.6,
-            type: "spring",
-            stiffness: 300,
-            damping: 30
+            duration: 0,
+            type: "tween"
           }}
         >
           {/* Dark Gaming Background with Professional Finish */}
