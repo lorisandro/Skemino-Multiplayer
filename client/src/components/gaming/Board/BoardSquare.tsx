@@ -77,11 +77,8 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
     <motion.div
       ref={drop}
       className={`
-        relative border border-gray-600/80 skemino-square-dark
+        skemino-square-dark
         ${squareColor} ${getHighlightStyle()}
-        cursor-pointer transition-all duration-200 ease-out
-        hover:brightness-125 hover:scale-[1.02] active:scale-[0.98] active:brightness-90
-        rounded-lg
       `}
       style={{
         '--square-size': `${size}px`,
@@ -105,7 +102,7 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
     >
       {/* Vertex indicator - Dark Gaming Enhanced for Skèmino */}
       {isVertex && (
-        <div className="absolute inset-0 flex items-center justify-center z-20">
+        <div className="skemino-vertex-container">
           <motion.div
             className={`
               w-8 h-8 rounded-full ring-3 ring-white/30 shadow-2xl skemino-vertex-dark
@@ -130,18 +127,13 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
             }}
           >
             {/* Inner vertex glow effect */}
-            <div className="absolute inset-1 rounded-full bg-white/20"></div>
+            <div className="skemino-vertex-inner-glow"></div>
           </motion.div>
         </div>
       )}
 
       {/* Cell label - Dark Gaming Enhanced visibility */}
-      <div className={`
-        absolute top-1 right-1 text-xs font-mono font-bold tracking-wide z-30
-        ${isVertex ? 'text-white drop-shadow-2xl shadow-black' : 'text-gray-300'}
-        opacity-60 hover:opacity-90 transition-all duration-200
-        bg-black/20 rounded px-1 py-0.5
-      `}>
+      <div className={`skemino-cell-label ${isVertex ? 'skemino-cell-label-vertex' : 'skemino-cell-label-normal'}`}>
         {cell}
       </div>
 
@@ -149,7 +141,7 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
       <AnimatePresence>
         {isValidMove && selectedCard && !position?.card && (
           <motion.div
-            className="absolute inset-0 flex items-center justify-center pointer-events-none z-10"
+            className="skemino-valid-move-container"
             initial={{ opacity: 0, scale: 0, rotate: -180 }}
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
             exit={{ opacity: 0, scale: 0, rotate: 180 }}
@@ -161,7 +153,7 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
             }}
           >
             <motion.div
-              className="w-4 h-4 rounded-full shadow-lg shadow-blue-500/50 ring-2 ring-blue-300/30 skemino-valid-move-indicator"
+              className="skemino-valid-move-indicator"
               animate={{
                 scale: [1, 1.2, 1],
                 opacity: [0.7, 1, 0.7]
@@ -181,7 +173,7 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
         {position?.card && (
           <motion.div
             key={position.card.id}
-            className="absolute inset-1 flex items-center justify-center"
+            className="skemino-card-container"
             initial={{ scale: 0, rotate: -180 }}
             animate={{ scale: 1, rotate: 0 }}
             exit={{ scale: 0, rotate: 180 }}
@@ -199,9 +191,9 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
 
       {/* Hole indicator - Dark Gaming Enhanced */}
       {position?.isHole && (
-        <div className="absolute inset-0 flex items-center justify-center z-10">
+        <div className="skemino-hole-container">
           <motion.div
-            className="w-10 h-10 rounded-full border border-gray-500 shadow-2xl skemino-hole-indicator"
+            className="skemino-hole-indicator"
             animate={{
               scale: [1, 0.9, 1],
               opacity: [0.8, 0.6, 0.8]
@@ -212,16 +204,16 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
               ease: "easeInOut"
             }}
           >
-            <div className="absolute inset-2 rounded-full skemino-hole-inner"></div>
+            <div className="skemino-hole-inner"></div>
           </motion.div>
         </div>
       )}
 
       {/* Capture preview - Dark Gaming Enhanced */}
       {isValidMove && position?.card && selectedCard && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+        <div className="skemino-capture-preview">
           <motion.div
-            className="text-4xl font-bold drop-shadow-2xl"
+            className="skemino-capture-icon"
             style={{
               filter: 'drop-shadow(0 0 10px rgba(239, 68, 68, 0.8))',
               textShadow: '0 0 20px rgba(239, 68, 68, 0.9)'

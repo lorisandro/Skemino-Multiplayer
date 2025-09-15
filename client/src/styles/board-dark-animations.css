@@ -35,6 +35,9 @@
 
 /* Valid Move and Hole Indicators */
 .skemino-valid-move-indicator {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
   background: radial-gradient(circle at center,
     rgba(96, 165, 250, 1.0) 0%,
     rgba(59, 130, 246, 1.0) 100%
@@ -42,6 +45,10 @@
 }
 
 .skemino-hole-indicator {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: 1px solid rgba(107, 114, 128, 0.5);
   background: radial-gradient(circle at center,
     rgba(107, 114, 128, 1.0) 0%,
     rgba(75, 85, 99, 1.0) 100%
@@ -53,6 +60,125 @@
     rgba(75, 85, 99, 1.0) 0%,
     rgba(55, 65, 81, 1.0) 100%
   ) !important;
+}
+
+/* Base Square Styles - Replaces Tailwind classes */
+.skemino-square-dark {
+  position: relative;
+  border: 1px solid rgba(75, 85, 99, 0.8);
+  cursor: pointer;
+  transition: all 200ms ease-out;
+  border-radius: 0.5rem;
+}
+
+.skemino-square-dark:hover {
+  filter: brightness(1.25);
+  transform: scale(1.02);
+}
+
+.skemino-square-dark:active {
+  transform: scale(0.98);
+  filter: brightness(0.9);
+}
+
+/* Vertex Inner Glow */
+.skemino-vertex-inner-glow {
+  position: absolute;
+  inset: 0.25rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Positioning Classes - Replace Tailwind utilities */
+.skemino-vertex-container {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+
+.skemino-cell-label {
+  position: absolute;
+  top: 0.25rem;
+  left: 0.25rem;
+  font-size: 0.875rem;
+  font-family: 'Inter', 'Segoe UI', monospace;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  z-index: 30;
+  opacity: 1;
+  transition: all 200ms;
+  text-transform: uppercase;
+  pointer-events: none;
+  user-select: none;
+}
+
+.skemino-cell-label-vertex {
+  color: #ffffff;
+  text-shadow:
+    0 0 3px rgba(0, 0, 0, 1),
+    0 1px 2px rgba(0, 0, 0, 0.9),
+    0 2px 4px rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.375rem;
+}
+
+.skemino-cell-label-normal {
+  color: #111827;
+  text-shadow:
+    0 0 1px rgba(255, 255, 255, 0.9),
+    0 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+.skemino-valid-move-container {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.skemino-card-container {
+  position: absolute;
+  inset: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.skemino-hole-container {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.skemino-hole-inner {
+  position: absolute;
+  inset: 0.5rem;
+  border-radius: 50%;
+}
+
+.skemino-capture-preview {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.skemino-capture-icon {
+  font-size: 2.25rem;
+  font-weight: bold;
 }
 
 /* ===== CSS VARIABLES - DARK GAMING THEME ===== */
