@@ -77,7 +77,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
     return (
       <div className="flex items-center justify-center h-screen bg-gradient-to-br from-gray-50 to-gray-100">
         <motion.div
-          className="text-center bg-white rounded-lg p-8 shadow-lg"
+          className="text-center bg-slate-800 rounded-lg p-8 shadow-lg"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
         >
@@ -106,7 +106,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
             transition={{ duration: 0.2 }}
           >
             <motion.div
-              className="bg-white rounded-lg p-8 text-center shadow-2xl max-w-md w-full mx-4"
+              className="bg-slate-800 rounded-lg p-8 text-center shadow-2xl max-w-md w-full mx-4"
               initial={{ scale: 0.8, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.8, y: 20 }}
@@ -196,7 +196,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
         {/* Main Game Area */}
         <div className="xl:ml-80 xl:mr-36 lg:ml-72 lg:mr-32 grid grid-rows-[auto_1fr_auto] h-screen gap-4 p-4">
         {/* Top bar */}
-        <div className="flex justify-between items-center bg-white dark:bg-slate-800 rounded-lg px-6 py-3 shadow-sm">
+        <div className="flex justify-between items-center bg-slate-800 rounded-lg px-6 py-3 shadow-sm">
           <div className="flex items-center gap-4">
             <div className="font-semibold">{opponent.username}</div>
             <div className="text-sm text-gray-600">Rating: {opponent.rating}</div>
@@ -260,7 +260,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
         </div>
 
         {/* Bottom controls */}
-        <div className="flex justify-between items-center bg-white dark:bg-slate-800 rounded-lg px-6 py-3 shadow-sm">
+        <div className="flex justify-between items-center bg-slate-800 rounded-lg px-6 py-3 shadow-sm">
           <div className="flex gap-2">
             <button
               onClick={onResign}
@@ -295,7 +295,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
       {/* Tablet layout */}
       <div className="hidden md:flex lg:hidden flex-col h-screen p-4 gap-4">
         {/* Top bar */}
-        <div className="flex justify-between items-center bg-white rounded-lg px-4 py-2 shadow-sm">
+        <div className="flex justify-between items-center bg-slate-800 rounded-lg px-4 py-2 shadow-sm">
           <div className="text-sm">{opponent.username} ({opponent.rating})</div>
           <div>Skèmino</div>
           <div className="text-sm">{currentPlayer.username} ({currentPlayer.rating})</div>
@@ -354,7 +354,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
       {/* Mobile layout */}
       <div className="md:hidden flex flex-col h-screen">
         {/* Mobile header */}
-        <div className="flex justify-between items-center bg-white px-4 py-2 shadow-sm text-sm">
+        <div className="flex justify-between items-center bg-slate-800 px-4 py-2 shadow-sm text-sm">
           <div>vs {opponent.username}</div>
           <div>Turn {gameState.moveHistory.length + 1}</div>
           <div>{isMyTurn ? "Your turn" : "Wait"}</div>

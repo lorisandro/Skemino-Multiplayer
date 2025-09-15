@@ -177,12 +177,12 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
     },
     tablet: {
       scale: 1,
-      y: -20,
+      y: 0,
       transition: { duration: 0.4, ease: 'easeOut' }
     },
     desktop: {
       scale: 1,
-      y: -30,
+      y: 0,
       transition: {
         duration: containerSize > 1600 ? 0.6 : 0.5,
         ease: 'easeOut',
@@ -194,7 +194,7 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
     },
     '2k': {
       scale: 1,
-      y: -40,
+      y: 0,
       transition: {
         duration: 0.7,
         ease: 'easeOut',
@@ -205,7 +205,7 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
     },
     ultrawide: {
       scale: 1,
-      y: -50,
+      y: 0,
       transition: {
         duration: 0.8,
         ease: 'easeOut',

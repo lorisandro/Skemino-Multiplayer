@@ -112,7 +112,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
           </div>
 
           {/* Center - Game Board with enhanced space for 2K */}
-          <div className="flex-1 flex items-center justify-end pr-16 bg-gradient-to-br from-gray-900 to-slate-900">
+          <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-gray-900 to-slate-900">
             <GameBoard demoMode={isDemoMode} />
           </div>
 
@@ -179,7 +179,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
           </div>
 
           {/* Center - Game Board */}
-          <div className="flex-1 flex items-center justify-end pr-12 bg-gradient-to-br from-gray-900 to-slate-900">
+          <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-gray-900 to-slate-900">
             <GameBoard demoMode={isDemoMode} />
           </div>
 
@@ -229,7 +229,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
           </div>
 
           {/* Game Board - Center */}
-          <div className="flex-1 flex items-center justify-end pr-8">
+          <div className="flex-1 flex items-center justify-center">
             <GameBoard demoMode={isDemoMode} />
           </div>
 
@@ -275,7 +275,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
         </div>
 
         {/* Game Board - Main Area */}
-        <div className="flex-1 flex items-center justify-end pr-4">
+        <div className="flex-1 flex items-center justify-center">
           <GameBoard demoMode={isDemoMode} />
         </div>
 
