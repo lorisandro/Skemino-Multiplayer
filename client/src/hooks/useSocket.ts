@@ -41,7 +41,7 @@ export const useSocket = (): UseSocketReturn => {
       setConnecting(true);
 
       try {
-        socket = io(import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000', {
+        socket = io(import.meta.env.VITE_SOCKET_URL || 'http://localhost:3005', {
           transports: ['websocket', 'polling'],
           reconnection: true,
           reconnectionDelay: 1000,
