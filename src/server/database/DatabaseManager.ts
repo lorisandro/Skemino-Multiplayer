@@ -384,7 +384,7 @@ export class DatabaseManager {
       client.release();
     } catch (error) {
       logger.error('Error updating user last login:', error);
-      throw error;
+      // Don't throw error to prevent login failure
     }
   }
 
