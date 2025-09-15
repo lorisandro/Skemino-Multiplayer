@@ -110,8 +110,8 @@ export const GameBoard: React.FC = () => {
   return (
     <ResponsiveBoardContainer
       onSizeChange={setBoardSize}
-      minSize={is2K ? 500 : 400}
-      maxSize={is2K ? 900 : 1200}
+      minSize={is2K ? 600 : 400}
+      maxSize={is2K ? 1400 : 1200}
     >
       {/* Game board container */}
       <div className="relative skemino-board" ref={boardRef}>

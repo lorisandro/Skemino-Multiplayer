@@ -91,8 +91,8 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
           </div>
 
           {/* Center - Game Board with enhanced space for 2K */}
-          <div className="flex-1 flex items-center justify-center p-8 bg-gradient-to-br from-slate-50 to-slate-100">
-            <div className="relative w-full h-full flex items-center justify-center">
+          <div className="flex-1 flex items-center justify-center p-12 bg-gradient-to-br from-slate-50 to-slate-100">
+            <div className="relative w-full h-full flex items-center justify-center max-w-[1400px] max-h-[90vh]">
               <GameBoard />
             </div>
           </div>
