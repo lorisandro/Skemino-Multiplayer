@@ -851,7 +851,6 @@ div.skemino-square-dark.skemino-central-d4,
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   grid-template-rows: repeat(6, 1fr);
-  place-items: center; /* Centro perfetto delle celle nella griglia */
 
   /* Rem-based spacing */
   gap: 0.125rem;
