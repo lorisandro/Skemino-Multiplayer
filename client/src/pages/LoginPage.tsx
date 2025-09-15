@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthContext } from '../contexts/AuthContext';
+import logoSkemino from '../assets/logo-skemino.webp';
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -65,10 +66,11 @@ const LoginPage: React.FC = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center space-x-3 mb-6 group">
-            <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
-              <span className="text-white font-bold text-2xl">S</span>
-            </div>
-            <span className="text-3xl font-bold text-white">Skèmino</span>
+            <img
+              src={logoSkemino}
+              alt="Skèmino"
+              className="h-16 w-auto group-hover:scale-105 transition-transform duration-200"
+            />
           </Link>
 
           <h1 className="text-3xl font-bold text-white mb-2">Benvenuto</h1>

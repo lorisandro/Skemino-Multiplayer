@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useWebSocket } from './useWebSocket';
+// import { useWebSocket } from './useWebSocket'; // Temporarily disabled for demo
 
 export interface MatchmakingState {
   isSearching: boolean;
@@ -30,7 +30,9 @@ interface UseMatchmakingOptions {
 
 export const useMatchmaking = (options: UseMatchmakingOptions = {}) => {
   const { onMatchFound, onError, isGuest = false, userRating = 1200 } = options;
-  const { socket, isConnected } = useWebSocket();
+  // const { socket, isConnected } = useWebSocket(); // Temporarily disabled for demo
+  const socket = null;
+  const isConnected = true; // Mock connection for demo
 
   const [state, setState] = useState<MatchmakingState>({
     isSearching: false,
@@ -40,12 +42,9 @@ export const useMatchmaking = (options: UseMatchmakingOptions = {}) => {
     error: null,
   });
 
-  // Join matchmaking queue
+  // Join matchmaking queue (Demo version)
   const joinQueue = useCallback(async (timeControl: string) => {
-    if (!socket || !isConnected) {
-      onError?.('No connection to server');
-      return false;
-    }
+    console.log('🎮 Starting matchmaking demo for:', timeControl);
 
     try {
       setState(prev => ({
@@ -55,19 +54,34 @@ export const useMatchmaking = (options: UseMatchmakingOptions = {}) => {
         error: null,
       }));
 
-      // For guests, use a different event or include guest flag
-      if (isGuest) {
-        socket.emit('matchmaking:join-guest', {
+      // Demo: Simulate finding a match after 8-15 seconds
+      const matchDelay = Math.random() * 7000 + 8000; // 8-15 seconds
+      setTimeout(() => {
+        const mockOpponent = {
+          userId: 'demo_opponent_' + Date.now(),
+          username: isGuest ? 'Player_' + Math.floor(Math.random() * 1000) : 'SkeminoMaster',
+          rating: userRating + (Math.random() - 0.5) * 200,
+          isGuest: Math.random() > 0.5,
+        };
+
+        const matchData: MatchFoundData = {
+          gameId: 'demo_game_' + Date.now(),
+          color: Math.random() > 0.5 ? 'white' : 'black',
+          opponent: mockOpponent,
           timeControl,
-          guestRating: userRating,
-          preferences: {
-            maxRatingDifference: 400, // More flexible for guests
-            preferredColor: 'random',
-          }
-        });
-      } else {
-        socket.emit('matchmaking:join', timeControl);
-      }
+        };
+
+        setState(prev => ({
+          ...prev,
+          isSearching: false,
+          timeControl: null,
+          queuePosition: null,
+          estimatedWait: null,
+        }));
+
+        onMatchFound?.(matchData);
+        console.log('🎯 Demo match found:', matchData);
+      }, matchDelay);
 
       return true;
     } catch (error) {
@@ -79,11 +93,11 @@ export const useMatchmaking = (options: UseMatchmakingOptions = {}) => {
       onError?.('Failed to join matchmaking queue');
       return false;
     }
-  }, [socket, isConnected, isGuest, userRating, onError]);
+  }, [isGuest, userRating, onError, onMatchFound]);
 
-  // Leave matchmaking queue
+  // Leave matchmaking queue (Demo version)
   const leaveQueue = useCallback(() => {
-    if (!socket) return;
+    console.log('❌ Leaving matchmaking queue (demo)');
 
     setState(prev => ({
       ...prev,
@@ -92,89 +106,15 @@ export const useMatchmaking = (options: UseMatchmakingOptions = {}) => {
       queuePosition: null,
       estimatedWait: null,
     }));
+  }, []);
 
-    if (isGuest) {
-      socket.emit('matchmaking:leave-guest');
-    } else {
-      socket.emit('matchmaking:leave');
-    }
-  }, [socket, isGuest]);
-
-  // Set up socket event listeners
+  // Set up socket event listeners (Disabled for demo)
   useEffect(() => {
-    if (!socket) return;
+    // Disabled for demo - no WebSocket connection needed
+    return () => {};
+  }, []);
 
-    // Match found
-    const handleMatchFound = (data: MatchFoundData) => {
-      setState(prev => ({
-        ...prev,
-        isSearching: false,
-        timeControl: null,
-        queuePosition: null,
-        estimatedWait: null,
-      }));
-      onMatchFound?.(data);
-    };
-
-    // Queue status updates
-    const handleQueueUpdate = (data: {
-      position: number;
-      estimatedWait: number;
-      playersInQueue: number;
-    }) => {
-      setState(prev => ({
-        ...prev,
-        queuePosition: data.position,
-        estimatedWait: data.estimatedWait,
-      }));
-    };
-
-    // Matchmaking queued
-    const handleQueued = (data: { timeControl: string }) => {
-      setState(prev => ({
-        ...prev,
-        isSearching: true,
-        timeControl: data.timeControl,
-      }));
-    };
-
-    // Matchmaking error
-    const handleMatchmakingError = (error: { code: string; message: string }) => {
-      setState(prev => ({
-        ...prev,
-        isSearching: false,
-        error: error.message,
-      }));
-      onError?.(error.message);
-    };
-
-    // Register listeners
-    socket.on('match:found', handleMatchFound);
-    socket.on('matchmaking:queue-update', handleQueueUpdate);
-    socket.on('matchmaking:queued', handleQueued);
-    socket.on('matchmaking:error', handleMatchmakingError);
-
-    // Guest-specific events
-    if (isGuest) {
-      socket.on('matchmaking:guest-queued', handleQueued);
-      socket.on('matchmaking:guest-error', handleMatchmakingError);
-    }
-
-    // Cleanup
-    return () => {
-      socket.off('match:found', handleMatchFound);
-      socket.off('matchmaking:queue-update', handleQueueUpdate);
-      socket.off('matchmaking:queued', handleQueued);
-      socket.off('matchmaking:error', handleMatchmakingError);
-
-      if (isGuest) {
-        socket.off('matchmaking:guest-queued', handleQueued);
-        socket.off('matchmaking:guest-error', handleMatchmakingError);
-      }
-    };
-  }, [socket, onMatchFound, onError, isGuest]);
-
-  // Auto-cleanup on unmount or disconnection
+  // Auto-cleanup on unmount or disconnection (Demo version)
   useEffect(() => {
     return () => {
       if (state.isSearching) {
