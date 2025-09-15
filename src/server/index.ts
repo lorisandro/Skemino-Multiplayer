@@ -12,6 +12,7 @@ import gameRouter from './routes/games';
 import userRouter from './routes/users';
 import tournamentRouter from './routes/tournaments';
 import { WebSocketManager } from './websocket/WebSocketManager';
+import { DatabaseManager } from './database/DatabaseManager';
 
 dotenv.config();
 
@@ -55,6 +56,10 @@ app.use(errorHandler);
 // Initialize services
 async function initializeServices(): Promise<void> {
   try {
+    // Initialize Database Manager
+    await DatabaseManager.initialize();
+    console.log('Database manager initialized');
+
     // Initialize WebSocket manager
     new WebSocketManager(httpServer);
     console.log('WebSocket manager initialized');

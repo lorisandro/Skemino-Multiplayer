@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuthContext } from '../contexts/AuthContext';
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
+  const { login, socialLogin } = useAuthContext();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -16,29 +18,42 @@ const LoginPage: React.FC = () => {
     setIsLoading(true);
     setError('');
 
-    console.log('Form Data:', formData);
-    console.log('Email:', formData.email);
-    console.log('Password:', formData.password);
-    console.log('Both filled?', formData.email && formData.password);
+    try {
+      const response = await login({
+        identifier: formData.email,
+        password: formData.password,
+        rememberMe: formData.rememberMe
+      });
 
-    // Simulazione login
-    setTimeout(() => {
-      if (formData.email && formData.password) {
+      if (response.success) {
         console.log('Login successful, navigating to dashboard');
         navigate('/dashboard');
       } else {
-        console.log('Missing email or password');
-        setError('Email e password sono obbligatori');
+        setError(response.message || 'Credenziali non valide');
       }
+    } catch (err) {
+      console.error('Login error:', err);
+      setError('Errore durante il login. Riprova.');
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
-  const handleSocialLogin = (provider: string) => {
+  const handleSocialLogin = async (provider: string) => {
     setIsLoading(true);
-    setTimeout(() => {
-      navigate('/dashboard');
-    }, 1000);
+    try {
+      const response = await socialLogin(provider);
+      if (response.success) {
+        navigate('/dashboard');
+      } else {
+        setError(response.message || `Errore durante il login con ${provider}`);
+      }
+    } catch (err) {
+      console.error('Social login error:', err);
+      setError(`Errore durante il login con ${provider}`);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
