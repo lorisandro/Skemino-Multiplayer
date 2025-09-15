@@ -12,7 +12,8 @@ const DashboardPage: React.FC = () => {
   };
 
   const handlePlayNow = () => {
-    navigate('/game');
+    // Navigate with intent parameter for auto-matchmaking
+    navigate('/game?intent=quickmatch&mode=ranked');
   };
 
   return (

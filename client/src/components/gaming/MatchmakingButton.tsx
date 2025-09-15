@@ -1,36 +1,65 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useSocket } from '../../hooks/useSocket';
 import { useGameStore } from '../../store/gameStore';
+import { useAuthContext } from '../../contexts/AuthContext';
 
 interface MatchmakingButtonProps {
   className?: string;
+  autoStart?: boolean;
 }
 
-export const MatchmakingButton: React.FC<MatchmakingButtonProps> = ({ className }) => {
+export const MatchmakingButton: React.FC<MatchmakingButtonProps> = ({ className, autoStart = false }) => {
   const { connected, startMatchmaking, cancelMatchmaking } = useSocket();
-  const { distributionState } = useGameStore();
+  const { distributionState, currentPlayer, opponent } = useGameStore();
+  const { user } = useAuthContext();
   const [isSearching, setIsSearching] = useState(false);
+  const [hasAutoStarted, setHasAutoStarted] = useState(false);
 
   const handleStartMatchmaking = () => {
     if (!connected) return;
 
-    // Demo player data - in real app this would come from auth
-    const demoPlayer = {
+    // Use real user data if available, otherwise fallback to demo
+    const playerData = user ? {
+      playerId: user.id || `player_${Math.random().toString(36).substr(2, 9)}`,
+      username: user.displayName || user.email?.split('@')[0] || 'Guest',
+      rating: user.rating || 1200,
+      level: user.level?.name || 'Beginner',
+    } : {
       playerId: `player_${Math.random().toString(36).substr(2, 9)}`,
       username: `Player${Math.floor(Math.random() * 1000)}`,
       rating: 1200 + Math.floor(Math.random() * 800), // Random rating 1200-2000
     };
 
-    console.log('Starting matchmaking:', demoPlayer);
+    console.log('Starting matchmaking:', playerData);
     setIsSearching(true);
-    startMatchmaking(demoPlayer);
+    startMatchmaking(playerData);
   };
 
   const handleCancelMatchmaking = () => {
     setIsSearching(false);
     cancelMatchmaking();
+    // Clear session if canceling
+    localStorage.removeItem('skemino_matchmaking_session');
   };
+
+  // Handle auto-start when prop is true
+  useEffect(() => {
+    if (autoStart && connected && !hasAutoStarted && !isSearching && !currentPlayer) {
+      console.log('Auto-starting matchmaking from button');
+      handleStartMatchmaking();
+      setHasAutoStarted(true);
+    }
+  }, [autoStart, connected, hasAutoStarted, isSearching, currentPlayer]);
+
+  // Update searching state based on distribution phase
+  useEffect(() => {
+    if (distributionState.phase === 'waiting' || distributionState.phase === 'matchmaking') {
+      setIsSearching(true);
+    } else if (distributionState.phase === 'complete' || distributionState.phase === 'idle') {
+      setIsSearching(false);
+    }
+  }, [distributionState.phase]);
 
   // Don't show button if already in game or distributing
   if (distributionState.phase === 'active' || distributionState.phase === 'complete') {
@@ -60,7 +89,7 @@ export const MatchmakingButton: React.FC<MatchmakingButtonProps> = ({ className 
       </motion.button>
 
       {/* Status indicators */}
-      {distributionState.phase === 'waiting' && (
+      {(distributionState.phase === 'waiting' || (isSearching && !opponent)) && (
         <motion.div
           className="text-center"
           initial={{ opacity: 0 }}
@@ -71,7 +100,7 @@ export const MatchmakingButton: React.FC<MatchmakingButtonProps> = ({ className 
             <span className="text-sm font-medium">Searching for opponent...</span>
           </div>
           <div className="text-xs text-gray-500 mt-1">
-            Rating-based matching in progress
+            {user ? `Matching for rating ${user.rating || 1200}` : 'Rating-based matching in progress'}
           </div>
         </motion.div>
       )}

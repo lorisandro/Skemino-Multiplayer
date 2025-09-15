@@ -1,15 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 import { MatchmakingButton } from '../components/gaming/MatchmakingButton';
 import { GameInterface } from '../components/gaming/GameInterface';
 import { PreGameInterface } from '../components/gaming/PreGameInterface';
 import { useGameStore } from '../store/gameStore';
 import { useSocket } from '../hooks/useSocket';
+import { useAuthContext } from '../contexts/AuthContext';
 
 export const MatchmakingDemo: React.FC = () => {
   const { gameState, currentPlayer, opponent, distributionState } = useGameStore();
-  const { connected, latency } = useSocket();
+  const { connected, latency, startMatchmaking } = useSocket();
+  const { user } = useAuthContext();
+  const location = useLocation();
   const [preGameState, setPreGameState] = useState<'waiting' | 'matched' | 'distributing' | 'ready' | 'starting'>('waiting');
+  const [autoMatchmakingStarted, setAutoMatchmakingStarted] = useState(false);
 
   // Determine the current phase
   const getGamePhase = () => {
@@ -42,6 +47,71 @@ export const MatchmakingDemo: React.FC = () => {
     // Reset game store state
   };
 
+  // Auto-start matchmaking when coming from dashboard with intent
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const intent = urlParams.get('intent');
+    const mode = urlParams.get('mode');
+
+    // Check if we should auto-start matchmaking
+    if (intent === 'quickmatch' && connected && !autoMatchmakingStarted && !currentPlayer && user) {
+      console.log('Auto-starting matchmaking from dashboard intent');
+
+      // Prepare player data from authenticated user
+      const playerData = {
+        playerId: user.id || `player_${Math.random().toString(36).substr(2, 9)}`,
+        username: user.displayName || user.email?.split('@')[0] || 'Guest',
+        rating: user.rating || 1200,
+        level: user.level?.name || 'Beginner',
+        mode: mode || 'ranked'
+      };
+
+      // Start matchmaking automatically
+      startMatchmaking(playerData);
+      setAutoMatchmakingStarted(true);
+
+      // Save session for recovery
+      localStorage.setItem('skemino_matchmaking_session', JSON.stringify({
+        playerData,
+        intent,
+        mode,
+        timestamp: Date.now()
+      }));
+    }
+  }, [location.search, connected, autoMatchmakingStarted, currentPlayer, startMatchmaking, user]);
+
+  // Session recovery on reconnect
+  useEffect(() => {
+    if (connected && !currentPlayer && !autoMatchmakingStarted) {
+      const session = localStorage.getItem('skemino_matchmaking_session');
+      if (session) {
+        try {
+          const sessionData = JSON.parse(session);
+          const sessionAge = Date.now() - sessionData.timestamp;
+
+          // Resume if session is less than 5 minutes old
+          if (sessionAge < 5 * 60 * 1000) {
+            console.log('Resuming matchmaking from saved session');
+            startMatchmaking(sessionData.playerData);
+            setAutoMatchmakingStarted(true);
+          } else {
+            // Clear expired session
+            localStorage.removeItem('skemino_matchmaking_session');
+          }
+        } catch (error) {
+          console.error('Error recovering matchmaking session:', error);
+          localStorage.removeItem('skemino_matchmaking_session');
+        }
+      }
+    }
+  }, [connected, currentPlayer, autoMatchmakingStarted, startMatchmaking]);
+
+  // Clean up session when match is found
+  useEffect(() => {
+    if (opponent) {
+      localStorage.removeItem('skemino_matchmaking_session');
+    }
+  }, [opponent]);
 
   return (
     <div className="min-h-screen">
@@ -88,13 +158,16 @@ export const MatchmakingDemo: React.FC = () => {
                 </div>
               </motion.div>
 
-              {/* Matchmaking button */}
+              {/* Matchmaking button - pass autoMatchmakingStarted to control state */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.8, duration: 0.4 }}
               >
-                <MatchmakingButton className="mb-8" />
+                <MatchmakingButton
+                  className="mb-8"
+                  autoStart={autoMatchmakingStarted}
+                />
               </motion.div>
 
               {/* Connection info */}

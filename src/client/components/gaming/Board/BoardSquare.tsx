@@ -14,13 +14,6 @@ interface BoardSquareProps {
   isCentralDiamond?: boolean;
 }
 
-const VERTEX_COLORS = {
-  'a1': { bg: 'linear-gradient(135deg, #e0e0e0 0%, #d0d0d0 50%, #e0e0e0 100%)', circle: '#5DADE2' }, // Azzurro su grigio chiaro
-  'f1': { bg: 'linear-gradient(135deg, #e0e0e0 0%, #d0d0d0 50%, #e0e0e0 100%)', circle: '#58D68D' }, // Verde su grigio chiaro
-  'a6': { bg: 'linear-gradient(135deg, #e0e0e0 0%, #d0d0d0 50%, #e0e0e0 100%)', circle: '#EC7063' }, // Rosso su grigio chiaro
-  'f6': { bg: 'linear-gradient(135deg, #e0e0e0 0%, #d0d0d0 50%, #e0e0e0 100%)', circle: '#F4D03F' }  // Giallo su grigio chiaro
-};
-
 export const BoardSquare = memo(({
   position,
   row,
@@ -34,36 +27,56 @@ export const BoardSquare = memo(({
   vertexColor,
   isCentralDiamond
 }: BoardSquareProps) => {
-  const isVertex = VERTEX_COLORS[position as keyof typeof VERTEX_COLORS];
+  // Check if this is a vertex cell
+  const isVertex = ['a1', 'f1', 'a6', 'f6'].includes(position);
+
+  // Check if this is a central diamond cell
+  const isDiamond = ['c3', 'c4', 'd3', 'd4'].includes(position);
 
   const squareStyle = useMemo(() => {
+    // Vertex cells - black background
     if (isVertex) {
       return {
-        background: isVertex.bg,
+        background: '#000000',
         position: 'relative' as const,
-        border: '1px solid #999'
+        border: '1px solid #666'
       };
     }
 
-    // Caselle del diamante centrale - grigio chiaro come le altre
-    if (isCentralDiamond) {
+    // Central diamond cells - black background
+    if (isDiamond) {
       return {
-        background: 'linear-gradient(135deg, #e0e0e0 0%, #d0d0d0 50%, #e0e0e0 100%)',
-        border: '1px solid #999',
+        background: '#000000',
+        border: '1px solid #666',
         position: 'relative' as const
       };
     }
 
-    // Celle grigio chiaro/bianche uniformi con gradiente al centro come richiesto - TUTTE uniformi
+    // Alternating white/gray pattern for standard cells
+    const file = position.charCodeAt(0) - 97; // a=0, b=1, etc.
+    const rank = parseInt(position[1]) - 1; // 1=0, 2=1, etc.
+    const isLight = (file + rank) % 2 === 0;
+
     return {
-      background: 'linear-gradient(135deg, #e0e0e0 0%, #d0d0d0 50%, #e0e0e0 100%)', // Gradiente chiaro uniforme per tutte le celle
-      border: '1px solid #999'
+      background: isLight ? '#ffffff' : '#f5f5f5',
+      border: '1px solid #cccccc'
     };
-  }, [row, col, isVertex, isCentralDiamond]);
+  }, [position, isVertex, isDiamond]);
 
   const handleClick = () => {
     if (isPlayerTurn) {
       onClick();
+    }
+  };
+
+  // Get vertex circle color
+  const getVertexColor = () => {
+    switch (position) {
+      case 'a1': return '#4A90E2'; // Blue
+      case 'f1': return '#7ED321'; // Green
+      case 'a6': return '#D0021B'; // Red
+      case 'f6': return '#F5A623'; // Yellow
+      default: return 'transparent';
     }
   };
 
@@ -72,36 +85,44 @@ export const BoardSquare = memo(({
       className={`
         board-square
         ${isVertex ? 'square-vertex' : ''}
-        ${isCentralDiamond ? 'square-central-diamond' : ''}
+        ${isDiamond ? 'square-diamond' : ''}
         ${isHighlighted ? 'square-highlighted' : ''}
         ${isSelected ? 'square-selected' : ''}
         ${isPlayerTurn ? 'square-interactive' : ''}
         ${card ? 'square-occupied' : ''}
       `}
-      style={{
-        ...squareStyle,
-        background: isVertex ? squareStyle.background :
-          isCentralDiamond ? squareStyle.background :
-          squareStyle.background + ', radial-gradient(circle at center, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.3) 40%, transparent 70%)'
-      }}
+      style={squareStyle}
       onClick={handleClick}
       data-position={position}
     >
-      {/* Vertex circle */}
+      {/* Vertex colored circle */}
       {isVertex && (
         <div
           className="vertex-circle"
           style={{
-            backgroundColor: isVertex.circle,
-            boxShadow: `0 0 25px ${isVertex.circle}60, inset 0 0 10px rgba(255,255,255,0.3)`
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '60%',
+            height: '60%',
+            borderRadius: '50%',
+            backgroundColor: getVertexColor(),
           }}
         />
       )}
 
-      {/* Position label */}
-      <div className="square-label">
+      {/* Position label - commented out for production */}
+      {/* <div className="square-label" style={{
+        position: 'absolute',
+        top: '2px',
+        right: '2px',
+        fontSize: '10px',
+        color: (isVertex || isDiamond) ? '#ffffff' : '#999999',
+        opacity: 0.5
+      }}>
         {position}
-      </div>
+      </div> */}
 
       {/* Card display */}
       {card && (
