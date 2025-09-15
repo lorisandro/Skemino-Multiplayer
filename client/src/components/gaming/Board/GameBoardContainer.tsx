@@ -196,8 +196,8 @@ export const GameBoardContainer: React.FC<GameBoardContainerProps> = ({
           style={{
             width: boardSize,
             height: boardSize,
-            maxWidth: isMobile ? '90vw' : is2K ? '85vh' : '70vh',
-            maxHeight: isMobile ? '90vw' : is2K ? '85vh' : '70vh',
+            maxWidth: isMobile ? '90vw' : is2K ? '90vh' : '75vh',
+            maxHeight: isMobile ? '90vw' : is2K ? '90vh' : '75vh',
             // Enhanced styling for 2K displays
             ...(is2K && {
               boxShadow: '0 35px 70px -12px rgba(0, 0, 0, 0.15), 0 0 0 2px rgba(0, 0, 0, 0.05)',

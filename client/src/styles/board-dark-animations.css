@@ -828,14 +828,14 @@ div.skemino-square-dark.skemino-central-d4,
   width: 39.2rem;  /* Default size increased from 35rem */
   height: 54.88rem; /* Height calculated for 6x6 grid with 1:1.4 aspect ratio cells - increased from 49rem */
 
-  /* Perfect centering with flexbox - no padding to avoid offset */
+  /* Perfect centering with flexbox - FIXED: eliminato padding interno asimmetrico */
   position: relative;
-  margin: 0 auto;
+  margin: 1rem auto; /* Spacing esterno invece di padding interno */
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem; /* Outer padding for visual spacing */
-  box-sizing: border-box; /* Include padding in total size calculation */
+  /* REMOVED: padding: 1rem; - Causa della decentratura verso destra */
+  /* REMOVED: box-sizing: border-box; - Non più necessario senza padding */
 
   /* Dark gaming theme - this creates the black area around the board */
   background: var(--skemino-bg-primary);
@@ -859,11 +859,15 @@ div.skemino-square-dark.skemino-central-d4,
   /* Rem-based spacing */
   gap: 0.125rem;
 
-  /* Natural grid sizing - use 100% width/height for perfect flexbox centering */
-  width: 100%;
-  height: 100%;
-  max-width: 36.96rem;  /* Constraint for maximum size */
-  max-height: 52.64rem; /* Constraint for maximum height */
+  /* Perfect centering sizing - FIXED: dimensioni ottimizzate per centraggio perfetto */
+  width: 36.96rem;  /* Fixed size senza compromessi di padding */
+  height: 52.64rem; /* Fixed height per aspect ratio perfetto */
+
+  /* Perfect positioning for zero drift */
+  position: relative;
+  left: 0;
+  top: 0;
+  transform: translateX(0) translateY(0); /* Reset any transforms */
 
   /* Gaming aesthetics */
   background: inherit;
@@ -926,16 +930,22 @@ div.skemino-square-dark.skemino-central-d4,
     width: 31.36rem !important; /* Increased from 28rem */
     height: 43.68rem !important; /* Increased from 39rem */
     border-width: 1px;
-    padding: 1rem; /* Consistent mobile padding */
-    box-sizing: border-box; /* Include padding in size calculation */
+    margin: 0.5rem auto; /* External spacing - no internal padding */
+    /* REMOVED: padding: 1rem; - Causa decentratura su mobile */
+    /* REMOVED: box-sizing: border-box; - Non necessario senza padding */
   }
 
   .skemino-grid-zoom-resistant {
-    width: 100% !important;
-    height: 100% !important;
-    max-width: 29.12rem !important; /* Natural mobile grid width - increased from 26rem */
-    max-height: 41.44rem !important; /* Natural mobile grid height - increased from 37rem */
+    width: 29.12rem !important; /* Fixed size per perfect centering */
+    height: 41.44rem !important; /* Fixed height per perfect centering */
+    /* REMOVED: max-width e max-height - use fixed sizes */
     gap: 0.0625rem;
+
+    /* Perfect positioning for mobile */
+    position: relative;
+    left: 0;
+    top: 0;
+    transform: translateX(0) translateY(0);
   }
 
   .skemino-cell-zoom-resistant {
@@ -954,16 +964,22 @@ div.skemino-square-dark.skemino-central-d4,
   .skemino-board-zoom-resistant {
     width: 35rem !important;
     height: 49rem !important;
-    padding: 1rem; /* Consistent tablet padding */
-    box-sizing: border-box; /* Include padding in size calculation */
+    margin: 1rem auto; /* External spacing - no internal padding */
+    /* REMOVED: padding: 1rem; - Causa decentratura su tablet */
+    /* REMOVED: box-sizing: border-box; - Non necessario senza padding */
   }
 
   .skemino-grid-zoom-resistant {
-    width: 100% !important;
-    height: 100% !important;
-    max-width: 33rem !important; /* Natural tablet grid width */
-    max-height: 47rem !important; /* Natural tablet grid height */
+    width: 33rem !important; /* Fixed size per perfect centering */
+    height: 47rem !important; /* Fixed height per perfect centering */
+    /* REMOVED: max-width e max-height - use fixed sizes */
     gap: 0.125rem;
+
+    /* Perfect positioning for tablet */
+    position: relative;
+    left: 0;
+    top: 0;
+    transform: translateX(0) translateY(0);
   }
 
   .skemino-cell-zoom-resistant {
@@ -982,16 +998,22 @@ div.skemino-square-dark.skemino-central-d4,
     width: 36rem !important;
     height: 50rem !important;
     border-width: 2px;
-    padding: 1rem; /* Consistent desktop padding */
-    box-sizing: border-box; /* Include padding in size calculation */
+    margin: 1rem auto; /* External spacing - no internal padding */
+    /* REMOVED: padding: 1rem; - Causa decentratura su desktop */
+    /* REMOVED: box-sizing: border-box; - Non necessario senza padding */
   }
 
   .skemino-grid-zoom-resistant {
-    width: 100% !important;
-    height: 100% !important;
-    max-width: 34rem !important; /* Natural desktop grid width */
-    max-height: 48rem !important; /* Natural desktop grid height */
+    width: 34rem !important; /* Fixed size per perfect centering */
+    height: 48rem !important; /* Fixed height per perfect centering */
+    /* REMOVED: max-width e max-height - use fixed sizes */
     gap: 0.1875rem;
+
+    /* Perfect positioning for desktop */
+    position: relative;
+    left: 0;
+    top: 0;
+    transform: translateX(0) translateY(0);
   }
 
   .skemino-cell-zoom-resistant {
@@ -1011,16 +1033,22 @@ div.skemino-square-dark.skemino-central-d4,
     width: 42rem !important;
     height: 59rem !important;
     border-width: 3px;
-    padding: 1rem; /* Consistent 2K padding */
-    box-sizing: border-box; /* Include padding in size calculation */
+    margin: 1rem auto; /* External spacing - no internal padding */
+    /* REMOVED: padding: 1rem; - Causa decentratura su 2K */
+    /* REMOVED: box-sizing: border-box; - Non necessario senza padding */
   }
 
   .skemino-grid-zoom-resistant {
-    width: 100% !important;
-    height: 100% !important;
-    max-width: 40rem !important; /* Natural 2K grid width */
-    max-height: 57rem !important; /* Natural 2K grid height */
+    width: 40rem !important; /* Fixed size per perfect centering */
+    height: 57rem !important; /* Fixed height per perfect centering */
+    /* REMOVED: max-width e max-height - use fixed sizes */
     gap: 0.25rem;
+
+    /* Perfect positioning for 2K */
+    position: relative;
+    left: 0;
+    top: 0;
+    transform: translateX(0) translateY(0);
   }
 
   .skemino-cell-zoom-resistant {
@@ -1040,16 +1068,22 @@ div.skemino-square-dark.skemino-central-d4,
     width: 48rem !important;
     height: 67rem !important;
     border-width: 3px;
-    padding: 1rem; /* Consistent ultrawide padding */
-    box-sizing: border-box; /* Include padding in size calculation */
+    margin: 1rem auto; /* External spacing - no internal padding */
+    /* REMOVED: padding: 1rem; - Causa decentratura su ultrawide */
+    /* REMOVED: box-sizing: border-box; - Non necessario senza padding */
   }
 
   .skemino-grid-zoom-resistant {
-    width: 100% !important;
-    height: 100% !important;
-    max-width: 46rem !important; /* Natural ultrawide grid width */
-    max-height: 65rem !important; /* Natural ultrawide grid height */
+    width: 46rem !important; /* Fixed size per perfect centering */
+    height: 65rem !important; /* Fixed height per perfect centering */
+    /* REMOVED: max-width e max-height - use fixed sizes */
     gap: 0.3125rem;
+
+    /* Perfect positioning for ultrawide */
+    position: relative;
+    left: 0;
+    top: 0;
+    transform: translateX(0) translateY(0);
   }
 
   .skemino-cell-zoom-resistant {
