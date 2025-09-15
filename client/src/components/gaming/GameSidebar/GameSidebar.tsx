@@ -33,8 +33,8 @@ export const GameSidebar: React.FC<GameSidebarProps> = ({
 
   const tabs = [
     { id: 'play', label: 'Gioca', icon: PlayIcon },
-    { id: 'spectators', label: 'Spectators', icon: UsersIcon },
-    { id: 'chat', label: 'Chat', icon: ChatBubbleLeftIcon },
+    { id: 'spectators', label: 'Partite', icon: UsersIcon },
+    { id: 'chat', label: 'Giocatori', icon: ChatBubbleLeftIcon },
   ] as const;
 
   // Mock data for development
