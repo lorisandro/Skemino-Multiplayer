@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -30,9 +30,9 @@ const HomePage: React.FC = () => {
             </div>
 
             <div className="flex items-center space-x-4">
-              <button className="text-gray-300 hover:text-white transition-colors">
+              <Link to="/login" className="text-gray-300 hover:text-white transition-colors">
                 Accedi
-              </button>
+              </Link>
               <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors">
                 Registrati
               </button>

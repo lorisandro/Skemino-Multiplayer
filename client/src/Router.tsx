@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import App from './App';
 import AppDebug from './App.debug';
 import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 
 const GamePage = () => {
   return <App />;
@@ -16,6 +18,8 @@ export function Router() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/home" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route path="/game" element={<GamePage />} />
         <Route path="/game/:roomId" element={<GamePage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
