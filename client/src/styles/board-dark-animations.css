@@ -4,6 +4,57 @@
  * Optimized for 60fps performance with hardware acceleration
  */
 
+/* Vertex Indicator Gradients - For the small circles on vertices */
+.skemino-vertex-indicator-blue {
+  background: radial-gradient(circle at center,
+    rgba(96, 165, 250, 1.0) 0%,
+    rgba(59, 130, 246, 1.0) 100%
+  ) !important;
+}
+
+.skemino-vertex-indicator-green {
+  background: radial-gradient(circle at center,
+    rgba(74, 222, 128, 1.0) 0%,
+    rgba(34, 197, 94, 1.0) 100%
+  ) !important;
+}
+
+.skemino-vertex-indicator-red {
+  background: radial-gradient(circle at center,
+    rgba(248, 113, 113, 1.0) 0%,
+    rgba(239, 68, 68, 1.0) 100%
+  ) !important;
+}
+
+.skemino-vertex-indicator-yellow {
+  background: radial-gradient(circle at center,
+    rgba(251, 191, 36, 1.0) 0%,
+    rgba(245, 158, 11, 1.0) 100%
+  ) !important;
+}
+
+/* Valid Move and Hole Indicators */
+.skemino-valid-move-indicator {
+  background: radial-gradient(circle at center,
+    rgba(96, 165, 250, 1.0) 0%,
+    rgba(59, 130, 246, 1.0) 100%
+  ) !important;
+}
+
+.skemino-hole-indicator {
+  background: radial-gradient(circle at center,
+    rgba(107, 114, 128, 1.0) 0%,
+    rgba(75, 85, 99, 1.0) 100%
+  ) !important;
+}
+
+.skemino-hole-inner {
+  background: radial-gradient(circle at center,
+    rgba(75, 85, 99, 1.0) 0%,
+    rgba(55, 65, 81, 1.0) 100%
+  ) !important;
+}
+
 /* ===== CSS VARIABLES - DARK GAMING THEME ===== */
 :root {
   /* Dark Gaming Colors - Professional */
@@ -161,6 +212,143 @@
     rgba(255, 255, 255, 1.0) 100%
   ) !important;
   box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05) !important; /* Subtle inner shadow for depth */
+}
+
+/* Enhanced specificity for gradient squares to override any conflicting styles */
+.skemino-square-dark.skemino-cell-gradient,
+div.skemino-square-dark.skemino-cell-gradient {
+  background: radial-gradient(circle at center,
+    rgba(230, 230, 230, 1.0) 0%,      /* Light gray center */
+    rgba(235, 235, 235, 1.0) 15%,     /* Very light gray */
+    rgba(240, 240, 240, 1.0) 30%,     /* Lighter gray */
+    rgba(245, 245, 245, 1.0) 45%,     /* Almost white */
+    rgba(250, 250, 250, 1.0) 60%,     /* Near white */
+    rgba(255, 255, 255, 1.0) 80%,     /* Pure white */
+    rgba(255, 255, 255, 1.0) 100%     /* Pure white edge */
+  ) !important;
+  background-image: radial-gradient(circle at center,
+    rgba(230, 230, 230, 1.0) 0%,
+    rgba(235, 235, 235, 1.0) 15%,
+    rgba(240, 240, 240, 1.0) 30%,
+    rgba(245, 245, 245, 1.0) 45%,
+    rgba(250, 250, 250, 1.0) 60%,
+    rgba(255, 255, 255, 1.0) 80%,
+    rgba(255, 255, 255, 1.0) 100%
+  ) !important;
+  background-color: transparent !important; /* Override any background-color */
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05) !important; /* Subtle inner shadow for depth */
+}
+
+/* Additional specificity rule to override any Tailwind background utilities */
+.relative.border.border-gray-600\/80.skemino-square-dark.skemino-cell-gradient {
+  background: radial-gradient(circle at center,
+    rgba(230, 230, 230, 1.0) 0%,
+    rgba(235, 235, 235, 1.0) 15%,
+    rgba(240, 240, 240, 1.0) 30%,
+    rgba(245, 245, 245, 1.0) 45%,
+    rgba(250, 250, 250, 1.0) 60%,
+    rgba(255, 255, 255, 1.0) 80%,
+    rgba(255, 255, 255, 1.0) 100%
+  ) !important;
+  background-image: radial-gradient(circle at center,
+    rgba(230, 230, 230, 1.0) 0%,
+    rgba(235, 235, 235, 1.0) 15%,
+    rgba(240, 240, 240, 1.0) 30%,
+    rgba(245, 245, 245, 1.0) 45%,
+    rgba(250, 250, 250, 1.0) 60%,
+    rgba(255, 255, 255, 1.0) 80%,
+    rgba(255, 255, 255, 1.0) 100%
+  ) !important;
+  background-color: transparent !important;
+}
+
+/* Vertex Color Gradients - High specificity for Tailwind override */
+.skemino-square-dark.skemino-vertex-blue,
+div.skemino-square-dark.skemino-vertex-blue,
+.relative.skemino-square-dark.skemino-vertex-blue {
+  background: radial-gradient(circle at center,
+    rgba(180, 180, 180, 1.0) 0%,      /* Gray center */
+    rgba(147, 197, 253, 1.0) 20%,     /* Light blue */
+    rgba(96, 165, 250, 1.0) 40%,      /* Medium blue */
+    rgba(59, 130, 246, 1.0) 60%,      /* Blue */
+    rgba(37, 99, 235, 1.0) 80%,       /* Darker blue */
+    rgba(29, 78, 216, 1.0) 100%       /* Deep blue edge */
+  ) !important;
+  background-image: radial-gradient(circle at center,
+    rgba(180, 180, 180, 1.0) 0%,
+    rgba(147, 197, 253, 1.0) 20%,
+    rgba(96, 165, 250, 1.0) 40%,
+    rgba(59, 130, 246, 1.0) 60%,
+    rgba(37, 99, 235, 1.0) 80%,
+    rgba(29, 78, 216, 1.0) 100%
+  ) !important;
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4), inset 0 0 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+.skemino-square-dark.skemino-vertex-green,
+div.skemino-square-dark.skemino-vertex-green,
+.relative.skemino-square-dark.skemino-vertex-green {
+  background: radial-gradient(circle at center,
+    rgba(180, 180, 180, 1.0) 0%,      /* Gray center */
+    rgba(134, 239, 172, 1.0) 20%,     /* Light green */
+    rgba(74, 222, 128, 1.0) 40%,      /* Medium green */
+    rgba(34, 197, 94, 1.0) 60%,       /* Green */
+    rgba(22, 163, 74, 1.0) 80%,       /* Darker green */
+    rgba(21, 128, 61, 1.0) 100%       /* Deep green edge */
+  ) !important;
+  background-image: radial-gradient(circle at center,
+    rgba(180, 180, 180, 1.0) 0%,
+    rgba(134, 239, 172, 1.0) 20%,
+    rgba(74, 222, 128, 1.0) 40%,
+    rgba(34, 197, 94, 1.0) 60%,
+    rgba(22, 163, 74, 1.0) 80%,
+    rgba(21, 128, 61, 1.0) 100%
+  ) !important;
+  box-shadow: 0 10px 25px rgba(34, 197, 94, 0.4), inset 0 0 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+.skemino-square-dark.skemino-vertex-red,
+div.skemino-square-dark.skemino-vertex-red,
+.relative.skemino-square-dark.skemino-vertex-red {
+  background: radial-gradient(circle at center,
+    rgba(180, 180, 180, 1.0) 0%,      /* Gray center */
+    rgba(252, 165, 165, 1.0) 20%,     /* Light red */
+    rgba(248, 113, 113, 1.0) 40%,     /* Medium red */
+    rgba(239, 68, 68, 1.0) 60%,       /* Red */
+    rgba(220, 38, 38, 1.0) 80%,       /* Darker red */
+    rgba(185, 28, 28, 1.0) 100%       /* Deep red edge */
+  ) !important;
+  background-image: radial-gradient(circle at center,
+    rgba(180, 180, 180, 1.0) 0%,
+    rgba(252, 165, 165, 1.0) 20%,
+    rgba(248, 113, 113, 1.0) 40%,
+    rgba(239, 68, 68, 1.0) 60%,
+    rgba(220, 38, 38, 1.0) 80%,
+    rgba(185, 28, 28, 1.0) 100%
+  ) !important;
+  box-shadow: 0 10px 25px rgba(239, 68, 68, 0.4), inset 0 0 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+.skemino-square-dark.skemino-vertex-yellow,
+div.skemino-square-dark.skemino-vertex-yellow,
+.relative.skemino-square-dark.skemino-vertex-yellow {
+  background: radial-gradient(circle at center,
+    rgba(180, 180, 180, 1.0) 0%,      /* Gray center */
+    rgba(254, 240, 138, 1.0) 20%,     /* Light yellow */
+    rgba(253, 224, 71, 1.0) 40%,      /* Medium yellow */
+    rgba(250, 204, 21, 1.0) 60%,      /* Yellow */
+    rgba(234, 179, 8, 1.0) 80%,       /* Darker yellow */
+    rgba(202, 138, 4, 1.0) 100%       /* Deep yellow edge */
+  ) !important;
+  background-image: radial-gradient(circle at center,
+    rgba(180, 180, 180, 1.0) 0%,
+    rgba(254, 240, 138, 1.0) 20%,
+    rgba(253, 224, 71, 1.0) 40%,
+    rgba(250, 204, 21, 1.0) 60%,
+    rgba(234, 179, 8, 1.0) 80%,
+    rgba(202, 138, 4, 1.0) 100%
+  ) !important;
+  box-shadow: 0 10px 25px rgba(250, 204, 21, 0.4), inset 0 0 15px rgba(0, 0, 0, 0.1) !important;
 }
 
 /* Square Styling - Dark Gaming Optimized */

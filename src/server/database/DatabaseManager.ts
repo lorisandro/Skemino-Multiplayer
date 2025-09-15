@@ -214,6 +214,10 @@ export class DatabaseManager {
   }
 
   public static async getClient(): Promise<PoolClient> {
+    if (this.mockMode) {
+      // Return a mock client for mock mode
+      return {} as PoolClient;
+    }
     this.ensureConnection();
     return await this.pool!.connect();
   }
@@ -221,6 +225,10 @@ export class DatabaseManager {
   // User management
   public static async getUserById(userId: string): Promise<User | null> {
     try {
+      if (this.mockMode) {
+        return this.mockUsers.get(userId) || null;
+      }
+
       const client = await this.getClient();
       const result = await client.query(
         'SELECT * FROM users WHERE id = $1',
@@ -300,6 +308,8 @@ export class DatabaseManager {
           updatedAt: new Date()
         };
         this.mockUsers.set(user.id, user);
+        logger.info(`💾 User created in mock database - Email: ${user.email}, Username: ${user.username}, ID: ${user.id}`);
+        logger.info(`📊 Total registered users: ${this.mockUsers.size}`);
         return user;
       }
 
@@ -759,7 +769,7 @@ export class DatabaseManager {
       id: 'demo_user_1',
       username: 'demo',
       email: 'demo@skemino.com',
-      passwordHash: await bcrypt.hash('demo123', 12), // Now properly hashed
+      passwordHash: await bcrypt.hash('demo123', 12),
       rating: 1400,
       level: 3,
       gamesPlayed: 25,
@@ -774,7 +784,7 @@ export class DatabaseManager {
       id: 'test_user_1',
       username: 'test',
       email: 'test@example.com',
-      passwordHash: await bcrypt.hash('test123', 12), // Now properly hashed
+      passwordHash: await bcrypt.hash('test123', 12),
       rating: 1200,
       level: 1,
       gamesPlayed: 0,
@@ -791,5 +801,14 @@ export class DatabaseManager {
     logger.info(`✅ Mock database initialized with ${this.mockUsers.size} demo users`);
     logger.info(`📝 Demo credentials: demo@skemino.com / demo123`);
     logger.info(`📝 Test credentials: test@example.com / test123`);
+  }
+
+  // Debug method to list all registered users (for development)
+  public static getAllMockUsers(): Array<{ email: string; username: string }> {
+    if (!this.mockMode) return [];
+    return Array.from(this.mockUsers.values()).map(u => ({
+      email: u.email,
+      username: u.username
+    }));
   }
 }

@@ -334,6 +334,25 @@ router.get('/me', async (req: Request, res: Response) => {
   }
 });
 
+// Debug endpoint to list all registered users (development only)
+router.get('/users', async (_req: Request, res: Response) => {
+  try {
+    const users = DatabaseManager.getAllMockUsers();
+    logger.info(`📋 Registered users requested: ${users.length} users found`);
+    return res.json({
+      success: true,
+      users,
+      message: `${users.length} users registered in the system`
+    });
+  } catch (error) {
+    logger.error('Error getting users list:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to get users list'
+    });
+  }
+});
+
 // Convert guest to registered user
 router.post('/convert-guest', async (req: Request, res: Response) => {
   try {

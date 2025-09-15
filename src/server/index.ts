@@ -70,7 +70,7 @@ async function initializeServices(): Promise<void> {
   }
 }
 
-// Start server
+// Start server (with authentication fixes)
 async function startServer(): Promise<void> {
   await initializeServices();
 

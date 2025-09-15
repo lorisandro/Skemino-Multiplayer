@@ -40,20 +40,20 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
 
   // Square color based on Skèmino Dark Gaming specifications
   const squareColor = useMemo(() => {
-    // Vertex colors based on Dark Skèmino design - Professional Gaming
+    // Vertex colors with gradient center - Custom colors requested
     if (isVertex) {
       switch (cell) {
-        case 'a1': return 'bg-gradient-to-br from-cyan-500 to-cyan-700 shadow-lg shadow-cyan-500/50'; // Q I - Dark Azzurro
-        case 'f1': return 'bg-gradient-to-br from-emerald-500 to-emerald-700 shadow-lg shadow-emerald-500/50'; // Q II - Dark Verde
-        case 'a6': return 'bg-gradient-to-br from-red-500 to-red-700 shadow-lg shadow-red-500/50'; // Q III - Dark Rosso
-        case 'f6': return 'bg-gradient-to-br from-yellow-500 to-yellow-700 shadow-lg shadow-yellow-500/50'; // Q IV - Dark Giallo
-        default: return 'bg-gradient-to-br from-gray-700 to-gray-900 shadow-lg'; // Altri vertici dark
+        case 'a1': return 'skemino-vertex-blue'; // Blue with gradient center
+        case 'f1': return 'skemino-vertex-green'; // Green with gradient center
+        case 'a6': return 'skemino-vertex-red'; // Red with gradient center
+        case 'f6': return 'skemino-vertex-yellow'; // Yellow with gradient center
+        default: return ''; // Altri vertici dark
       }
     }
 
     // Standard squares: Pure white circular gradient for all non-vertex cells
     // Professional gaming board style with subtle white depth gradient
-    return 'skemino-cell-gradient'; // CSS class for gradient styling
+    return 'skemino-cell-gradient'; // Apply white circular gradient with gray center
   }, [cell, isVertex]);
 
   // Dark Gaming Highlight styles - Professional competitive
@@ -81,7 +81,7 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
         ${squareColor} ${getHighlightStyle()}
         cursor-pointer transition-all duration-200 ease-out
         hover:brightness-125 hover:scale-[1.02] active:scale-[0.98] active:brightness-90
-        backdrop-blur-sm rounded-lg
+        rounded-lg
       `}
       style={{
         '--square-size': `${size}px`,
@@ -108,11 +108,11 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
         <div className="absolute inset-0 flex items-center justify-center z-20">
           <motion.div
             className={`
-              w-8 h-8 rounded-full ring-3 ring-white/30 shadow-2xl skemino-vertex-dark backdrop-blur-sm
-              ${cell === 'a1' ? 'bg-gradient-to-br from-cyan-400 to-cyan-600 shadow-cyan-500/70' : ''}
-              ${cell === 'f1' ? 'bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-emerald-500/70' : ''}
-              ${cell === 'a6' ? 'bg-gradient-to-br from-red-400 to-red-600 shadow-red-500/70' : ''}
-              ${cell === 'f6' ? 'bg-gradient-to-br from-yellow-400 to-yellow-600 shadow-yellow-500/70' : ''}
+              w-8 h-8 rounded-full ring-3 ring-white/30 shadow-2xl skemino-vertex-dark
+              ${cell === 'a1' ? 'skemino-vertex-indicator-blue' : ''}
+              ${cell === 'f1' ? 'skemino-vertex-indicator-green' : ''}
+              ${cell === 'a6' ? 'skemino-vertex-indicator-red' : ''}
+              ${cell === 'f6' ? 'skemino-vertex-indicator-yellow' : ''}
             `}
             animate={{
               scale: [1, 1.15, 1],
@@ -130,7 +130,7 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
             }}
           >
             {/* Inner vertex glow effect */}
-            <div className="absolute inset-1 rounded-full bg-white/20 backdrop-blur-sm"></div>
+            <div className="absolute inset-1 rounded-full bg-white/20"></div>
           </motion.div>
         </div>
       )}
@@ -140,7 +140,7 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
         absolute top-1 right-1 text-xs font-mono font-bold tracking-wide z-30
         ${isVertex ? 'text-white drop-shadow-2xl shadow-black' : 'text-gray-300'}
         opacity-60 hover:opacity-90 transition-all duration-200
-        bg-black/20 backdrop-blur-sm rounded px-1 py-0.5
+        bg-black/20 rounded px-1 py-0.5
       `}>
         {cell}
       </div>
@@ -161,7 +161,7 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
             }}
           >
             <motion.div
-              className="w-4 h-4 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full shadow-lg shadow-blue-500/50 backdrop-blur-sm ring-2 ring-blue-300/30"
+              className="w-4 h-4 rounded-full shadow-lg shadow-blue-500/50 ring-2 ring-blue-300/30 skemino-valid-move-indicator"
               animate={{
                 scale: [1, 1.2, 1],
                 opacity: [0.7, 1, 0.7]
@@ -201,7 +201,7 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
       {position?.isHole && (
         <div className="absolute inset-0 flex items-center justify-center z-10">
           <motion.div
-            className="w-10 h-10 bg-gradient-to-br from-gray-600 to-gray-700 rounded-full border border-gray-500 shadow-2xl backdrop-blur-sm"
+            className="w-10 h-10 rounded-full border border-gray-500 shadow-2xl skemino-hole-indicator"
             animate={{
               scale: [1, 0.9, 1],
               opacity: [0.8, 0.6, 0.8]
@@ -212,7 +212,7 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
               ease: "easeInOut"
             }}
           >
-            <div className="absolute inset-2 bg-gradient-to-br from-gray-500 to-gray-600 rounded-full"></div>
+            <div className="absolute inset-2 rounded-full skemino-hole-inner"></div>
           </motion.div>
         </div>
       )}

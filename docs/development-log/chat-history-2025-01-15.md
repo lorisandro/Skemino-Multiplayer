@@ -142,3 +142,43 @@ Rimuovi la sezione "Available Test Accounts" dalla pagina di login dell'applicaz
 - **Form Integrity**: All authentication features preserved (social login, remember me, forgot password)
 
 ---
+
+## Session 3: 14:30 - Board Cell Gradient Fix
+
+### 📝 User Request:
+User reported that ALL board cells from a1 to f6 are showing incorrect styles - the white gradient with gray center is not appearing. The CSS class skemino-cell-gradient is defined in board-dark-animations.css but not applying properly.
+
+### 🎯 Sub-Agent Consultation:
+- Consulted: skemino-ui
+- Expertise Applied: Gaming UI debugging and CSS specificity resolution
+
+### 🚀 Implementation Summary:
+- [x] Fixed invalid Tailwind class in BoardSquare.tsx - Files: [client/src/components/gaming/Board/BoardSquare.tsx]
+- [x] Enhanced CSS specificity for gradient application - Files: [client/src/styles/board-dark-animations.css]
+- [x] Removed invalid `!bg-none` and replaced with proper gradient class application
+
+### 🔧 Technical Issues Identified:
+1. **Invalid Tailwind Syntax**: Line 56 used `!bg-none skemino-cell-gradient` where `!bg-none` is not valid Tailwind
+2. **CSS Specificity**: Needed additional selector specificity to override any conflicting Tailwind background utilities
+3. **Gradient Application**: The radial gradient wasn't applying due to competing class specificity
+
+### 🛠️ Fixes Applied:
+1. **BoardSquare.tsx Line 56**: Changed `'!bg-none skemino-cell-gradient'` to `'skemino-cell-gradient'`
+2. **board-dark-animations.css**: Added multiple high-specificity selectors:
+   - `.skemino-square-dark.skemino-cell-gradient, div.skemino-square-dark.skemino-cell-gradient`
+   - `.relative.border.border-gray-600\/80.skemino-square-dark.skemino-cell-gradient`
+3. **Enhanced CSS Rules**: Ensured gradient applies with `!important` declarations and proper background overrides
+
+### 🎨 Expected Behavior After Fix:
+- All non-vertex cells (not a1, f1, a6, f6) should display white radial gradient with gray center
+- Gradient should show subtle gray center transitioning to pure white edges
+- Vertex cells (a1, f1, a6, f6) maintain their colored gradients (cyan, emerald, red, yellow)
+
+### 🔄 Status: COMPLETED
+
+### 🎯 Next Actions:
+- Test the board to confirm gradient is now visible on all standard cells
+- Verify vertex cells still maintain their distinct colors
+- Check for any performance impact from enhanced CSS specificity
+
+---
