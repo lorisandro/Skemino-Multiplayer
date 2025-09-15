@@ -9,9 +9,16 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import PreGamePage from './pages/PreGamePage';
+import { MatchmakingDemo } from './pages/MatchmakingDemo';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 const GamePage = () => {
-  return <App />;
+  return (
+    <DndProvider backend={HTML5Backend}>
+      <MatchmakingDemo />
+    </DndProvider>
+  );
 };
 
 const RegisterPageWrapper = () => {

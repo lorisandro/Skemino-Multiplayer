@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { GameBoard } from './Board/GameBoard';
 import { PlayerArea } from './PlayerArea/PlayerArea';
-import { GameHeader } from './GameHeader/GameHeader';
 import { GameSidebar } from './GameSidebar/GameSidebar';
 import { SimpleMoveHistory as MoveHistory } from './MoveHistory/SimpleMoveHistory';
 import { useGameStore } from '../../store/gameStore';
@@ -76,16 +75,6 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
   if (layout === '2k') {
     return (
       <div className={`h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col ${className}`}>
-        {/* Enhanced Game Header for 2K */}
-        <GameHeader
-          currentPlayer={currentPlayer}
-          opponent={opponent}
-          connected={connected}
-          latency={latency}
-          fps={fps}
-          isOptimal={isOptimal}
-        />
-
         {/* Main Game Area - Optimized for 2K displays */}
         <div className="flex-1 flex overflow-hidden">
           {/* Left Sidebar - Slightly narrower for more board space */}
@@ -157,16 +146,6 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
   if (layout === 'desktop') {
     return (
       <div className={`h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col ${className}`}>
-        {/* Game Header */}
-        <GameHeader
-          currentPlayer={currentPlayer}
-          opponent={opponent}
-          connected={connected}
-          latency={latency}
-          fps={fps}
-          isOptimal={isOptimal}
-        />
-
         {/* Main Game Area */}
         <div className="flex-1 flex overflow-hidden">
           {/* Left Sidebar - Opponent Area */}
@@ -238,17 +217,6 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
   if (layout === 'tablet') {
     return (
       <div className={`h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col ${className}`}>
-        {/* Compact Header */}
-        <GameHeader
-          currentPlayer={currentPlayer}
-          opponent={opponent}
-          connected={connected}
-          latency={latency}
-          fps={fps}
-          isOptimal={isOptimal}
-          compact={true}
-        />
-
         {/* Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Opponent Area - Top */}
@@ -293,18 +261,6 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
   // Mobile Layout (< 768px)
   return (
     <div className={`h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col ${className}`}>
-      {/* Mobile Header */}
-      <GameHeader
-        currentPlayer={currentPlayer}
-        opponent={opponent}
-        connected={connected}
-        latency={latency}
-        fps={fps}
-        isOptimal={isOptimal}
-        compact={true}
-        mobile={true}
-      />
-
       {/* Game Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Opponent Info - Compact */}

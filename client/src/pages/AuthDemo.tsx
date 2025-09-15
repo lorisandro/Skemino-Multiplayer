@@ -171,20 +171,20 @@ export const AuthDemo: React.FC = () => {
                     <div className="flex items-center justify-between mb-4">
                       <div className="text-3xl group-hover:scale-110 transition-transform">📈</div>
                       <div className="text-right">
-                        <div className="text-2xl font-bold text-green-400">{user.statistics.totalGames}</div>
+                        <div className="text-2xl font-bold text-green-400">{user.statistics?.totalGames || 0}</div>
                         <div className="text-xs text-gray-500 uppercase tracking-wide">PARTITE</div>
                       </div>
                     </div>
                     <h3 className="font-semibold text-white mb-1">Record Partite</h3>
                     <div className="flex justify-between text-sm">
-                      <span className="text-green-400">🟢 {user.statistics.gamesWon}W</span>
-                      <span className="text-red-400">🔴 {user.statistics.gamesLost}L</span>
-                      <span className="text-gray-400">⚫ {user.statistics.totalGames - user.statistics.gamesWon - user.statistics.gamesLost}D</span>
+                      <span className="text-green-400">🟢 {user.statistics?.gamesWon || 0}W</span>
+                      <span className="text-red-400">🔴 {user.statistics?.gamesLost || 0}L</span>
+                      <span className="text-gray-400">⚫ {(user.statistics?.totalGames || 0) - (user.statistics?.gamesWon || 0) - (user.statistics?.gamesLost || 0)}D</span>
                     </div>
                     <div className="mt-3 w-full bg-slate-700 rounded-full h-2">
                       <div
                         className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full transition-all duration-500"
-                        style={{ width: `${user.statistics.totalGames > 0 ? (user.statistics.gamesWon / user.statistics.totalGames) * 100 : 0}%` }}
+                        style={{ width: `${(user.statistics?.totalGames || 0) > 0 ? ((user.statistics?.gamesWon || 0) / (user.statistics?.totalGames || 1)) * 100 : 0}%` }}
                       />
                     </div>
                   </div>
@@ -194,19 +194,19 @@ export const AuthDemo: React.FC = () => {
                     <div className="flex items-center justify-between mb-4">
                       <div className="text-3xl group-hover:scale-110 transition-transform">⚡</div>
                       <div className="text-right">
-                        <div className="text-2xl font-bold text-yellow-400">{user.statistics.currentWinStreak}</div>
+                        <div className="text-2xl font-bold text-yellow-400">{user.statistics?.currentWinStreak || 0}</div>
                         <div className="text-xs text-gray-500 uppercase tracking-wide">STREAK</div>
                       </div>
                     </div>
                     <h3 className="font-semibold text-white mb-1">Vittorie Consecutive</h3>
                     <p className="text-gray-400 text-sm">
-                      {user.statistics.currentWinStreak > 0
-                        ? `🔥 Serie attiva di ${user.statistics.currentWinStreak} vittorie!`
+                      {(user.statistics?.currentWinStreak || 0) > 0
+                        ? `🔥 Serie attiva di ${user.statistics?.currentWinStreak || 0} vittorie!`
                         : 'Inizia una nuova serie vincente'
                       }
                     </p>
                     <div className="mt-3 flex space-x-1">
-                      {Array.from({ length: Math.min(10, Math.max(1, user.statistics.currentWinStreak)) }).map((_, i) => (
+                      {Array.from({ length: Math.min(10, Math.max(1, user.statistics?.currentWinStreak || 0)) }).map((_, i) => (
                         <div key={i} className="h-2 w-2 bg-yellow-400 rounded-full" />
                       ))}
                     </div>
