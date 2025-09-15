@@ -67,16 +67,25 @@ export class MatchmakingManager extends EventEmitter {
   public async addToQueue(player: MatchmakingPlayer): Promise<Match | null> {
     try {
       const { timeControl } = player;
+      logger.info(`🔍 MatchmakingManager.addToQueue: Player ${player.username} requesting ${timeControl} queue`);
 
       // Get or create queue for time control
       let queue = this.queues.get(timeControl);
       if (!queue) {
+        logger.info(`📝 Creating new queue for timeControl: ${timeControl}`);
         queue = {
           timeControl,
           players: new Map(),
           lastMatch: Date.now()
         };
         this.queues.set(timeControl, queue);
+      }
+
+      // Log current queue state before adding player
+      logger.info(`📊 Queue ${timeControl} current state: ${queue.players.size} players waiting`);
+      if (queue.players.size > 0) {
+        const waitingPlayers = Array.from(queue.players.values()).map(p => `${p.username}(${p.rating})`).join(', ');
+        logger.info(`👥 Waiting players: ${waitingPlayers}`);
       }
 
       // Set join timestamp
@@ -88,13 +97,16 @@ export class MatchmakingManager extends EventEmitter {
       // Update Redis for persistence
       await this.updateQueueInRedis(timeControl, queue);
 
-      logger.info(`⏳ Player ${player.username} (${player.rating}) joined ${timeControl} queue`);
+      logger.info(`⏳ Player ${player.username} (${player.rating}) joined ${timeControl} queue - Total: ${queue.players.size} players`);
 
       // Try immediate match
       const match = this.tryCreateMatch(queue, player);
       if (match) {
+        logger.info(`✨ Immediate match created: ${match.white.username} vs ${match.black.username}`);
         await this.removePlayersFromQueue(timeControl, [match.white.userId, match.black.userId]);
         return match;
+      } else {
+        logger.info(`❌ No immediate match found for ${player.username} in ${timeControl} queue`);
       }
 
       return null;
@@ -126,28 +138,41 @@ export class MatchmakingManager extends EventEmitter {
   }
 
   private tryCreateMatch(queue: MatchmakingQueue, newPlayer: MatchmakingPlayer): Match | null {
+    logger.info(`🔍 tryCreateMatch: Looking for match for ${newPlayer.username} in ${queue.timeControl} queue`);
+
     const candidates: MatchmakingPlayer[] = [];
 
     // Find potential opponents
     for (const player of queue.players.values()) {
       if (player.userId !== newPlayer.userId) {
         candidates.push(player);
+        logger.info(`👤 Found potential opponent: ${player.username} (${player.rating})`);
       }
     }
 
     if (candidates.length === 0) {
+      logger.info(`❌ No candidates found for ${newPlayer.username}`);
       return null;
     }
 
+    logger.info(`🎯 Found ${candidates.length} potential opponents for ${newPlayer.username}`);
+
     // Sort candidates by rating compatibility and wait time
     const rankedCandidates = this.rankCandidates(newPlayer, candidates);
+    logger.info(`📊 Ranked candidates: ${rankedCandidates.map(c => `${c.username}(${c.rating})`).join(', ')}`);
 
     for (const candidate of rankedCandidates) {
+      logger.info(`🤝 Checking match compatibility: ${newPlayer.username}(${newPlayer.rating}) vs ${candidate.username}(${candidate.rating})`);
+
       if (this.canPlayersMatch(newPlayer, candidate)) {
+        logger.info(`✅ Players can match! Creating game...`);
         return this.createMatch(newPlayer, candidate);
+      } else {
+        logger.info(`❌ Players cannot match - rating difference or other constraints`);
       }
     }
 
+    logger.info(`❌ No compatible match found for ${newPlayer.username} after checking all candidates`);
     return null;
   }
 
@@ -213,7 +238,12 @@ export class MatchmakingManager extends EventEmitter {
 
     // Check rating difference
     const ratingDiff = Math.abs(player1.rating - player2.rating);
+
+    logger.info(`🔢 Rating compatibility check: ${player1.username}(${player1.rating}) vs ${player2.username}(${player2.rating})`);
+    logger.info(`📊 Rating difference: ${ratingDiff}, Max allowed: ${maxRatingDiff} (wait time: ${waitTime}ms, expansions: ${expansions})`);
+
     if (ratingDiff > maxRatingDiff) {
+      logger.info(`❌ Rating difference too large: ${ratingDiff} > ${maxRatingDiff}`);
       return false;
     }
 
@@ -221,16 +251,21 @@ export class MatchmakingManager extends EventEmitter {
     const p1MaxDiff = player1.preferences?.maxRatingDifference || maxRatingDiff;
     const p2MaxDiff = player2.preferences?.maxRatingDifference || maxRatingDiff;
 
+    logger.info(`⚙️ Custom rating preferences: P1 max: ${p1MaxDiff}, P2 max: ${p2MaxDiff}`);
+
     if (ratingDiff > p1MaxDiff || ratingDiff > p2MaxDiff) {
+      logger.info(`❌ Rating difference exceeds player preferences: ${ratingDiff} > ${Math.min(p1MaxDiff, p2MaxDiff)}`);
       return false;
     }
 
     // Check avoid lists
     if (player1.preferences?.avoidOpponents?.includes(player2.userId) ||
         player2.preferences?.avoidOpponents?.includes(player1.userId)) {
+      logger.info(`❌ Players have each other on avoid list`);
       return false;
     }
 
+    logger.info(`✅ Players can match! All compatibility checks passed`);
     return true;
   }
 
@@ -335,12 +370,20 @@ export class MatchmakingManager extends EventEmitter {
   private async processAllQueues(): Promise<void> {
     const totalPlayers = this.getTotalPlayersInQueues();
     if (totalPlayers > 0) {
-      logger.debug(`🔍 Processing queues: ${totalPlayers} total players`);
+      logger.info(`🔍 Processing queues: ${totalPlayers} total players waiting`);
+
+      // Log detailed queue status
+      for (const [timeControl, queue] of this.queues) {
+        if (queue.players.size > 0) {
+          const players = Array.from(queue.players.values()).map(p => `${p.username}(${p.rating})`).join(', ');
+          logger.info(`📊 Queue ${timeControl}: ${queue.players.size} players - ${players}`);
+        }
+      }
     }
 
     for (const [timeControl, queue] of this.queues) {
       if (queue.players.size >= 2) {
-        logger.debug(`⚡ Processing ${timeControl} queue: ${queue.players.size} players`);
+        logger.info(`⚡ Processing ${timeControl} queue: ${queue.players.size} players ready for matching`);
         await this.processQueue(timeControl, queue);
       }
 
@@ -498,5 +541,52 @@ export class MatchmakingManager extends EventEmitter {
 
   public hasMatchFoundListeners(): boolean {
     return this.listenerCount('match:found') > 0;
+  }
+
+  // Debug methods for troubleshooting
+  public getDetailedQueueStatus(): { [timeControl: string]: any } {
+    const status: any = {};
+
+    for (const [timeControl, queue] of this.queues) {
+      const players = Array.from(queue.players.values());
+      status[timeControl] = {
+        playerCount: players.length,
+        players: players.map(p => ({
+          userId: p.userId,
+          username: p.username,
+          rating: p.rating,
+          joinedAt: p.joinedAt,
+          waitTime: Date.now() - p.joinedAt,
+          preferences: p.preferences
+        })),
+        lastMatch: queue.lastMatch,
+        queueAge: Date.now() - queue.lastMatch
+      };
+    }
+
+    return status;
+  }
+
+  public logFullQueueStatus(): void {
+    logger.info('📋 === FULL MATCHMAKING QUEUE STATUS ===');
+    const status = this.getDetailedQueueStatus();
+
+    for (const [timeControl, queueData] of Object.entries(status)) {
+      logger.info(`🎯 Queue: ${timeControl}`);
+      logger.info(`   Players: ${queueData.playerCount}`);
+
+      if (queueData.playerCount > 0) {
+        queueData.players.forEach((player: any, index: number) => {
+          logger.info(`   ${index + 1}. ${player.username} (${player.rating}) - waiting ${Math.round(player.waitTime / 1000)}s`);
+        });
+      }
+
+      logger.info(`   Last match: ${Math.round(queueData.queueAge / 1000)}s ago`);
+      logger.info('');
+    }
+
+    logger.info(`👥 Total players across all queues: ${this.getTotalPlayersInQueues()}`);
+    logger.info(`🔗 Event listeners: ${this.getEventListenerCount()}`);
+    logger.info('📋 === END QUEUE STATUS ===');
   }
 }

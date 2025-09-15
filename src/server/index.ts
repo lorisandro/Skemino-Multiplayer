@@ -1,5 +1,6 @@
 import express from 'express';
 import { createServer } from 'http';
+import { Server as SocketIOServer } from 'socket.io';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
@@ -11,7 +12,7 @@ import authRouter from './routes/auth';
 import gameRouter from './routes/games';
 import userRouter from './routes/users';
 import tournamentRouter from './routes/tournaments';
-import { WebSocketManager } from './websocket/WebSocketManager';
+import { WebSocketManager } from './websocket/socketManager';
 import { DatabaseManager } from './database/DatabaseManager';
 
 dotenv.config();
@@ -20,6 +21,9 @@ const app = express();
 const httpServer = createServer(app);
 
 const PORT = process.env.PORT || 3005;
+
+// Global reference to WebSocket manager for debugging
+let wsManager: WebSocketManager;
 
 // Middleware
 app.use(helmet());
@@ -44,6 +48,28 @@ app.get('/health', (_req, res) => {
   });
 });
 
+// Debug route for matchmaking troubleshooting
+app.get('/debug/matchmaking', (_req, res) => {
+  if (!wsManager) {
+    return res.status(503).json({ error: 'WebSocket manager not initialized' });
+  }
+
+  try {
+    // Log detailed status to server console
+    wsManager.logDetailedMatchmakingStatus();
+
+    // Return stats to client
+    const stats = wsManager.getMatchmakingStats();
+    res.json({
+      status: 'Debug info logged to server console',
+      stats,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to generate debug info' });
+  }
+});
+
 // API Routes
 app.use('/api/auth', authRouter);
 app.use('/api/games', gameRouter);
@@ -60,8 +86,17 @@ async function initializeServices(): Promise<void> {
     await DatabaseManager.initialize();
     console.log('Database manager initialized');
 
+    // Initialize Socket.IO server
+    const io = new SocketIOServer(httpServer, {
+      cors: {
+        origin: process.env.CLIENT_URL || 'http://localhost:3000',
+        credentials: true
+      }
+    });
+
     // Initialize WebSocket manager
-    new WebSocketManager(httpServer);
+    wsManager = new WebSocketManager(io);
+    wsManager.initialize();
     console.log('WebSocket manager initialized');
 
   } catch (error) {

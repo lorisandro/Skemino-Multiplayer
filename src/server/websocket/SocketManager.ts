@@ -282,19 +282,24 @@ export class SocketManager {
         return;
       }
 
+      const actualTimeControl = timeControl || 'rapid';
+      logger.info(`🎯 Player ${socket.username} joining matchmaking with timeControl: "${actualTimeControl}" (received: "${timeControl}")`);
+
       const match = await this.matchmakingManager.addToQueue({
         userId: socket.userId,
         username: socket.username,
         rating: socket.rating,
-        timeControl: timeControl || 'rapid',
+        timeControl: actualTimeControl,
         joinedAt: Date.now()
       });
 
       if (match) {
         // Match found immediately
+        logger.info(`🚀 Immediate match found for ${socket.username}: ${match.gameId}`);
         await this.createGameFromMatch(match);
       } else {
-        socket.emit('matchmaking:queued', { timeControl });
+        logger.info(`⏳ Player ${socket.username} queued for ${actualTimeControl} matchmaking`);
+        socket.emit('matchmaking:queued', { timeControl: actualTimeControl });
       }
     } catch (error) {
       logger.error('Error joining matchmaking:', error);
@@ -700,6 +705,30 @@ export class SocketManager {
       hasEventListeners: this.matchmakingManager.hasMatchFoundListeners(),
       eventListenerCount: this.matchmakingManager.getEventListenerCount()
     };
+  }
+
+  public logDetailedMatchmakingStatus(): void {
+    logger.info('🚨 === DETAILED MATCHMAKING DEBUG STATUS ===');
+    logger.info(`🔌 Active connections: ${this.connections.size}`);
+    logger.info(`🎮 Active games: ${this.gameRooms.size}`);
+
+    // Log all connections status
+    let inGameCount = 0;
+    let onlineCount = 0;
+    let disconnectedCount = 0;
+
+    this.connections.forEach((connection, userId) => {
+      if (connection.status === 'ingame') inGameCount++;
+      else if (connection.status === 'online') onlineCount++;
+      else disconnectedCount++;
+    });
+
+    logger.info(`👥 Connection stats: ${onlineCount} online, ${inGameCount} in-game, ${disconnectedCount} disconnected`);
+
+    // Log matchmaking detailed status
+    this.matchmakingManager.logFullQueueStatus();
+
+    logger.info('🚨 === END DETAILED DEBUG STATUS ===');
   }
 }
 
