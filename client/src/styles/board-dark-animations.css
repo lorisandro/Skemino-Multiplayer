@@ -800,6 +800,321 @@ div.skemino-square-dark.skemino-central-d4,
   border-color: rgba(0, 0, 0, 0.1);
 }
 
+/* ===== ZOOM-RESISTANT BOARD CONTAINER ===== */
+
+/* Main zoom-resistant board container using CSS Container Queries */
+.skemino-board-zoom-resistant {
+  /* Container setup for zoom resistance */
+  container-type: size;
+  container-name: gameboard;
+
+  /* Fixed rem-based sizing - immune to browser zoom */
+  width: 35rem;  /* ~560px at default font size */
+  height: 35rem; /* 1:1 container aspect ratio */
+
+  /* Centering and positioning */
+  position: relative;
+  margin: 0 auto;
+
+  /* Dark gaming theme */
+  background: var(--skemino-bg-primary);
+  border: 2px solid var(--skemino-border-primary);
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-board);
+
+  /* Performance optimization */
+  transform: translateZ(0);
+  will-change: transform;
+  contain: layout style paint;
+}
+
+/* Zoom-resistant grid container */
+.skemino-grid-zoom-resistant {
+  /* CSS Grid for perfect 6x6 layout */
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+
+  /* Rem-based spacing */
+  gap: 0.125rem;
+  padding: 0.5rem;
+
+  /* Fill container */
+  width: 100%;
+  height: 100%;
+
+  /* Gaming aesthetics */
+  background: inherit;
+  border-radius: inherit;
+}
+
+/* Zoom-resistant board cells */
+.skemino-cell-zoom-resistant {
+  /* Gaming aspect ratio preserved */
+  aspect-ratio: 1 / 1.4;
+
+  /* Base gaming styling */
+  background: var(--skemino-bg-secondary);
+  border: 1px solid var(--skemino-border-primary);
+  border-radius: 0.25rem;
+
+  /* Content centering */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  /* Gaming typography */
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  font-family: 'Inter', 'Segoe UI', monospace;
+
+  /* Gaming interactions */
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  /* Performance optimization */
+  transform: translateZ(0);
+  will-change: background-color, transform, box-shadow;
+  backface-visibility: hidden;
+}
+
+/* ===== CONTAINER QUERY BREAKPOINTS - ZOOM RESISTANT ===== */
+
+/* Mobile gaming optimized */
+@container gameboard (max-width: 30rem) {
+  .skemino-board-zoom-resistant {
+    width: 28rem;
+    height: 28rem;
+    border-width: 1px;
+  }
+
+  .skemino-grid-zoom-resistant {
+    gap: 0.0625rem;
+    padding: 0.375rem;
+  }
+
+  .skemino-cell-zoom-resistant {
+    font-size: 0.75rem;
+    border-radius: 0.125rem;
+  }
+
+  .skemino-cell-label {
+    font-size: 0.625rem;
+    padding: 0.0625rem 0.25rem;
+  }
+}
+
+/* Tablet gaming */
+@container gameboard (min-width: 30rem) and (max-width: 45rem) {
+  .skemino-board-zoom-resistant {
+    width: 35rem;
+    height: 35rem;
+  }
+
+  .skemino-grid-zoom-resistant {
+    gap: 0.125rem;
+    padding: 0.5rem;
+  }
+
+  .skemino-cell-zoom-resistant {
+    font-size: 0.875rem;
+  }
+
+  .skemino-cell-label {
+    font-size: 0.75rem;
+    padding: 0.125rem 0.3125rem;
+  }
+}
+
+/* Desktop gaming */
+@container gameboard (min-width: 45rem) and (max-width: 60rem) {
+  .skemino-board-zoom-resistant {
+    width: 42rem;
+    height: 42rem;
+    border-width: 2px;
+  }
+
+  .skemino-grid-zoom-resistant {
+    gap: 0.1875rem;
+    padding: 0.625rem;
+  }
+
+  .skemino-cell-zoom-resistant {
+    font-size: 1rem;
+    border-radius: 0.375rem;
+  }
+
+  .skemino-cell-label {
+    font-size: 0.875rem;
+    padding: 0.125rem 0.375rem;
+  }
+}
+
+/* 2K gaming optimized */
+@container gameboard (min-width: 60rem) and (max-width: 75rem) {
+  .skemino-board-zoom-resistant {
+    width: 50rem;
+    height: 50rem;
+    border-width: 3px;
+  }
+
+  .skemino-grid-zoom-resistant {
+    gap: 0.25rem;
+    padding: 0.75rem;
+  }
+
+  .skemino-cell-zoom-resistant {
+    font-size: 1.125rem;
+    border-radius: 0.5rem;
+  }
+
+  .skemino-cell-label {
+    font-size: 1rem;
+    padding: 0.1875rem 0.4375rem;
+  }
+}
+
+/* Ultrawide gaming */
+@container gameboard (min-width: 75rem) {
+  .skemino-board-zoom-resistant {
+    width: 55rem;
+    height: 55rem;
+    border-width: 3px;
+  }
+
+  .skemino-grid-zoom-resistant {
+    gap: 0.3125rem;
+    padding: 0.875rem;
+  }
+
+  .skemino-cell-zoom-resistant {
+    font-size: 1.25rem;
+    border-radius: 0.625rem;
+  }
+
+  .skemino-cell-label {
+    font-size: 1.125rem;
+    padding: 0.25rem 0.5rem;
+  }
+}
+
+/* ===== ZOOM-RESISTANT VERTEX STYLING ===== */
+
+/* Vertex indicators with rem-based sizing */
+.skemino-vertex-zoom-resistant {
+  position: relative;
+}
+
+.skemino-vertex-zoom-resistant::before {
+  content: '';
+  position: absolute;
+  top: 0.125rem;
+  left: 0.125rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  z-index: 2;
+  transition: all 0.2s ease;
+}
+
+/* Vertex colors - zoom resistant */
+.skemino-vertex-a1::before {
+  background: #3b82f6;
+  box-shadow: 0 0 0.5rem rgba(59, 130, 246, 0.6);
+}
+
+.skemino-vertex-f1::before {
+  background: #10b981;
+  box-shadow: 0 0 0.5rem rgba(16, 185, 129, 0.6);
+}
+
+.skemino-vertex-a6::before {
+  background: #ef4444;
+  box-shadow: 0 0 0.5rem rgba(239, 68, 68, 0.6);
+}
+
+.skemino-vertex-f6::before {
+  background: #f59e0b;
+  box-shadow: 0 0 0.5rem rgba(245, 158, 11, 0.6);
+}
+
+/* Algebraic notation - zoom resistant */
+.skemino-notation-zoom-resistant::after {
+  content: attr(data-notation);
+  position: absolute;
+  bottom: 0.125rem;
+  right: 0.25rem;
+  font-size: 0.625rem;
+  color: #888;
+  font-weight: 400;
+  font-family: 'Monaco', 'Consolas', monospace;
+  z-index: 1;
+  opacity: 0.8;
+}
+
+/* Container query adjustments for notation */
+@container gameboard (max-width: 30rem) {
+  .skemino-notation-zoom-resistant::after {
+    font-size: 0.5rem;
+  }
+
+  .skemino-vertex-zoom-resistant::before {
+    width: 0.375rem;
+    height: 0.375rem;
+    top: 0.0625rem;
+    left: 0.0625rem;
+  }
+}
+
+@container gameboard (min-width: 60rem) {
+  .skemino-notation-zoom-resistant::after {
+    font-size: 0.75rem;
+  }
+
+  .skemino-vertex-zoom-resistant::before {
+    width: 0.625rem;
+    height: 0.625rem;
+    top: 0.1875rem;
+    left: 0.1875rem;
+  }
+}
+
+/* ===== ZOOM-RESISTANT HOVER EFFECTS ===== */
+
+.skemino-cell-zoom-resistant:hover {
+  background: #3a3a3a;
+  border-color: #666;
+  transform: translateY(-0.0625rem) translateZ(0);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.3);
+}
+
+.skemino-cell-zoom-resistant:active {
+  transform: translateY(0.0625rem) translateZ(0);
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.4);
+}
+
+/* Valid move highlighting - zoom resistant */
+.skemino-cell-zoom-resistant.valid-move {
+  box-shadow:
+    0 0 0 0.1875rem rgba(96, 165, 250, 0.8),
+    0 0 0 0.3125rem rgba(17, 24, 39, 1.0),
+    0 0.25rem 1.25rem rgba(96, 165, 250, 0.4);
+  animation: zoom-resistant-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes zoom-resistant-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1) translateZ(0);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.02) translateZ(0);
+  }
+}
+
 /* ===== GAMING SPECIFIC UTILITIES ===== */
 
 /* Competitive gaming focus indicators */
