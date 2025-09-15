@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import {
   WifiIcon,
   SignalIcon,
-  ChartBarIcon,
   Cog6ToothIcon,
   PauseIcon
 } from '@heroicons/react/24/outline';
@@ -14,8 +13,6 @@ interface GameHeaderProps {
   opponent: Player | null;
   connected: boolean;
   latency?: number;
-  fps: number;
-  isOptimal: boolean;
   compact?: boolean;
   mobile?: boolean;
   className?: string;
@@ -29,8 +26,6 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
   opponent,
   connected,
   latency,
-  fps,
-  isOptimal,
   compact = false,
   mobile = false,
   className = '',
@@ -77,9 +72,6 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
 
         {/* Right - Performance and controls */}
         <div className="flex items-center space-x-2">
-          <div className={`text-xs font-mono px-2 py-1 rounded ${isOptimal ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-            {fps}fps
-          </div>
           <button className="p-2 text-gray-500 hover:text-gray-700">
             <Cog6ToothIcon className="w-4 h-4" />
           </button>
@@ -125,10 +117,6 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
             </span>
           </div>
 
-          {/* Performance */}
-          <div className={`text-xs font-mono px-2 py-1 rounded ${isOptimal ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-            {fps}fps
-          </div>
 
           {/* Controls */}
           <div className="flex items-center space-x-1">
@@ -223,19 +211,6 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
               </div>
             </motion.div>
 
-            {/* Performance status */}
-            <motion.div
-              className={`flex items-center space-x-2 px-3 py-2 rounded-lg ${isOptimal ? 'bg-green-100' : 'bg-yellow-100'}`}
-              whileHover={{ scale: 1.02 }}
-            >
-              <ChartBarIcon className={`w-5 h-5 ${isOptimal ? 'text-green-500' : 'text-yellow-500'}`} />
-              <div>
-                <div className={`text-sm font-medium font-mono ${isOptimal ? 'text-green-700' : 'text-yellow-700'}`}>
-                  {fps} FPS
-                </div>
-                <div className="text-xs text-gray-500">Performance</div>
-              </div>
-            </motion.div>
           </div>
 
           {/* Game controls */}

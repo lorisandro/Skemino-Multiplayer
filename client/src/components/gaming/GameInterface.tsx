@@ -7,7 +7,6 @@ import { GameSidebar } from './GameSidebar/GameSidebar';
 import { SimpleMoveHistory as MoveHistory } from './MoveHistory/SimpleMoveHistory';
 import { useGameStore } from '../../store/gameStore';
 import { useSocket } from '../../hooks/useSocket';
-import { useGamePerformance } from '../../hooks/useGamePerformance';
 import type { Card } from '../../types/game';
 
 interface GameInterfaceProps {
@@ -30,7 +29,6 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
   } = useGameStore();
 
   const { connected, latency } = useSocket();
-  const { fps, isOptimal } = useGamePerformance();
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   // Mock player hands for development - replace with real data
@@ -82,8 +80,6 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
           opponent={opponent}
           connected={connected}
           latency={latency}
-          fps={fps}
-          isOptimal={isOptimal}
         />
 
         {/* Main Game Area - Optimized for 2K displays */}
@@ -163,8 +159,6 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
           opponent={opponent}
           connected={connected}
           latency={latency}
-          fps={fps}
-          isOptimal={isOptimal}
         />
 
         {/* Main Game Area */}
@@ -244,8 +238,6 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
           opponent={opponent}
           connected={connected}
           latency={latency}
-          fps={fps}
-          isOptimal={isOptimal}
           compact={true}
         />
 
@@ -299,8 +291,6 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
         opponent={opponent}
         connected={connected}
         latency={latency}
-        fps={fps}
-        isOptimal={isOptimal}
         compact={true}
         mobile={true}
       />
