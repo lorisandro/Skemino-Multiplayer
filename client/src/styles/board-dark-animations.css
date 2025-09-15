@@ -824,17 +824,18 @@ div.skemino-square-dark.skemino-central-d4,
   container-type: size;
   container-name: gameboard;
 
-  /* Fixed rem-based sizing - immune to browser zoom */
-  width: 35rem;  /* Default size */
-  height: 49rem; /* Height calculated for 6x6 grid with 1:1.4 aspect ratio cells */
+  /* Fixed rem-based sizing - immune to browser zoom - INCREASED BY 12% */
+  width: 39.2rem;  /* Default size increased from 35rem */
+  height: 54.88rem; /* Height calculated for 6x6 grid with 1:1.4 aspect ratio cells - increased from 49rem */
 
-  /* Perfect centering with flexbox and consistent padding */
+  /* Perfect centering with flexbox - no padding to avoid offset */
   position: relative;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem; /* Consistent padding for perfect centering */
+  padding: 1rem; /* Outer padding for visual spacing */
+  box-sizing: border-box; /* Include padding in total size calculation */
 
   /* Dark gaming theme - this creates the black area around the board */
   background: var(--skemino-bg-primary);
@@ -858,9 +859,11 @@ div.skemino-square-dark.skemino-central-d4,
   /* Rem-based spacing */
   gap: 0.125rem;
 
-  /* Natural grid sizing - let flexbox centering handle positioning */
-  width: 33rem;  /* Natural grid width without calc() */
-  height: 47rem; /* Natural grid height without calc() */
+  /* Natural grid sizing - use 100% width/height for perfect flexbox centering */
+  width: 100%;
+  height: 100%;
+  max-width: 36.96rem;  /* Constraint for maximum size */
+  max-height: 52.64rem; /* Constraint for maximum height */
 
   /* Gaming aesthetics */
   background: inherit;
@@ -917,18 +920,21 @@ div.skemino-square-dark.skemino-central-d4,
 
 /* ===== RESPONSIVE BREAKPOINTS - ZOOM RESISTANT ===== */
 
-/* Mobile gaming optimized */
+/* Mobile gaming optimized - INCREASED BY 12% */
 @media (max-width: 768px) {
   .skemino-board-zoom-resistant {
-    width: 28rem !important;
-    height: 39rem !important;
+    width: 31.36rem !important; /* Increased from 28rem */
+    height: 43.68rem !important; /* Increased from 39rem */
     border-width: 1px;
     padding: 1rem; /* Consistent mobile padding */
+    box-sizing: border-box; /* Include padding in size calculation */
   }
 
   .skemino-grid-zoom-resistant {
-    width: 26rem !important; /* Natural mobile grid width */
-    height: 37rem !important; /* Natural mobile grid height */
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 29.12rem !important; /* Natural mobile grid width - increased from 26rem */
+    max-height: 41.44rem !important; /* Natural mobile grid height - increased from 37rem */
     gap: 0.0625rem;
   }
 
@@ -949,11 +955,14 @@ div.skemino-square-dark.skemino-central-d4,
     width: 35rem !important;
     height: 49rem !important;
     padding: 1rem; /* Consistent tablet padding */
+    box-sizing: border-box; /* Include padding in size calculation */
   }
 
   .skemino-grid-zoom-resistant {
-    width: 33rem !important; /* Natural tablet grid width */
-    height: 47rem !important; /* Natural tablet grid height */
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 33rem !important; /* Natural tablet grid width */
+    max-height: 47rem !important; /* Natural tablet grid height */
     gap: 0.125rem;
   }
 
@@ -974,11 +983,14 @@ div.skemino-square-dark.skemino-central-d4,
     height: 50rem !important;
     border-width: 2px;
     padding: 1rem; /* Consistent desktop padding */
+    box-sizing: border-box; /* Include padding in size calculation */
   }
 
   .skemino-grid-zoom-resistant {
-    width: 34rem !important; /* Natural desktop grid width */
-    height: 48rem !important; /* Natural desktop grid height */
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 34rem !important; /* Natural desktop grid width */
+    max-height: 48rem !important; /* Natural desktop grid height */
     gap: 0.1875rem;
   }
 
@@ -1000,11 +1012,14 @@ div.skemino-square-dark.skemino-central-d4,
     height: 59rem !important;
     border-width: 3px;
     padding: 1rem; /* Consistent 2K padding */
+    box-sizing: border-box; /* Include padding in size calculation */
   }
 
   .skemino-grid-zoom-resistant {
-    width: 40rem !important; /* Natural 2K grid width */
-    height: 57rem !important; /* Natural 2K grid height */
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 40rem !important; /* Natural 2K grid width */
+    max-height: 57rem !important; /* Natural 2K grid height */
     gap: 0.25rem;
   }
 
@@ -1026,11 +1041,14 @@ div.skemino-square-dark.skemino-central-d4,
     height: 67rem !important;
     border-width: 3px;
     padding: 1rem; /* Consistent ultrawide padding */
+    box-sizing: border-box; /* Include padding in size calculation */
   }
 
   .skemino-grid-zoom-resistant {
-    width: 46rem !important; /* Natural ultrawide grid width */
-    height: 65rem !important; /* Natural ultrawide grid height */
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 46rem !important; /* Natural ultrawide grid width */
+    max-height: 65rem !important; /* Natural ultrawide grid height */
     gap: 0.3125rem;
   }
 
