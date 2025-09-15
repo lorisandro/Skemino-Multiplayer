@@ -102,7 +102,7 @@
   left: 0.25rem;
   font-size: 0.875rem;
   font-family: 'Inter', 'Segoe UI', monospace;
-  font-weight: 800;
+  font-weight: 900;
   letter-spacing: 0.03em;
   z-index: 30;
   opacity: 1;
@@ -828,12 +828,13 @@ div.skemino-square-dark.skemino-central-d4,
   width: 35rem;  /* Default size */
   height: 49rem; /* Height calculated for 6x6 grid with 1:1.4 aspect ratio cells */
 
-  /* Perfect centering with flexbox for gameboard grid */
+  /* Perfect centering with flexbox and consistent padding */
   position: relative;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 1rem; /* Consistent padding for perfect centering */
 
   /* Dark gaming theme - this creates the black area around the board */
   background: var(--skemino-bg-primary);
@@ -856,11 +857,10 @@ div.skemino-square-dark.skemino-central-d4,
 
   /* Rem-based spacing */
   gap: 0.125rem;
-  /* padding rimosso per centrare le celle nel contenitore nero */
 
-  /* Fixed dimensions with space for padding effect around cells */
-  width: calc(35rem - 2rem);  /* Container width minus space for "padding" effect */
-  height: calc(49rem - 2rem); /* Container height minus space for "padding" effect */
+  /* Natural grid sizing - let flexbox centering handle positioning */
+  width: 33rem;  /* Natural grid width without calc() */
+  height: 47rem; /* Natural grid height without calc() */
 
   /* Gaming aesthetics */
   background: inherit;
@@ -923,13 +923,13 @@ div.skemino-square-dark.skemino-central-d4,
     width: 28rem !important;
     height: 39rem !important;
     border-width: 1px;
+    padding: 1rem; /* Consistent mobile padding */
   }
 
   .skemino-grid-zoom-resistant {
-    width: calc(28rem - 2rem) !important;
-    height: calc(39rem - 2rem) !important;
+    width: 26rem !important; /* Natural mobile grid width */
+    height: 37rem !important; /* Natural mobile grid height */
     gap: 0.0625rem;
-    /* padding rimosso per centrare le celle */
   }
 
   .skemino-cell-zoom-resistant {
@@ -948,13 +948,13 @@ div.skemino-square-dark.skemino-central-d4,
   .skemino-board-zoom-resistant {
     width: 35rem !important;
     height: 49rem !important;
+    padding: 1rem; /* Consistent tablet padding */
   }
 
   .skemino-grid-zoom-resistant {
-    width: calc(35rem - 2rem) !important;
-    height: calc(49rem - 2rem) !important;
+    width: 33rem !important; /* Natural tablet grid width */
+    height: 47rem !important; /* Natural tablet grid height */
     gap: 0.125rem;
-    /* padding rimosso per centrare le celle */
   }
 
   .skemino-cell-zoom-resistant {
@@ -973,13 +973,13 @@ div.skemino-square-dark.skemino-central-d4,
     width: 36rem !important;
     height: 50rem !important;
     border-width: 2px;
+    padding: 1rem; /* Consistent desktop padding */
   }
 
   .skemino-grid-zoom-resistant {
-    width: calc(36rem - 2rem) !important;
-    height: calc(50rem - 2rem) !important;
+    width: 34rem !important; /* Natural desktop grid width */
+    height: 48rem !important; /* Natural desktop grid height */
     gap: 0.1875rem;
-    /* padding rimosso per centrare le celle */
   }
 
   .skemino-cell-zoom-resistant {
@@ -999,13 +999,13 @@ div.skemino-square-dark.skemino-central-d4,
     width: 42rem !important;
     height: 59rem !important;
     border-width: 3px;
+    padding: 1rem; /* Consistent 2K padding */
   }
 
   .skemino-grid-zoom-resistant {
-    width: calc(42rem - 2rem) !important;
-    height: calc(59rem - 2rem) !important;
+    width: 40rem !important; /* Natural 2K grid width */
+    height: 57rem !important; /* Natural 2K grid height */
     gap: 0.25rem;
-    /* padding rimosso per centrare le celle */
   }
 
   .skemino-cell-zoom-resistant {
@@ -1025,13 +1025,13 @@ div.skemino-square-dark.skemino-central-d4,
     width: 48rem !important;
     height: 67rem !important;
     border-width: 3px;
+    padding: 1rem; /* Consistent ultrawide padding */
   }
 
   .skemino-grid-zoom-resistant {
-    width: calc(48rem - 2rem) !important;
-    height: calc(67rem - 2rem) !important;
+    width: 46rem !important; /* Natural ultrawide grid width */
+    height: 65rem !important; /* Natural ultrawide grid height */
     gap: 0.3125rem;
-    /* padding rimosso per centrare le celle */
   }
 
   .skemino-cell-zoom-resistant {
@@ -1105,7 +1105,7 @@ div.skemino-square-dark.skemino-central-d4,
   right: 0.25rem;
   font-size: 0.625rem;
   color: #000000;
-  font-weight: 400;
+  font-weight: 900;
   font-family: 'Monaco', 'Consolas', monospace;
   z-index: 1;
   opacity: 0.8;
