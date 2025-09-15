@@ -38,8 +38,8 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
   mobile = false,
   className = '',
 }) => {
-  // Calculate hand size for display (always show 5 cards)
-  const displayHand = showCards ? hand : Array(5).fill(null);
+  // Calculate hand size for display (always show 10 cards - 2 rows of 5)
+  const displayHand = showCards ? hand : Array(10).fill(null);
 
   // Animation variants for player area
   const areaVariants = {
@@ -91,6 +91,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
               showHidden={!showCards}
               compact={true}
               mobile={true}
+              maxCards={10}
             />
           </div>
         </div>
@@ -122,9 +123,10 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
               selectedCard={selectedCard}
               onCardSelect={onCardSelect}
               orientation={orientation}
-              layout={orientation === 'horizontal' ? 'linear' : 'grid'}
+              layout="grid"
               showHidden={!showCards}
               compact={true}
+              maxCards={10}
             />
           </div>
 
@@ -162,15 +164,16 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
           </div>
         </div>
 
-        {/* Card hand */}
+        {/* Card hand - 2 rows of 5 cards */}
         <div className="flex-1 p-4">
           <CardHand
             cards={displayHand}
             selectedCard={selectedCard}
             onCardSelect={onCardSelect}
             orientation="vertical"
-            layout="fan"
+            layout="grid"
             showHidden={!showCards}
+            maxCards={10}
           />
         </div>
 
@@ -208,15 +211,16 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
           />
         </div>
 
-        {/* Cards */}
+        {/* Cards - 2 rows of 5 cards */}
         <div className="flex-1">
           <CardHand
             cards={displayHand}
             selectedCard={selectedCard}
             onCardSelect={onCardSelect}
             orientation="horizontal"
-            layout="fan"
+            layout="grid"
             showHidden={!showCards}
+            maxCards={10}
           />
         </div>
 

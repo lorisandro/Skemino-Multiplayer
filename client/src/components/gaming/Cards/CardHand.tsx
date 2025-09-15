@@ -64,7 +64,10 @@ export const CardHand: React.FC<CardHandProps> = ({
       case 'fan':
         return `${baseClasses} ${orientation === 'horizontal' ? 'h-24' : 'w-32'} flex justify-center items-center`;
       case 'grid':
-        return `${baseClasses} grid grid-cols-3 grid-rows-2 gap-2 w-full`;
+        // For 10 cards, use 5 columns x 2 rows
+        return maxCards === 10
+          ? `${baseClasses} grid grid-cols-5 grid-rows-2 gap-2 w-full`
+          : `${baseClasses} grid grid-cols-3 grid-rows-2 gap-2 w-full`;
       case 'linear':
         return `${baseClasses} flex ${orientation === 'horizontal' ? 'flex-row space-x-2' : 'flex-col space-y-2'} justify-center items-center`;
       case 'stack':
@@ -100,18 +103,26 @@ export const CardHand: React.FC<CardHandProps> = ({
 
   // Grid layout positioning
   const getGridPosition = (index: number) => {
-    if (layout !== 'grid' || maxCards !== 5) return {};
+    if (layout !== 'grid') return {};
 
-    // 5 cards in 3x2 grid with card 5 centered
-    const positions = [
-      { gridColumn: 1, gridRow: 1 }, // Card 1
-      { gridColumn: 2, gridRow: 1 }, // Card 2
-      { gridColumn: 3, gridRow: 1 }, // Card 3
-      { gridColumn: 1, gridRow: 2 }, // Card 4
-      { gridColumn: 2, gridRow: 2 }, // Card 5 (centered)
-    ];
+    if (maxCards === 10) {
+      // 10 cards in 5x2 grid
+      const row = Math.floor(index / 5) + 1;
+      const col = (index % 5) + 1;
+      return { gridColumn: col, gridRow: row };
+    } else if (maxCards === 5) {
+      // 5 cards in 3x2 grid with card 5 centered
+      const positions = [
+        { gridColumn: 1, gridRow: 1 }, // Card 1
+        { gridColumn: 2, gridRow: 1 }, // Card 2
+        { gridColumn: 3, gridRow: 1 }, // Card 3
+        { gridColumn: 1, gridRow: 2 }, // Card 4
+        { gridColumn: 2, gridRow: 2 }, // Card 5 (centered)
+      ];
+      return positions[index] || {};
+    }
 
-    return positions[index] || {};
+    return {};
   };
 
   // Stack layout positioning

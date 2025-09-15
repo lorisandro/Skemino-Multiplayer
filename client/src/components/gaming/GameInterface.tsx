@@ -81,7 +81,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
         {/* Main Game Area - Optimized for 2K displays */}
         <div className="flex-1 flex overflow-hidden">
           {/* Left Sidebar - Combined players with card slots */}
-          <div className="w-80 bg-gradient-to-b from-slate-900 via-gray-900 to-slate-900 border-r border-gray-800/50 flex flex-col shadow-2xl">
+          <div className="w-[720px] bg-gradient-to-b from-slate-900 via-gray-900 to-slate-900 border-r border-gray-800/50 flex flex-col shadow-2xl">
             {/* Opponent Area - Top half */}
             <div className="flex-1 border-b border-gray-800/50 backdrop-blur-sm bg-black/20 p-3">
               <PlayerArea
@@ -148,7 +148,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
         {/* Main Game Area */}
         <div className="flex-1 flex overflow-hidden">
           {/* Left Sidebar - Combined players with card slots */}
-          <div className="w-96 bg-gradient-to-b from-slate-900 via-gray-900 to-slate-900 border-r border-gray-800/50 flex flex-col shadow-2xl">
+          <div className="w-[800px] bg-gradient-to-b from-slate-900 via-gray-900 to-slate-900 border-r border-gray-800/50 flex flex-col shadow-2xl">
             {/* Opponent Area - Top half */}
             <div className="flex-1 border-b border-gray-800/50 backdrop-blur-sm bg-black/20 p-4">
               <PlayerArea
