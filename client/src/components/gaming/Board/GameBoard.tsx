@@ -79,8 +79,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({ demoMode = false }) => {
   const renderBoard = () => {
     const files = ['a', 'b', 'c', 'd', 'e', 'f'];
     const ranks = currentPlayer?.color === 'white'
-      ? ['6', '5', '4', '3', '2', '1']
-      : ['1', '2', '3', '4', '5', '6'];
+      ? ['1', '2', '3', '4', '5', '6']
+      : ['6', '5', '4', '3', '2', '1'];
 
     // Generate all 36 squares for 6x6 grid
     const squares = [];
@@ -153,25 +153,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({ demoMode = false }) => {
           {/* Vertex Control Indicators Dark Gaming */}
           <div className="absolute -top-10 left-0 right-0 flex justify-between px-6 z-30">
             <motion.div
-              className="flex items-center space-x-3 bg-gray-800/90 backdrop-blur-sm rounded-full px-4 py-2 border border-cyan-500/30"
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            >
-              <div className="w-4 h-4 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-full shadow-lg shadow-cyan-500/50 animate-pulse"></div>
-              <span className="text-cyan-300 font-semibold text-sm tracking-wide">Q I</span>
-            </motion.div>
-            <motion.div
-              className="flex items-center space-x-3 bg-gray-800/90 backdrop-blur-sm rounded-full px-4 py-2 border border-emerald-500/30"
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            >
-              <div className="w-4 h-4 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full shadow-lg shadow-emerald-500/50 animate-pulse"></div>
-              <span className="text-emerald-300 font-semibold text-sm tracking-wide">Q II</span>
-            </motion.div>
-          </div>
-
-          <div className="absolute -bottom-10 left-0 right-0 flex justify-between px-6 z-30">
-            <motion.div
               className="flex items-center space-x-3 bg-gray-800/90 backdrop-blur-sm rounded-full px-4 py-2 border border-red-500/30"
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
@@ -189,22 +170,27 @@ export const GameBoard: React.FC<GameBoardProps> = ({ demoMode = false }) => {
             </motion.div>
           </div>
 
+          <div className="absolute -bottom-10 left-0 right-0 flex justify-between px-6 z-30">
+            <motion.div
+              className="flex items-center space-x-3 bg-gray-800/90 backdrop-blur-sm rounded-full px-4 py-2 border border-cyan-500/30"
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            >
+              <div className="w-4 h-4 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-full shadow-lg shadow-cyan-500/50 animate-pulse"></div>
+              <span className="text-cyan-300 font-semibold text-sm tracking-wide">Q I</span>
+            </motion.div>
+            <motion.div
+              className="flex items-center space-x-3 bg-gray-800/90 backdrop-blur-sm rounded-full px-4 py-2 border border-emerald-500/30"
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            >
+              <div className="w-4 h-4 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full shadow-lg shadow-emerald-500/50 animate-pulse"></div>
+              <span className="text-emerald-300 font-semibold text-sm tracking-wide">Q II</span>
+            </motion.div>
+          </div>
+
           {/* Coordinates removed */}
 
-          {/* Connection Status Dark Gaming */}
-          {!connected && (
-            <motion.div
-              className="absolute top-3 right-3 px-3 py-2 bg-red-500/90 backdrop-blur-sm text-white text-xs rounded-lg animate-pulse z-40 border border-red-400/50 shadow-lg shadow-red-500/50"
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: "spring", stiffness: 500, damping: 25 }}
-            >
-              <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-red-300 rounded-full animate-pulse"></div>
-                <span className="font-medium">Disconnected</span>
-              </div>
-            </motion.div>
-          )}
 
 
           {/* Latency Indicator Dark Gaming */}
