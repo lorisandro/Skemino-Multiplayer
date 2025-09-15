@@ -802,14 +802,10 @@ div.skemino-square-dark.skemino-central-d4,
 
 /* ===== ZOOM-RESISTANT BOARD CONTAINER ===== */
 
-/* Main zoom-resistant board container using CSS Container Queries */
+/* Main zoom-resistant board container using viewport-based sizing */
 .skemino-board-zoom-resistant {
-  /* Container setup for zoom resistance */
-  container-type: size;
-  container-name: gameboard;
-
   /* Fixed rem-based sizing - immune to browser zoom */
-  width: 35rem;  /* ~560px at default font size */
+  width: 35rem;  /* Default size */
   height: 49rem; /* Height calculated for 6x6 grid with 1:1.4 aspect ratio cells */
 
   /* Centering and positioning */
@@ -826,6 +822,26 @@ div.skemino-square-dark.skemino-central-d4,
   transform: translateZ(0);
   will-change: transform;
   contain: layout style paint;
+}
+
+/* Ensure parent containers have uniform black background */
+.skemino-board-zoom-resistant::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #000000;
+  z-index: -1;
+}
+
+/* Additional wrapper class for uniform black background */
+.skemino-uniform-black-bg {
+  background: #000000 !important;
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
 }
 
 /* Zoom-resistant grid container */
@@ -896,13 +912,13 @@ div.skemino-square-dark.skemino-central-d4,
   color: #000000 !important; /* Black text on white background */
 }
 
-/* ===== CONTAINER QUERY BREAKPOINTS - ZOOM RESISTANT ===== */
+/* ===== RESPONSIVE BREAKPOINTS - ZOOM RESISTANT ===== */
 
 /* Mobile gaming optimized */
-@container gameboard (max-width: 30rem) {
+@media (max-width: 768px) {
   .skemino-board-zoom-resistant {
-    width: 28rem;
-    height: 39rem;
+    width: 28rem !important;
+    height: 39rem !important;
     border-width: 1px;
   }
 
@@ -923,10 +939,10 @@ div.skemino-square-dark.skemino-central-d4,
 }
 
 /* Tablet gaming */
-@container gameboard (min-width: 30rem) and (max-width: 45rem) {
+@media (min-width: 769px) and (max-width: 1024px) {
   .skemino-board-zoom-resistant {
-    width: 35rem;
-    height: 49rem;
+    width: 35rem !important;
+    height: 49rem !important;
   }
 
   .skemino-grid-zoom-resistant {
@@ -945,10 +961,10 @@ div.skemino-square-dark.skemino-central-d4,
 }
 
 /* Desktop gaming */
-@container gameboard (min-width: 45rem) and (max-width: 60rem) {
+@media (min-width: 1025px) and (max-width: 1439px) {
   .skemino-board-zoom-resistant {
-    width: 42rem;
-    height: 58rem;
+    width: 50rem !important;
+    height: 70rem !important;
     border-width: 2px;
   }
 
@@ -969,10 +985,10 @@ div.skemino-square-dark.skemino-central-d4,
 }
 
 /* 2K gaming optimized */
-@container gameboard (min-width: 60rem) and (max-width: 75rem) {
+@media (min-width: 1440px) and (max-width: 1919px) {
   .skemino-board-zoom-resistant {
-    width: 50rem;
-    height: 70rem;
+    width: 60rem !important;
+    height: 84rem !important;
     border-width: 3px;
   }
 
@@ -993,10 +1009,10 @@ div.skemino-square-dark.skemino-central-d4,
 }
 
 /* Ultrawide gaming */
-@container gameboard (min-width: 75rem) {
+@media (min-width: 1920px) {
   .skemino-board-zoom-resistant {
-    width: 55rem;
-    height: 77rem;
+    width: 70rem !important;
+    height: 98rem !important;
     border-width: 3px;
   }
 
@@ -1082,8 +1098,8 @@ div.skemino-square-dark.skemino-central-d4,
   opacity: 0.8;
 }
 
-/* Container query adjustments for notation */
-@container gameboard (max-width: 30rem) {
+/* Media query adjustments for notation */
+@media (max-width: 768px) {
   .skemino-notation-zoom-resistant::after {
     font-size: 0.5rem;
   }
@@ -1096,7 +1112,7 @@ div.skemino-square-dark.skemino-central-d4,
   }
 }
 
-@container gameboard (min-width: 60rem) {
+@media (min-width: 1440px) {
   .skemino-notation-zoom-resistant::after {
     font-size: 0.75rem;
   }

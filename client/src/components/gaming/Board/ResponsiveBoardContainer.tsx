@@ -148,9 +148,9 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
     };
   }, [breakpoint, minSize, maxSize, aspectRatio, onSizeChange]);
 
-  // Container styles based on breakpoint with enhanced scaling
+  // Container styles based on breakpoint with enhanced scaling and uniform black background
   const getContainerClasses = () => {
-    const baseClasses = 'flex flex-col items-center justify-center w-full';
+    const baseClasses = 'flex flex-col items-center justify-center w-full h-full bg-black';
 
     switch (breakpoint) {
       case 'mobile':

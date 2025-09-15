@@ -20,9 +20,9 @@ export const ZoomResistantBoardContainer: React.FC<ZoomResistantBoardContainerPr
 }) => {
   const { currentBreakpoint, isMobile } = useBreakpoints();
 
-  // Container classes based on breakpoint and mode
+  // Container classes based on breakpoint and mode with uniform black background
   const getContainerClasses = () => {
-    const baseClasses = 'flex flex-col items-center justify-center w-full';
+    const baseClasses = 'flex flex-col items-center justify-center w-full h-full bg-black';
 
     if (demoMode) {
       return `${baseClasses} min-h-screen px-2 py-4`;
@@ -112,11 +112,11 @@ export const useBoardContainerSize = () => {
       case 'tablet':
         return { width: '35rem', height: '49rem' };
       case 'desktop':
-        return { width: '42rem', height: '58rem' };
+        return { width: '50rem', height: '70rem' };
       case '2k':
         return { width: '60rem', height: '84rem' };
       case 'ultrawide':
-        return { width: '55rem', height: '77rem' };
+        return { width: '70rem', height: '98rem' };
       default:
         return { width: '35rem', height: '49rem' };
     }
