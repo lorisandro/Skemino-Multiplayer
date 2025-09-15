@@ -1,14 +1,7 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { devtools } from 'zustand/middleware';
-import type { GameState, Player, Card, BoardCell, PlayerColor, Move, BoardPosition } from '../types/game';
-
-interface DistributionState {
-  isDistributing: boolean;
-  currentCard: number;
-  phase: 'waiting' | 'matchmaking' | 'starting' | 'shuffling' | 'dealing' | 'complete';
-  animationProgress: number;
-}
+import type { GameState, Player, Card, BoardCell, PlayerColor, Move, BoardPosition, DistributionState } from '../types/game';
 
 interface GameStore {
   // Game state
@@ -111,6 +104,7 @@ export const useGameStore = create<GameStore>()(
     distributionState: {
       isDistributing: false,
       currentCard: 0,
+      totalCards: 39,
       phase: 'waiting',
       animationProgress: 0,
     },

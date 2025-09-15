@@ -140,6 +140,18 @@
   contain: layout style paint;
 }
 
+/* Cell Gradient - Professional White Circular Pattern with Subtle Depth */
+.skemino-cell-gradient {
+  background: radial-gradient(circle at center,
+    rgba(255, 255, 255, 1.0) 0%,      /* Pure white center */
+    rgba(255, 255, 255, 0.98) 20%,    /* Nearly pure white */
+    rgba(252, 252, 252, 0.95) 40%,    /* Very light white */
+    rgba(248, 248, 248, 0.92) 60%,    /* Light white */
+    rgba(245, 245, 245, 0.90) 80%,    /* Slightly off-white */
+    rgba(242, 242, 242, 0.88) 100%    /* Subtle white edge */
+  );
+}
+
 /* Square Styling - Dark Gaming Optimized */
 .skemino-square-dark {
   will-change: transform, box-shadow;

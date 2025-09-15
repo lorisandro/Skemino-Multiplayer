@@ -50,9 +50,9 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
       }
     }
 
-    // Standard squares: Light gray/white gradient for all non-vertex cells
-    // All cells now use a lighter gradient as requested
-    return 'bg-gradient-to-br from-gray-300 via-gray-200 to-gray-300'; // Gradiente chiaro/bianco uniforme per tutte le celle
+    // Standard squares: Pure white circular gradient for all non-vertex cells
+    // Professional gaming board style with subtle white depth gradient
+    return 'skemino-cell-gradient'; // Gradiente circolare bianco puro con profondità sottile
   }, [cell, isVertex]);
 
   // Dark Gaming Highlight styles - Professional competitive
@@ -86,9 +86,17 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
         width: size,
         height: size * 1.4, // Card-like aspect ratio: taller than wide
         contain: 'layout style paint',
-        // Combine light gray gradient with prominent radial gradient for non-vertex cells
-        background: isVertex ? undefined : 'linear-gradient(135deg, #e0e0e0 0%, #d0d0d0 50%, #e0e0e0 100%), radial-gradient(circle at center, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.3) 40%, transparent 70%)',
-        backgroundBlendMode: isVertex ? undefined : 'screen',
+        // Professional white circular gradient: pure white with subtle depth
+        background: isVertex ? undefined : `
+          radial-gradient(circle at center,
+            rgba(255, 255, 255, 1.0) 0%,      /* Pure white center */
+            rgba(255, 255, 255, 0.98) 20%,    /* Nearly pure white */
+            rgba(252, 252, 252, 0.95) 40%,    /* Very light white */
+            rgba(248, 248, 248, 0.92) 60%,    /* Light white */
+            rgba(245, 245, 245, 0.90) 80%,    /* Slightly off-white */
+            rgba(242, 242, 242, 0.88) 100%    /* Subtle white edge */
+          )
+        `.replace(/\s+/g, ' '),
         borderRadius: '8px', // Slightly more rounded corners for card feel
         position: 'relative'
       }}
