@@ -63,9 +63,17 @@ export interface RatingHistory {
 
 export class DatabaseManager {
   private static pool: Pool | null = null;
+  private static mockMode = process.env.DB_MOCK === 'true' || !process.env.DB_HOST;
+  private static mockUsers = new Map<string, User>();
 
   public static async initialize(): Promise<void> {
     try {
+      if (this.mockMode) {
+        logger.info('🗄️ Database running in MOCK mode (no real database needed)');
+        this.initializeMockData();
+        return;
+      }
+
       const config = {
         host: process.env.DB_HOST || 'localhost',
         port: parseInt(process.env.DB_PORT || '5432'),
@@ -106,6 +114,9 @@ export class DatabaseManager {
   }
 
   private static ensureConnection(): void {
+    if (this.mockMode) {
+      return; // Mock mode doesn't need pool connection
+    }
     if (!this.pool) {
       throw new Error('Database not initialized. Call DatabaseManager.initialize() first.');
     }
@@ -226,6 +237,11 @@ export class DatabaseManager {
 
   public static async getUserByUsername(username: string): Promise<User | null> {
     try {
+      if (this.mockMode) {
+        const user = Array.from(this.mockUsers.values()).find(u => u.username === username);
+        return user || null;
+      }
+
       const client = await this.getClient();
       const result = await client.query(
         'SELECT * FROM users WHERE username = $1',
@@ -242,6 +258,11 @@ export class DatabaseManager {
 
   public static async getUserByEmail(email: string): Promise<User | null> {
     try {
+      if (this.mockMode) {
+        const user = Array.from(this.mockUsers.values()).find(u => u.email === email);
+        return user || null;
+      }
+
       const client = await this.getClient();
       const result = await client.query(
         'SELECT * FROM users WHERE email = $1',
@@ -263,6 +284,25 @@ export class DatabaseManager {
     rating?: number;
   }): Promise<User | null> {
     try {
+      if (this.mockMode) {
+        const user: User = {
+          id: `user_${Date.now()}`,
+          username: userData.username,
+          email: userData.email,
+          passwordHash: userData.passwordHash,
+          rating: userData.rating || 1200,
+          level: 1,
+          gamesPlayed: 0,
+          wins: 0,
+          losses: 0,
+          draws: 0,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+        this.mockUsers.set(user.id, user);
+        return user;
+      }
+
       const client = await this.getClient();
       const result = await client.query(`
         INSERT INTO users (username, email, password_hash, rating, level, games_played, wins, losses, draws)
@@ -287,6 +327,15 @@ export class DatabaseManager {
 
   public static async updateUserLastLogin(userId: string): Promise<void> {
     try {
+      if (this.mockMode) {
+        const user = this.mockUsers.get(userId);
+        if (user) {
+          user.lastLogin = new Date();
+          user.updatedAt = new Date();
+        }
+        return;
+      }
+
       const client = await this.getClient();
       await client.query(
         'UPDATE users SET last_login = NOW(), updated_at = NOW() WHERE id = $1',
@@ -699,5 +748,44 @@ export class DatabaseManager {
     } finally {
       client.release();
     }
+  }
+
+  // Mock data initialization
+  private static initializeMockData(): void {
+    // Create demo users for testing
+    const demoUser: User = {
+      id: 'demo_user_1',
+      username: 'demo',
+      email: 'demo@skemino.com',
+      passwordHash: 'demo123', // In real app this would be hashed
+      rating: 1400,
+      level: 3,
+      gamesPlayed: 25,
+      wins: 15,
+      losses: 8,
+      draws: 2,
+      createdAt: new Date('2024-01-01'),
+      updatedAt: new Date()
+    };
+
+    const testUser: User = {
+      id: 'test_user_1',
+      username: 'test',
+      email: 'test@example.com',
+      passwordHash: 'test123',
+      rating: 1200,
+      level: 1,
+      gamesPlayed: 0,
+      wins: 0,
+      losses: 0,
+      draws: 0,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    this.mockUsers.set(demoUser.id, demoUser);
+    this.mockUsers.set(testUser.id, testUser);
+
+    logger.info(`✅ Mock database initialized with ${this.mockUsers.size} demo users`);
   }
 }
