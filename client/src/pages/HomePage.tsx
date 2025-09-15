@@ -33,9 +33,9 @@ const HomePage: React.FC = () => {
               <Link to="/login" className="text-gray-300 hover:text-white transition-colors">
                 Accedi
               </Link>
-              <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors">
+              <Link to="/register" className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors">
                 Registrati
-              </button>
+              </Link>
             </div>
           </div>
         </nav>
