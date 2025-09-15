@@ -1,5 +1,4 @@
 import type { User } from '../types/auth';
-import bcrypt from 'bcryptjs';
 
 // Per simulare hash delle password in modo realistico
 // In produzione questi sarebbero nel database con hash reali

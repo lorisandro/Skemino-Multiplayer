@@ -67,7 +67,7 @@ export const useAuth = (): AuthContextType => {
     setIsLoading(true);
 
     try {
-      // Use real auth service
+      // Use real auth service with validation
       const response = await authService.login(
         credentials.identifier,
         credentials.password,
@@ -75,85 +75,42 @@ export const useAuth = (): AuthContextType => {
       );
 
       if (!response.success) {
-        throw new Error(response.message || 'Login failed');
+        return {
+          success: false,
+          message: response.message || 'Credenziali non valide',
+          errors: { identifier: response.message || 'Email o password errati' }
+        };
       }
 
-      // Mock successful login
-      const mockUser: User = {
-        id: `user_${Date.now()}`,
-        username: credentials.identifier.includes('@')
-          ? credentials.identifier.split('@')[0]
-          : credentials.identifier,
-        email: credentials.identifier.includes('@')
-          ? credentials.identifier
-          : `${credentials.identifier}@example.com`,
-        displayName: credentials.identifier.includes('@')
-          ? credentials.identifier.split('@')[0]
-          : credentials.identifier,
-        rating: 1200 + Math.floor(Math.random() * 800),
-        level: {
-          name: 'Amatoriale',
-          tier: 'Amatoriale',
-          ratingRange: { min: 1200, max: 1399 },
-          color: '#3B82F6',
-          icon: '🔰'
-        },
-        isEmailVerified: true,
-        isOnline: true,
-        lastActive: new Date(),
-        registrationDate: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000),
-        preferences: {
-          theme: 'dark',
-          language: 'it',
-          soundEnabled: true,
-          notificationsEnabled: true,
-          autoAcceptRematch: false,
-          showRatingChanges: true,
-          boardTheme: 'dark',
-          cardTheme: 'classic'
-        },
-        statistics: {
-          totalGames: Math.floor(Math.random() * 100),
-          gamesWon: Math.floor(Math.random() * 60),
-          gamesLost: Math.floor(Math.random() * 40),
-          gamesDraw: Math.floor(Math.random() * 10),
-          averageGameDuration: 300 + Math.floor(Math.random() * 600),
-          longestWinStreak: Math.floor(Math.random() * 15),
-          currentWinStreak: Math.floor(Math.random() * 5),
-          favoriteTimeControl: 'Rapid (10+5)',
-          averageAccuracy: 75 + Math.random() * 20,
-          totalPlayTime: Math.floor(Math.random() * 10000)
-        },
-        achievements: []
-      };
-
-      const mockToken = `token_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      // Use the real user data from the service
+      const authenticatedUser = response.user as User;
+      const authToken = response.token || `token_${Date.now()}`;
 
       // Store auth data
       if (credentials.rememberMe) {
-        localStorage.setItem('skemino_auth_token', mockToken);
-        localStorage.setItem('skemino_user_data', JSON.stringify(mockUser));
+        localStorage.setItem('skemino_auth_token', authToken);
+        localStorage.setItem('skemino_user_data', JSON.stringify(authenticatedUser));
       } else {
-        sessionStorage.setItem('skemino_auth_token', mockToken);
-        sessionStorage.setItem('skemino_user_data', JSON.stringify(mockUser));
+        sessionStorage.setItem('skemino_auth_token', authToken);
+        sessionStorage.setItem('skemino_user_data', JSON.stringify(authenticatedUser));
       }
 
-      setUser(mockUser);
+      setUser(authenticatedUser);
       setIsAuthenticated(true);
 
       return {
         success: true,
-        user: mockUser,
-        token: mockToken,
-        message: 'Login effettuato con successo'
+        user: authenticatedUser,
+        token: authToken,
+        message: response.message || 'Login effettuato con successo'
       };
 
     } catch (error) {
       console.error('Login error:', error);
       return {
         success: false,
-        message: 'Errore durante il login',
-        errors: { identifier: 'Credenziali non valide' }
+        message: error instanceof Error ? error.message : 'Errore durante il login',
+        errors: { identifier: 'Errore di connessione. Riprova.' }
       };
     } finally {
       setIsLoading(false);
