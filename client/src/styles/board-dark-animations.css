@@ -1038,23 +1038,43 @@ div.skemino-square-dark.skemino-central-d4,
 
 /* Vertex colors - zoom resistant - Direct background override */
 .skemino-cell-zoom-resistant.skemino-vertex-a1 {
-  background: rgba(59, 130, 246, 1.0) !important; /* Blue like c3 */
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3) !important;
+  background: radial-gradient(circle at center,
+    rgba(147, 220, 255, 1.0) 0%,     /* Bright light blue center */
+    rgba(96, 165, 250, 1.0) 30%,     /* Medium light blue */
+    rgba(59, 130, 246, 1.0) 70%,     /* Blue like c3 */
+    rgba(37, 99, 235, 1.0) 100%      /* Darker blue edge */
+  ) !important;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4) !important;
 }
 
 .skemino-cell-zoom-resistant.skemino-vertex-f1 {
-  background: rgba(34, 197, 94, 1.0) !important; /* Green like d3 */
-  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3) !important;
+  background: radial-gradient(circle at center,
+    rgba(200, 255, 220, 1.0) 0%,     /* Bright light green center */
+    rgba(74, 222, 128, 1.0) 30%,     /* Medium light green */
+    rgba(34, 197, 94, 1.0) 70%,      /* Green like d3 */
+    rgba(22, 163, 74, 1.0) 100%      /* Darker green edge */
+  ) !important;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.4) !important;
 }
 
 .skemino-cell-zoom-resistant.skemino-vertex-a6 {
-  background: rgba(239, 68, 68, 1.0) !important; /* Red like c4 */
-  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3) !important;
+  background: radial-gradient(circle at center,
+    rgba(255, 200, 200, 1.0) 0%,     /* Bright light red center */
+    rgba(248, 113, 113, 1.0) 30%,    /* Medium light red */
+    rgba(239, 68, 68, 1.0) 70%,      /* Red like c4 */
+    rgba(220, 38, 38, 1.0) 100%      /* Darker red edge */
+  ) !important;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4) !important;
 }
 
 .skemino-cell-zoom-resistant.skemino-vertex-f6 {
-  background: rgba(250, 204, 21, 1.0) !important; /* Yellow like d4 */
-  box-shadow: 0 2px 8px rgba(250, 204, 21, 0.3) !important;
+  background: radial-gradient(circle at center,
+    rgba(255, 250, 200, 1.0) 0%,     /* Bright light yellow center */
+    rgba(253, 224, 71, 1.0) 30%,     /* Medium light yellow */
+    rgba(250, 204, 21, 1.0) 70%,     /* Yellow like d4 */
+    rgba(234, 179, 8, 1.0) 100%      /* Darker yellow edge */
+  ) !important;
+  box-shadow: 0 2px 8px rgba(250, 204, 21, 0.4) !important;
 }
 
 /* Algebraic notation - zoom resistant */
