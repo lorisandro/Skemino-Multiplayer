@@ -853,10 +853,19 @@ div.skemino-square-dark.skemino-central-d4,
   /* Gaming aspect ratio preserved */
   aspect-ratio: 1 / 1.4;
 
-  /* Base gaming styling */
-  background: var(--skemino-bg-secondary);
+  /* Base gaming styling - WHITE GRADIENT BACKGROUND */
+  background: radial-gradient(circle at center,
+    rgba(230, 230, 230, 1.0) 0%,      /* Light gray center */
+    rgba(235, 235, 235, 1.0) 15%,     /* Very light gray */
+    rgba(240, 240, 240, 1.0) 30%,     /* Lighter gray */
+    rgba(245, 245, 245, 1.0) 45%,     /* Almost white */
+    rgba(250, 250, 250, 1.0) 60%,     /* Near white */
+    rgba(255, 255, 255, 1.0) 80%,     /* Pure white */
+    rgba(255, 255, 255, 1.0) 100%     /* Pure white edge */
+  ) !important;
   border: 1px solid var(--skemino-border-primary);
   border-radius: 0.25rem;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05) !important; /* Subtle inner shadow for depth */
 
   /* Content centering */
   display: flex;
@@ -867,7 +876,7 @@ div.skemino-square-dark.skemino-central-d4,
   /* Gaming typography */
   font-size: 1rem;
   font-weight: 600;
-  color: #ffffff;
+  color: #000000; /* Black text on white background */
   font-family: 'Inter', 'Segoe UI', monospace;
 
   /* Gaming interactions */
