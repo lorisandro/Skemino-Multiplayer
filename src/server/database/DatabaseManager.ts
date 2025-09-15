@@ -8,11 +8,18 @@ export interface User {
   email: string;
   passwordHash?: string;
   rating: number;
-  level: number;
+  level: any; // Can be number or object based on usage
   gamesPlayed: number;
+  gamesWon?: number;
+  gamesLost?: number;
+  gamesDrawn?: number;
   wins: number;
   losses: number;
   draws: number;
+  countryCode?: string;
+  isVerified?: boolean;
+  preferences?: any;
+  statistics?: any;
   lastLogin?: Date;
   createdAt: Date;
   updatedAt: Date;
