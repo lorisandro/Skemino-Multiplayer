@@ -898,6 +898,7 @@ div.skemino-square-dark.skemino-central-d4,
   .skemino-board-zoom-resistant {
     width: 28rem;
     height: 28rem;
+    min-height: 28rem;
     border-width: 1px;
   }
 
@@ -922,6 +923,7 @@ div.skemino-square-dark.skemino-central-d4,
   .skemino-board-zoom-resistant {
     width: 35rem;
     height: 35rem;
+    min-height: 35rem;
   }
 
   .skemino-grid-zoom-resistant {
@@ -944,6 +946,7 @@ div.skemino-square-dark.skemino-central-d4,
   .skemino-board-zoom-resistant {
     width: 42rem;
     height: 42rem;
+    min-height: 42rem;
     border-width: 2px;
   }
 
@@ -968,6 +971,7 @@ div.skemino-square-dark.skemino-central-d4,
   .skemino-board-zoom-resistant {
     width: 50rem;
     height: 50rem;
+    min-height: 50rem;
     border-width: 3px;
   }
 
@@ -992,6 +996,7 @@ div.skemino-square-dark.skemino-central-d4,
   .skemino-board-zoom-resistant {
     width: 55rem;
     height: 55rem;
+    min-height: 55rem;
     border-width: 3px;
   }
 

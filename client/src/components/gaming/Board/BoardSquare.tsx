@@ -73,7 +73,7 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
 
     // Standard squares: Pure white circular gradient for all non-vertex cells
     // Professional gaming board style with subtle white depth gradient
-    return `${baseClass} ${zoomResistant ? '' : 'skemino-cell-gradient'}`; // Apply white circular gradient with gray center
+    return `${baseClass}`; // Default white gradient from CSS
   }, [cell, isVertex, zoomResistant]);
 
   // Dark Gaming Highlight styles - Pure CSS Professional competitive

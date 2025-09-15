@@ -82,12 +82,12 @@ export const ZoomResistantBoardContainer: React.FC<ZoomResistantBoardContainerPr
           style={{
             // Demo mode overrides with smaller fixed sizes
             ...(demoMode && {
-              width: '20rem',
-              height: '20rem',
-              minWidth: '18rem',
-              minHeight: '18rem',
-              maxWidth: '25rem',
-              maxHeight: '25rem',
+              width: '25rem',
+              height: '25rem',
+              minWidth: '25rem',
+              minHeight: '25rem',
+              maxWidth: '30rem',
+              maxHeight: '30rem',
             })
           }}
         >
