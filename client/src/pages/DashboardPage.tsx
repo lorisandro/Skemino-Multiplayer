@@ -12,7 +12,7 @@ const DashboardPage: React.FC = () => {
   };
 
   const handlePlayNow = () => {
-    navigate('/pregame');
+    navigate('/game');
   };
 
   return (
@@ -29,7 +29,7 @@ const DashboardPage: React.FC = () => {
               <img
                 src="/images/skemino.webp"
                 alt="Skèmino"
-                className="h-20 w-auto drop-shadow-2xl hover:drop-shadow-[0_0_25px_rgba(255,255,255,0.3)] transition-all duration-300"
+                className="h-24 w-auto drop-shadow-2xl hover:drop-shadow-[0_0_25px_rgba(255,255,255,0.3)] transition-all duration-300"
               />
             </Link>
 

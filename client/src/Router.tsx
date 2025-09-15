@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import { AuthProvider, RequireAuth, useAuthContext } from './contexts/AuthContext';
 import { useAuth } from './hooks/useAuth';
 import toast from 'react-hot-toast';
@@ -9,6 +11,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import PreGamePage from './pages/PreGamePage';
+import { MatchmakingDemo } from './pages/MatchmakingDemo';
 
 const GamePage = () => {
   return <App />;
@@ -65,35 +68,37 @@ export function Router() {
       v7_startTransition: true,
       v7_relativeSplatPath: true
     }}>
-      <AuthProvider>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPageWrapper />} />
-          <Route path="/dashboard" element={
-            <RequireAuth fallback={<Navigate to="/login" replace />}>
-              <DashboardPage />
-            </RequireAuth>
-          } />
-          <Route path="/pregame" element={
-            <RequireAuth fallback={<Navigate to="/login" replace />}>
-              <PreGamePage />
-            </RequireAuth>
-          } />
-          <Route path="/game" element={
-            <RequireAuth fallback={<Navigate to="/login" replace />}>
-              <GamePage />
-            </RequireAuth>
-          } />
-          <Route path="/game/:roomId" element={
-            <RequireAuth fallback={<Navigate to="/login" replace />}>
-              <GamePage />
-            </RequireAuth>
-          } />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </AuthProvider>
+      <DndProvider backend={HTML5Backend}>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPageWrapper />} />
+            <Route path="/dashboard" element={
+              <RequireAuth fallback={<Navigate to="/login" replace />}>
+                <DashboardPage />
+              </RequireAuth>
+            } />
+            <Route path="/pregame" element={
+              <RequireAuth fallback={<Navigate to="/login" replace />}>
+                <PreGamePage />
+              </RequireAuth>
+            } />
+            <Route path="/game" element={
+              <RequireAuth fallback={<Navigate to="/login" replace />}>
+                <MatchmakingDemo />
+              </RequireAuth>
+            } />
+            <Route path="/game/:roomId" element={
+              <RequireAuth fallback={<Navigate to="/login" replace />}>
+                <GamePage />
+              </RequireAuth>
+            } />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </AuthProvider>
+      </DndProvider>
     </BrowserRouter>
   );
 }
