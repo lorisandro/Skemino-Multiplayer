@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Registrazione REALE Skèmino</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: white;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #f59e0b;
+            border-bottom: 2px solid #f59e0b;
+            padding-bottom: 10px;
+        }
+        button {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            margin: 10px 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: #d97706;
+            transform: translateY(-2px);
+        }
+        .success-btn {
+            background: #10b981;
+        }
+        .success-btn:hover {
+            background: #059669;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #2a2a2a;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            border-left: 4px solid #10b981;
+            background: #064e3b;
+        }
+        .error {
+            border-left: 4px solid #ef4444;
+            background: #7f1d1d;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #f59e0b;
+        }
+        .form-section {
+            background: #111;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        h3 {
+            color: #f59e0b;
+            margin-top: 0;
+        }
+        .info {
+            background: #1e3a8a;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎮 Skèmino - Sistema Autenticazione REALE</h1>
+
+    <div class="info">
+        ℹ️ <strong>NESSUN UTENTE DEMO!</strong> Devi registrarti con dati reali per accedere.
+    </div>
+
+    <div class="form-section">
+        <h3>📝 Registrazione Nuovo Utente</h3>
+        <input type="text" id="reg-username" placeholder="Username (es: mario_rossi)" value="">
+        <input type="email" id="reg-email" placeholder="Email (es: mario@esempio.com)" value="">
+        <input type="password" id="reg-password" placeholder="Password (min 6 caratteri)" value="">
+        <button onclick="testRegister()" class="success-btn">Registra Nuovo Account</button>
+    </div>
+
+    <div class="form-section">
+        <h3>🔐 Login Utente Registrato</h3>
+        <input type="text" id="login-email" placeholder="Email o Username" value="">
+        <input type="password" id="login-password" placeholder="Password" value="">
+        <button onclick="testLogin()">Accedi con Account Esistente</button>
+    </div>
+
+    <div class="form-section">
+        <h3>👤 Login Ospite</h3>
+        <input type="text" id="guest-username" placeholder="Nome ospite (opzionale)" value="">
+        <button onclick="testGuestLogin()">Entra come Ospite</button>
+    </div>
+
+    <div id="result" class="result"></div>
+
+    <script>
+        const API_BASE = 'http://localhost:3005';
+
+        async function testRegister() {
+            const username = document.getElementById('reg-username').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            const resultDiv = document.getElementById('result');
+
+            if (!username || !email || !password) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '❌ Compila tutti i campi per la registrazione!';
+                return;
+            }
+
+            if (password.length < 6) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '❌ La password deve essere di almeno 6 caratteri!';
+                return;
+            }
+
+            try {
+                resultDiv.innerHTML = '⏳ Registrazione in corso...';
+
+                const response = await fetch(`${API_BASE}/api/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        email: email,
+                        password: password
+                    }),
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `✅ REGISTRAZIONE COMPLETATA!\n\nBenvenuto ${username}!\n\nResponse Status: ${response.status}\n\nDati Account:\n${JSON.stringify(data, null, 2)}\n\n🎮 Ora puoi accedere con le tue credenziali!`;
+
+                    // Auto-fill login form
+                    document.getElementById('login-email').value = email;
+                    document.getElementById('login-password').value = password;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `❌ REGISTRAZIONE FALLITA\n\nResponse Status: ${response.status}\n\nErrore:\n${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ ERRORE DI RETE\n\n${error.message}\n\nStack:\n${error.stack}`;
+            }
+        }
+
+        async function testLogin() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const resultDiv = document.getElementById('result');
+
+            if (!email || !password) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '❌ Inserisci email/username e password!';
+                return;
+            }
+
+            try {
+                resultDiv.innerHTML = '⏳ Login in corso...';
+
+                const response = await fetch(`${API_BASE}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        identifier: email,
+                        password: password,
+                        rememberMe: false
+                    }),
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `✅ LOGIN SUCCESSO!\n\nBentornato!\n\nResponse Status: ${response.status}\n\nDati:\n${JSON.stringify(data, null, 2)}`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `❌ LOGIN FALLITO\n\nResponse Status: ${response.status}\n\nErrore:\n${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ ERRORE DI RETE\n\n${error.message}\n\nStack:\n${error.stack}`;
+            }
+        }
+
+        async function testGuestLogin() {
+            const username = document.getElementById('guest-username').value;
+            const resultDiv = document.getElementById('result');
+
+            try {
+                resultDiv.innerHTML = '⏳ Creazione sessione ospite...';
+
+                const response = await fetch(`${API_BASE}/api/auth/guest`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: username || undefined
+                    }),
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `✅ ACCESSO OSPITE CREATO!\n\nResponse Status: ${response.status}\n\nDati:\n${JSON.stringify(data, null, 2)}`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `❌ ACCESSO OSPITE FALLITO\n\nResponse Status: ${response.status}\n\nErrore:\n${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ ERRORE DI RETE\n\n${error.message}\n\nStack:\n${error.stack}`;
+            }
+        }
+
+        // Focus on username field on load
+        window.onload = () => {
+            document.getElementById('reg-username').focus();
+        };
+    </script>
+</body>
+</html>

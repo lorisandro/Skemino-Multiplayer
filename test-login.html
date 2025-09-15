@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Login Skèmino</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: white;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        button {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #d97706;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #2a2a2a;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            border-left: 3px solid #10b981;
+        }
+        .error {
+            border-left: 3px solid #ef4444;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Login Skèmino</h1>
+
+    <div>
+        <h3>Login con credenziali demo</h3>
+        <input type="text" id="email" placeholder="Email" value="demo@skemino.com">
+        <input type="password" id="password" placeholder="Password" value="demo123">
+        <button onclick="testLogin()">Test Login</button>
+        <button onclick="testGuestLogin()">Test Guest Login</button>
+    </div>
+
+    <div id="result" class="result"></div>
+
+    <script>
+        const API_BASE = 'http://localhost:3005';
+
+        async function testLogin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const resultDiv = document.getElementById('result');
+
+            try {
+                resultDiv.innerHTML = 'Invio richiesta login...';
+
+                const response = await fetch(`${API_BASE}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        identifier: email,
+                        password: password,
+                        rememberMe: false
+                    }),
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `✅ LOGIN SUCCESSO!\n\nResponse Status: ${response.status}\n\nData:\n${JSON.stringify(data, null, 2)}`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `❌ LOGIN FALLITO\n\nResponse Status: ${response.status}\n\nError:\n${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ ERRORE DI RETE\n\n${error.message}\n\nStack:\n${error.stack}`;
+            }
+        }
+
+        async function testGuestLogin() {
+            const resultDiv = document.getElementById('result');
+
+            try {
+                resultDiv.innerHTML = 'Invio richiesta guest login...';
+
+                const response = await fetch(`${API_BASE}/api/auth/guest`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `✅ GUEST LOGIN SUCCESSO!\n\nResponse Status: ${response.status}\n\nData:\n${JSON.stringify(data, null, 2)}`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `❌ GUEST LOGIN FALLITO\n\nResponse Status: ${response.status}\n\nError:\n${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ ERRORE DI RETE\n\n${error.message}\n\nStack:\n${error.stack}`;
+            }
+        }
+    </script>
+</body>
+</html>

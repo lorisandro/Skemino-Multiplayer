@@ -1,6 +1,11 @@
-import { Pool, PoolClient } from 'pg';
+import * as sqlite3 from 'sqlite3';
+import { open, Database as SqliteDatabase } from 'sqlite';
 import { logger } from '../utils/logger';
 import { Move } from '../../shared/types/GameTypes';
+import * as path from 'path';
+import * as fs from 'fs';
+import * as bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface User {
   id: string;
@@ -8,7 +13,7 @@ export interface User {
   email: string;
   passwordHash?: string;
   rating: number;
-  level: any; // Can be number or object based on usage
+  level: any;
   gamesPlayed: number;
   gamesWon?: number;
   gamesLost?: number;
@@ -69,42 +74,35 @@ export interface RatingHistory {
 }
 
 export class DatabaseManager {
-  private static pool: Pool | null = null;
-  private static mockMode = process.env.DB_MOCK === 'true' || !process.env.DB_HOST;
-  private static mockUsers = new Map<string, User>();
+  private static db: SqliteDatabase | null = null;
+  private static dbPath: string = path.join(process.cwd(), 'skemino.db');
 
   public static async initialize(): Promise<void> {
     try {
-      if (this.mockMode) {
-        logger.info('🗄️ Database running in MOCK mode (no real database needed)');
-        await this.initializeMockData();
-        return;
+      // Ensure database directory exists
+      const dbDir = path.dirname(this.dbPath);
+      if (!fs.existsSync(dbDir)) {
+        fs.mkdirSync(dbDir, { recursive: true });
       }
 
-      const config = {
-        host: process.env.DB_HOST || 'localhost',
-        port: parseInt(process.env.DB_PORT || '5432'),
-        database: process.env.DB_NAME || 'skemino',
-        user: process.env.DB_USER || 'postgres',
-        password: process.env.DB_PASSWORD || 'password',
-        max: parseInt(process.env.DB_MAX_CONNECTIONS || '20'),
-        idleTimeoutMillis: 30000,
-        connectionTimeoutMillis: 2000,
-        application_name: 'skemino-server',
-        ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-      };
+      // Open SQLite database with sqlite3 driver
+      this.db = await open({
+        filename: this.dbPath,
+        driver: sqlite3.Database
+      });
 
-      this.pool = new Pool(config);
+      // Enable WAL mode for better performance
+      await this.db.exec('PRAGMA journal_mode = WAL');
+      await this.db.exec('PRAGMA synchronous = NORMAL');
+      await this.db.exec('PRAGMA cache_size = 1000000');
+      await this.db.exec('PRAGMA temp_store = memory');
 
-      // Test connection
-      const client = await this.pool.connect();
-      await client.query('SELECT NOW()');
-      client.release();
+      logger.info(`🗄️ SQLite database initialized at: ${this.dbPath}`);
 
-      logger.info('🗄️ Database connected successfully');
-
-      // Run migrations on startup (simplified)
+      // Run migrations to create tables
       await this.runMigrations();
+
+      logger.info('✅ Database connected - SISTEMA REALE (NO MOCK DATA!)');
 
     } catch (error) {
       logger.error('Failed to initialize database:', error);
@@ -112,733 +110,317 @@ export class DatabaseManager {
     }
   }
 
-  public static async close(): Promise<void> {
-    if (this.pool) {
-      await this.pool.end();
-      this.pool = null;
-      logger.info('🗄️ Database connection closed');
-    }
-  }
-
-  private static ensureConnection(): void {
-    if (this.mockMode) {
-      return; // Mock mode doesn't need pool connection
-    }
-    if (!this.pool) {
-      throw new Error('Database not initialized. Call DatabaseManager.initialize() first.');
-    }
-  }
-
   private static async runMigrations(): Promise<void> {
-    try {
-      const client = await this.getClient();
+    if (!this.db) throw new Error('Database not initialized');
 
-      // Create tables if they don't exist
-      await client.query(`
+    try {
+      // Create users table with all necessary fields
+      await this.db.exec(`
         CREATE TABLE IF NOT EXISTS users (
-          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-          username VARCHAR(50) UNIQUE NOT NULL,
-          email VARCHAR(255) UNIQUE NOT NULL,
-          password_hash VARCHAR(255) NOT NULL,
+          id TEXT PRIMARY KEY,
+          username TEXT UNIQUE NOT NULL,
+          email TEXT UNIQUE NOT NULL,
+          password_hash TEXT NOT NULL,
           rating INTEGER DEFAULT 1200,
-          level INTEGER DEFAULT 1,
+          level TEXT DEFAULT 'Principiante',
           games_played INTEGER DEFAULT 0,
+          games_won INTEGER DEFAULT 0,
+          games_lost INTEGER DEFAULT 0,
+          games_drawn INTEGER DEFAULT 0,
           wins INTEGER DEFAULT 0,
           losses INTEGER DEFAULT 0,
           draws INTEGER DEFAULT 0,
-          last_login TIMESTAMP,
-          created_at TIMESTAMP DEFAULT NOW(),
-          updated_at TIMESTAMP DEFAULT NOW()
+          country_code TEXT DEFAULT 'IT',
+          is_verified INTEGER DEFAULT 0,
+          preferences TEXT DEFAULT '{}',
+          statistics TEXT DEFAULT '{}',
+          last_login DATETIME,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
       `);
 
-      await client.query(`
+      // Create games table
+      await this.db.exec(`
         CREATE TABLE IF NOT EXISTS games (
-          id UUID PRIMARY KEY,
-          white_player_id UUID REFERENCES users(id),
-          black_player_id UUID REFERENCES users(id),
-          result VARCHAR(10) DEFAULT '*',
-          status VARCHAR(20) DEFAULT 'active',
-          start_time TIMESTAMP DEFAULT NOW(),
-          end_time TIMESTAMP,
+          id TEXT PRIMARY KEY,
+          white_player_id TEXT NOT NULL,
+          black_player_id TEXT NOT NULL,
+          result TEXT DEFAULT '*',
+          status TEXT DEFAULT 'ongoing',
+          start_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+          end_time DATETIME,
           move_count INTEGER DEFAULT 0,
           psn_notation TEXT,
-          time_control VARCHAR(20) DEFAULT 'rapid',
-          victory_condition VARCHAR(10),
+          time_control TEXT DEFAULT 'standard',
+          victory_condition TEXT,
           white_time INTEGER,
           black_time INTEGER,
-          created_at TIMESTAMP DEFAULT NOW()
+          FOREIGN KEY (white_player_id) REFERENCES users(id),
+          FOREIGN KEY (black_player_id) REFERENCES users(id)
         );
       `);
 
-      await client.query(`
+      // Create moves table
+      await this.db.exec(`
         CREATE TABLE IF NOT EXISTS moves (
-          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-          game_id UUID REFERENCES games(id),
+          id TEXT PRIMARY KEY,
+          game_id TEXT NOT NULL,
           turn_number INTEGER NOT NULL,
-          player_id UUID REFERENCES users(id),
-          move_notation VARCHAR(20) NOT NULL,
-          card_played VARCHAR(10) NOT NULL,
-          from_position VARCHAR(2),
-          to_position VARCHAR(2) NOT NULL,
-          captured_card VARCHAR(10),
-          is_vertex_control BOOLEAN DEFAULT FALSE,
-          is_loop_trigger BOOLEAN DEFAULT FALSE,
+          player_id TEXT NOT NULL,
+          move_notation TEXT NOT NULL,
+          card_played TEXT,
+          from_position TEXT,
+          to_position TEXT,
+          captured_card TEXT,
+          is_vertex_control INTEGER DEFAULT 0,
+          is_loop_trigger INTEGER DEFAULT 0,
           think_time_ms INTEGER DEFAULT 0,
-          timestamp TIMESTAMP DEFAULT NOW()
+          timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (game_id) REFERENCES games(id),
+          FOREIGN KEY (player_id) REFERENCES users(id)
         );
       `);
 
-      await client.query(`
+      // Create rating_history table
+      await this.db.exec(`
         CREATE TABLE IF NOT EXISTS rating_history (
-          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-          player_id UUID REFERENCES users(id),
+          id TEXT PRIMARY KEY,
+          player_id TEXT NOT NULL,
           old_rating INTEGER NOT NULL,
           new_rating INTEGER NOT NULL,
-          game_id UUID REFERENCES games(id),
-          k_factor INTEGER NOT NULL,
+          game_id TEXT NOT NULL,
+          k_factor REAL NOT NULL,
           rating_change INTEGER NOT NULL,
-          timestamp TIMESTAMP DEFAULT NOW()
+          timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (player_id) REFERENCES users(id),
+          FOREIGN KEY (game_id) REFERENCES games(id)
         );
       `);
 
       // Create indexes for performance
-      await client.query(`
+      await this.db.exec(`
+        CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+        CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
+        CREATE INDEX IF NOT EXISTS idx_users_rating ON users(rating DESC);
         CREATE INDEX IF NOT EXISTS idx_games_players ON games(white_player_id, black_player_id);
         CREATE INDEX IF NOT EXISTS idx_games_status ON games(status);
         CREATE INDEX IF NOT EXISTS idx_moves_game ON moves(game_id, turn_number);
-        CREATE INDEX IF NOT EXISTS idx_rating_history_player ON rating_history(player_id, timestamp);
-        CREATE INDEX IF NOT EXISTS idx_users_rating ON users(rating DESC);
+        CREATE INDEX IF NOT EXISTS idx_rating_history_player ON rating_history(player_id, timestamp DESC);
       `);
 
-      client.release();
-      logger.info('📋 Database migrations completed');
+      logger.info('📊 Database migrations completed successfully');
 
     } catch (error) {
-      logger.error('Error running migrations:', error);
+      logger.error('Migration failed:', error);
       throw error;
     }
   }
 
-  public static async getClient(): Promise<PoolClient> {
-    if (this.mockMode) {
-      // Return a mock client for mock mode
-      return {} as PoolClient;
-    }
-    this.ensureConnection();
-    return await this.pool!.connect();
-  }
-
-  // User management
-  public static async getUserById(userId: string): Promise<User | null> {
-    try {
-      if (this.mockMode) {
-        return this.mockUsers.get(userId) || null;
-      }
-
-      const client = await this.getClient();
-      const result = await client.query(
-        'SELECT * FROM users WHERE id = $1',
-        [userId]
-      );
-      client.release();
-
-      return result.rows.length > 0 ? this.mapUserRow(result.rows[0]) : null;
-    } catch (error) {
-      logger.error('Error getting user by ID:', error);
-      return null;
-    }
-  }
-
-  public static async getUserByUsername(username: string): Promise<User | null> {
-    try {
-      if (this.mockMode) {
-        const user = Array.from(this.mockUsers.values()).find(u => u.username === username);
-        return user || null;
-      }
-
-      const client = await this.getClient();
-      const result = await client.query(
-        'SELECT * FROM users WHERE username = $1',
-        [username]
-      );
-      client.release();
-
-      return result.rows.length > 0 ? this.mapUserRow(result.rows[0]) : null;
-    } catch (error) {
-      logger.error('Error getting user by username:', error);
-      return null;
-    }
-  }
-
-  public static async getUserByEmail(email: string): Promise<User | null> {
-    try {
-      if (this.mockMode) {
-        const user = Array.from(this.mockUsers.values()).find(u => u.email === email);
-        return user || null;
-      }
-
-      const client = await this.getClient();
-      const result = await client.query(
-        'SELECT * FROM users WHERE email = $1',
-        [email]
-      );
-      client.release();
-
-      return result.rows.length > 0 ? this.mapUserRow(result.rows[0]) : null;
-    } catch (error) {
-      logger.error('Error getting user by email:', error);
-      return null;
-    }
-  }
-
-  public static async getUserByEmailOrUsername(identifier: string): Promise<User | null> {
-    try {
-      if (this.mockMode) {
-        const user = Array.from(this.mockUsers.values()).find(u =>
-          u.email === identifier || u.username === identifier
-        );
-        return user || null;
-      }
-
-      const client = await this.getClient();
-      const result = await client.query(
-        'SELECT * FROM users WHERE email = $1 OR username = $1',
-        [identifier]
-      );
-      client.release();
-
-      return result.rows.length > 0 ? this.mapUserRow(result.rows[0]) : null;
-    } catch (error) {
-      logger.error('Error getting user by email or username:', error);
-      return null;
-    }
-  }
-
+  // User management methods
   public static async createUser(userData: {
     username: string;
     email: string;
     passwordHash: string;
     rating?: number;
   }): Promise<User | null> {
+    if (!this.db) throw new Error('Database not initialized');
+
     try {
-      if (this.mockMode) {
-        const user: User = {
-          id: `user_${Date.now()}`,
-          username: userData.username,
-          email: userData.email,
-          passwordHash: userData.passwordHash,
-          rating: userData.rating || 1200,
-          level: 1,
-          gamesPlayed: 0,
-          wins: 0,
-          losses: 0,
-          draws: 0,
-          createdAt: new Date(),
-          updatedAt: new Date()
-        };
-        this.mockUsers.set(user.id, user);
-        logger.info(`💾 User created in mock database - Email: ${user.email}, Username: ${user.username}, ID: ${user.id}`);
-        logger.info(`📊 Total registered users: ${this.mockUsers.size}`);
-        return user;
+      const userId = uuidv4();
+      const now = new Date().toISOString();
+
+      await this.db.run(
+        `INSERT INTO users (
+          id, username, email, password_hash, rating,
+          created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [
+          userId,
+          userData.username,
+          userData.email,
+          userData.passwordHash,
+          userData.rating || 1200,
+          now,
+          now
+        ]
+      );
+
+      const user = await this.getUserById(userId);
+      logger.info(`✅ New user registered: ${userData.username} (${userId})`);
+      return user;
+
+    } catch (error: any) {
+      if (error.code === 'SQLITE_CONSTRAINT') {
+        logger.warn(`User already exists: ${userData.email}`);
+        return null;
       }
+      logger.error('Failed to create user:', error);
+      throw error;
+    }
+  }
 
-      const client = await this.getClient();
-      const result = await client.query(`
-        INSERT INTO users (username, email, password_hash, rating, level, games_played, wins, losses, draws)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-        RETURNING *
-      `, [
-        userData.username,
-        userData.email,
-        userData.passwordHash,
-        userData.rating || 1200,
-        1, // Initial level
-        0, 0, 0, 0 // Initial stats
-      ]);
-      client.release();
+  public static async getUserById(userId: string): Promise<User | null> {
+    if (!this.db) throw new Error('Database not initialized');
 
-      return result.rows.length > 0 ? this.mapUserRow(result.rows[0]) : null;
+    try {
+      const row = await this.db.get(
+        'SELECT * FROM users WHERE id = ?',
+        [userId]
+      );
+
+      if (!row) return null;
+
+      return this.mapRowToUser(row);
     } catch (error) {
-      logger.error('Error creating user:', error);
+      logger.error('Failed to get user by ID:', error);
+      return null;
+    }
+  }
+
+  public static async getUserByEmail(email: string): Promise<User | null> {
+    if (!this.db) throw new Error('Database not initialized');
+
+    try {
+      const row = await this.db.get(
+        'SELECT * FROM users WHERE email = ?',
+        [email]
+      );
+
+      if (!row) return null;
+
+      return this.mapRowToUser(row);
+    } catch (error) {
+      logger.error('Failed to get user by email:', error);
+      return null;
+    }
+  }
+
+  public static async getUserByUsername(username: string): Promise<User | null> {
+    if (!this.db) throw new Error('Database not initialized');
+
+    try {
+      const row = await this.db.get(
+        'SELECT * FROM users WHERE username = ?',
+        [username]
+      );
+
+      if (!row) return null;
+
+      return this.mapRowToUser(row);
+    } catch (error) {
+      logger.error('Failed to get user by username:', error);
+      return null;
+    }
+  }
+
+  public static async getUserByEmailOrUsername(identifier: string): Promise<User | null> {
+    if (!this.db) throw new Error('Database not initialized');
+
+    try {
+      const row = await this.db.get(
+        'SELECT * FROM users WHERE email = ? OR username = ?',
+        [identifier, identifier]
+      );
+
+      if (!row) return null;
+
+      return this.mapRowToUser(row);
+    } catch (error) {
+      logger.error('Failed to get user by email or username:', error);
       return null;
     }
   }
 
   public static async updateUserLastLogin(userId: string): Promise<void> {
-    try {
-      if (this.mockMode) {
-        const user = this.mockUsers.get(userId);
-        if (user) {
-          user.lastLogin = new Date();
-          user.updatedAt = new Date();
-        }
-        return;
-      }
+    if (!this.db) throw new Error('Database not initialized');
 
-      const client = await this.getClient();
-      await client.query(
-        'UPDATE users SET last_login = NOW(), updated_at = NOW() WHERE id = $1',
+    try {
+      await this.db.run(
+        'UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = ?',
         [userId]
       );
-      client.release();
     } catch (error) {
-      logger.error('Error updating user last login:', error);
-      // Don't throw error to prevent login failure
+      logger.error('Failed to update last login:', error);
     }
   }
 
-  public static async updatePlayerRating(playerId: string, newRating: number): Promise<void> {
+  public static async updateUserRating(userId: string, newRating: number): Promise<void> {
+    if (!this.db) throw new Error('Database not initialized');
+
     try {
-      const client = await this.getClient();
-      await client.query(
-        'UPDATE users SET rating = $1, updated_at = NOW() WHERE id = $2',
-        [newRating, playerId]
+      await this.db.run(
+        'UPDATE users SET rating = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+        [newRating, userId]
       );
-      client.release();
-
-      logger.debug(`Player ${playerId} rating updated to ${newRating}`);
     } catch (error) {
-      logger.error('Error updating player rating:', error);
+      logger.error('Failed to update user rating:', error);
       throw error;
     }
   }
 
-  public static async updatePlayerStats(
-    playerId: string,
-    result: '1-0' | '0-1' | '1/2-1/2'
-  ): Promise<void> {
-    try {
-      const client = await this.getClient();
+  private static mapRowToUser(row: any): User {
+    const level = this.calculateLevel(row.rating);
 
-      let updateField = '';
-      switch (result) {
-        case '1-0':
-          updateField = 'wins = wins + 1';
-          break;
-        case '0-1':
-          updateField = 'losses = losses + 1';
-          break;
-        case '1/2-1/2':
-          updateField = 'draws = draws + 1';
-          break;
-      }
-
-      await client.query(
-        `UPDATE users SET games_played = games_played + 1, ${updateField}, updated_at = NOW() WHERE id = $1`,
-        [playerId]
-      );
-      client.release();
-    } catch (error) {
-      logger.error('Error updating player stats:', error);
-      throw error;
-    }
-  }
-
-  // Game management
-  public static async saveGame(gameRecord: GameRecord): Promise<void> {
-    try {
-      const client = await this.getClient();
-
-      await client.query(`
-        INSERT INTO games (
-          id, white_player_id, black_player_id, result, status,
-          start_time, end_time, move_count, psn_notation, time_control,
-          victory_condition, white_time, black_time
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
-        ON CONFLICT (id) DO UPDATE SET
-          result = EXCLUDED.result,
-          status = EXCLUDED.status,
-          end_time = EXCLUDED.end_time,
-          move_count = EXCLUDED.move_count,
-          psn_notation = EXCLUDED.psn_notation,
-          victory_condition = EXCLUDED.victory_condition,
-          white_time = EXCLUDED.white_time,
-          black_time = EXCLUDED.black_time
-      `, [
-        gameRecord.id,
-        gameRecord.whitePlayerId,
-        gameRecord.blackPlayerId,
-        gameRecord.result,
-        gameRecord.status,
-        gameRecord.startTime,
-        gameRecord.endTime,
-        gameRecord.moveCount,
-        gameRecord.psnNotation,
-        gameRecord.timeControl,
-        gameRecord.victoryCondition,
-        gameRecord.whiteTime,
-        gameRecord.blackTime
-      ]);
-
-      client.release();
-
-      // Update player statistics
-      if (gameRecord.result !== '*') {
-        await this.updatePlayerStats(gameRecord.whitePlayerId, gameRecord.result);
-        await this.updatePlayerStats(
-          gameRecord.blackPlayerId,
-          gameRecord.result === '1-0' ? '0-1' : gameRecord.result === '0-1' ? '1-0' : '1/2-1/2'
-        );
-      }
-
-      logger.debug(`Game ${gameRecord.id} saved to database`);
-    } catch (error) {
-      logger.error('Error saving game:', error);
-      throw error;
-    }
-  }
-
-  public static async getGame(gameId: string): Promise<GameRecord | null> {
-    try {
-      const client = await this.getClient();
-      const result = await client.query(
-        'SELECT * FROM games WHERE id = $1',
-        [gameId]
-      );
-      client.release();
-
-      return result.rows.length > 0 ? this.mapGameRow(result.rows[0]) : null;
-    } catch (error) {
-      logger.error('Error getting game:', error);
-      return null;
-    }
-  }
-
-  public static async getPlayerGames(
-    playerId: string,
-    limit: number = 50,
-    offset: number = 0
-  ): Promise<GameRecord[]> {
-    try {
-      const client = await this.getClient();
-      const result = await client.query(`
-        SELECT * FROM games
-        WHERE white_player_id = $1 OR black_player_id = $1
-        ORDER BY start_time DESC
-        LIMIT $2 OFFSET $3
-      `, [playerId, limit, offset]);
-      client.release();
-
-      return result.rows.map(row => this.mapGameRow(row));
-    } catch (error) {
-      logger.error('Error getting player games:', error);
-      return [];
-    }
-  }
-
-  // Move management
-  public static async saveMove(gameId: string, move: Move): Promise<void> {
-    try {
-      const client = await this.getClient();
-
-      const moveRecord: MoveRecord = {
-        id: move.id,
-        gameId: gameId,
-        turnNumber: move.turnNumber,
-        playerId: '', // This should be set from the game context
-        moveNotation: move.notation,
-        cardPlayed: `${move.card.suit}${move.card.value}`,
-        fromPosition: move.fromPosition,
-        toPosition: move.toPosition,
-        capturedCard: move.capturedCard ? `${move.capturedCard.suit}${move.capturedCard.value}` : undefined,
-        isVertexControl: move.isVertexControl,
-        isLoopTrigger: move.isLoopTrigger,
-        thinkTimeMs: move.thinkTimeMs,
-        timestamp: move.timestamp
-      };
-
-      await client.query(`
-        INSERT INTO moves (
-          id, game_id, turn_number, move_notation, card_played,
-          from_position, to_position, captured_card, is_vertex_control,
-          is_loop_trigger, think_time_ms, timestamp
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-      `, [
-        moveRecord.id,
-        moveRecord.gameId,
-        moveRecord.turnNumber,
-        moveRecord.moveNotation,
-        moveRecord.cardPlayed,
-        moveRecord.fromPosition,
-        moveRecord.toPosition,
-        moveRecord.capturedCard,
-        moveRecord.isVertexControl,
-        moveRecord.isLoopTrigger,
-        moveRecord.thinkTimeMs,
-        moveRecord.timestamp
-      ]);
-
-      client.release();
-    } catch (error) {
-      logger.error('Error saving move:', error);
-      throw error;
-    }
-  }
-
-  public static async getGameMoves(gameId: string): Promise<MoveRecord[]> {
-    try {
-      const client = await this.getClient();
-      const result = await client.query(
-        'SELECT * FROM moves WHERE game_id = $1 ORDER BY turn_number ASC',
-        [gameId]
-      );
-      client.release();
-
-      return result.rows.map(row => this.mapMoveRow(row));
-    } catch (error) {
-      logger.error('Error getting game moves:', error);
-      return [];
-    }
-  }
-
-  // Rating history
-  public static async saveRatingHistory(ratingHistory: Omit<RatingHistory, 'id' | 'timestamp'>): Promise<void> {
-    try {
-      const client = await this.getClient();
-
-      await client.query(`
-        INSERT INTO rating_history (
-          player_id, old_rating, new_rating, game_id, k_factor, rating_change
-        ) VALUES ($1, $2, $3, $4, $5, $6)
-      `, [
-        ratingHistory.playerId,
-        ratingHistory.oldRating,
-        ratingHistory.newRating,
-        ratingHistory.gameId,
-        ratingHistory.kFactor,
-        ratingHistory.ratingChange
-      ]);
-
-      client.release();
-    } catch (error) {
-      logger.error('Error saving rating history:', error);
-      throw error;
-    }
-  }
-
-  public static async getPlayerRatingHistory(
-    playerId: string,
-    limit: number = 100
-  ): Promise<RatingHistory[]> {
-    try {
-      const client = await this.getClient();
-      const result = await client.query(`
-        SELECT * FROM rating_history
-        WHERE player_id = $1
-        ORDER BY timestamp DESC
-        LIMIT $2
-      `, [playerId, limit]);
-      client.release();
-
-      return result.rows.map(row => this.mapRatingHistoryRow(row));
-    } catch (error) {
-      logger.error('Error getting player rating history:', error);
-      return [];
-    }
-  }
-
-  // Leaderboard and statistics
-  public static async getLeaderboard(limit: number = 100): Promise<User[]> {
-    try {
-      const client = await this.getClient();
-      const result = await client.query(`
-        SELECT * FROM users
-        WHERE games_played >= 10
-        ORDER BY rating DESC
-        LIMIT $1
-      `, [limit]);
-      client.release();
-
-      return result.rows.map(row => this.mapUserRow(row));
-    } catch (error) {
-      logger.error('Error getting leaderboard:', error);
-      return [];
-    }
-  }
-
-  public static async getPlayerRank(playerId: string): Promise<number | null> {
-    try {
-      const client = await this.getClient();
-      const result = await client.query(`
-        WITH ranked_players AS (
-          SELECT id, ROW_NUMBER() OVER (ORDER BY rating DESC) as rank
-          FROM users
-          WHERE games_played >= 10
-        )
-        SELECT rank FROM ranked_players WHERE id = $1
-      `, [playerId]);
-      client.release();
-
-      return result.rows.length > 0 ? result.rows[0].rank : null;
-    } catch (error) {
-      logger.error('Error getting player rank:', error);
-      return null;
-    }
-  }
-
-  // Mapping functions
-  private static mapUserRow(row: any): User {
     return {
       id: row.id,
       username: row.username,
       email: row.email,
       passwordHash: row.password_hash,
       rating: row.rating,
-      level: row.level,
+      level: level,
       gamesPlayed: row.games_played,
-      wins: row.wins,
-      losses: row.losses,
-      draws: row.draws,
-      lastLogin: row.last_login,
-      createdAt: row.created_at,
-      updatedAt: row.updated_at
+      gamesWon: row.games_won,
+      gamesLost: row.games_lost,
+      gamesDrawn: row.games_drawn,
+      wins: row.wins || row.games_won,
+      losses: row.losses || row.games_lost,
+      draws: row.draws || row.games_drawn,
+      countryCode: row.country_code,
+      isVerified: Boolean(row.is_verified),
+      preferences: JSON.parse(row.preferences || '{}'),
+      statistics: JSON.parse(row.statistics || '{}'),
+      lastLogin: row.last_login ? new Date(row.last_login) : undefined,
+      createdAt: new Date(row.created_at),
+      updatedAt: new Date(row.updated_at)
     };
   }
 
-  private static mapGameRow(row: any): GameRecord {
+  private static calculateLevel(rating: number): any {
+    const levels = [
+      { min: 2700, max: 9999, name: 'Super Gran Maestro', tier: 'Super Gran Maestro', color: '#FF00FF', icon: '💎' },
+      { min: 2500, max: 2699, name: 'Gran Maestro Internazionale', tier: 'Gran Maestro Internazionale', color: '#FFD700', icon: '👑' },
+      { min: 2300, max: 2499, name: 'Gran Maestro', tier: 'Gran Maestro', color: '#FF6B35', icon: '🏆' },
+      { min: 2100, max: 2299, name: 'Maestro Internazionale', tier: 'Maestro Internazionale', color: '#8B4513', icon: '🎯' },
+      { min: 1900, max: 2099, name: 'Maestro', tier: 'Maestro', color: '#CD853F', icon: '⚔️' },
+      { min: 1700, max: 1899, name: 'Esperto', tier: 'Esperto', color: '#9370DB', icon: '🛡️' },
+      { min: 1500, max: 1699, name: 'Avanzato', tier: 'Avanzato', color: '#4169E1', icon: '⚡' },
+      { min: 1400, max: 1499, name: 'Intermedio Alto', tier: 'Intermedio Alto', color: '#1E90FF', icon: '🔥' },
+      { min: 1300, max: 1399, name: 'Intermedio', tier: 'Intermedio', color: '#00CED1', icon: '💪' },
+      { min: 1200, max: 1299, name: 'Apprendista', tier: 'Apprendista', color: '#20B2AA', icon: '📚' },
+      { min: 1000, max: 1199, name: 'Principiante', tier: 'Principiante', color: '#10B981', icon: '🌱' }
+    ];
+
+    const level = levels.find(l => rating >= l.min && rating <= l.max) || levels[levels.length - 1];
     return {
-      id: row.id,
-      whitePlayerId: row.white_player_id,
-      blackPlayerId: row.black_player_id,
-      result: row.result,
-      status: row.status,
-      startTime: row.start_time,
-      endTime: row.end_time,
-      moveCount: row.move_count,
-      psnNotation: row.psn_notation,
-      timeControl: row.time_control,
-      victoryCondition: row.victory_condition,
-      whiteTime: row.white_time,
-      blackTime: row.black_time
+      name: level.name,
+      tier: level.tier,
+      ratingRange: { min: level.min, max: level.max },
+      color: level.color,
+      icon: level.icon
     };
   }
 
-  private static mapMoveRow(row: any): MoveRecord {
-    return {
-      id: row.id,
-      gameId: row.game_id,
-      turnNumber: row.turn_number,
-      playerId: row.player_id,
-      moveNotation: row.move_notation,
-      cardPlayed: row.card_played,
-      fromPosition: row.from_position,
-      toPosition: row.to_position,
-      capturedCard: row.captured_card,
-      isVertexControl: row.is_vertex_control,
-      isLoopTrigger: row.is_loop_trigger,
-      thinkTimeMs: row.think_time_ms,
-      timestamp: row.timestamp
-    };
+  // NO MOCK USERS - Completamente rimosso
+  public static getAllMockUsers(): User[] {
+    return []; // Nessun utente mock!
   }
 
-  private static mapRatingHistoryRow(row: any): RatingHistory {
-    return {
-      id: row.id,
-      playerId: row.player_id,
-      oldRating: row.old_rating,
-      newRating: row.new_rating,
-      gameId: row.game_id,
-      kFactor: row.k_factor,
-      ratingChange: row.rating_change,
-      timestamp: row.timestamp
-    };
-  }
-
-  // Health check
-  public static async healthCheck(): Promise<{ status: 'healthy' | 'unhealthy'; details: any }> {
-    try {
-      const client = await this.getClient();
-      const result = await client.query('SELECT NOW(), version()');
-      client.release();
-
-      return {
-        status: 'healthy',
-        details: {
-          timestamp: result.rows[0].now,
-          version: result.rows[0].version,
-          poolSize: this.pool?.totalCount || 0,
-          idleConnections: this.pool?.idleCount || 0,
-          waitingConnections: this.pool?.waitingCount || 0
-        }
-      };
-    } catch (error) {
-      logger.error('Database health check failed:', error);
-      return {
-        status: 'unhealthy',
-        details: { error: error instanceof Error ? error.message : 'Unknown error' }
-      };
+  public static async close(): Promise<void> {
+    if (this.db) {
+      await this.db.close();
+      this.db = null;
+      logger.info('Database connection closed');
     }
-  }
-
-  // Utility methods
-  public static async executeTransaction<T>(
-    operation: (client: PoolClient) => Promise<T>
-  ): Promise<T> {
-    const client = await this.getClient();
-
-    try {
-      await client.query('BEGIN');
-      const result = await operation(client);
-      await client.query('COMMIT');
-      return result;
-    } catch (error) {
-      await client.query('ROLLBACK');
-      throw error;
-    } finally {
-      client.release();
-    }
-  }
-
-  // Mock data initialization
-  private static async initializeMockData(): Promise<void> {
-    const bcrypt = await import('bcrypt');
-
-    // Create demo users for testing with properly hashed passwords
-    const demoUser: User = {
-      id: 'demo_user_1',
-      username: 'demo',
-      email: 'demo@skemino.com',
-      passwordHash: await bcrypt.hash('demo123', 12),
-      rating: 1400,
-      level: 3,
-      gamesPlayed: 25,
-      wins: 15,
-      losses: 8,
-      draws: 2,
-      createdAt: new Date('2024-01-01'),
-      updatedAt: new Date()
-    };
-
-    const testUser: User = {
-      id: 'test_user_1',
-      username: 'test',
-      email: 'test@example.com',
-      passwordHash: await bcrypt.hash('test123', 12),
-      rating: 1200,
-      level: 1,
-      gamesPlayed: 0,
-      wins: 0,
-      losses: 0,
-      draws: 0,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-
-    this.mockUsers.set(demoUser.id, demoUser);
-    this.mockUsers.set(testUser.id, testUser);
-
-    logger.info(`✅ Mock database initialized with ${this.mockUsers.size} demo users`);
-    logger.info(`📝 Demo credentials: demo@skemino.com / demo123`);
-    logger.info(`📝 Test credentials: test@example.com / test123`);
-  }
-
-  // Debug method to list all registered users (for development)
-  public static getAllMockUsers(): Array<{ email: string; username: string }> {
-    if (!this.mockMode) return [];
-    return Array.from(this.mockUsers.values()).map(u => ({
-      email: u.email,
-      username: u.username
-    }));
   }
 }

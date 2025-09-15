@@ -46,7 +46,8 @@
       "mcp__ide__getDiagnostics",
       "Bash(npm run build:*)",
       "Bash(start http://localhost:3000)",
-      "Bash(npm run lint)"
+      "Bash(npm run lint)",
+      "Bash(start http://localhost:3000/login)"
     ],
     "deny": [],
     "ask": []

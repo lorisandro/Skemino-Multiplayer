@@ -91,6 +91,9 @@ router.post('/login', async (req: Request, res: Response) => {
   try {
     const { email, identifier, password } = req.body;
 
+    // Debug log to see what's being received
+    logger.info(`Login attempt received - Body: ${JSON.stringify({ email, identifier, password: password ? '***' : undefined })}`);
+
     // Accept either 'email' or 'identifier' field for backward compatibility
     const loginIdentifier = identifier || email;
 
