@@ -114,7 +114,7 @@ export const useBoardContainerSize = () => {
       case 'desktop':
         return { width: '42rem', height: '58rem' };
       case '2k':
-        return { width: '50rem', height: '70rem' };
+        return { width: '60rem', height: '84rem' };
       case 'ultrawide':
         return { width: '55rem', height: '77rem' };
       default:
