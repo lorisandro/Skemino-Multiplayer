@@ -184,8 +184,8 @@
 /* ===== CSS VARIABLES - DARK GAMING THEME ===== */
 :root {
   /* Dark Gaming Colors - Professional */
-  --skemino-bg-primary: linear-gradient(135deg, #0a0a0a 0%, #141414 50%, #0f0f0f 100%);
-  --skemino-bg-secondary: linear-gradient(135deg, #1a1a1a 0%, #242424 50%, #1f1f1f 100%);
+  --skemino-bg-primary: #000000;
+  --skemino-bg-secondary: #000000;
   --skemino-border-primary: rgba(75, 85, 99, 0.8);
   --skemino-border-glow: rgba(255, 255, 255, 0.05);
 
@@ -475,6 +475,72 @@ div.skemino-square-dark.skemino-vertex-yellow,
     rgba(202, 138, 4, 1.0) 100%
   ) !important;
   box-shadow: 0 10px 25px rgba(250, 204, 21, 0.4), inset 0 0 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* ===== CENTRAL STRATEGIC CELLS - DIAGONAL PATTERN ===== */
+.skemino-square-dark.skemino-central-cell,
+div.skemino-square-dark.skemino-central-cell,
+.skemino-central-cell {
+  background: linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.15) 0%,
+    rgba(217, 119, 6, 0.20) 50%,
+    rgba(245, 158, 11, 0.15) 100%
+  ) !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow:
+    0 4px 15px rgba(245, 158, 11, 0.2),
+    inset 0 0 20px rgba(217, 119, 6, 0.1) !important;
+}
+
+/* Diagonal black lines pattern using pseudo-elements */
+.skemino-square-dark.skemino-central-cell::before,
+.skemino-square-dark.skemino-central-cell::after {
+  content: '';
+  position: absolute;
+  background: rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* First diagonal line (top-left to bottom-right) */
+.skemino-square-dark.skemino-central-cell::before {
+  width: 141.42%; /* sqrt(2) * 100% for perfect diagonal */
+  height: 2px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+  transform-origin: center;
+}
+
+/* Second diagonal line (top-right to bottom-left) */
+.skemino-square-dark.skemino-central-cell::after {
+  width: 141.42%; /* sqrt(2) * 100% for perfect diagonal */
+  height: 2px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-45deg);
+  transform-origin: center;
+}
+
+/* Ensure content appears above diagonal lines */
+.skemino-central-cell > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Hover effect for central cells */
+.skemino-square-dark.skemino-central-cell:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.25) 0%,
+    rgba(217, 119, 6, 0.30) 50%,
+    rgba(245, 158, 11, 0.25) 100%
+  ) !important;
+  box-shadow:
+    0 6px 20px rgba(245, 158, 11, 0.3),
+    inset 0 0 25px rgba(217, 119, 6, 0.15) !important;
 }
 
 /* Square Styling - Dark Gaming Optimized */

@@ -118,12 +118,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({ demoMode = false }) => {
       {/* Game board container */}
       <div className="relative skemino-board" ref={boardRef}>
         <motion.div
-          className={`relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-2xl border-2 border-gray-700 skemino-board-dark ${is2K ? 'border-3' : ''}`}
+          className={`relative bg-black rounded-xl shadow-2xl border-2 border-gray-700 skemino-board-dark ${is2K ? 'border-3' : ''}`}
           style={{
             width: boardSize,
             height: boardSize * 1.4, // Height accounts for 1.4:1 cell aspect ratio
             padding: is2K ? '12px' : '8px', // Enhanced padding for 2K
-            background: 'linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 50%, #2a2a2a 100%)',
+            background: '#000000',
             boxShadow: is2K
               ? '0 35px 70px -12px rgba(0, 0, 0, 0.9), 0 0 0 2px rgba(255, 255, 255, 0.08), inset 0 2px 0 rgba(255, 255, 255, 0.12)' // Enhanced shadows for 2K
               : '0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
@@ -137,13 +137,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({ demoMode = false }) => {
           }}
         >
           {/* Dark Gaming Background with Professional Finish */}
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-800/10 to-gray-900/20 rounded-xl" />
+          <div className="absolute inset-0 bg-black/10 rounded-xl" />
 
           {/* Professional Gaming Border Inner Glow */}
           <div className="absolute inset-1 rounded-lg ring-1 ring-white/5" />
 
           {/* Board Grid Dark Professional Gaming */}
-          <div className="relative z-10 border border-gray-600 rounded-lg overflow-hidden bg-gray-800/20 backdrop-blur-sm">
+          <div className="relative z-10 border border-gray-600 rounded-lg overflow-hidden bg-black/20 backdrop-blur-sm">
             <div className="grid grid-cols-6 grid-rows-6 gap-0 p-0">
               {renderBoard()}
             </div>

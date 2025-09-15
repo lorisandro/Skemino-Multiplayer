@@ -51,6 +51,11 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
       }
     }
 
+    // Central strategic cells with special diagonal pattern
+    if (cell === 'c3' || cell === 'c4' || cell === 'd3' || cell === 'd4') {
+      return 'skemino-central-cell'; // Strategic center cells with diagonal pattern
+    }
+
     // Standard squares: Pure white circular gradient for all non-vertex cells
     // Professional gaming board style with subtle white depth gradient
     return 'skemino-cell-gradient'; // Apply white circular gradient with gray center
