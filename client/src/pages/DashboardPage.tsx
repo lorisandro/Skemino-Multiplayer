@@ -27,7 +27,7 @@ const DashboardPage: React.FC = () => {
               className="block hover:opacity-80 transition-opacity duration-200"
             >
               <img
-                src="/images/skèmino.webp"
+                src="/images/skemino.webp"
                 alt="Skèmino"
                 className="h-10 w-auto mx-auto"
               />

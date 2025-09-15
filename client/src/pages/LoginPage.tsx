@@ -133,15 +133,6 @@ const LoginPage: React.FC = () => {
               </div>
             )}
 
-            {/* Demo Credentials Info */}
-            <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
-              <p className="text-blue-400 text-xs font-semibold mb-1">Account Demo Disponibili:</p>
-              <div className="space-y-1 text-blue-300 text-xs">
-                <div>• <span className="font-mono">demo@skemino.com</span> / <span className="font-mono">Demo1234!</span></div>
-                <div>• <span className="font-mono">mario.rossi@example.com</span> / <span className="font-mono">Demo1234!</span></div>
-                <div>• <span className="font-mono">giulia.bianchi@example.com</span> / <span className="font-mono">Demo1234!</span></div>
-              </div>
-            </div>
 
             {/* Login Button */}
             <button

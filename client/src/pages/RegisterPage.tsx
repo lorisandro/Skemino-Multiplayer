@@ -175,23 +175,15 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
     if (!validateForm()) return;
 
     setIsLoading(true);
+    setAuthError('');
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      // Simulate authentication error for demo
-      if (formData.email === 'test@error.com') {
-        setAuthError('This password is incorrect.');
-        return;
-      }
-
       if (onRegister) {
-        onRegister({ ...formData, rememberMe });
+        await onRegister({ ...formData, rememberMe });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Registration error:', error);
-      setAuthError('Errore durante la registrazione. Riprova.');
+      setAuthError(error.message || 'Errore durante la registrazione. Riprova.');
     } finally {
       setIsLoading(false);
     }
@@ -200,15 +192,15 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
   // Handle social login
   const handleSocialLogin = async (provider: string) => {
     setIsLoading(true);
+    setAuthError('');
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
       if (onSocialLogin) {
-        onSocialLogin(provider);
+        await onSocialLogin(provider);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Social login error:', error);
+      setAuthError(error.message || 'Errore durante il login social. Riprova.');
     } finally {
       setIsLoading(false);
     }

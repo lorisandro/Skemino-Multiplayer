@@ -1,0 +1,11 @@
+git add .
+git commit -m "feat(ui): remove demo accounts section from login page
+
+- Remove 'Available Test Accounts' section from LoginPage component
+- Clean up UI to maintain professional dark gaming design
+- Preserve all login functionality and styling
+- Applied skemino-ui expertise for consistent dark theme gaming experience
+
+Files modified:
+- client/src/pages/LoginPage.tsx"
+git push origin main

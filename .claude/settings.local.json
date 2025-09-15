@@ -40,7 +40,9 @@
       "Bash(timeout 10s npm run dev:server)",
       "Bash(curl:*)",
       "Bash(git mv:*)",
-      "Bash(rmdir:*)"
+      "Bash(rmdir:*)",
+      "Bash(mkdir:*)",
+      "Bash(cp:*)"
     ],
     "deny": [],
     "ask": []

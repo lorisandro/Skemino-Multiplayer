@@ -122,74 +122,49 @@ export const useAuth = (): AuthContextType => {
     setIsLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Use real auth service for registration
+      const response = await authService.register(
+        credentials.username,
+        credentials.email,
+        credentials.password
+      );
 
-      // Mock successful registration
-      const mockUser: User = {
-        id: `user_${Date.now()}`,
-        username: credentials.username,
-        email: credentials.email,
-        displayName: credentials.username,
-        rating: 1000, // Starting rating
-        level: {
-          name: 'Principiante',
-          tier: 'Principiante',
-          ratingRange: { min: 1000, max: 1199 },
-          color: '#10B981',
-          icon: '🌱'
-        },
-        isEmailVerified: false,
-        isOnline: true,
-        lastActive: new Date(),
-        registrationDate: new Date(),
-        preferences: {
-          theme: 'dark',
-          language: 'it',
-          soundEnabled: true,
-          notificationsEnabled: true,
-          autoAcceptRematch: false,
-          showRatingChanges: true,
-          boardTheme: 'dark',
-          cardTheme: 'classic'
-        },
-        statistics: {
-          totalGames: 0,
-          gamesWon: 0,
-          gamesLost: 0,
-          gamesDraw: 0,
-          averageGameDuration: 0,
-          longestWinStreak: 0,
-          currentWinStreak: 0,
-          favoriteTimeControl: 'Rapid (10+5)',
-          averageAccuracy: 0,
-          totalPlayTime: 0
-        },
-        achievements: []
-      };
+      if (!response.success) {
+        return {
+          success: false,
+          message: response.message || 'Errore durante la registrazione',
+          errors: {
+            email: response.message?.includes('Email') ? response.message : undefined,
+            username: response.message?.includes('Username') ? response.message : undefined,
+            password: !response.message?.includes('Email') && !response.message?.includes('Username') ? response.message : undefined
+          }
+        };
+      }
 
-      const mockToken = `token_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      // Use the real user data from the service
+      const registeredUser = response.user as User;
+      const authToken = response.token || `token_${Date.now()}`;
 
-      // Store auth data
-      localStorage.setItem('skemino_auth_token', mockToken);
-      localStorage.setItem('skemino_user_data', JSON.stringify(mockUser));
+      // Store auth data in localStorage for registration (always persistent)
+      localStorage.setItem('skemino_auth_token', authToken);
+      localStorage.setItem('skemino_user_data', JSON.stringify(registeredUser));
 
-      setUser(mockUser);
+      setUser(registeredUser);
       setIsAuthenticated(true);
 
       return {
         success: true,
-        user: mockUser,
-        token: mockToken,
-        message: 'Registrazione completata con successo'
+        user: registeredUser,
+        token: authToken,
+        message: response.message || 'Registrazione completata con successo'
       };
 
     } catch (error) {
       console.error('Registration error:', error);
       return {
         success: false,
-        message: 'Errore durante la registrazione',
-        errors: { email: 'Email già in uso' }
+        message: error instanceof Error ? error.message : 'Errore durante la registrazione',
+        errors: { email: 'Errore di connessione. Riprova.' }
       };
     } finally {
       setIsLoading(false);

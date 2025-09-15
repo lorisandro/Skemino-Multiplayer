@@ -1,5 +1,8 @@
 // API Configuration for Skemino
-export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+// In development, use relative paths to leverage Vite proxy
+// In production, use the full API URL
+const isDevelopment = import.meta.env.DEV;
+export const API_BASE_URL = isDevelopment ? '' : (import.meta.env.VITE_API_URL || 'http://localhost:3008');
 
 export const API_ENDPOINTS = {
   auth: {

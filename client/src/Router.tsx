@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
-import { AuthProvider, RequireAuth } from './contexts/AuthContext';
+import { AuthProvider, RequireAuth, useAuthContext } from './contexts/AuthContext';
+import { useAuth } from './hooks/useAuth';
+import toast from 'react-hot-toast';
 import App from './App';
 import AppDebug from './App.debug';
 import HomePage from './pages/HomePage';
@@ -14,21 +16,38 @@ const GamePage = () => {
 
 const RegisterPageWrapper = () => {
   const navigate = useNavigate();
+  const { register } = useAuth();
 
   const handleNavigateToLogin = () => {
     navigate('/login');
   };
 
-  const handleRegister = (credentials: any) => {
-    console.log('Registration attempt:', credentials);
-    // TODO: Implement actual registration logic
-    navigate('/dashboard');
+  const handleRegister = async (credentials: any) => {
+    try {
+      const response = await register(credentials);
+
+      if (response.success) {
+        toast.success('Registrazione completata con successo!');
+        navigate('/dashboard');
+      } else {
+        throw new Error(response.message || 'Registrazione fallita');
+      }
+    } catch (error: any) {
+      console.error('Registration error:', error);
+      toast.error(error.message || 'Errore durante la registrazione');
+      throw error; // Re-throw per far gestire l'errore al componente
+    }
   };
 
-  const handleSocialLogin = (provider: string) => {
-    console.log('Social login attempt:', provider);
-    // TODO: Implement actual social login logic
-    navigate('/register');
+  const handleSocialLogin = async (provider: string) => {
+    try {
+      // TODO: Implement actual social login logic when backend is ready
+      toast.error('Login social non ancora disponibile');
+    } catch (error) {
+      console.error('Social login error:', error);
+      toast.error('Errore durante il login social');
+      throw error;
+    }
   };
 
   return (

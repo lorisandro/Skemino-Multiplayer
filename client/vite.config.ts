@@ -19,13 +19,15 @@ export default defineConfig({
   server: {
     port: 3000,
     host: true,
+    strictPort: true, // Usa sempre porta 3000, non cambiare se occupata
     proxy: {
       '/api': {
-        target: 'http://localhost:3005',
-        changeOrigin: true
+        target: 'http://localhost:3008', // Backend sulla porta 3008
+        changeOrigin: true,
+        rewrite: (path) => path // Non modificare il path
       },
       '/socket.io': {
-        target: 'http://localhost:3005',
+        target: 'http://localhost:3008', // Backend sulla porta 3008
         ws: true,
         changeOrigin: true
       }

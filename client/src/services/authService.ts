@@ -1,9 +1,14 @@
 // Authentication Service
 import { API_ENDPOINTS } from '../config/api';
-import { validateCredentials, registerNewUser, isEmailRegistered, isUsernameInUse } from '../data/mockUsers';
-import type { User } from '../types/auth';
 
 export interface LoginResponse {
+  success: boolean;
+  user?: any;
+  token?: string;
+  message?: string;
+}
+
+export interface RegisterResponse {
   success: boolean;
   user?: any;
   token?: string;
@@ -13,7 +18,6 @@ export interface LoginResponse {
 export const authService = {
   async login(identifier: string, password: string, rememberMe: boolean = false): Promise<LoginResponse> {
     try {
-      // Prima prova a fare login col server reale
       const response = await fetch(API_ENDPOINTS.auth.login, {
         method: 'POST',
         headers: {
@@ -23,39 +27,28 @@ export const authService = {
         credentials: 'include'
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success) {
-          return {
-            success: true,
-            user: data.user,
-            token: data.token
-          };
-        }
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        return {
+          success: true,
+          user: data.user,
+          token: data.token,
+          message: data.message || 'Login effettuato con successo'
+        };
+      } else {
+        return {
+          success: false,
+          message: data.message || 'Credenziali non valide'
+        };
       }
     } catch (error) {
-      console.log('Server non disponibile, usando sistema locale');
-    }
-
-    // Fallback: usa il sistema di autenticazione locale con utenti predefiniti
-    const validatedUser = validateCredentials(identifier, password);
-
-    if (!validatedUser) {
+      console.error('Errore durante il login:', error);
       return {
         success: false,
-        message: 'Credenziali non valide. Prova con:\n- Email: demo@skemino.com\n- Password: Demo1234!'
+        message: 'Errore di connessione al server. Riprova più tardi.'
       };
     }
-
-    // Rimuovi il passwordHash prima di restituire l'utente
-    const { passwordHash, ...userWithoutPassword } = validatedUser;
-
-    return {
-      success: true,
-      user: userWithoutPassword as User,
-      token: `local_token_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      message: 'Login effettuato con successo'
-    };
   },
 
   async loginAsGuest(): Promise<LoginResponse> {
@@ -83,18 +76,45 @@ export const authService = {
         message: data.message || 'Guest login failed'
       };
     } catch (error) {
-      // Fallback to demo mode if server is unavailable
-      console.warn('Server unavailable, using demo mode');
+      console.error('Errore durante il login come ospite:', error);
       return {
-        success: true,
-        user: {
-          id: `guest_${Date.now()}`,
-          username: `Guest_${Math.floor(Math.random() * 10000)}`,
-          email: '',
-          rating: 1200,
-          isGuest: true
+        success: false,
+        message: 'Errore di connessione al server. Riprova più tardi.'
+      };
+    }
+  },
+
+  async register(username: string, email: string, password: string): Promise<RegisterResponse> {
+    try {
+      const response = await fetch(API_ENDPOINTS.auth.register, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        token: 'demo_token'
+        body: JSON.stringify({ username, email, password }),
+        credentials: 'include'
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        return {
+          success: true,
+          user: data.user,
+          token: data.token,
+          message: data.message || 'Registrazione completata con successo'
+        };
+      } else {
+        return {
+          success: false,
+          message: data.message || 'Errore durante la registrazione'
+        };
+      }
+    } catch (error) {
+      console.error('Errore durante la registrazione:', error);
+      return {
+        success: false,
+        message: 'Errore di connessione al server. Riprova più tardi.'
       };
     }
   }
