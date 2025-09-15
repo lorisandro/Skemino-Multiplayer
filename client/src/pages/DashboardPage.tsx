@@ -19,7 +19,7 @@ const DashboardPage: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
       <div className="flex">
         {/* Left Sidebar */}
-        <aside className="w-80 bg-black/40 backdrop-blur-xl border-r border-white/10 min-h-screen">
+        <aside className="w-64 bg-black/40 backdrop-blur-xl border-r border-white/10 min-h-screen">
           <div className="p-6 space-y-6">
             {/* Logo */}
             <Link
