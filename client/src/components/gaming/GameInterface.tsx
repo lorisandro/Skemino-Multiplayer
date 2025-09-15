@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { GameBoard } from './Board/GameBoard';
 import { PlayerArea } from './PlayerArea/PlayerArea';
-import { GameHeader } from './GameHeader/GameHeader';
+// import { GameHeader } from './GameHeader/GameHeader'; // Removed header as requested
 import { GameSidebar } from './GameSidebar/GameSidebar';
 import { SimpleMoveHistory as MoveHistory } from './MoveHistory/SimpleMoveHistory';
 import { useGameStore } from '../../store/gameStore';
@@ -77,13 +77,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
   if (layout === '2k') {
     return (
       <div className={`h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col ${className}`}>
-        {/* Enhanced Game Header for 2K */}
-        <GameHeader
-          currentPlayer={currentPlayer}
-          opponent={opponent}
-          connected={connected}
-          latency={latency}
-        />
+        {/* Header removed as requested */}
 
         {/* Main Game Area - Optimized for 2K displays */}
         <div className="flex-1 flex overflow-hidden">
@@ -101,8 +95,8 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
           </div>
 
           {/* Center - Game Board with enhanced space for 2K */}
-          <div className="flex-1 flex items-center justify-center p-8 bg-gradient-to-br from-slate-50 to-slate-100">
-            <div className="relative w-full h-full flex items-center justify-center">
+          <div className="flex-1 flex items-center justify-end p-8 bg-gradient-to-br from-slate-50 to-slate-100">
+            <div className="relative w-full h-full flex items-center justify-end pr-16">
               <GameBoard demoMode={isDemoMode} />
             </div>
           </div>
@@ -156,13 +150,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
   if (layout === 'desktop') {
     return (
       <div className={`h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col ${className}`}>
-        {/* Game Header */}
-        <GameHeader
-          currentPlayer={currentPlayer}
-          opponent={opponent}
-          connected={connected}
-          latency={latency}
-        />
+        {/* Header removed as requested */}
 
         {/* Main Game Area */}
         <div className="flex-1 flex overflow-hidden">
@@ -180,8 +168,8 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
           </div>
 
           {/* Center - Game Board */}
-          <div className="flex-1 flex items-center justify-center p-2 bg-gradient-to-br from-slate-50 to-slate-100">
-            <div className="relative w-full h-full flex items-center justify-center">
+          <div className="flex-1 flex items-center justify-end p-2 bg-gradient-to-br from-slate-50 to-slate-100">
+            <div className="relative w-full h-full flex items-center justify-end pr-12">
               <GameBoard demoMode={isDemoMode} />
             </div>
           </div>
@@ -235,14 +223,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
   if (layout === 'tablet') {
     return (
       <div className={`h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col ${className}`}>
-        {/* Compact Header */}
-        <GameHeader
-          currentPlayer={currentPlayer}
-          opponent={opponent}
-          connected={connected}
-          latency={latency}
-          compact={true}
-        />
+        {/* Header removed as requested */}
 
         {/* Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden">
@@ -261,8 +242,8 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
           </div>
 
           {/* Game Board - Center */}
-          <div className="flex-1 flex items-center justify-center p-2">
-            <div className="relative w-full h-full flex items-center justify-center">
+          <div className="flex-1 flex items-center justify-end p-2">
+            <div className="relative w-full h-full flex items-center justify-end pr-6">
               <GameBoard demoMode={isDemoMode} />
             </div>
           </div>
@@ -290,15 +271,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
   // Mobile Layout (< 768px)
   return (
     <div className={`h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col ${className}`}>
-      {/* Mobile Header */}
-      <GameHeader
-        currentPlayer={currentPlayer}
-        opponent={opponent}
-        connected={connected}
-        latency={latency}
-        compact={true}
-        mobile={true}
-      />
+      {/* Header removed as requested */}
 
       {/* Game Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
@@ -317,8 +290,8 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
         </div>
 
         {/* Game Board - Main Area */}
-        <div className="flex-1 flex items-center justify-center p-1">
-          <div className="relative w-full h-full flex items-center justify-center">
+        <div className="flex-1 flex items-center justify-end p-1">
+          <div className="relative w-full h-full flex items-center justify-end pr-4">
             <GameBoard demoMode={isDemoMode} />
           </div>
         </div>

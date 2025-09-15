@@ -17,7 +17,7 @@ interface ResponsiveBoardContainerProps {
 export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> = ({
   children,
   minSize = 400,
-  maxSize = 1200, // Reduced from 2400 for better container fitting
+  maxSize = 1800, // Increased for larger board display
   aspectRatio = 1,
   demoMode = false,
   onSizeChange,
@@ -95,8 +95,8 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
       // Regular mode: improved calculations with better container fitting
       // Account for 1.4:1 aspect ratio of board squares (rectangular cells)
       let baseSize = Math.min(
-        width * 0.95, // SIGNIFICANTLY increased to utilize much more space
-        (height - 60) * 1.0 / 1.4, // Divide by 1.4 to account for rectangular cells, further reduced margin
+        width * 0.98, // MAXIMIZED space utilization
+        (height - 40) * 1.0 / 1.4, // Divide by 1.4 to account for rectangular cells, minimal margin
         maxSize
       );
 
@@ -109,14 +109,14 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
           baseSize = Math.min(baseSize, width * 0.8, 600);
           break;
         case 'desktop':
-          baseSize = Math.min(baseSize, width * 0.9, height * 1.0 / 1.4, 1200); // Increased significantly
+          baseSize = Math.min(baseSize, width * 0.95, height * 1.0 / 1.4, 1400); // Maximum desktop utilization
           break;
         case '2k':
           // Optimized sizing for 2K displays - better space utilization
           baseSize = Math.min(
-            width * 0.7, // Further increased for better space utilization
+            width * 0.8, // Maximum 2K space utilization
             height * 0.9 / 1.4, // Divide by 1.4 for rectangular cells
-            1400 // Further increased maximum size
+            1600 // Maximum 2K size
           );
           break;
         case 'ultrawide':
@@ -244,7 +244,7 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
  */
 export function useResponsiveBoardSize(
   minSize = 400,
-  maxSize = 1800,
+  maxSize = 2000,
   performanceThreshold = 45
 ) {
   const [size, setSize] = useState(1400);
@@ -263,7 +263,7 @@ export function useResponsiveBoardSize(
       } else if (vw < 1024) {
         calculatedSize = Math.min(vw * 0.85, 1000);
       } else {
-        calculatedSize = Math.min(vw * 0.85, vh * 0.90, maxSize);
+        calculatedSize = Math.min(vw * 0.9, vh * 0.95, maxSize);
       }
 
       setIsReduced(false);

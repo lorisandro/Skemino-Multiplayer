@@ -43,7 +43,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ demoMode = false }) => {
           setIs2K(is2KDisplay);
 
           // Account for 1.4:1 aspect ratio of cells when calculating board size
-          const size = Math.min(width * 0.98, (height * 0.98) / 1.4, 1400);
+          const size = Math.min(width * 1.05, (height * 1.0) / 1.4, 1800); // MAXIMIZED size utilization
           setBoardSize(size);
         }
       }
@@ -111,8 +111,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({ demoMode = false }) => {
   return (
     <ResponsiveBoardContainer
       onSizeChange={setBoardSize}
-      minSize={demoMode ? 300 : (is2K ? 600 : 400)}
-      maxSize={demoMode ? 600 : (is2K ? 1000 : 800)}
+      minSize={demoMode ? 300 : (is2K ? 800 : 600)}
+      maxSize={demoMode ? 600 : (is2K ? 1600 : 1400)}
       demoMode={demoMode}
     >
       {/* Game board container */}
