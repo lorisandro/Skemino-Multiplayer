@@ -25,22 +25,22 @@ export const ZoomResistantBoardContainer: React.FC<ZoomResistantBoardContainerPr
     const baseClasses = 'flex flex-col items-center justify-center w-full';
 
     if (demoMode) {
-      return `${baseClasses} min-h-[900px] px-2 py-4`;
+      return `${baseClasses} min-h-[1200px] px-2 py-4`;
     }
 
     switch (currentBreakpoint) {
       case 'mobile':
         return `${baseClasses} min-h-screen px-2 py-4`;
       case 'tablet':
-        return `${baseClasses} min-h-[900px] px-4 py-6`;
+        return `${baseClasses} min-h-[1300px] px-4 py-6`;
       case 'desktop':
-        return `${baseClasses} min-h-[1100px] px-6 py-8`;
+        return `${baseClasses} min-h-[1500px] px-6 py-8`;
       case '2k':
-        return `${baseClasses} min-h-[1200px] px-8 py-10`;
+        return `${baseClasses} min-h-[1700px] px-8 py-10`;
       case 'ultrawide':
-        return `${baseClasses} min-h-[1400px] px-10 py-12`;
+        return `${baseClasses} min-h-[1900px] px-10 py-12`;
       default:
-        return `${baseClasses} min-h-[1100px] p-4`;
+        return `${baseClasses} min-h-[1500px] p-4`;
     }
   };
 
