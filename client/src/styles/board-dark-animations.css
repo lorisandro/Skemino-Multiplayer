@@ -840,7 +840,7 @@ div.skemino-square-dark.skemino-central-d4,
   /* CSS Grid for perfect 6x6 layout */
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  grid-template-rows: repeat(6, 1fr);
+  grid-template-rows: repeat(6, auto);
 
   /* Rem-based spacing */
   gap: 0.125rem;
@@ -857,8 +857,8 @@ div.skemino-square-dark.skemino-central-d4,
 
 /* Zoom-resistant board cells */
 .skemino-cell-zoom-resistant {
-  /* Perfect square cells for strategic gaming board */
-  aspect-ratio: 1 / 1; /* Square cells for optimal gaming experience */
+  /* Playing card proportions for strategic gaming board */
+  aspect-ratio: 5 / 7; /* Playing card aspect ratio for elongated cell look */
 
   /* Base white gradient styling for normal cells */
   background: radial-gradient(ellipse at center,

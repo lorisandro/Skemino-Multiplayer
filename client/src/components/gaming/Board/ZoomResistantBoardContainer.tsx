@@ -126,11 +126,12 @@ export const useBoardContainerSize = () => {
     const boardSize = getBoardSize();
     // Calculate cell size based on board size (6x6 grid with padding and gaps)
     const baseSizeRem = parseFloat(boardSize.width.replace('rem', ''));
-    const cellSizeRem = (baseSizeRem - 2) / 6; // Account for padding and gaps
+    const cellWidthRem = (baseSizeRem - 2) / 6; // Account for padding and gaps
+    const cellHeightRem = (cellWidthRem * 7) / 5; // Playing card aspect ratio (5:7)
 
     return {
-      width: `${cellSizeRem}rem`,
-      height: `${cellSizeRem}rem`, // Perfect square cells for strategic gaming
+      width: `${cellWidthRem}rem`,
+      height: `${cellHeightRem}rem`, // Playing card proportioned cells
     };
   };
 
