@@ -808,11 +808,16 @@ div.skemino-square-dark.skemino-central-d4,
   container-type: size;
   container-name: gameboard;
 
-  /* Elongated card-game sizing - 2:3 aspect ratio (width:height) for card layout */
-  width: 50rem;  /* Wider for elongated card design */
-  height: 60rem; /* Taller to accommodate card aspect ratio */
-  min-height: 60rem; /* Ensure minimum height for cards */
-  max-height: 90vh; /* Prevent overflow on small screens */
+  /* Perfect square sizing for 6x6 strategic gaming board */
+  width: min(50rem, 90vw);  /* Responsive width with max 50rem */
+  height: min(50rem, 90vh); /* Perfect square - equal to width */
+  aspect-ratio: 1 / 1; /* Enforce perfect square */
+
+  /* Prevent overflow and ensure square ratio */
+  min-width: 20rem; /* Minimum playable size */
+  min-height: 20rem; /* Minimum playable size */
+  max-width: 60rem;  /* Maximum for large screens */
+  max-height: 60rem; /* Maximum for large screens */
 
   /* Centering and positioning */
   position: relative;
@@ -852,8 +857,8 @@ div.skemino-square-dark.skemino-central-d4,
 
 /* Zoom-resistant board cells */
 .skemino-cell-zoom-resistant {
-  /* Playing card aspect ratio for card-game feel */
-  aspect-ratio: 5 / 7; /* Standard playing card proportions */
+  /* Perfect square cells for strategic gaming board */
+  aspect-ratio: 1 / 1; /* Square cells for optimal gaming experience */
 
   /* Base white gradient styling for normal cells */
   background: radial-gradient(ellipse at center,

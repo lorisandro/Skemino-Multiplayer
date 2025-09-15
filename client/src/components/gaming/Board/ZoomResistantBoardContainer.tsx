@@ -80,14 +80,14 @@ export const ZoomResistantBoardContainer: React.FC<ZoomResistantBoardContainerPr
             ${demoMode ? 'demo-mode' : ''}
           `}
           style={{
-            // Demo mode overrides with smaller fixed sizes (card ratio)
+            // Demo mode overrides with smaller fixed sizes (perfect square)
             ...(demoMode && {
               width: '30rem',
-              height: '36rem', // Card ratio
+              height: '30rem', // Perfect square for gaming board
               minWidth: '30rem',
-              minHeight: '36rem',
+              minHeight: '30rem',
               maxWidth: '35rem',
-              maxHeight: '42rem',
+              maxHeight: '35rem',
             })
           }}
         >
@@ -108,17 +108,17 @@ export const useBoardContainerSize = () => {
   const getBoardSize = () => {
     switch (currentBreakpoint) {
       case 'mobile':
-        return { width: '35rem', height: '42rem' }; // Card ratio
+        return { width: '35rem', height: '35rem' }; // Perfect square
       case 'tablet':
-        return { width: '42rem', height: '50rem' }; // Card ratio
+        return { width: '42rem', height: '42rem' }; // Perfect square
       case 'desktop':
-        return { width: '48rem', height: '58rem' }; // Card ratio
+        return { width: '48rem', height: '48rem' }; // Perfect square
       case '2k':
-        return { width: '55rem', height: '66rem' }; // Card ratio
+        return { width: '55rem', height: '55rem' }; // Perfect square
       case 'ultrawide':
-        return { width: '60rem', height: '72rem' }; // Card ratio
+        return { width: '60rem', height: '60rem' }; // Perfect square
       default:
-        return { width: '42rem', height: '50rem' }; // Card ratio
+        return { width: '42rem', height: '42rem' }; // Perfect square
     }
   };
 
@@ -130,7 +130,7 @@ export const useBoardContainerSize = () => {
 
     return {
       width: `${cellSizeRem}rem`,
-      height: `${cellSizeRem * 1.4}rem`, // Playing card aspect ratio 5:7 ≈ 1:1.4
+      height: `${cellSizeRem}rem`, // Perfect square cells for strategic gaming
     };
   };
 
