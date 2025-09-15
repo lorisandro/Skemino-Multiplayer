@@ -120,10 +120,10 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
           {/* Game Sidebar (collapsible) - Optimized width for 2K */}
           {sidebarOpen && (
             <motion.div
-              className="w-72 bg-slate-800 border-l border-slate-700"
-              initial={{ x: 288 }}
+              className="w-96 bg-slate-800 border-l border-slate-700"
+              initial={{ x: 384 }}
               animate={{ x: 0 }}
-              exit={{ x: 288 }}
+              exit={{ x: 384 }}
               transition={{ duration: 0.3 }}
             >
               <GameSidebar
@@ -187,10 +187,10 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
           {/* Game Sidebar (collapsible) */}
           {sidebarOpen && (
             <motion.div
-              className="w-80 bg-slate-800 border-l border-slate-700"
-              initial={{ x: 320 }}
+              className="w-96 bg-slate-800 border-l border-slate-700"
+              initial={{ x: 384 }}
               animate={{ x: 0 }}
-              exit={{ x: 320 }}
+              exit={{ x: 384 }}
               transition={{ duration: 0.3 }}
             >
               <GameSidebar

@@ -90,8 +90,21 @@
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   transform: translateZ(0);
   will-change: transform;
+  /* Default: White gradient background for standard squares */
   border: 1px solid #e0e0e0;
   background: radial-gradient(circle at center, #ffffff 0%, #f5f5f5 100%);
+}
+
+/* Vertex squares - black background */
+.square-vertex {
+  background: #000000 !important;
+  border: 1px solid #000 !important;
+}
+
+/* Central diamond squares - black background */
+.square-central-diamond {
+  background: #000000 !important;
+  border: 1px solid #333 !important;
 }
 
 .square-interactive {
@@ -105,20 +118,20 @@
 }
 
 .square-highlighted {
-  background-color: rgba(93, 173, 226, 0.2) !important;
+  background: linear-gradient(135deg, rgba(93, 173, 226, 0.3), rgba(93, 173, 226, 0.1)) !important;
   border-color: #5DADE2;
   animation: pulse 1s infinite;
 }
 
 .square-selected {
-  background-color: rgba(88, 214, 141, 0.3) !important;
+  background: linear-gradient(135deg, rgba(88, 214, 141, 0.4), rgba(88, 214, 141, 0.2)) !important;
   border-color: #58D68D;
   transform: scale(1.05);
   z-index: 5;
 }
 
 .square-occupied {
-  background-color: rgba(255, 255, 255, 0.1) !important;
+  /* Remove background override for occupied squares - let default white gradient show */
 }
 
 /* Vertex Circle */

@@ -71,6 +71,8 @@ export const BoardSquare = memo(({
     <div
       className={`
         board-square
+        ${isVertex ? 'square-vertex' : ''}
+        ${isCentralDiamond ? 'square-central-diamond' : ''}
         ${isHighlighted ? 'square-highlighted' : ''}
         ${isSelected ? 'square-selected' : ''}
         ${isPlayerTurn ? 'square-interactive' : ''}
