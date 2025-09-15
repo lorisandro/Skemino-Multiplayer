@@ -650,7 +650,7 @@ div.skemino-square-dark.skemino-central-d4,
 
 /* Square Styling - Dark Gaming Optimized */
 .skemino-square-dark {
-  aspect-ratio: 1 / 1.4; /* Card-like aspect ratio: taller than wide */
+  aspect-ratio: 1 / 1; /* Perfect square aspect ratio */
   will-change: transform, box-shadow;
   contain: layout style paint;
   transition:
@@ -809,18 +809,20 @@ div.skemino-square-dark.skemino-central-d4,
   container-name: gameboard;
 
   /* Fixed rem-based sizing - immune to browser zoom */
-  width: 35rem;  /* ~560px at default font size */
-  height: 35rem; /* 1:1 container aspect ratio */
+  width: 40rem;  /* Increased size for better visibility */
+  height: 40rem; /* Perfect 1:1 container aspect ratio */
+  min-height: 40rem; /* Ensure minimum height */
+  max-height: 90vh; /* Prevent overflow on small screens */
 
   /* Centering and positioning */
   position: relative;
   margin: 0 auto;
 
-  /* Dark gaming theme */
-  background: var(--skemino-bg-primary);
-  border: 2px solid var(--skemino-border-primary);
+  /* Light gaming theme with subtle background */
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
+  border: 2px solid rgba(0, 0, 0, 0.15);
   border-radius: 0.75rem;
-  box-shadow: var(--shadow-board);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.1);
 
   /* Performance optimization */
   transform: translateZ(0);
@@ -850,13 +852,22 @@ div.skemino-square-dark.skemino-central-d4,
 
 /* Zoom-resistant board cells */
 .skemino-cell-zoom-resistant {
-  /* Gaming aspect ratio preserved */
-  aspect-ratio: 1 / 1.4;
+  /* Square aspect ratio for proper board */
+  aspect-ratio: 1 / 1;
 
-  /* Base gaming styling */
-  background: var(--skemino-bg-secondary);
+  /* Base white gradient styling for normal cells */
+  background: radial-gradient(circle at center,
+    rgba(230, 230, 230, 1.0) 0%,      /* Light gray center */
+    rgba(235, 235, 235, 1.0) 15%,     /* Very light gray */
+    rgba(240, 240, 240, 1.0) 30%,     /* Lighter gray */
+    rgba(245, 245, 245, 1.0) 45%,     /* Almost white */
+    rgba(250, 250, 250, 1.0) 60%,     /* Near white */
+    rgba(255, 255, 255, 1.0) 80%,     /* Pure white */
+    rgba(255, 255, 255, 1.0) 100%     /* Pure white edge */
+  );
   border: 1px solid var(--skemino-border-primary);
   border-radius: 0.25rem;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
 
   /* Content centering */
   display: flex;
@@ -867,7 +878,7 @@ div.skemino-square-dark.skemino-central-d4,
   /* Gaming typography */
   font-size: 1rem;
   font-weight: 600;
-  color: #ffffff;
+  color: #333333;
   font-family: 'Inter', 'Segoe UI', monospace;
 
   /* Gaming interactions */
