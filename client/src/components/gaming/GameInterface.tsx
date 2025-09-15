@@ -180,8 +180,8 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
           </div>
 
           {/* Center - Game Board */}
-          <div className="flex-1 flex items-center justify-center p-6 bg-gradient-to-br from-slate-50 to-slate-100">
-            <div className="relative">
+          <div className="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-slate-50 to-slate-100">
+            <div className="relative w-full h-full flex items-center justify-center">
               <GameBoard demoMode={isDemoMode} />
             </div>
           </div>
@@ -261,8 +261,10 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
           </div>
 
           {/* Game Board - Center */}
-          <div className="flex-1 flex items-center justify-center p-4">
-            <GameBoard demoMode={isDemoMode} />
+          <div className="flex-1 flex items-center justify-center p-2">
+            <div className="relative w-full h-full flex items-center justify-center">
+              <GameBoard demoMode={isDemoMode} />
+            </div>
           </div>
 
           {/* Current Player Area - Bottom */}
@@ -315,8 +317,10 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
         </div>
 
         {/* Game Board - Main Area */}
-        <div className="flex-1 flex items-center justify-center p-2">
-          <GameBoard />
+        <div className="flex-1 flex items-center justify-center p-1">
+          <div className="relative w-full h-full flex items-center justify-center">
+            <GameBoard demoMode={isDemoMode} />
+          </div>
         </div>
 
         {/* Current Player Cards - Bottom */}

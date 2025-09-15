@@ -42,7 +42,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ demoMode = false }) => {
           const is2KDisplay = screenWidth >= 1920 && screenWidth <= 2880 && window.innerHeight >= 1080;
           setIs2K(is2KDisplay);
 
-          const size = Math.min(width * 0.9, height * 0.9, 1400);
+          const size = Math.min(width * 0.95, height * 0.95, 1400);
           setBoardSize(size);
         }
       }

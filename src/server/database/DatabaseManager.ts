@@ -70,7 +70,7 @@ export class DatabaseManager {
     try {
       if (this.mockMode) {
         logger.info('🗄️ Database running in MOCK mode (no real database needed)');
-        this.initializeMockData();
+        await this.initializeMockData();
         return;
       }
 
@@ -751,13 +751,15 @@ export class DatabaseManager {
   }
 
   // Mock data initialization
-  private static initializeMockData(): void {
-    // Create demo users for testing
+  private static async initializeMockData(): Promise<void> {
+    const bcrypt = await import('bcrypt');
+
+    // Create demo users for testing with properly hashed passwords
     const demoUser: User = {
       id: 'demo_user_1',
       username: 'demo',
       email: 'demo@skemino.com',
-      passwordHash: 'demo123', // In real app this would be hashed
+      passwordHash: await bcrypt.hash('demo123', 12), // Now properly hashed
       rating: 1400,
       level: 3,
       gamesPlayed: 25,
@@ -772,7 +774,7 @@ export class DatabaseManager {
       id: 'test_user_1',
       username: 'test',
       email: 'test@example.com',
-      passwordHash: 'test123',
+      passwordHash: await bcrypt.hash('test123', 12), // Now properly hashed
       rating: 1200,
       level: 1,
       gamesPlayed: 0,
@@ -787,5 +789,7 @@ export class DatabaseManager {
     this.mockUsers.set(testUser.id, testUser);
 
     logger.info(`✅ Mock database initialized with ${this.mockUsers.size} demo users`);
+    logger.info(`📝 Demo credentials: demo@skemino.com / demo123`);
+    logger.info(`📝 Test credentials: test@example.com / test123`);
   }
 }

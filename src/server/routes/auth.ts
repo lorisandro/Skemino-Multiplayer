@@ -373,8 +373,8 @@ router.post('/convert-guest', async (req: Request, res: Response) => {
       });
     }
 
-    // Hash password - TODO: implement bcrypt
-    const passwordHash = 'temp_hash'; // await bcrypt.hash(password, 12);
+    // Hash password
+    const passwordHash = await bcrypt.hash(password, 12);
 
     // Create registered user with guest's current rating
     const newUser = await DatabaseManager.createUser({

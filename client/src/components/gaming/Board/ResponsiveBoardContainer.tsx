@@ -94,8 +94,8 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
 
       // Regular mode: improved calculations with better container fitting
       let baseSize = Math.min(
-        width * 0.7, // Reduced from 0.8 to prevent overflow
-        (height - 100) * 0.8, // Reduced margin to fit better
+        width * 0.85, // Increased to utilize more space and prevent clipping
+        (height - 100) * 0.9, // Increased to use more available height
         maxSize
       );
 
@@ -108,14 +108,14 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
           baseSize = Math.min(baseSize, width * 0.8, 600);
           break;
         case 'desktop':
-          baseSize = Math.min(baseSize, width * 0.6, height * 0.75, 800);
+          baseSize = Math.min(baseSize, width * 0.7, height * 0.85, 900);
           break;
         case '2k':
-          // Reduced aggressive sizing for 2K displays
+          // Optimized sizing for 2K displays - better space utilization
           baseSize = Math.min(
-            width * 0.5, // Reduced from 0.55-0.65
-            height * 0.75, // Reduced from 0.85
-            1000 // Reduced from 2400
+            width * 0.6, // Increased for better space utilization
+            height * 0.85, // Increased to use more height
+            1200 // Increased maximum size
           );
           break;
         case 'ultrawide':
