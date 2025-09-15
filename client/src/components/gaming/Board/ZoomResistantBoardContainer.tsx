@@ -80,14 +80,14 @@ export const ZoomResistantBoardContainer: React.FC<ZoomResistantBoardContainerPr
             ${demoMode ? 'demo-mode' : ''}
           `}
           style={{
-            // Demo mode overrides with smaller fixed sizes
+            // Demo mode overrides with smaller fixed sizes (card ratio)
             ...(demoMode && {
-              width: '25rem',
-              height: '25rem',
-              minWidth: '25rem',
-              minHeight: '25rem',
-              maxWidth: '30rem',
-              maxHeight: '30rem',
+              width: '30rem',
+              height: '36rem', // Card ratio
+              minWidth: '30rem',
+              minHeight: '36rem',
+              maxWidth: '35rem',
+              maxHeight: '42rem',
             })
           }}
         >
@@ -108,17 +108,17 @@ export const useBoardContainerSize = () => {
   const getBoardSize = () => {
     switch (currentBreakpoint) {
       case 'mobile':
-        return { width: '28rem', height: '28rem' };
+        return { width: '35rem', height: '42rem' }; // Card ratio
       case 'tablet':
-        return { width: '35rem', height: '35rem' };
+        return { width: '42rem', height: '50rem' }; // Card ratio
       case 'desktop':
-        return { width: '42rem', height: '42rem' };
+        return { width: '48rem', height: '58rem' }; // Card ratio
       case '2k':
-        return { width: '50rem', height: '50rem' };
+        return { width: '55rem', height: '66rem' }; // Card ratio
       case 'ultrawide':
-        return { width: '55rem', height: '55rem' };
+        return { width: '60rem', height: '72rem' }; // Card ratio
       default:
-        return { width: '35rem', height: '35rem' };
+        return { width: '42rem', height: '50rem' }; // Card ratio
     }
   };
 
@@ -130,7 +130,7 @@ export const useBoardContainerSize = () => {
 
     return {
       width: `${cellSizeRem}rem`,
-      height: `${cellSizeRem * 1.4}rem`, // Gaming aspect ratio 1:1.4
+      height: `${cellSizeRem * 1.4}rem`, // Playing card aspect ratio 5:7 ≈ 1:1.4
     };
   };
 

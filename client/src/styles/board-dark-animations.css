@@ -650,7 +650,7 @@ div.skemino-square-dark.skemino-central-d4,
 
 /* Square Styling - Dark Gaming Optimized */
 .skemino-square-dark {
-  aspect-ratio: 1 / 1; /* Perfect square aspect ratio */
+  aspect-ratio: 5 / 7; /* Playing card aspect ratio for card-game feel */
   will-change: transform, box-shadow;
   contain: layout style paint;
   transition:
@@ -808,10 +808,10 @@ div.skemino-square-dark.skemino-central-d4,
   container-type: size;
   container-name: gameboard;
 
-  /* Fixed rem-based sizing - immune to browser zoom */
-  width: 40rem;  /* Increased size for better visibility */
-  height: 40rem; /* Perfect 1:1 container aspect ratio */
-  min-height: 40rem; /* Ensure minimum height */
+  /* Elongated card-game sizing - 2:3 aspect ratio (width:height) for card layout */
+  width: 50rem;  /* Wider for elongated card design */
+  height: 60rem; /* Taller to accommodate card aspect ratio */
+  min-height: 60rem; /* Ensure minimum height for cards */
   max-height: 90vh; /* Prevent overflow on small screens */
 
   /* Centering and positioning */
@@ -852,11 +852,11 @@ div.skemino-square-dark.skemino-central-d4,
 
 /* Zoom-resistant board cells */
 .skemino-cell-zoom-resistant {
-  /* Square aspect ratio for proper board */
-  aspect-ratio: 1 / 1;
+  /* Playing card aspect ratio for card-game feel */
+  aspect-ratio: 5 / 7; /* Standard playing card proportions */
 
   /* Base white gradient styling for normal cells */
-  background: radial-gradient(circle at center,
+  background: radial-gradient(ellipse at center,
     rgba(230, 230, 230, 1.0) 0%,      /* Light gray center */
     rgba(235, 235, 235, 1.0) 15%,     /* Very light gray */
     rgba(240, 240, 240, 1.0) 30%,     /* Lighter gray */
@@ -866,8 +866,8 @@ div.skemino-square-dark.skemino-central-d4,
     rgba(255, 255, 255, 1.0) 100%     /* Pure white edge */
   );
   border: 1px solid var(--skemino-border-primary);
-  border-radius: 0.25rem;
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+  border-radius: 0.5rem; /* More rounded for card-like appearance */
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05), 0 2px 8px rgba(0, 0, 0, 0.1); /* Card-like shadow */
 
   /* Content centering */
   display: flex;
@@ -894,11 +894,11 @@ div.skemino-square-dark.skemino-central-d4,
 /* ===== CONTAINER QUERY BREAKPOINTS - ZOOM RESISTANT ===== */
 
 /* Mobile gaming optimized */
-@container gameboard (max-width: 30rem) {
+@container gameboard (max-width: 40rem) {
   .skemino-board-zoom-resistant {
-    width: 28rem;
-    height: 28rem;
-    min-height: 28rem;
+    width: 35rem;
+    height: 42rem; /* Elongated for card ratio */
+    min-height: 42rem;
     border-width: 1px;
   }
 
@@ -909,7 +909,7 @@ div.skemino-square-dark.skemino-central-d4,
 
   .skemino-cell-zoom-resistant {
     font-size: 0.75rem;
-    border-radius: 0.125rem;
+    border-radius: 0.25rem; /* More rounded for card look */
   }
 
   .skemino-cell-label {
@@ -919,11 +919,11 @@ div.skemino-square-dark.skemino-central-d4,
 }
 
 /* Tablet gaming */
-@container gameboard (min-width: 30rem) and (max-width: 45rem) {
+@container gameboard (min-width: 40rem) and (max-width: 55rem) {
   .skemino-board-zoom-resistant {
-    width: 35rem;
-    height: 35rem;
-    min-height: 35rem;
+    width: 42rem;
+    height: 50rem; /* Elongated for card ratio */
+    min-height: 50rem;
   }
 
   .skemino-grid-zoom-resistant {
@@ -933,6 +933,7 @@ div.skemino-square-dark.skemino-central-d4,
 
   .skemino-cell-zoom-resistant {
     font-size: 0.875rem;
+    border-radius: 0.375rem;
   }
 
   .skemino-cell-label {
@@ -942,11 +943,11 @@ div.skemino-square-dark.skemino-central-d4,
 }
 
 /* Desktop gaming */
-@container gameboard (min-width: 45rem) and (max-width: 60rem) {
+@container gameboard (min-width: 55rem) and (max-width: 70rem) {
   .skemino-board-zoom-resistant {
-    width: 42rem;
-    height: 42rem;
-    min-height: 42rem;
+    width: 48rem;
+    height: 58rem; /* Elongated for card ratio */
+    min-height: 58rem;
     border-width: 2px;
   }
 
@@ -957,7 +958,7 @@ div.skemino-square-dark.skemino-central-d4,
 
   .skemino-cell-zoom-resistant {
     font-size: 1rem;
-    border-radius: 0.375rem;
+    border-radius: 0.5rem; /* More rounded */
   }
 
   .skemino-cell-label {
@@ -967,11 +968,11 @@ div.skemino-square-dark.skemino-central-d4,
 }
 
 /* 2K gaming optimized */
-@container gameboard (min-width: 60rem) and (max-width: 75rem) {
+@container gameboard (min-width: 70rem) and (max-width: 85rem) {
   .skemino-board-zoom-resistant {
-    width: 50rem;
-    height: 50rem;
-    min-height: 50rem;
+    width: 55rem;
+    height: 66rem; /* Elongated for card ratio */
+    min-height: 66rem;
     border-width: 3px;
   }
 
@@ -982,7 +983,7 @@ div.skemino-square-dark.skemino-central-d4,
 
   .skemino-cell-zoom-resistant {
     font-size: 1.125rem;
-    border-radius: 0.5rem;
+    border-radius: 0.625rem; /* More rounded */
   }
 
   .skemino-cell-label {
@@ -992,11 +993,11 @@ div.skemino-square-dark.skemino-central-d4,
 }
 
 /* Ultrawide gaming */
-@container gameboard (min-width: 75rem) {
+@container gameboard (min-width: 85rem) {
   .skemino-board-zoom-resistant {
-    width: 55rem;
-    height: 55rem;
-    min-height: 55rem;
+    width: 60rem;
+    height: 72rem; /* Elongated for card ratio */
+    min-height: 72rem;
     border-width: 3px;
   }
 
@@ -1007,7 +1008,7 @@ div.skemino-square-dark.skemino-central-d4,
 
   .skemino-cell-zoom-resistant {
     font-size: 1.25rem;
-    border-radius: 0.625rem;
+    border-radius: 0.75rem; /* More rounded */
   }
 
   .skemino-cell-label {
@@ -1035,25 +1036,25 @@ div.skemino-square-dark.skemino-central-d4,
   transition: all 0.2s ease;
 }
 
-/* Vertex colors - zoom resistant */
-.skemino-vertex-a1::before {
-  background: #3b82f6;
-  box-shadow: 0 0 0.5rem rgba(59, 130, 246, 0.6);
+/* Vertex colors - zoom resistant - Direct background override */
+.skemino-cell-zoom-resistant.skemino-vertex-a1 {
+  background: rgba(59, 130, 246, 1.0) !important; /* Blue like c3 */
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3) !important;
 }
 
-.skemino-vertex-f1::before {
-  background: #10b981;
-  box-shadow: 0 0 0.5rem rgba(16, 185, 129, 0.6);
+.skemino-cell-zoom-resistant.skemino-vertex-f1 {
+  background: rgba(34, 197, 94, 1.0) !important; /* Green like d3 */
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3) !important;
 }
 
-.skemino-vertex-a6::before {
-  background: #ef4444;
-  box-shadow: 0 0 0.5rem rgba(239, 68, 68, 0.6);
+.skemino-cell-zoom-resistant.skemino-vertex-a6 {
+  background: rgba(239, 68, 68, 1.0) !important; /* Red like c4 */
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3) !important;
 }
 
-.skemino-vertex-f6::before {
-  background: #f59e0b;
-  box-shadow: 0 0 0.5rem rgba(245, 158, 11, 0.6);
+.skemino-cell-zoom-resistant.skemino-vertex-f6 {
+  background: rgba(250, 204, 21, 1.0) !important; /* Yellow like d4 */
+  box-shadow: 0 2px 8px rgba(250, 204, 21, 0.3) !important;
 }
 
 /* Algebraic notation - zoom resistant */
