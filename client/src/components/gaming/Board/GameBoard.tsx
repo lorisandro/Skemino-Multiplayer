@@ -42,7 +42,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({ demoMode = false }) => {
           const is2KDisplay = screenWidth >= 1920 && screenWidth <= 2880 && window.innerHeight >= 1080;
           setIs2K(is2KDisplay);
 
-          const size = Math.min(width * 0.95, height * 0.95, 1400);
+          // Account for 1.4:1 aspect ratio of cells when calculating board size
+          const size = Math.min(width * 0.95, (height * 0.95) / 1.4, 1400);
           setBoardSize(size);
         }
       }
@@ -120,7 +121,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ demoMode = false }) => {
           className={`relative bg-gradient-to-br from-gray-900 to-black rounded-xl shadow-2xl border-2 border-gray-700 skemino-board-dark ${is2K ? 'border-3' : ''}`}
           style={{
             width: boardSize,
-            height: boardSize,
+            height: boardSize * 1.4, // Height accounts for 1.4:1 cell aspect ratio
             padding: is2K ? '12px' : '8px', // Enhanced padding for 2K
             background: 'linear-gradient(135deg, #0a0a0a 0%, #141414 50%, #0f0f0f 100%)',
             boxShadow: is2K

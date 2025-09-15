@@ -93,9 +93,10 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
       }
 
       // Regular mode: improved calculations with better container fitting
+      // Account for 1.4:1 aspect ratio of board squares (rectangular cells)
       let baseSize = Math.min(
         width * 0.85, // Increased to utilize more space and prevent clipping
-        (height - 100) * 0.9, // Increased to use more available height
+        (height - 100) * 0.9 / 1.4, // Divide by 1.4 to account for rectangular cells
         maxSize
       );
 
@@ -108,18 +109,18 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
           baseSize = Math.min(baseSize, width * 0.8, 600);
           break;
         case 'desktop':
-          baseSize = Math.min(baseSize, width * 0.7, height * 0.85, 900);
+          baseSize = Math.min(baseSize, width * 0.7, height * 0.85 / 1.4, 900);
           break;
         case '2k':
           // Optimized sizing for 2K displays - better space utilization
           baseSize = Math.min(
             width * 0.6, // Increased for better space utilization
-            height * 0.85, // Increased to use more height
+            height * 0.85 / 1.4, // Divide by 1.4 for rectangular cells
             1200 // Increased maximum size
           );
           break;
         case 'ultrawide':
-          baseSize = Math.min(baseSize, width * 0.4, height * 0.75, 1000);
+          baseSize = Math.min(baseSize, width * 0.4, height * 0.75 / 1.4, 1000);
           break;
       }
 
@@ -225,7 +226,7 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
         animate={breakpoint}
         style={{
           width: containerSize,
-          height: containerSize * aspectRatio,
+          height: containerSize * 1.4, // Height accounts for 1.4:1 cell aspect ratio
           maxWidth: '100%',
           maxHeight: '100%',
         }}
