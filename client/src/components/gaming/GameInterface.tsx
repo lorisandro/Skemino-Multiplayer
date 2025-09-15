@@ -75,15 +75,15 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
   // 2K Layout (1920px+ optimized)
   if (layout === '2k') {
     return (
-      <div className={`h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col ${className}`}>
+      <div className={`h-screen bg-gradient-to-br from-gray-900 to-slate-900 flex flex-col ${className}`}>
         {/* Header removed as requested */}
 
         {/* Main Game Area - Optimized for 2K displays */}
         <div className="flex-1 flex overflow-hidden">
           {/* Left Sidebar - Combined players with card slots */}
-          <div className="w-64 bg-white border-r border-slate-200 flex flex-col">
+          <div className="w-64 bg-slate-900 border-r border-slate-700 flex flex-col">
             {/* Opponent Area - Top half */}
-            <div className="flex-1 border-b border-slate-200">
+            <div className="flex-1 border-b border-slate-700">
               <PlayerArea
                 player={opponent}
                 hand={opponentHand}
@@ -112,17 +112,15 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
           </div>
 
           {/* Center - Game Board with enhanced space for 2K */}
-          <div className="flex-1 relative min-h-0 bg-gradient-to-br from-slate-50 to-slate-100">
-            <div className="absolute inset-0 flex items-center justify-end pr-16">
-              <GameBoard demoMode={isDemoMode} />
-            </div>
+          <div className="flex-1 flex items-center justify-end pr-16 bg-gradient-to-br from-gray-900 to-slate-900">
+            <GameBoard demoMode={isDemoMode} />
           </div>
 
 
           {/* Game Sidebar (collapsible) - Optimized width for 2K */}
           {sidebarOpen && (
             <motion.div
-              className="w-72 bg-white border-l border-slate-200"
+              className="w-72 bg-slate-800 border-l border-slate-700"
               initial={{ x: 288 }}
               animate={{ x: 0 }}
               exit={{ x: 288 }}
@@ -144,15 +142,15 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
   // Desktop Layout (1024px+)
   if (layout === 'desktop') {
     return (
-      <div className={`h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col ${className}`}>
+      <div className={`h-screen bg-gradient-to-br from-gray-900 to-slate-900 flex flex-col ${className}`}>
         {/* Header removed as requested */}
 
         {/* Main Game Area */}
         <div className="flex-1 flex overflow-hidden">
           {/* Left Sidebar - Combined players with card slots */}
-          <div className="w-72 bg-white border-r border-slate-200 flex flex-col">
+          <div className="w-72 bg-slate-800 border-r border-slate-700 flex flex-col">
             {/* Opponent Area - Top half */}
-            <div className="flex-1 border-b border-slate-200">
+            <div className="flex-1 border-b border-slate-700">
               <PlayerArea
                 player={opponent}
                 hand={opponentHand}
@@ -181,17 +179,15 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
           </div>
 
           {/* Center - Game Board */}
-          <div className="flex-1 relative min-h-0 bg-gradient-to-br from-slate-50 to-slate-100">
-            <div className="absolute inset-0 flex items-center justify-end pr-12">
-              <GameBoard demoMode={isDemoMode} />
-            </div>
+          <div className="flex-1 flex items-center justify-end pr-12 bg-gradient-to-br from-gray-900 to-slate-900">
+            <GameBoard demoMode={isDemoMode} />
           </div>
 
 
           {/* Game Sidebar (collapsible) */}
           {sidebarOpen && (
             <motion.div
-              className="w-80 bg-white border-l border-slate-200"
+              className="w-80 bg-slate-800 border-l border-slate-700"
               initial={{ x: 320 }}
               animate={{ x: 0 }}
               exit={{ x: 320 }}
@@ -213,13 +209,13 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
   // Tablet Layout (768px - 1023px)
   if (layout === 'tablet') {
     return (
-      <div className={`h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col ${className}`}>
+      <div className={`h-screen bg-gradient-to-br from-gray-900 to-slate-900 flex flex-col ${className}`}>
         {/* Header removed as requested */}
 
         {/* Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Opponent Area - Top */}
-          <div className="h-24 bg-white border-b border-slate-200">
+          <div className="h-24 bg-slate-800 border-b border-slate-700">
             <PlayerArea
               player={opponent}
               hand={opponentHand}
@@ -233,14 +229,12 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
           </div>
 
           {/* Game Board - Center */}
-          <div className="flex-1 relative min-h-0">
-            <div className="absolute inset-0 flex items-center justify-end pr-8">
-              <GameBoard demoMode={isDemoMode} />
-            </div>
+          <div className="flex-1 flex items-center justify-end pr-8">
+            <GameBoard demoMode={isDemoMode} />
           </div>
 
           {/* Current Player Area - Bottom */}
-          <div className="h-32 bg-white border-t border-slate-200">
+          <div className="h-32 bg-slate-800 border-t border-slate-700">
             <PlayerArea
               player={currentPlayer}
               hand={playerHand}
@@ -261,13 +255,13 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
 
   // Mobile Layout (< 768px)
   return (
-    <div className={`h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col ${className}`}>
+    <div className={`h-screen bg-gradient-to-br from-gray-900 to-slate-900 flex flex-col ${className}`}>
       {/* Header removed as requested */}
 
       {/* Game Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Opponent Info - Compact */}
-        <div className="h-16 bg-white border-b border-slate-200 px-4 flex items-center justify-between">
+        <div className="h-16 bg-slate-800 border-b border-slate-700 px-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
             <div>
@@ -281,14 +275,12 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
         </div>
 
         {/* Game Board - Main Area */}
-        <div className="flex-1 relative min-h-0">
-          <div className="absolute inset-0 flex items-center justify-end pr-4">
-            <GameBoard demoMode={isDemoMode} />
-          </div>
+        <div className="flex-1 flex items-center justify-end pr-4">
+          <GameBoard demoMode={isDemoMode} />
         </div>
 
         {/* Current Player Cards - Bottom */}
-        <div className="h-28 bg-white border-t border-slate-200">
+        <div className="h-28 bg-slate-800 border-t border-slate-700">
           <PlayerArea
             player={currentPlayer}
             hand={playerHand}
