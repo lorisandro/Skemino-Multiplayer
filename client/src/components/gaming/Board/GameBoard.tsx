@@ -5,7 +5,8 @@ import { SkeminoLogo } from './SkeminoLogo';
 import { ResponsiveBoardContainer } from './ResponsiveBoardContainer';
 import { useGameStore } from '../../../store/gameStore';
 import { useSocket } from '../../../hooks/useSocket';
-import { useGamePerformance, PerformanceUtils } from '../../../hooks/performance';
+import { useGamePerformance } from '../../../hooks/useGamePerformance';
+import { PerformanceUtils } from '../../../hooks/performance';
 import type { BoardCell } from '../../../types/game';
 import '../../../styles/board-dark-animations.css';
 

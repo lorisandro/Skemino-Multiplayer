@@ -37,44 +37,44 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
     }),
   }), [isValidMove, isMyTurn, onClick]);
 
-  // Square color based on Skèmino specifications
+  // Square color based on Skèmino Dark Gaming specifications
   const squareColor = useMemo(() => {
-    // Vertex colors based on Skèmino design
+    // Vertex colors based on Dark Skèmino design - Professional Gaming
     if (isVertex) {
       switch (cell) {
-        case 'a1': return 'bg-gradient-to-br from-cyan-400 to-cyan-600'; // Azzurro
-        case 'f1': return 'bg-gradient-to-br from-emerald-400 to-emerald-600'; // Verde
-        case 'a6': return 'bg-gradient-to-br from-red-400 to-red-600'; // Rosso
-        case 'f6': return 'bg-gradient-to-br from-yellow-400 to-yellow-600'; // Giallo
-        default: return 'bg-gradient-to-br from-gray-800 to-gray-900'; // Nero per altri vertici
+        case 'a1': return 'bg-gradient-to-br from-cyan-500 to-cyan-700 shadow-lg shadow-cyan-500/50'; // Q I - Dark Azzurro
+        case 'f1': return 'bg-gradient-to-br from-emerald-500 to-emerald-700 shadow-lg shadow-emerald-500/50'; // Q II - Dark Verde
+        case 'a6': return 'bg-gradient-to-br from-red-500 to-red-700 shadow-lg shadow-red-500/50'; // Q III - Dark Rosso
+        case 'f6': return 'bg-gradient-to-br from-yellow-500 to-yellow-700 shadow-lg shadow-yellow-500/50'; // Q IV - Dark Giallo
+        default: return 'bg-gradient-to-br from-gray-700 to-gray-900 shadow-lg'; // Altri vertici dark
       }
     }
 
-    // Standard squares: alternating black/white pattern
+    // Standard squares: Dark gaming alternating pattern
     const file = cell.charCodeAt(0) - 97; // 0-5
     const rank = parseInt(cell[1]) - 1; // 0-5
     const isDark = (file + rank) % 2 === 0;
 
     if (isDark) {
-      return 'bg-gradient-to-br from-gray-900 to-black'; // Nero
+      return 'bg-gradient-to-br from-gray-900 via-black to-gray-900'; // Caselle scure - Professional dark
     } else {
-      return 'bg-gradient-to-br from-white to-gray-50'; // Bianco
+      return 'bg-gradient-to-br from-gray-700 via-gray-600 to-gray-700'; // Caselle chiare - Dark optimized
     }
   }, [cell, isVertex]);
 
-  // Highlight styles
+  // Dark Gaming Highlight styles - Professional competitive
   const getHighlightStyle = () => {
     if (isOver && canDrop) {
-      return 'ring-4 ring-green-400 ring-opacity-75';
+      return 'ring-4 ring-emerald-400/80 ring-offset-2 ring-offset-gray-900 shadow-lg shadow-emerald-500/50';
     }
     if (isValidMove && selectedCard) {
-      return 'ring-2 ring-blue-400 ring-opacity-75 animate-pulse';
+      return 'ring-3 ring-blue-400/80 ring-offset-1 ring-offset-gray-900 animate-pulse shadow-lg shadow-blue-500/40';
     }
     if (position?.isLastMove) {
-      return 'ring-2 ring-yellow-400 ring-opacity-75';
+      return 'ring-3 ring-yellow-400/80 ring-offset-1 ring-offset-gray-900 shadow-lg shadow-yellow-500/40';
     }
     if (position?.isHighlighted) {
-      return 'ring-2 ring-purple-400 ring-opacity-75';
+      return 'ring-3 ring-purple-400/80 ring-offset-1 ring-offset-gray-900 shadow-lg shadow-purple-500/40';
     }
     return '';
   };
@@ -83,69 +83,104 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
     <motion.div
       ref={drop}
       className={`
-        relative border border-gray-400 skemino-square
+        relative border border-gray-600/80 skemino-square-dark
         ${squareColor} ${getHighlightStyle()}
-        cursor-pointer transition-all duration-150
-        hover:brightness-110 active:brightness-95
+        cursor-pointer transition-all duration-200 ease-out
+        hover:brightness-125 hover:scale-[1.02] active:scale-[0.98] active:brightness-90
+        backdrop-blur-sm
       `}
       style={{
         width: size,
         height: size,
-        contain: 'layout style paint'
+        contain: 'layout style paint',
+        background: isVertex ? undefined : 'radial-gradient(circle at center, rgba(255,255,255,0.02) 0%, transparent 70%)',
+        borderRadius: '4px',
+        position: 'relative'
       }}
       onClick={onClick}
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
+      whileHover={{
+        scale: 1.02,
+        transition: { type: "spring", stiffness: 500, damping: 30 }
+      }}
+      whileTap={{
+        scale: 0.98,
+        transition: { type: "spring", stiffness: 600, damping: 35 }
+      }}
       transition={{
         type: "spring",
         stiffness: 400,
         damping: 25
       }}
     >
-      {/* Vertex indicator - Enhanced for Skèmino design */}
+      {/* Vertex indicator - Dark Gaming Enhanced for Skèmino */}
       {isVertex && (
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div className="absolute inset-0 flex items-center justify-center z-20">
           <motion.div
             className={`
-              w-6 h-6 rounded-full ring-2 ring-white/50 shadow-lg skemino-vertex
-              ${cell === 'a1' ? 'bg-cyan-500 shadow-cyan-500/50' : ''}
-              ${cell === 'f1' ? 'bg-emerald-500 shadow-emerald-500/50' : ''}
-              ${cell === 'a6' ? 'bg-red-500 shadow-red-500/50' : ''}
-              ${cell === 'f6' ? 'bg-yellow-500 shadow-yellow-500/50' : ''}
+              w-8 h-8 rounded-full ring-3 ring-white/30 shadow-2xl skemino-vertex-dark backdrop-blur-sm
+              ${cell === 'a1' ? 'bg-gradient-to-br from-cyan-400 to-cyan-600 shadow-cyan-500/70' : ''}
+              ${cell === 'f1' ? 'bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-emerald-500/70' : ''}
+              ${cell === 'a6' ? 'bg-gradient-to-br from-red-400 to-red-600 shadow-red-500/70' : ''}
+              ${cell === 'f6' ? 'bg-gradient-to-br from-yellow-400 to-yellow-600 shadow-yellow-500/70' : ''}
             `}
             animate={{
-              scale: [1, 1.1, 1],
-              opacity: [0.8, 1, 0.8]
+              scale: [1, 1.15, 1],
+              opacity: [0.9, 1, 0.9],
+              boxShadow: [
+                '0 0 20px rgba(0,0,0,0.5)',
+                '0 0 40px rgba(255,255,255,0.3)',
+                '0 0 20px rgba(0,0,0,0.5)'
+              ]
             }}
             transition={{
-              duration: 2,
+              duration: 3,
               repeat: Infinity,
               ease: "easeInOut"
             }}
-          />
+          >
+            {/* Inner vertex glow effect */}
+            <div className="absolute inset-1 rounded-full bg-white/20 backdrop-blur-sm"></div>
+          </motion.div>
         </div>
       )}
 
-      {/* Cell label - Enhanced visibility for competitive gaming */}
+      {/* Cell label - Dark Gaming Enhanced visibility */}
       <div className={`
-        absolute top-0.5 right-0.5 text-xs font-mono font-bold tracking-wide
-        ${isVertex ? 'text-white drop-shadow-lg' : 'text-gray-600'}
-        opacity-70 hover:opacity-100 transition-opacity duration-200
+        absolute top-1 right-1 text-xs font-mono font-bold tracking-wide z-30
+        ${isVertex ? 'text-white drop-shadow-2xl shadow-black' : 'text-gray-300'}
+        opacity-60 hover:opacity-90 transition-all duration-200
+        bg-black/20 backdrop-blur-sm rounded px-1 py-0.5
       `}>
         {cell}
       </div>
 
-      {/* Valid move indicator */}
+      {/* Valid move indicator - Dark Gaming Enhanced */}
       <AnimatePresence>
         {isValidMove && selectedCard && !position?.card && (
           <motion.div
-            className="absolute inset-0 flex items-center justify-center pointer-events-none"
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0 }}
-            transition={{ duration: 0.2 }}
+            className="absolute inset-0 flex items-center justify-center pointer-events-none z-10"
+            initial={{ opacity: 0, scale: 0, rotate: -180 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            exit={{ opacity: 0, scale: 0, rotate: 180 }}
+            transition={{
+              duration: 0.3,
+              type: "spring",
+              stiffness: 400,
+              damping: 25
+            }}
           >
-            <div className="w-3 h-3 bg-blue-400 dark:bg-blue-500 rounded-full opacity-50" />
+            <motion.div
+              className="w-4 h-4 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full shadow-lg shadow-blue-500/50 backdrop-blur-sm ring-2 ring-blue-300/30"
+              animate={{
+                scale: [1, 1.2, 1],
+                opacity: [0.7, 1, 0.7]
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
           </motion.div>
         )}
       </AnimatePresence>
@@ -171,20 +206,45 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
         )}
       </AnimatePresence>
 
-      {/* Hole indicator */}
+      {/* Hole indicator - Dark Gaming Enhanced */}
       {position?.isHole && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-8 h-8 bg-black rounded-full opacity-50" />
+        <div className="absolute inset-0 flex items-center justify-center z-10">
+          <motion.div
+            className="w-10 h-10 bg-gradient-to-br from-gray-900 to-black rounded-full border border-gray-700 shadow-2xl backdrop-blur-sm"
+            animate={{
+              scale: [1, 0.9, 1],
+              opacity: [0.8, 0.6, 0.8]
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          >
+            <div className="absolute inset-2 bg-gradient-to-br from-gray-800 to-gray-900 rounded-full"></div>
+          </motion.div>
         </div>
       )}
 
-      {/* Capture preview */}
+      {/* Capture preview - Dark Gaming Enhanced */}
       {isValidMove && position?.card && selectedCard && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
           <motion.div
-            className="text-red-500 text-3xl font-bold"
-            animate={{ scale: [1, 1.2, 1] }}
-            transition={{ repeat: Infinity, duration: 1 }}
+            className="text-4xl font-bold drop-shadow-2xl"
+            style={{
+              filter: 'drop-shadow(0 0 10px rgba(239, 68, 68, 0.8))',
+              textShadow: '0 0 20px rgba(239, 68, 68, 0.9)'
+            }}
+            animate={{
+              scale: [1, 1.3, 1],
+              rotate: [0, 10, -10, 0],
+              opacity: [0.8, 1, 0.8]
+            }}
+            transition={{
+              repeat: Infinity,
+              duration: 1.2,
+              ease: "easeInOut"
+            }}
           >
             ⚔️
           </motion.div>

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { useGamePerformance } from '../../../hooks/performance';
+import { useGamePerformance } from '../../../hooks/useGamePerformance';
 
 interface ResponsiveBoardContainerProps {
   children: React.ReactNode;
@@ -17,25 +17,31 @@ interface ResponsiveBoardContainerProps {
 export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> = ({
   children,
   minSize = 800,
-  maxSize = 2000,
+  maxSize = 2400, // Increased for 2K displays
   aspectRatio = 1,
   onSizeChange,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerSize, setContainerSize] = useState(1600);
-  const [breakpoint, setBreakpoint] = useState<'mobile' | 'tablet' | 'desktop'>('desktop');
+  const [breakpoint, setBreakpoint] = useState<'mobile' | 'tablet' | 'desktop' | '2k' | 'ultrawide'>('desktop');
   const { fps, isOptimal } = useGamePerformance();
 
-  // Determine current breakpoint
+  // Determine current breakpoint with 2K support
   useEffect(() => {
     const updateBreakpoint = () => {
       const width = window.innerWidth;
+      const height = window.innerHeight;
+
       if (width < 768) {
         setBreakpoint('mobile');
       } else if (width < 1024) {
         setBreakpoint('tablet');
-      } else {
+      } else if (width < 1920) {
         setBreakpoint('desktop');
+      } else if (width >= 1920 && width <= 2880 && height >= 1080) {
+        setBreakpoint('2k'); // 2K resolution support
+      } else {
+        setBreakpoint('ultrawide');
       }
     };
 
@@ -54,19 +60,14 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
 
       const { width, height } = container.getBoundingClientRect();
 
-      // Enhanced base size calculation for larger displays
+      // Enhanced base size calculation for larger displays with 2K optimization
       let baseSize = Math.min(
         width * 0.8,
         (height - 160) * 0.85, // Optimized for larger boards with UI elements
         maxSize
       );
 
-      // Additional scaling for ultra-wide displays (>2560px)
-      if (width > 2560) {
-        baseSize = Math.min(baseSize, width * 0.6); // More conservative on ultra-wide
-      }
-
-      // Apply breakpoint-specific adjustments
+      // Apply breakpoint-specific adjustments with 2K optimization
       switch (breakpoint) {
         case 'mobile':
           baseSize = Math.min(baseSize, width * 0.95, 500);
@@ -75,15 +76,29 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
           baseSize = Math.min(baseSize, width * 0.85, 1000);
           break;
         case 'desktop':
-          baseSize = Math.min(baseSize, Math.min(width * 0.85, height * 0.90), 2000);
+          baseSize = Math.min(baseSize, Math.min(width * 0.70, height * 0.80), 1800);
+          break;
+        case '2k':
+          // Optimized for 2K displays (1920x1080, 2560x1440, etc.)
+          baseSize = Math.min(
+            Math.max(width * 0.55, 1200), // Minimum 1200px for 2K
+            Math.min(width * 0.65, height * 0.85),
+            2400
+          );
+          break;
+        case 'ultrawide':
+          // Ultra-wide displays (>2880px)
+          baseSize = Math.min(baseSize, width * 0.45, height * 0.85, 2400);
           break;
       }
 
-      // Performance-based adjustments with enhanced scaling
+      // Performance-based adjustments optimized for modern hardware
       if (!isOptimal && fps < 30) {
-        baseSize = Math.min(baseSize, 1200); // Less aggressive size reduction for larger boards
+        // More aggressive reduction only for very poor performance
+        baseSize = Math.min(baseSize, breakpoint === '2k' ? 1400 : 1200);
       } else if (!isOptimal && fps < 45) {
-        baseSize = Math.min(baseSize, 1600); // Moderate reduction for sub-optimal performance
+        // Moderate reduction for sub-optimal performance, maintain larger boards on 2K
+        baseSize = Math.min(baseSize, breakpoint === '2k' ? 1800 : 1600);
       }
 
       // Apply aspect ratio
@@ -121,6 +136,10 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
         return `${baseClasses} min-h-[700px] px-4 py-6`;
       case 'desktop':
         return `${baseClasses} min-h-[800px] px-6 py-8`;
+      case '2k':
+        return `${baseClasses} min-h-[900px] px-8 py-10`; // Enhanced spacing for 2K
+      case 'ultrawide':
+        return `${baseClasses} min-h-[1000px] px-10 py-12`; // Extra spacing for ultrawide
       default:
         return `${baseClasses} min-h-[800px] p-4`;
     }
@@ -150,6 +169,28 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
         damping: containerSize > 1800 ? 20 : undefined
       }
     },
+    '2k': {
+      scale: 1,
+      y: -40,
+      transition: {
+        duration: 0.7,
+        ease: 'easeOut',
+        type: 'spring',
+        stiffness: 80,
+        damping: 25
+      }
+    },
+    ultrawide: {
+      scale: 1,
+      y: -50,
+      transition: {
+        duration: 0.8,
+        ease: 'easeOut',
+        type: 'spring',
+        stiffness: 60,
+        damping: 30
+      }
+    },
   };
 
   return (
@@ -167,19 +208,6 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
       >
         {children}
 
-        {/* Enhanced debug info for development */}
-        {process.env.NODE_ENV === 'development' && (
-          <div className="absolute -bottom-20 left-0 right-0 text-center">
-            <div className="text-xs text-gray-500 space-y-1 bg-white/90 rounded-lg p-2 inline-block">
-              <div>Viewport: {typeof window !== 'undefined' ? `${window.innerWidth}x${window.innerHeight}` : 'N/A'}</div>
-              <div>Breakpoint: {breakpoint}</div>
-              <div>Performance: {fps}fps {isOptimal ? '✓ Optimal' : '⚠️ Sub-optimal'}</div>
-              <div className={containerSize > 1600 ? 'text-green-600 font-medium' : 'text-blue-600'}>
-                {containerSize > 1600 ? '🎯 Large Board Mode' : '📱 Standard Mode'}
-              </div>
-            </div>
-          </div>
-        )}
       </motion.div>
 
     </div>

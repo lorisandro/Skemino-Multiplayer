@@ -38,7 +38,9 @@
       "Bash(npm run typecheck:*)",
       "Bash(npx nodemon:*)",
       "Bash(timeout 10s npm run dev:server)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(git mv:*)",
+      "Bash(rmdir:*)"
     ],
     "deny": [],
     "ask": []

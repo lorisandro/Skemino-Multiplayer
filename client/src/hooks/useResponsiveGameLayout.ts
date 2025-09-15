@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, RefObject } from 'react';
-import { useGamePerformance } from './performance';
+import { useGamePerformance } from './useGamePerformance';
 
-export type Breakpoint = 'mobile' | 'mobileLg' | 'tablet' | 'tabletLg' | 'desktop' | 'desktopLg' | 'ultrawide';
+export type Breakpoint = 'mobile' | 'mobileLg' | 'tablet' | 'tabletLg' | 'desktop' | 'desktopLg' | '2k' | 'ultrawide';
 
 export interface ResponsiveGameLayout {
   breakpoint: Breakpoint;
@@ -39,10 +39,11 @@ export const useResponsiveGameLayout = (
     touchOptimized: false,
   });
 
-  // Gaming-specific breakpoints
+  // Gaming-specific breakpoints with 2K optimization
   const getBreakpoint = useCallback((width: number): Breakpoint => {
-    if (width >= 2560) return 'ultrawide';
-    if (width >= 1920) return 'desktopLg';
+    if (width >= 2880) return 'ultrawide';
+    if (width >= 1920) return '2k'; // 2K displays (1920-2880px)
+    if (width >= 1440) return 'desktopLg';
     if (width >= 1280) return 'desktop';
     if (width >= 1024) return 'tabletLg';
     if (width >= 768) return 'tablet';
@@ -71,9 +72,16 @@ export const useResponsiveGameLayout = (
       case 'desktop':
         return Math.min(containerWidth * 0.5, containerHeight * 0.8, 700) * performanceMultiplier;
       case 'desktopLg':
-        return Math.min(containerWidth * 0.45, containerHeight * 0.85, 800) * performanceMultiplier;
+        return Math.min(containerWidth * 0.45, containerHeight * 0.85, 900) * performanceMultiplier;
+      case '2k':
+        // Optimized for 2K displays with larger board sizes
+        return Math.min(
+          Math.max(containerWidth * 0.55, 1200), // Minimum 1200px for 2K
+          containerHeight * 0.85,
+          1400
+        ) * performanceMultiplier;
       case 'ultrawide':
-        return Math.min(containerWidth * 0.4, containerHeight * 0.9, 900) * performanceMultiplier;
+        return Math.min(containerWidth * 0.4, containerHeight * 0.9, 1200) * performanceMultiplier;
       default:
         return 600 * performanceMultiplier;
     }
@@ -93,6 +101,8 @@ export const useResponsiveGameLayout = (
         return boardSize * 0.25;
       case 'desktopLg':
         return boardSize * 0.3;
+      case '2k':
+        return boardSize * 0.25; // More board-focused for 2K
       case 'ultrawide':
         return boardSize * 0.35;
       default:
@@ -115,8 +125,10 @@ export const useResponsiveGameLayout = (
         return 16;
       case 'desktopLg':
         return 17;
+      case '2k':
+        return 18; // Enhanced readability for 2K displays
       case 'ultrawide':
-        return 18;
+        return 19;
       default:
         return 14;
     }
@@ -146,7 +158,7 @@ export const useResponsiveGameLayout = (
       boardSize: Math.round(boardSize),
       isMobile: ['mobile', 'mobileLg'].includes(breakpoint),
       isTablet: ['tablet', 'tabletLg'].includes(breakpoint),
-      isDesktop: ['desktop', 'desktopLg'].includes(breakpoint),
+      isDesktop: ['desktop', 'desktopLg', '2k'].includes(breakpoint),
       isUltrawide: breakpoint === 'ultrawide',
       containerWidth: Math.round(width),
       containerHeight: Math.round(height),

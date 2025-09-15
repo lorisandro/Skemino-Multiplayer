@@ -60,6 +60,7 @@ export interface Player {
   timeRemaining: number;
   isOnline: boolean;
   avatar?: string;
+  isGuest?: boolean;
 }
 
 export interface GameRoom {
@@ -70,4 +71,12 @@ export interface GameRoom {
   timeControl: string;
   isRated: boolean;
   spectators: number;
+}
+
+export interface DistributionState {
+  phase: 'idle' | 'waiting' | 'matchmaking' | 'shuffling' | 'dealing' | 'active' | 'complete';
+  currentCard: number;
+  totalCards: number;
+  animationProgress: number;
+  isDistributing: boolean;
 }
