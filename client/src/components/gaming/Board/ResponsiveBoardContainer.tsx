@@ -17,7 +17,7 @@ interface ResponsiveBoardContainerProps {
 export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> = ({
   children,
   minSize = 400,
-  maxSize = 1400, // Increased for better 2K visibility
+  maxSize = 1800, // SIGNIFICANTLY INCREASED for 2K displays
   aspectRatio = 1,
   onSizeChange,
 }) => {
@@ -64,10 +64,10 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
       const cardBoardAspectRatio = 0.67; // Playing card ratio
       const boardHeightMultiplier = 1 / cardBoardAspectRatio; // ~1.49 for taller board
 
-      // Enhanced base size calculation accounting for card-shaped cells - OPTIMIZED for 2K
+      // Enhanced base size calculation accounting for card-shaped cells - AGGRESSIVELY OPTIMIZED for 2K
       let baseSize = Math.min(
-        width * 0.65, // Increased for better 2K utilization
-        (height - 200) * 0.75 / boardHeightMultiplier, // Less height reservation for larger display
+        width * 0.65, // Base utilization for non-2K displays
+        (height - 200) * 0.75 / boardHeightMultiplier,
         maxSize
       );
 
@@ -83,11 +83,11 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
           baseSize = Math.min(baseSize, width * 0.65, (height - 180) * 0.70 / boardHeightMultiplier);
           break;
         case '2k':
-          // OPTIMIZED for 2K displays - PROPER SIZING
+          // MASSIVELY IMPROVED for 2K displays - USE MOST OF THE SCREEN
           baseSize = Math.min(
-            width * 0.55, // Increased for better 2K utilization
-            (height - 250) * 0.65 / boardHeightMultiplier, // Better height utilization
-            1200 // Increased max size for 2K screens
+            width * 0.75, // INCREASED from 0.55 to 0.75 - use 75% of width!
+            (height - 150) * 0.80 / boardHeightMultiplier, // INCREASED height utilization and reduced padding
+            1700 // INCREASED max size from 1200 to 1700px for 2K screens
           );
           break;
         case 'ultrawide':
@@ -99,10 +99,10 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
       // Performance-based adjustments optimized for modern hardware
       if (!isOptimal && fps < 30) {
         // More aggressive reduction for poor performance
-        baseSize = Math.min(baseSize, breakpoint === '2k' ? 900 : 1000);
+        baseSize = Math.min(baseSize, breakpoint === '2k' ? 1200 : 1000);
       } else if (!isOptimal && fps < 45) {
         // Moderate reduction for sub-optimal performance
-        baseSize = Math.min(baseSize, breakpoint === '2k' ? 1100 : 1200);
+        baseSize = Math.min(baseSize, breakpoint === '2k' ? 1500 : 1200);
       }
 
       // Apply aspect ratio
@@ -141,7 +141,7 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
       case 'desktop':
         return `${baseClasses} min-h-[100vh] max-h-[100vh] px-4 py-6`;
       case '2k':
-        return `${baseClasses} min-h-[100vh] max-h-[100vh] px-6 py-6`; // Proper padding for 2K displays
+        return `${baseClasses} min-h-[100vh] max-h-[100vh] px-4 py-3`; // REDUCED padding from px-6 py-6 to px-4 py-3 for more space
       case 'ultrawide':
         return `${baseClasses} min-h-[100vh] max-h-[100vh] px-8 py-10`; // Centered for ultrawide
       default:
@@ -222,7 +222,7 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
  */
 export function useResponsiveBoardSize(
   minSize = 300,
-  maxSize = 1200,
+  maxSize = 1600, // INCREASED from 1200 to 1600
   performanceThreshold = 45
 ) {
   const [size, setSize] = useState(600);
@@ -236,21 +236,21 @@ export function useResponsiveBoardSize(
 
       let calculatedSize: number;
 
-      // Breakpoint-based sizing - DRASTICALLY REDUCED for 2K
+      // Breakpoint-based sizing - MASSIVELY IMPROVED for 2K
       if (vw < 768) {
         calculatedSize = Math.min(vw * 0.90, 400);
       } else if (vw < 1024) {
         calculatedSize = Math.min(vw * 0.75, 600);
       } else if (vw >= 1920) {
-        // 2K display - PROPER sizing
-        calculatedSize = Math.min(vw * 0.50, vh * 0.60, maxSize);
+        // 2K display - AGGRESSIVE sizing - USE MOST OF SCREEN
+        calculatedSize = Math.min(vw * 0.70, vh * 0.75, maxSize); // INCREASED from 0.50 to 0.70 width, 0.60 to 0.75 height
       } else {
         calculatedSize = Math.min(vw * 0.65, vh * 0.70, maxSize);
       }
 
       // Performance adjustment
       if (fps < performanceThreshold) {
-        calculatedSize = Math.min(calculatedSize, vw >= 1920 ? 900 : 800);
+        calculatedSize = Math.min(calculatedSize, vw >= 1920 ? 1200 : 800); // Increased from 900 to 1200 for 2K even with poor performance
         setIsReduced(true);
       } else {
         setIsReduced(false);

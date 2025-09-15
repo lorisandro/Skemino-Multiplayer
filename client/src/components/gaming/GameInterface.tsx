@@ -77,8 +77,8 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
       <div className={`h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col ${className}`}>
         {/* Main Game Area - Optimized for 2K displays */}
         <div className="flex-1 flex overflow-hidden">
-          {/* Left Sidebar - Slightly narrower for more board space */}
-          <div className="w-64 bg-white border-r border-slate-200 flex flex-col">
+          {/* Left Sidebar - Narrower for more board space */}
+          <div className="w-56 bg-white border-r border-slate-200 flex flex-col">
             <PlayerArea
               player={opponent}
               hand={opponentHand}
@@ -90,15 +90,15 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
             />
           </div>
 
-          {/* Center - Game Board with enhanced space for 2K */}
-          <div className="flex-1 flex items-center justify-center p-12 bg-gradient-to-br from-slate-50 to-slate-100">
-            <div className="relative w-full h-full flex items-center justify-center max-w-[1400px] max-h-[90vh]">
+          {/* Center - Game Board with MAXIMUM space for 2K - REMOVED all size constraints */}
+          <div className="flex-1 flex items-center justify-center p-6 bg-gradient-to-br from-slate-50 to-slate-100">
+            <div className="relative w-full h-full flex items-center justify-center">
               <GameBoard />
             </div>
           </div>
 
-          {/* Right Sidebar - Slightly narrower for more board space */}
-          <div className="w-64 bg-white border-l border-slate-200 flex flex-col">
+          {/* Right Sidebar - Narrower for more board space */}
+          <div className="w-56 bg-white border-l border-slate-200 flex flex-col">
             <PlayerArea
               player={currentPlayer}
               hand={playerHand}
