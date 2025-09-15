@@ -81,7 +81,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
           </div>
 
           {/* Cards */}
-          <div className="flex-1">
+          <div className="flex-1 flex items-center justify-center">
             <CardHand
               cards={displayHand}
               selectedCard={selectedCard}
@@ -117,7 +117,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
           />
 
           {/* Cards */}
-          <div className="flex-1">
+          <div className="flex-1 flex items-center justify-center">
             <CardHand
               cards={displayHand}
               selectedCard={selectedCard}
@@ -165,7 +165,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
         </div>
 
         {/* Card hand - 2 rows of 5 cards */}
-        <div className="flex-1 p-4">
+        <div className="flex-1 p-4 flex items-center justify-center">
           <CardHand
             cards={displayHand}
             selectedCard={selectedCard}
@@ -212,7 +212,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
         </div>
 
         {/* Cards - 2 rows of 5 cards */}
-        <div className="flex-1">
+        <div className="flex-1 flex items-center justify-center">
           <CardHand
             cards={displayHand}
             selectedCard={selectedCard}

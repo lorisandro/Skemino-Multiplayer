@@ -66,8 +66,8 @@ export const CardHand: React.FC<CardHandProps> = ({
       case 'grid':
         // For 10 cards, use 5 columns x 2 rows
         return maxCards === 10
-          ? `${baseClasses} grid grid-cols-5 grid-rows-2 gap-4 w-full`
-          : `${baseClasses} grid grid-cols-3 grid-rows-2 gap-3 w-full`;
+          ? `${baseClasses} grid grid-cols-5 grid-rows-2 gap-4 w-auto`
+          : `${baseClasses} grid grid-cols-3 grid-rows-2 gap-3 w-auto`;
       case 'linear':
         return `${baseClasses} flex ${orientation === 'horizontal' ? 'flex-row space-x-2' : 'flex-col space-y-2'} justify-center items-center`;
       case 'stack':
