@@ -858,9 +858,9 @@ div.skemino-square-dark.skemino-central-d4,
   gap: 0.125rem;
   /* padding rimosso per centrare le celle nel contenitore nero */
 
-  /* Fill container */
-  width: 100%;
-  height: 100%;
+  /* Fixed dimensions with space for padding effect around cells */
+  width: calc(35rem - 2rem);  /* Container width minus space for "padding" effect */
+  height: calc(49rem - 2rem); /* Container height minus space for "padding" effect */
 
   /* Gaming aesthetics */
   background: inherit;
@@ -926,6 +926,8 @@ div.skemino-square-dark.skemino-central-d4,
   }
 
   .skemino-grid-zoom-resistant {
+    width: calc(28rem - 2rem) !important;
+    height: calc(39rem - 2rem) !important;
     gap: 0.0625rem;
     /* padding rimosso per centrare le celle */
   }
@@ -949,6 +951,8 @@ div.skemino-square-dark.skemino-central-d4,
   }
 
   .skemino-grid-zoom-resistant {
+    width: calc(35rem - 2rem) !important;
+    height: calc(49rem - 2rem) !important;
     gap: 0.125rem;
     /* padding rimosso per centrare le celle */
   }
@@ -972,6 +976,8 @@ div.skemino-square-dark.skemino-central-d4,
   }
 
   .skemino-grid-zoom-resistant {
+    width: calc(36rem - 2rem) !important;
+    height: calc(50rem - 2rem) !important;
     gap: 0.1875rem;
     /* padding rimosso per centrare le celle */
   }
@@ -996,6 +1002,8 @@ div.skemino-square-dark.skemino-central-d4,
   }
 
   .skemino-grid-zoom-resistant {
+    width: calc(42rem - 2rem) !important;
+    height: calc(59rem - 2rem) !important;
     gap: 0.25rem;
     /* padding rimosso per centrare le celle */
   }
@@ -1020,6 +1028,8 @@ div.skemino-square-dark.skemino-central-d4,
   }
 
   .skemino-grid-zoom-resistant {
+    width: calc(48rem - 2rem) !important;
+    height: calc(67rem - 2rem) !important;
     gap: 0.3125rem;
     /* padding rimosso per centrare le celle */
   }
