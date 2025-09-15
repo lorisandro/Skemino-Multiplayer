@@ -114,37 +114,6 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
         damping: 25
       }}
     >
-      {/* Vertex indicator - Dark Gaming Enhanced for Skèmino */}
-      {isVertex && (
-        <div className="skemino-vertex-container">
-          <motion.div
-            className={`
-              skemino-vertex-dark skemino-vertex-circle
-              ${cell === 'a1' ? 'skemino-vertex-indicator-blue' : ''}
-              ${cell === 'f1' ? 'skemino-vertex-indicator-green' : ''}
-              ${cell === 'a6' ? 'skemino-vertex-indicator-red' : ''}
-              ${cell === 'f6' ? 'skemino-vertex-indicator-yellow' : ''}
-            `}
-            animate={{
-              scale: [1, 1.15, 1],
-              opacity: [0.9, 1, 0.9],
-              boxShadow: [
-                '0 0 20px rgba(0,0,0,0.5)',
-                '0 0 40px rgba(255,255,255,0.3)',
-                '0 0 20px rgba(0,0,0,0.5)'
-              ]
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          >
-            {/* Inner vertex glow effect */}
-            <div className="skemino-vertex-inner-glow"></div>
-          </motion.div>
-        </div>
-      )}
 
       {/* Cell label - Dark Gaming Enhanced visibility */}
       <div className={`skemino-cell-label ${isVertex ? 'skemino-cell-label-vertex' : 'skemino-cell-label-normal'}`}>
