@@ -152,8 +152,8 @@ export const AuthDemo: React.FC = () => {
                     <div className="flex items-center justify-between mb-4">
                       <div className="text-3xl group-hover:scale-110 transition-transform">🏆</div>
                       <div className="text-right">
-                        <div className="text-2xl font-bold text-blue-400">{user.rating}</div>
-                        <div className="text-xs text-gray-500 uppercase tracking-wide">{user.level.tier}</div>
+                        <div className="text-2xl font-bold text-blue-400">{user.rating || 1000}</div>
+                        <div className="text-xs text-gray-500 uppercase tracking-wide">{user.level?.tier || 'PRINCIPIANTE'}</div>
                       </div>
                     </div>
                     <h3 className="font-semibold text-white mb-1">Rating ELO</h3>
@@ -161,7 +161,7 @@ export const AuthDemo: React.FC = () => {
                     <div className="mt-3 w-full bg-slate-700 rounded-full h-2">
                       <div
                         className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-500"
-                        style={{ width: `${Math.min(100, ((user.rating - 1000) / 1700) * 100)}%` }}
+                        style={{ width: `${Math.min(100, (((user.rating || 1000) - 1000) / 1700) * 100)}%` }}
                       />
                     </div>
                   </div>

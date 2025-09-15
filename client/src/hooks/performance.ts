@@ -20,34 +20,31 @@ interface UseGamePerformanceReturn extends PerformanceMetrics {
  */
 export const PerformanceUtils = {
   /**
-   * Calculate optimal board size based on viewport and performance - OPTIMIZED FOR 2K
+   * Calculate optimal board size based on viewport and performance for enhanced scaling
    */
   getOptimalBoardSize: (viewportWidth: number, viewportHeight: number, currentFps: number): number => {
-    // DRASTICALLY REDUCED base calculation for 2K displays
-    const baseSize = Math.min(viewportWidth * 0.4, viewportHeight * 0.5); // Much smaller base
+    const baseSize = Math.min(viewportWidth * 0.8, viewportHeight * 0.85);
 
-    // Enhanced size scaling for larger displays - MORE AGGRESSIVE
+    // Enhanced size scaling for larger displays
     let scaleFactor = 1;
     if (viewportWidth > 2560) {
-      scaleFactor = 0.4; // Very conservative for ultra-wide displays
-    } else if (viewportWidth >= 1920) {
-      scaleFactor = 0.5; // MAJOR reduction for 2K displays
-    } else if (viewportWidth > 1440) {
-      scaleFactor = 0.7; // Moderate reduction for large displays
+      scaleFactor = 0.7; // Conservative for ultra-wide displays
+    } else if (viewportWidth > 1920) {
+      scaleFactor = 0.85; // Moderate scaling for large displays
     }
 
     const adjustedBaseSize = baseSize * scaleFactor;
 
-    // Performance-based adjustments - REDUCED for 2K compatibility
+    // Performance-based adjustments with larger board support
     if (currentFps < 30) {
-      return Math.min(adjustedBaseSize * 0.7, 600); // Reduced maximum for poor performance
+      return Math.min(adjustedBaseSize * 0.7, 1000); // Increased minimum for poor performance
     } else if (currentFps < 45) {
-      return Math.min(adjustedBaseSize * 0.85, 800); // Reduced for sub-optimal performance
+      return Math.min(adjustedBaseSize * 0.85, 1400); // Better support for sub-optimal performance
     } else if (currentFps >= 60) {
-      return Math.min(adjustedBaseSize, viewportWidth >= 1920 ? 900 : 1200); // 2K-specific maximum
+      return Math.min(adjustedBaseSize, 2000); // Maximum size for optimal performance
     }
 
-    return Math.min(adjustedBaseSize, viewportWidth >= 1920 ? 800 : 1000); // 2K-specific default
+    return Math.min(adjustedBaseSize, 1600); // Default enhanced size
   },
 
   /**

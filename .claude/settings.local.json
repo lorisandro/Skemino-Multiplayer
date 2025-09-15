@@ -42,8 +42,7 @@
       "Bash(git mv:*)",
       "Bash(rmdir:*)",
       "Bash(mkdir:*)",
-      "Bash(cp:*)",
-      "Bash(tasklist)"
+      "Bash(cp:*)"
     ],
     "deny": [],
     "ask": []

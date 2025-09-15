@@ -58,6 +58,25 @@ export const MatchmakingDemo: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
+              {/* Header */}
+              <motion.h1
+                className="text-6xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 bg-clip-text text-transparent mb-4"
+                initial={{ scale: 0.9 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+              >
+                Skèmino
+              </motion.h1>
+
+              <motion.p
+                className="text-xl text-gray-300 mb-8"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+              >
+                Strategic Multiplayer Card Game • Real-time Gaming Experience
+              </motion.p>
+
               {/* Features highlight */}
               <motion.div
                 className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"
