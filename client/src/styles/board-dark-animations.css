@@ -393,88 +393,88 @@ div.skemino-square-dark.skemino-cell-gradient {
 div.skemino-square-dark.skemino-vertex-blue,
 .relative.skemino-square-dark.skemino-vertex-blue {
   background: radial-gradient(circle at center,
-    rgba(180, 180, 180, 1.0) 0%,      /* Gray center */
-    rgba(147, 197, 253, 1.0) 20%,     /* Light blue */
-    rgba(96, 165, 250, 1.0) 40%,      /* Medium blue */
-    rgba(59, 130, 246, 1.0) 60%,      /* Blue */
-    rgba(37, 99, 235, 1.0) 80%,       /* Darker blue */
+    rgba(200, 240, 255, 1.0) 0%,      /* Brilliant cyan center */
+    rgba(147, 220, 255, 1.0) 25%,     /* Bright light blue */
+    rgba(96, 165, 250, 1.0) 50%,      /* Medium blue */
+    rgba(59, 130, 246, 1.0) 70%,      /* Blue */
+    rgba(37, 99, 235, 1.0) 85%,       /* Darker blue */
     rgba(29, 78, 216, 1.0) 100%       /* Deep blue edge */
   ) !important;
   background-image: radial-gradient(circle at center,
-    rgba(180, 180, 180, 1.0) 0%,
-    rgba(147, 197, 253, 1.0) 20%,
-    rgba(96, 165, 250, 1.0) 40%,
-    rgba(59, 130, 246, 1.0) 60%,
-    rgba(37, 99, 235, 1.0) 80%,
+    rgba(200, 240, 255, 1.0) 0%,
+    rgba(147, 220, 255, 1.0) 25%,
+    rgba(96, 165, 250, 1.0) 50%,
+    rgba(59, 130, 246, 1.0) 70%,
+    rgba(37, 99, 235, 1.0) 85%,
     rgba(29, 78, 216, 1.0) 100%
   ) !important;
-  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4), inset 0 0 15px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 15px 35px rgba(59, 130, 246, 0.6), inset 0 0 20px rgba(200, 240, 255, 0.3) !important;
 }
 
 .skemino-square-dark.skemino-vertex-green,
 div.skemino-square-dark.skemino-vertex-green,
 .relative.skemino-square-dark.skemino-vertex-green {
   background: radial-gradient(circle at center,
-    rgba(180, 180, 180, 1.0) 0%,      /* Gray center */
-    rgba(134, 239, 172, 1.0) 20%,     /* Light green */
-    rgba(74, 222, 128, 1.0) 40%,      /* Medium green */
-    rgba(34, 197, 94, 1.0) 60%,       /* Green */
-    rgba(22, 163, 74, 1.0) 80%,       /* Darker green */
+    rgba(200, 255, 220, 1.0) 0%,      /* Brilliant mint center */
+    rgba(160, 255, 190, 1.0) 25%,     /* Bright light green */
+    rgba(74, 222, 128, 1.0) 50%,      /* Medium green */
+    rgba(34, 197, 94, 1.0) 70%,       /* Green */
+    rgba(22, 163, 74, 1.0) 85%,       /* Darker green */
     rgba(21, 128, 61, 1.0) 100%       /* Deep green edge */
   ) !important;
   background-image: radial-gradient(circle at center,
-    rgba(180, 180, 180, 1.0) 0%,
-    rgba(134, 239, 172, 1.0) 20%,
-    rgba(74, 222, 128, 1.0) 40%,
-    rgba(34, 197, 94, 1.0) 60%,
-    rgba(22, 163, 74, 1.0) 80%,
+    rgba(200, 255, 220, 1.0) 0%,
+    rgba(160, 255, 190, 1.0) 25%,
+    rgba(74, 222, 128, 1.0) 50%,
+    rgba(34, 197, 94, 1.0) 70%,
+    rgba(22, 163, 74, 1.0) 85%,
     rgba(21, 128, 61, 1.0) 100%
   ) !important;
-  box-shadow: 0 10px 25px rgba(34, 197, 94, 0.4), inset 0 0 15px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 15px 35px rgba(34, 197, 94, 0.6), inset 0 0 20px rgba(200, 255, 220, 0.3) !important;
 }
 
 .skemino-square-dark.skemino-vertex-red,
 div.skemino-square-dark.skemino-vertex-red,
 .relative.skemino-square-dark.skemino-vertex-red {
   background: radial-gradient(circle at center,
-    rgba(180, 180, 180, 1.0) 0%,      /* Gray center */
-    rgba(252, 165, 165, 1.0) 20%,     /* Light red */
-    rgba(248, 113, 113, 1.0) 40%,     /* Medium red */
-    rgba(239, 68, 68, 1.0) 60%,       /* Red */
-    rgba(220, 38, 38, 1.0) 80%,       /* Darker red */
+    rgba(255, 200, 200, 1.0) 0%,      /* Brilliant pink center */
+    rgba(255, 170, 170, 1.0) 25%,     /* Bright light red */
+    rgba(248, 113, 113, 1.0) 50%,     /* Medium red */
+    rgba(239, 68, 68, 1.0) 70%,       /* Red */
+    rgba(220, 38, 38, 1.0) 85%,       /* Darker red */
     rgba(185, 28, 28, 1.0) 100%       /* Deep red edge */
   ) !important;
   background-image: radial-gradient(circle at center,
-    rgba(180, 180, 180, 1.0) 0%,
-    rgba(252, 165, 165, 1.0) 20%,
-    rgba(248, 113, 113, 1.0) 40%,
-    rgba(239, 68, 68, 1.0) 60%,
-    rgba(220, 38, 38, 1.0) 80%,
+    rgba(255, 200, 200, 1.0) 0%,
+    rgba(255, 170, 170, 1.0) 25%,
+    rgba(248, 113, 113, 1.0) 50%,
+    rgba(239, 68, 68, 1.0) 70%,
+    rgba(220, 38, 38, 1.0) 85%,
     rgba(185, 28, 28, 1.0) 100%
   ) !important;
-  box-shadow: 0 10px 25px rgba(239, 68, 68, 0.4), inset 0 0 15px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 15px 35px rgba(239, 68, 68, 0.6), inset 0 0 20px rgba(255, 200, 200, 0.3) !important;
 }
 
 .skemino-square-dark.skemino-vertex-yellow,
 div.skemino-square-dark.skemino-vertex-yellow,
 .relative.skemino-square-dark.skemino-vertex-yellow {
   background: radial-gradient(circle at center,
-    rgba(180, 180, 180, 1.0) 0%,      /* Gray center */
-    rgba(254, 240, 138, 1.0) 20%,     /* Light yellow */
-    rgba(253, 224, 71, 1.0) 40%,      /* Medium yellow */
-    rgba(250, 204, 21, 1.0) 60%,      /* Yellow */
-    rgba(234, 179, 8, 1.0) 80%,       /* Darker yellow */
+    rgba(255, 250, 200, 1.0) 0%,      /* Brilliant gold center */
+    rgba(255, 240, 160, 1.0) 25%,     /* Bright light yellow */
+    rgba(253, 224, 71, 1.0) 50%,      /* Medium yellow */
+    rgba(250, 204, 21, 1.0) 70%,      /* Yellow */
+    rgba(234, 179, 8, 1.0) 85%,       /* Darker yellow */
     rgba(202, 138, 4, 1.0) 100%       /* Deep yellow edge */
   ) !important;
   background-image: radial-gradient(circle at center,
-    rgba(180, 180, 180, 1.0) 0%,
-    rgba(254, 240, 138, 1.0) 20%,
-    rgba(253, 224, 71, 1.0) 40%,
-    rgba(250, 204, 21, 1.0) 60%,
-    rgba(234, 179, 8, 1.0) 80%,
+    rgba(255, 250, 200, 1.0) 0%,
+    rgba(255, 240, 160, 1.0) 25%,
+    rgba(253, 224, 71, 1.0) 50%,
+    rgba(250, 204, 21, 1.0) 70%,
+    rgba(234, 179, 8, 1.0) 85%,
     rgba(202, 138, 4, 1.0) 100%
   ) !important;
-  box-shadow: 0 10px 25px rgba(250, 204, 21, 0.4), inset 0 0 15px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 15px 35px rgba(250, 204, 21, 0.6), inset 0 0 20px rgba(255, 250, 200, 0.3) !important;
 }
 
 /* ===== CENTRAL STRATEGIC CELLS - SPECIFIC DIAGONAL PATTERNS ===== */

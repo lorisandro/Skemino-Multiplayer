@@ -144,44 +144,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({ demoMode = false }) => {
           </div>
 
 
-          {/* Vertex Control Indicators Dark Gaming */}
-          <div className="absolute -top-10 left-0 right-0 flex justify-between px-6 z-30">
-            <motion.div
-              className="flex items-center space-x-3 bg-black rounded-full px-4 py-2 border border-red-500/30"
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            >
-              <div className="w-4 h-4 bg-gradient-to-br from-red-400 to-red-600 rounded-full animate-pulse"></div>
-              <span className="text-red-300 font-semibold text-sm tracking-wide">Q III</span>
-            </motion.div>
-            <motion.div
-              className="flex items-center space-x-3 bg-black rounded-full px-4 py-2 border border-yellow-500/30"
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            >
-              <div className="w-4 h-4 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full animate-pulse"></div>
-              <span className="text-yellow-300 font-semibold text-sm tracking-wide">Q IV</span>
-            </motion.div>
-          </div>
-
-          <div className="absolute -bottom-10 left-0 right-0 flex justify-between px-6 z-30">
-            <motion.div
-              className="flex items-center space-x-3 bg-black rounded-full px-4 py-2 border border-cyan-500/30"
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            >
-              <div className="w-4 h-4 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-full animate-pulse"></div>
-              <span className="text-cyan-300 font-semibold text-sm tracking-wide">Q I</span>
-            </motion.div>
-            <motion.div
-              className="flex items-center space-x-3 bg-black rounded-full px-4 py-2 border border-emerald-500/30"
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            >
-              <div className="w-4 h-4 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full animate-pulse"></div>
-              <span className="text-emerald-300 font-semibold text-sm tracking-wide">Q II</span>
-            </motion.div>
-          </div>
 
           {/* Coordinates removed */}
 
@@ -203,7 +165,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({ demoMode = false }) => {
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
             >
               <div className="flex items-center space-x-2">
-                <div className={`w-2 h-2 rounded-full ${latency < 50 ? 'bg-emerald-400' : latency < 100 ? 'bg-yellow-400' : 'bg-red-400'}`}></div>
                 <span>{latency}ms</span>
               </div>
             </motion.div>
