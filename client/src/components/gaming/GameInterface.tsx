@@ -28,6 +28,9 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
     makeMove,
   } = useGameStore();
 
+  // Detect demo mode from className
+  const isDemoMode = className?.includes('demo-mode');
+
   const { connected, latency } = useSocket();
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
@@ -100,7 +103,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
           {/* Center - Game Board with enhanced space for 2K */}
           <div className="flex-1 flex items-center justify-center p-8 bg-gradient-to-br from-slate-50 to-slate-100">
             <div className="relative w-full h-full flex items-center justify-center">
-              <GameBoard />
+              <GameBoard demoMode={isDemoMode} />
             </div>
           </div>
 
@@ -179,7 +182,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
           {/* Center - Game Board */}
           <div className="flex-1 flex items-center justify-center p-6 bg-gradient-to-br from-slate-50 to-slate-100">
             <div className="relative">
-              <GameBoard />
+              <GameBoard demoMode={isDemoMode} />
             </div>
           </div>
 
@@ -259,7 +262,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
 
           {/* Game Board - Center */}
           <div className="flex-1 flex items-center justify-center p-4">
-            <GameBoard />
+            <GameBoard demoMode={isDemoMode} />
           </div>
 
           {/* Current Player Area - Bottom */}

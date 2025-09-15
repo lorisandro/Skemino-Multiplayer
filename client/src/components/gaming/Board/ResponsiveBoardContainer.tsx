@@ -6,6 +6,7 @@ interface ResponsiveBoardContainerProps {
   minSize?: number;
   maxSize?: number;
   aspectRatio?: number;
+  demoMode?: boolean;
   onSizeChange?: (size: number) => void;
 }
 
@@ -15,9 +16,10 @@ interface ResponsiveBoardContainerProps {
  */
 export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> = ({
   children,
-  minSize = 800,
-  maxSize = 2400, // Increased for 2K displays
+  minSize = 400,
+  maxSize = 1200, // Reduced from 2400 for better container fitting
   aspectRatio = 1,
+  demoMode = false,
   onSizeChange,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -58,38 +60,68 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
 
       const { width, height } = container.getBoundingClientRect();
 
-      // Enhanced base size calculation for larger displays with 2K optimization
+      // Demo mode: much more restrictive sizing
+      if (demoMode) {
+        let demoSize = Math.min(
+          width * 0.6,
+          height * 0.6,
+          600 // Maximum 600px in demo mode
+        );
+
+        switch (breakpoint) {
+          case 'mobile':
+            demoSize = Math.min(demoSize, 300);
+            break;
+          case 'tablet':
+            demoSize = Math.min(demoSize, 400);
+            break;
+          case 'desktop':
+            demoSize = Math.min(demoSize, 500);
+            break;
+          case '2k':
+            demoSize = Math.min(demoSize, 600);
+            break;
+          case 'ultrawide':
+            demoSize = Math.min(demoSize, 600);
+            break;
+        }
+
+        const finalSize = Math.max(minSize, Math.min(maxSize, demoSize));
+        setContainerSize(finalSize);
+        onSizeChange?.(finalSize);
+        return;
+      }
+
+      // Regular mode: improved calculations with better container fitting
       let baseSize = Math.min(
-        width * 0.8,
-        (height - 160) * 0.85, // Optimized for larger boards with UI elements
+        width * 0.7, // Reduced from 0.8 to prevent overflow
+        (height - 100) * 0.8, // Reduced margin to fit better
         maxSize
       );
 
-      // Apply breakpoint-specific adjustments with 2K optimization
+      // Apply breakpoint-specific adjustments
       switch (breakpoint) {
         case 'mobile':
-          baseSize = Math.min(baseSize, width * 0.95, 500);
+          baseSize = Math.min(baseSize, width * 0.9, 400);
           break;
         case 'tablet':
-          baseSize = Math.min(baseSize, width * 0.85, 1000);
+          baseSize = Math.min(baseSize, width * 0.8, 600);
           break;
         case 'desktop':
-          baseSize = Math.min(baseSize, Math.min(width * 0.70, height * 0.80), 1800);
+          baseSize = Math.min(baseSize, width * 0.6, height * 0.75, 800);
           break;
         case '2k':
-          // Optimized for 2K displays (1920x1080, 2560x1440, etc.)
+          // Reduced aggressive sizing for 2K displays
           baseSize = Math.min(
-            Math.max(width * 0.55, 1200), // Minimum 1200px for 2K
-            Math.min(width * 0.65, height * 0.85),
-            2400
+            width * 0.5, // Reduced from 0.55-0.65
+            height * 0.75, // Reduced from 0.85
+            1000 // Reduced from 2400
           );
           break;
         case 'ultrawide':
-          // Ultra-wide displays (>2880px)
-          baseSize = Math.min(baseSize, width * 0.45, height * 0.85, 2400);
+          baseSize = Math.min(baseSize, width * 0.4, height * 0.75, 1000);
           break;
       }
-
 
       // Apply aspect ratio
       if (aspectRatio !== 1) {
@@ -121,17 +153,17 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
 
     switch (breakpoint) {
       case 'mobile':
-        return `${baseClasses} min-h-screen px-2 py-4`;
+        return `${baseClasses} min-h-screen px-2 py-4 overflow-hidden`;
       case 'tablet':
-        return `${baseClasses} min-h-[700px] px-4 py-6`;
+        return `${baseClasses} min-h-[700px] px-4 py-6 overflow-hidden`;
       case 'desktop':
-        return `${baseClasses} min-h-[800px] px-6 py-8`;
+        return `${baseClasses} min-h-[800px] px-6 py-8 overflow-hidden`;
       case '2k':
-        return `${baseClasses} min-h-[900px] px-8 py-10`; // Enhanced spacing for 2K
+        return `${baseClasses} min-h-[900px] px-8 py-10 overflow-hidden`; // Enhanced spacing for 2K
       case 'ultrawide':
-        return `${baseClasses} min-h-[1000px] px-10 py-12`; // Extra spacing for ultrawide
+        return `${baseClasses} min-h-[1000px] px-10 py-12 overflow-hidden`; // Extra spacing for ultrawide
       default:
-        return `${baseClasses} min-h-[800px] p-4`;
+        return `${baseClasses} min-h-[800px] p-4 overflow-hidden`;
     }
   };
 
@@ -187,13 +219,15 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
     <div className={getContainerClasses()}>
       <motion.div
         ref={containerRef}
-        className="relative flex flex-col items-center"
+        className="relative flex flex-col items-center overflow-hidden"
         variants={containerVariants}
         initial={false}
         animate={breakpoint}
         style={{
           width: containerSize,
           height: containerSize * aspectRatio,
+          maxWidth: '100%',
+          maxHeight: '100%',
         }}
       >
         {children}

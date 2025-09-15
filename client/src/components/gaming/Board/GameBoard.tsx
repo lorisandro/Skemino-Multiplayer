@@ -8,7 +8,11 @@ import { useSocket } from '../../../hooks/useSocket';
 import type { BoardCell } from '../../../types/game';
 import '../../../styles/board-dark-animations.css';
 
-export const GameBoard: React.FC = () => {
+interface GameBoardProps {
+  demoMode?: boolean;
+}
+
+export const GameBoard: React.FC<GameBoardProps> = ({ demoMode = false }) => {
   const {
     gameState,
     currentPlayer,
@@ -106,8 +110,9 @@ export const GameBoard: React.FC = () => {
   return (
     <ResponsiveBoardContainer
       onSizeChange={setBoardSize}
-      minSize={is2K ? 1200 : 800}
-      maxSize={is2K ? 1800 : 1400}
+      minSize={demoMode ? 300 : (is2K ? 600 : 400)}
+      maxSize={demoMode ? 600 : (is2K ? 1000 : 800)}
+      demoMode={demoMode}
     >
       {/* Game board container */}
       <div className="relative skemino-board" ref={boardRef}>
