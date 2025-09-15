@@ -12,6 +12,7 @@ interface BoardSquareProps {
   isVertex: boolean;
   onClick: () => void;
   size: number;
+  cardAspectRatio?: number; // Playing card aspect ratio (width/height)
 }
 
 export const BoardSquare: React.FC<BoardSquareProps> = ({
@@ -21,6 +22,7 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
   isVertex,
   onClick,
   size,
+  cardAspectRatio = 0.67, // Playing card ratio: 2:3 (width/height)
 }) => {
   const { selectedCard, isMyTurn } = useGameStore();
 
@@ -79,22 +81,26 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
     return '';
   };
 
+  // Calculate card dimensions
+  const cardWidth = size;
+  const cardHeight = size / cardAspectRatio;
+
   return (
     <motion.div
       ref={drop}
       className={`
-        relative border border-gray-600/80 skemino-square-dark
+        relative border border-gray-600/80 skemino-card-cell-dark
         ${squareColor} ${getHighlightStyle()}
         cursor-pointer transition-all duration-200 ease-out
         hover:brightness-125 hover:scale-[1.02] active:scale-[0.98] active:brightness-90
         backdrop-blur-sm
       `}
       style={{
-        width: size,
-        height: size,
+        width: cardWidth,
+        height: cardHeight,
         contain: 'layout style paint',
-        background: isVertex ? undefined : 'radial-gradient(circle at center, rgba(255,255,255,0.02) 0%, transparent 70%)',
-        borderRadius: '4px',
+        background: isVertex ? undefined : 'radial-gradient(ellipse at center, rgba(255,255,255,0.02) 0%, transparent 70%)',
+        borderRadius: '6px', // More rounded for card appearance
         position: 'relative'
       }}
       onClick={onClick}

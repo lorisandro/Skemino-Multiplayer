@@ -25,7 +25,7 @@ export const GameBoard: React.FC = () => {
   const { emitMove, connected, latency } = useSocket();
   const { isOptimal } = useGamePerformance();
   const boardRef = useRef<HTMLDivElement>(null);
-  const [boardSize, setBoardSize] = useState(1200);
+  const [boardSize, setBoardSize] = useState(600);
   const [is2K, setIs2K] = useState(false);
 
   // Responsive board sizing with performance optimization and 2K detection
@@ -98,6 +98,7 @@ export const GameBoard: React.FC = () => {
             isVertex={isVertex}
             onClick={() => handleSquareClick(cell)}
             size={(boardSize - (is2K ? 24 : 16)) / 6} // Account for enhanced 2K padding
+            cardAspectRatio={0.67} // Playing card aspect ratio
           />
         );
       }
@@ -109,8 +110,8 @@ export const GameBoard: React.FC = () => {
   return (
     <ResponsiveBoardContainer
       onSizeChange={setBoardSize}
-      minSize={is2K ? 1200 : 800}
-      maxSize={is2K ? 1800 : 1400}
+      minSize={is2K ? 500 : 400}
+      maxSize={is2K ? 900 : 1200}
     >
       {/* Game board container */}
       <div className="relative skemino-board" ref={boardRef}>
@@ -118,7 +119,7 @@ export const GameBoard: React.FC = () => {
           className={`relative bg-gradient-to-br from-gray-900 to-black rounded-xl shadow-2xl border-2 border-gray-700 skemino-board-dark ${is2K ? 'border-3' : ''}`}
           style={{
             width: boardSize,
-            height: boardSize,
+            height: boardSize / 0.67, // Adjust height for card aspect ratio (taller board)
             padding: is2K ? '12px' : '8px', // Enhanced padding for 2K
             background: 'linear-gradient(135deg, #0a0a0a 0%, #141414 50%, #0f0f0f 100%)',
             boxShadow: is2K

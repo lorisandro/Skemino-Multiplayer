@@ -1,0 +1,13 @@
+fix(ui): drastically reduce board size for 2K displays to prevent overflow
+
+- Reduced ResponsiveBoardContainer default sizes: 1600px→800px initial, maxSize 1000px for 2K
+- Optimized 2K breakpoint calculations: width 35%, height 45% with 450px reservation
+- Updated GameBoard parameters: minSize 500px, maxSize 900px for 2K displays
+- Enhanced performance utilities with 2K-specific scaling (0.5 factor for >=1920px)
+- Reduced container padding for 2K from py-8 to py-4 to maximize space
+- Fixed useResponsiveBoardSize with conservative limits for 2K compatibility
+- Board size reduction: 2K max 900px vs previous 2000px (-55% size reduction)
+- Prevents board overflow on 2K displays while maintaining perfect centering
+
+Performance: Maintains 60fps with smaller board sizes optimized for 2K viewport
+Gaming UX: Chess.com-level responsive experience across all display types

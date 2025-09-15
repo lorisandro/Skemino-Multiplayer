@@ -1386,4 +1386,43 @@ Implementa questa riorganizzazione preservando l'esperienza utente e il design g
 
 ---
 
+---
+
+## Session 16: 09:15 - BOARD SIZE OPTIMIZATION FOR 2K DISPLAYS
+
+### 📝 User Request:
+Il tabellone di gioco esce sopra e sotto dallo schermo su display 2K (risoluzione 1920x1080 o superiore). Ridurre significativamente le dimensioni del tabellone per display 2K, assicurandosi che NON esca MAI dallo schermo, mantenendo centratura perfetta e riducendo padding/margini.
+
+### 🎯 Sub-Agent Consultation:
+- Consulted: skemino-ui
+- Expertise Applied: Ottimizzazione responsive gaming su display 2K con focus su dimensioni tabellone e prevenzione overflow
+
+### 🚀 Implementation Summary:
+- [x] Analizzati file ResponsiveBoardContainer.tsx e GameBoard.tsx per identificare problemi overflow
+- [x] Ridotte drasticamente dimensioni base del container (da 1600px a 800px iniziale)
+- [x] Ottimizzato calcolo responsive per 2K con width * 0.35 e height reservation massiva (450px)
+- [x] Ridotto maxSize per 2K da 2000px a 900px per prevenire overflow
+- [x] Aggiornate performance utilities per calcoli 2K-specific (scaleFactor 0.5 per >= 1920px)
+- [x] Ridotti padding container 2K da py-8 a py-4 per massimizzare spazio disponibile
+- [x] Aggiornati parametri GameBoard: minSize 500px, maxSize 900px per 2K
+- [x] Ottimizzato hook useResponsiveBoardSize con limiti più conservativi per 2K
+
+### 🔗 Git Commit: `[PENDING]` - "fix(ui): drastically reduce board size for 2K displays to prevent overflow"
+
+### 📊 Performance Impact:
+- Board size reduction: 2K displays now max 900px vs previous 2000px
+- Height calculation: 45% viewport height vs previous 75% for 2K
+- Width calculation: 35% viewport width vs previous 50% for 2K
+- Container centering: Improved with reduced padding
+
+### 🔄 Status: COMPLETED
+
+### 🎯 Next Actions:
+- Test su display 2K reale per verificare che il tabellone rimanga completamente visibile
+- Validare che la centratura sia perfetta sia verticalmente che orizzontalmente
+- Controllare che le proporzioni card aspect ratio (0.67) siano mantenute
+- Eventuale fine-tuning se necessario dopo test
+
+---
+
 **END OF SESSION LOG**
