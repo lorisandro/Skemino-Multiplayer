@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
 import App from './App';
 import AppDebug from './App.debug';
 import HomePage from './pages/HomePage';
@@ -45,17 +46,19 @@ export function Router() {
       v7_startTransition: true,
       v7_relativeSplatPath: true
     }}>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPageWrapper />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/pregame" element={<PreGamePage />} />
-        <Route path="/game" element={<GamePage />} />
-        <Route path="/game/:roomId" element={<GamePage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/home" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPageWrapper />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/pregame" element={<PreGamePage />} />
+          <Route path="/game" element={<GamePage />} />
+          <Route path="/game/:roomId" element={<GamePage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   );
 }
