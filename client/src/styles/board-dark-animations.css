@@ -110,9 +110,10 @@
   text-transform: uppercase;
   pointer-events: none;
   user-select: none;
+  color: #000000;
 
   /* Sfondino semitrasparente per migliore leggibilità */
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.7);
   border-radius: 0.25rem;
   padding: 0.125rem 0.375rem;
   backdrop-filter: blur(2px);
@@ -120,13 +121,12 @@
 }
 
 .skemino-cell-label-vertex {
-  color: #ffffff;
+  color: #000000;
   text-shadow:
-    0 0 3px rgba(0, 0, 0, 1),
-    0 1px 2px rgba(0, 0, 0, 0.9),
-    0 2px 4px rgba(0, 0, 0, 0.8);
+    0 0 1px rgba(255, 255, 255, 0.9),
+    0 1px 1px rgba(255, 255, 255, 0.5);
   /* Sfondo migliorato per vertici - più opaco per massimo contrasto */
-  background: rgba(0, 0, 0, 0.7) !important;
+  background: rgba(255, 255, 255, 0.8) !important;
   border-radius: 0.25rem;
   padding: 0.125rem 0.375rem;
   backdrop-filter: blur(3px);
@@ -1092,13 +1092,13 @@ div.skemino-square-dark.skemino-central-d4,
   bottom: 0.125rem;
   right: 0.25rem;
   font-size: 0.625rem;
-  color: #888;
+  color: #000000;
   font-weight: 400;
   font-family: 'Monaco', 'Consolas', monospace;
   z-index: 1;
   opacity: 0.8;
   /* Sfondino semitrasparente per notazioni zoom-resistant */
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.6);
   border-radius: 0.1875rem;
   padding: 0.0625rem 0.25rem;
   backdrop-filter: blur(1px);
