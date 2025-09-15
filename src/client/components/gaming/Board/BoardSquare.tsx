@@ -15,10 +15,10 @@ interface BoardSquareProps {
 }
 
 const VERTEX_COLORS = {
-  'a1': { bg: 'linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 50%, #4a4a4a 100%)', circle: '#5DADE2' }, // Azzurro su grigio uniforme
-  'f1': { bg: 'linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 50%, #4a4a4a 100%)', circle: '#58D68D' }, // Verde su grigio uniforme
-  'a6': { bg: 'linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 50%, #4a4a4a 100%)', circle: '#EC7063' }, // Rosso su grigio uniforme
-  'f6': { bg: 'linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 50%, #4a4a4a 100%)', circle: '#F4D03F' }  // Giallo su grigio uniforme
+  'a1': { bg: 'linear-gradient(135deg, #e0e0e0 0%, #d0d0d0 50%, #e0e0e0 100%)', circle: '#5DADE2' }, // Azzurro su grigio chiaro
+  'f1': { bg: 'linear-gradient(135deg, #e0e0e0 0%, #d0d0d0 50%, #e0e0e0 100%)', circle: '#58D68D' }, // Verde su grigio chiaro
+  'a6': { bg: 'linear-gradient(135deg, #e0e0e0 0%, #d0d0d0 50%, #e0e0e0 100%)', circle: '#EC7063' }, // Rosso su grigio chiaro
+  'f6': { bg: 'linear-gradient(135deg, #e0e0e0 0%, #d0d0d0 50%, #e0e0e0 100%)', circle: '#F4D03F' }  // Giallo su grigio chiaro
 };
 
 export const BoardSquare = memo(({
@@ -41,32 +41,24 @@ export const BoardSquare = memo(({
       return {
         background: isVertex.bg,
         position: 'relative' as const,
-        border: '1px solid #666'
+        border: '1px solid #999'
       };
     }
 
-    // Caselle del diamante centrale - grigio uniforme come le altre
+    // Caselle del diamante centrale - grigio chiaro come le altre
     if (isCentralDiamond) {
       return {
-        background: 'linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 50%, #4a4a4a 100%)',
-        border: '1px solid #666',
+        background: 'linear-gradient(135deg, #e0e0e0 0%, #d0d0d0 50%, #e0e0e0 100%)',
+        border: '1px solid #999',
         position: 'relative' as const
       };
     }
 
-    // Celle grigie uniformi con gradiente al centro come richiesto
-    const isDark = (row + col) % 2 === 0;
-    if (isDark) {
-      return {
-        background: 'linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 50%, #4a4a4a 100%)', // Caselle grigie uniformi
-        border: '1px solid #666'
-      };
-    } else {
-      return {
-        background: 'linear-gradient(135deg, #5a5a5a 0%, #4a4a4a 50%, #5a5a5a 100%)', // Caselle grigie chiare uniformi
-        border: '1px solid #666'
-      };
-    }
+    // Celle grigio chiaro/bianche uniformi con gradiente al centro come richiesto - TUTTE uniformi
+    return {
+      background: 'linear-gradient(135deg, #e0e0e0 0%, #d0d0d0 50%, #e0e0e0 100%)', // Gradiente chiaro uniforme per tutte le celle
+      border: '1px solid #999'
+    };
   }, [row, col, isVertex, isCentralDiamond]);
 
   const handleClick = () => {
@@ -90,7 +82,7 @@ export const BoardSquare = memo(({
         ...squareStyle,
         background: isVertex ? squareStyle.background :
           isCentralDiamond ? squareStyle.background :
-          squareStyle.background + ', radial-gradient(circle at center, rgba(255,255,255,0.02) 0%, transparent 70%)'
+          squareStyle.background + ', radial-gradient(circle at center, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.3) 40%, transparent 70%)'
       }}
       onClick={handleClick}
       data-position={position}

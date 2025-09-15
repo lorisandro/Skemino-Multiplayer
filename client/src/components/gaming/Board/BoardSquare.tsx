@@ -50,16 +50,9 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
       }
     }
 
-    // Standard squares: Dark gaming alternating pattern
-    const file = cell.charCodeAt(0) - 97; // 0-5
-    const rank = parseInt(cell[1]) - 1; // 0-5
-    const isDark = (file + rank) % 2 === 0;
-
-    if (isDark) {
-      return 'bg-gradient-to-br from-gray-600 via-gray-500 to-gray-600'; // Caselle grigie uniformi
-    } else {
-      return 'bg-gradient-to-br from-gray-500 via-gray-400 to-gray-500'; // Caselle grigie chiare uniformi
-    }
+    // Standard squares: Light gray/white gradient for all non-vertex cells
+    // All cells now use a lighter gradient as requested
+    return 'bg-gradient-to-br from-gray-300 via-gray-200 to-gray-300'; // Gradiente chiaro/bianco uniforme per tutte le celle
   }, [cell, isVertex]);
 
   // Dark Gaming Highlight styles - Professional competitive
@@ -93,7 +86,9 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
         width: size,
         height: size * 1.4, // Card-like aspect ratio: taller than wide
         contain: 'layout style paint',
-        background: isVertex ? undefined : 'radial-gradient(circle at center, rgba(255,255,255,0.02) 0%, transparent 70%)',
+        // Combine light gray gradient with prominent radial gradient for non-vertex cells
+        background: isVertex ? undefined : 'linear-gradient(135deg, #e0e0e0 0%, #d0d0d0 50%, #e0e0e0 100%), radial-gradient(circle at center, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.3) 40%, transparent 70%)',
+        backgroundBlendMode: isVertex ? undefined : 'screen',
         borderRadius: '8px', // Slightly more rounded corners for card feel
         position: 'relative'
       }}
@@ -210,7 +205,7 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
       {position?.isHole && (
         <div className="absolute inset-0 flex items-center justify-center z-10">
           <motion.div
-            className="w-10 h-10 bg-gradient-to-br from-gray-900 to-black rounded-full border border-gray-700 shadow-2xl backdrop-blur-sm"
+            className="w-10 h-10 bg-gradient-to-br from-gray-600 to-gray-700 rounded-full border border-gray-500 shadow-2xl backdrop-blur-sm"
             animate={{
               scale: [1, 0.9, 1],
               opacity: [0.8, 0.6, 0.8]
@@ -221,7 +216,7 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
               ease: "easeInOut"
             }}
           >
-            <div className="absolute inset-2 bg-gradient-to-br from-gray-800 to-gray-900 rounded-full"></div>
+            <div className="absolute inset-2 bg-gradient-to-br from-gray-500 to-gray-600 rounded-full"></div>
           </motion.div>
         </div>
       )}
