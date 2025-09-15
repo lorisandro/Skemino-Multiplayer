@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthContext } from '../contexts/AuthContext';
+import { detectExtensionInterference, type ExtensionInterferenceInfo } from '../utils/browserExtensionDetector';
 import logoSkemino from '../assets/logo-skemino.webp';
 
 const LoginPage: React.FC = () => {
@@ -13,28 +14,67 @@ const LoginPage: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [retryCount, setRetryCount] = useState(0);
+  const [extensionInfo, setExtensionInfo] = useState<ExtensionInterferenceInfo | null>(null);
+
+  // Check for extension interference on component mount
+  useEffect(() => {
+    const info = detectExtensionInterference();
+    if (info.detected) {
+      setExtensionInfo(info);
+      console.warn('Browser extension interference detected:', info);
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
 
+    // Add timeout protection to prevent infinite loading
+    const loginTimeout = setTimeout(() => {
+      setIsLoading(false);
+      setError('Timeout del login. Possibile interferenza di estensioni browser. Ricarica la pagina e riprova.');
+    }, 30000); // 30 second timeout
+
     try {
-      const response = await login({
-        identifier: formData.email,
-        password: formData.password,
-        rememberMe: formData.rememberMe
-      });
+      const response = await Promise.race([
+        login({
+          identifier: formData.email,
+          password: formData.password,
+          rememberMe: formData.rememberMe
+        }),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('LOGIN_UI_TIMEOUT')), 25000)
+        )
+      ]);
+
+      clearTimeout(loginTimeout);
 
       if (response.success) {
         console.log('Login successful, navigating to dashboard');
+        setRetryCount(0); // Reset retry count on success
         navigate('/dashboard');
       } else {
         setError(response.message || 'Credenziali non valide');
+
+        // Check if error is extension-related and suggest retry
+        if (response.message?.includes('estensioni') || response.message?.includes('interferenza')) {
+          setRetryCount(prev => prev + 1);
+        }
       }
     } catch (err) {
+      clearTimeout(loginTimeout);
       console.error('Login error:', err);
-      setError('Errore durante il login. Riprova.');
+
+      const errorMessage = err instanceof Error ? err.message : String(err);
+
+      if (errorMessage.includes('LOGIN_UI_TIMEOUT')) {
+        setError('Login troppo lento. Possibile interferenza di estensioni browser. Ricarica la pagina.');
+      } else {
+        setError('Errore durante il login. Riprova.');
+        setRetryCount(prev => prev + 1);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -128,10 +168,66 @@ const LoginPage: React.FC = () => {
               </Link>
             </div>
 
+            {/* Initial Extension Detection Warning */}
+            {extensionInfo?.detected && retryCount === 0 && (
+              <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
+                <div className="flex items-start space-x-2">
+                  <svg className="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                  </svg>
+                  <div>
+                    <p className="text-blue-400 text-sm font-medium">Estensioni browser rilevate</p>
+                    <p className="text-blue-300 text-xs mt-1">
+                      Sono state rilevate estensioni che potrebbero interferire con il login.
+                    </p>
+                    {extensionInfo.suggestions.length > 0 && (
+                      <details className="mt-2">
+                        <summary className="text-blue-300 text-xs cursor-pointer hover:text-blue-200">
+                          Mostra suggerimenti ↓
+                        </summary>
+                        <ul className="text-blue-300 text-xs mt-1 list-disc list-inside space-y-1 ml-2">
+                          {extensionInfo.suggestions.slice(0, 3).map((suggestion, index) => (
+                            <li key={index}>{suggestion}</li>
+                          ))}
+                        </ul>
+                      </details>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Retry Extension Warning */}
+            {retryCount > 1 && (
+              <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3">
+                <div className="flex items-start space-x-2">
+                  <svg className="w-5 h-5 text-yellow-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                  <div>
+                    <p className="text-yellow-400 text-sm font-medium">Problemi di connessione rilevati</p>
+                    <p className="text-yellow-300 text-xs mt-1">
+                      Possibile interferenza di estensioni browser. Prova a:
+                    </p>
+                    <ul className="text-yellow-300 text-xs mt-1 list-disc list-inside space-y-1">
+                      <li>Ricaricare la pagina (F5)</li>
+                      <li>Disabilitare temporaneamente le estensioni</li>
+                      <li>Usare una finestra in incognito</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Error Message */}
             {error && (
               <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3">
-                <p className="text-red-400 text-sm whitespace-pre-line">{error}</p>
+                <div className="flex items-start space-x-2">
+                  <svg className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                  <p className="text-red-400 text-sm whitespace-pre-line">{error}</p>
+                </div>
               </div>
             )}
 
