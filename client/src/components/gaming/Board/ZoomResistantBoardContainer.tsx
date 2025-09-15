@@ -108,17 +108,17 @@ export const useBoardContainerSize = () => {
   const getBoardSize = () => {
     switch (currentBreakpoint) {
       case 'mobile':
-        return { width: '28rem', height: '28rem' };
+        return { width: '28rem', height: '39rem' };
       case 'tablet':
-        return { width: '35rem', height: '35rem' };
+        return { width: '35rem', height: '49rem' };
       case 'desktop':
-        return { width: '42rem', height: '42rem' };
+        return { width: '42rem', height: '58rem' };
       case '2k':
-        return { width: '50rem', height: '50rem' };
+        return { width: '50rem', height: '70rem' };
       case 'ultrawide':
-        return { width: '55rem', height: '55rem' };
+        return { width: '55rem', height: '77rem' };
       default:
-        return { width: '35rem', height: '35rem' };
+        return { width: '35rem', height: '49rem' };
     }
   };
 

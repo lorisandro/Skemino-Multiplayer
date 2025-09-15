@@ -810,7 +810,7 @@ div.skemino-square-dark.skemino-central-d4,
 
   /* Fixed rem-based sizing - immune to browser zoom */
   width: 35rem;  /* ~560px at default font size */
-  height: 35rem; /* 1:1 container aspect ratio */
+  height: 49rem; /* Height calculated for 6x6 grid with 1:1.4 aspect ratio cells */
 
   /* Centering and positioning */
   position: relative;
@@ -902,7 +902,7 @@ div.skemino-square-dark.skemino-central-d4,
 @container gameboard (max-width: 30rem) {
   .skemino-board-zoom-resistant {
     width: 28rem;
-    height: 28rem;
+    height: 39rem;
     border-width: 1px;
   }
 
@@ -926,7 +926,7 @@ div.skemino-square-dark.skemino-central-d4,
 @container gameboard (min-width: 30rem) and (max-width: 45rem) {
   .skemino-board-zoom-resistant {
     width: 35rem;
-    height: 35rem;
+    height: 49rem;
   }
 
   .skemino-grid-zoom-resistant {
@@ -948,7 +948,7 @@ div.skemino-square-dark.skemino-central-d4,
 @container gameboard (min-width: 45rem) and (max-width: 60rem) {
   .skemino-board-zoom-resistant {
     width: 42rem;
-    height: 42rem;
+    height: 58rem;
     border-width: 2px;
   }
 
@@ -972,7 +972,7 @@ div.skemino-square-dark.skemino-central-d4,
 @container gameboard (min-width: 60rem) and (max-width: 75rem) {
   .skemino-board-zoom-resistant {
     width: 50rem;
-    height: 50rem;
+    height: 70rem;
     border-width: 3px;
   }
 
@@ -996,7 +996,7 @@ div.skemino-square-dark.skemino-central-d4,
 @container gameboard (min-width: 75rem) {
   .skemino-board-zoom-resistant {
     width: 55rem;
-    height: 55rem;
+    height: 77rem;
     border-width: 3px;
   }
 
