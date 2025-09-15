@@ -148,7 +148,9 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
 
       {/* Cell label - Dark Gaming Enhanced visibility */}
       <div className={`skemino-cell-label ${isVertex ? 'skemino-cell-label-vertex' : 'skemino-cell-label-normal'}`}>
-        {cell}
+        <span className={`${!isVertex ? 'bg-white/85 px-1.5 py-0.5 rounded text-xs backdrop-blur-sm' : ''}`}>
+          {cell}
+        </span>
       </div>
 
       {/* Valid move indicator - Dark Gaming Enhanced */}

@@ -124,9 +124,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ demoMode = false }) => {
             height: boardSize * 1.4, // Height accounts for 1.4:1 cell aspect ratio
             padding: is2K ? '12px' : '8px', // Enhanced padding for 2K
             background: '#000000',
-            boxShadow: is2K
-              ? '0 35px 70px -12px rgba(0, 0, 0, 0.9), 0 0 0 2px rgba(255, 255, 255, 0.08), inset 0 2px 0 rgba(255, 255, 255, 0.12)' // Enhanced shadows for 2K
-              : '0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+            boxShadow: 'none',
             borderWidth: is2K ? '3px' : '2px' // Thicker borders for 2K visibility
           }}
           initial={{ scale: 1, opacity: 1, y: 0 }}
@@ -193,12 +191,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({ demoMode = false }) => {
           {connected && latency && (
             <motion.div
               className={`
-                absolute top-3 right-3 px-3 py-2 text-xs rounded-lg z-40 font-mono font-medium border shadow-lg
+                absolute top-3 right-3 px-3 py-2 text-xs rounded-lg z-40 font-mono font-medium border
                 ${latency < 50
-                  ? 'bg-black text-emerald-300 border-emerald-500/30 shadow-emerald-500/30'
+                  ? 'bg-black text-emerald-300 border-emerald-500/30'
                   : latency < 100
-                    ? 'bg-black text-yellow-300 border-yellow-500/30 shadow-yellow-500/30'
-                    : 'bg-black text-red-300 border-red-500/30 shadow-red-500/30'
+                    ? 'bg-black text-yellow-300 border-yellow-500/30'
+                    : 'bg-black text-red-300 border-red-500/30'
                 }
               `}
               whileHover={{ scale: 1.05 }}
