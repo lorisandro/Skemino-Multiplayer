@@ -87,7 +87,9 @@ export class SocketManager {
 
   public initialize(): void {
     this.io.use(this.authenticateSocket.bind(this));
-    this.io.on('connection', this.handleConnection.bind(this));
+    this.io.on('connection', (socket: Socket) => {
+      this.handleConnection(socket as AuthenticatedSocket);
+    });
     this.startHealthCheck();
     logger.info('🎮 WebSocket Manager initialized with real-time gaming support');
   }
@@ -620,7 +622,7 @@ export class SocketManager {
 
   private getSocketByUserId(userId: string): AuthenticatedSocket | null {
     const connection = this.connections.get(userId);
-    return connection?.status !== 'disconnected' ? connection.socket : null;
+    return connection && connection.status !== 'disconnected' ? connection.socket : null;
   }
 
   private updateConnectionStatus(userId: string, status: PlayerConnection['status'], gameRoomId?: string): void {

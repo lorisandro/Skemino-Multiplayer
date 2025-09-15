@@ -51,7 +51,8 @@ app.get('/health', (_req, res) => {
 // Debug route for matchmaking troubleshooting
 app.get('/debug/matchmaking', (_req, res) => {
   if (!wsManager) {
-    return res.status(503).json({ error: 'WebSocket manager not initialized' });
+    res.status(503).json({ error: 'WebSocket manager not initialized' });
+    return;
   }
 
   try {
