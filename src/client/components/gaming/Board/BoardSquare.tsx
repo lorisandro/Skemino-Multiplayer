@@ -34,14 +34,15 @@ export const BoardSquare = memo(({
     if (isVertex) {
       return {
         backgroundColor: isVertex.bg,
-        position: 'relative' as const
+        position: 'relative' as const,
+        border: '1px solid #000'
       };
     }
 
-    // Pattern alternato per caselle standard
-    const isBlackSquare = (row + col) % 2 === 0;
+    // Tutte le caselle standard sono grigie chiare
     return {
-      backgroundColor: isBlackSquare ? '#f0f0f0' : '#ffffff'
+      backgroundColor: '#e8e8e8',
+      border: '1px solid #d0d0d0'
     };
   }, [row, col, isVertex]);
 
@@ -70,7 +71,7 @@ export const BoardSquare = memo(({
           className="vertex-circle"
           style={{
             backgroundColor: isVertex.circle,
-            boxShadow: `0 0 20px ${isVertex.circle}40`
+            boxShadow: `0 0 25px ${isVertex.circle}60, inset 0 0 10px rgba(255,255,255,0.3)`
           }}
         />
       )}

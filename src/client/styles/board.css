@@ -16,51 +16,7 @@
   gap: 0.5rem;
 }
 
-.performance-overlay {
-  position: absolute;
-  top: 0;
-  right: 0;
-  display: flex;
-  gap: 1rem;
-  padding: 0.5rem;
-  background: rgba(0, 0, 0, 0.7);
-  border-radius: 0.25rem;
-  z-index: 100;
-  font-family: monospace;
-  font-size: 0.75rem;
-  color: white;
-}
-
-.fps-counter {
-  color: #5DADE2;
-}
-
-.fps-counter[data-fps] {
-  color: #5DADE2;
-}
-
-.fps-counter[data-fps^="5"],
-.fps-counter[data-fps^="6"] {
-  color: #58D68D;
-}
-
-.fps-counter[data-fps^="3"],
-.fps-counter[data-fps^="4"] {
-  color: #F4D03F;
-}
-
-.fps-counter[data-fps^="1"],
-.fps-counter[data-fps^="2"] {
-  color: #EC7063;
-}
-
-.latency-indicator {
-  color: #58D68D;
-}
-
-.memory-usage {
-  color: #F4D03F;
-}
+/* Performance overlay removed for cleaner gaming interface */
 
 /* Coordinate Styling */
 .coordinates-top,
@@ -103,10 +59,11 @@
   position: relative;
   width: 100%;
   padding-bottom: 100%;
-  background: #1a1a1a;
+  background: #f0f0f0;
   border-radius: 0.5rem;
   overflow: hidden;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  border: 3px solid #333;
 }
 
 .game-board {
@@ -118,9 +75,9 @@
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   grid-template-rows: repeat(6, 1fr);
-  gap: 2px;
-  padding: 2px;
-  background: #2a2a2a;
+  gap: 1px;
+  padding: 1px;
+  background: #999; /* Griglia grigia */
 }
 
 /* Board Square Styles */
@@ -133,7 +90,8 @@
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   transform: translateZ(0);
   will-change: transform;
-  border: 2px solid transparent;
+  border: 1px solid #d0d0d0;
+  background-color: #e8e8e8;
 }
 
 .square-interactive {
@@ -166,12 +124,14 @@
 /* Vertex Circle */
 .vertex-circle {
   position: absolute;
-  width: 60%;
-  height: 60%;
+  width: 70%;
+  height: 70%;
   border-radius: 50%;
   transform: translateZ(0);
   animation: breathe 3s ease-in-out infinite;
   pointer-events: none;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  z-index: 2;
 }
 
 /* Square Label */
@@ -180,7 +140,7 @@
   bottom: 2px;
   right: 4px;
   font-size: 0.625rem;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(0, 0, 0, 0.3);
   font-family: monospace;
   pointer-events: none;
   z-index: 1;
@@ -222,6 +182,7 @@
   height: 33.33%;
   pointer-events: none;
   z-index: 20;
+  /* Il diamante copre esattamente c3, d3, c4, d4 */
 }
 
 .skemino-diamond {
@@ -229,40 +190,50 @@
   width: 100%;
   height: 100%;
   transform: rotate(45deg);
-  background: #000000;
-  border: 3px solid #ffffff;
-  overflow: hidden;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+  background: #000000; /* Diamante nero */
+  border: 2px solid #333;
+  overflow: visible;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
 }
 
-.diamond-quadrant {
+/* Triangoli colorati negli angoli del diamante */
+.diamond-triangle {
   position: absolute;
-  width: 50%;
-  height: 50%;
+  width: 0;
+  height: 0;
+  border-style: solid;
 }
 
-.diamond-blue {
-  top: 0;
-  left: 0;
-  background: #5DADE2; /* Corrispondente al vertice a1 */
+.diamond-triangle-top {
+  top: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 15px 15px 15px;
+  border-color: transparent transparent #5DADE2 transparent; /* Azzurro */
 }
 
-.diamond-green {
-  top: 0;
-  right: 0;
-  background: #58D68D; /* Corrispondente al vertice f1 */
+.diamond-triangle-right {
+  right: -2px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 15px 0 15px 15px;
+  border-color: transparent transparent transparent #58D68D; /* Verde */
 }
 
-.diamond-red {
-  bottom: 0;
-  left: 0;
-  background: #EC7063; /* Corrispondente al vertice a6 */
+.diamond-triangle-bottom {
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 15px 15px 0 15px;
+  border-color: #F4D03F transparent transparent transparent; /* Giallo */
 }
 
-.diamond-yellow {
-  bottom: 0;
-  right: 0;
-  background: #F4D03F; /* Corrispondente al vertice f6 */
+.diamond-triangle-left {
+  left: -2px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 15px 15px 15px 0;
+  border-color: transparent #EC7063 transparent transparent; /* Rosso */
 }
 
 .logo-text {
@@ -270,12 +241,13 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) rotate(-45deg);
-  font-family: 'Segoe UI', sans-serif;
-  font-size: 1.5rem;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: 1.8rem;
   font-weight: bold;
-  color: white;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-  letter-spacing: 0.05em;
+  color: #FF0000; /* Rosso brillante per il logo */
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9), 0 0 20px rgba(255, 0, 0, 0.5);
+  letter-spacing: 0.08em;
+  z-index: 10;
 }
 
 /* Animations */
@@ -321,17 +293,19 @@
     font-size: 0.875rem;
   }
 
-  .performance-overlay {
-    font-size: 0.625rem;
-    padding: 0.25rem;
-  }
-
   .square-label {
     font-size: 0.5rem;
   }
 
   .logo-text {
-    font-size: 1rem;
+    font-size: 1.2rem;
+  }
+
+  .diamond-triangle-top,
+  .diamond-triangle-right,
+  .diamond-triangle-bottom,
+  .diamond-triangle-left {
+    border-width: 10px;
   }
 
   .card-symbol {
