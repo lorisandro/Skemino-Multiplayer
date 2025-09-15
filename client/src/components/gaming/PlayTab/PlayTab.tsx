@@ -137,23 +137,6 @@ export const PlayTab: React.FC<PlayTabProps> = ({
           </div>
         </div>
 
-        {/* Player Status */}
-        <div className="mt-6 p-3 bg-gray-50 rounded-lg">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-600">Status:</span>
-            <span className="font-medium text-green-600">🟢 Online</span>
-          </div>
-          <div className="flex items-center justify-between text-sm mt-1">
-            <span className="text-gray-600">Rating:</span>
-            <span className="font-medium">{currentPlayer?.rating || 1200}</span>
-          </div>
-          <div className="flex items-center justify-between text-sm mt-1">
-            <span className="text-gray-600">Account:</span>
-            <span className="font-medium">
-              {currentPlayer?.isGuest ? '🎭 Guest' : '🔰 Verificato'}
-            </span>
-          </div>
-        </div>
 
         {/* Guest Notice */}
         {currentPlayer?.isGuest && (
