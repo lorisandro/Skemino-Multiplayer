@@ -4,7 +4,6 @@ import { GameBoard } from './Board/GameBoard';
 import { PlayerArea } from './PlayerArea/PlayerArea';
 // import { GameHeader } from './GameHeader/GameHeader'; // Removed header as requested
 import { GameSidebar } from './GameSidebar/GameSidebar';
-import { SimpleMoveHistory as MoveHistory } from './MoveHistory/SimpleMoveHistory';
 import { useGameStore } from '../../store/gameStore';
 import { useSocket } from '../../hooks/useSocket';
 import type { Card } from '../../types/game';
@@ -114,18 +113,11 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
 
           {/* Center - Game Board with enhanced space for 2K */}
           <div className="flex-1 flex items-center justify-center p-6 bg-gradient-to-br from-slate-50 to-slate-100">
-            <div className="relative w-full h-full flex items-center justify-center">
+            <div className="relative w-full h-full flex items-center justify-end pr-16">
               <GameBoard demoMode={isDemoMode} />
             </div>
           </div>
 
-          {/* Right Area - Move History */}
-          <div className="w-64 bg-white border-l border-slate-200">
-            <MoveHistory
-              moves={gameState?.moveHistory || []}
-              currentMoveIndex={gameState?.moveHistory.length || 0}
-            />
-          </div>
 
           {/* Game Sidebar (collapsible) - Optimized width for 2K */}
           {sidebarOpen && (
@@ -190,18 +182,11 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
 
           {/* Center - Game Board */}
           <div className="flex-1 flex items-center justify-center p-1 bg-gradient-to-br from-slate-50 to-slate-100">
-            <div className="relative w-full h-full flex items-center justify-center">
+            <div className="relative w-full h-full flex items-center justify-end pr-12">
               <GameBoard demoMode={isDemoMode} />
             </div>
           </div>
 
-          {/* Right Area - Move History */}
-          <div className="w-72 bg-white border-l border-slate-200">
-            <MoveHistory
-              moves={gameState?.moveHistory || []}
-              currentMoveIndex={gameState?.moveHistory.length || 0}
-            />
-          </div>
 
           {/* Game Sidebar (collapsible) */}
           {sidebarOpen && (
