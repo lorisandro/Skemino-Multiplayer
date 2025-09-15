@@ -56,9 +56,9 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
     const isDark = (file + rank) % 2 === 0;
 
     if (isDark) {
-      return 'bg-gradient-to-br from-gray-900 via-black to-gray-900'; // Caselle scure - Professional dark
+      return 'bg-gradient-to-br from-gray-600 via-gray-500 to-gray-600'; // Caselle grigie uniformi
     } else {
-      return 'bg-gradient-to-br from-gray-700 via-gray-600 to-gray-700'; // Caselle chiare - Dark optimized
+      return 'bg-gradient-to-br from-gray-500 via-gray-400 to-gray-500'; // Caselle grigie chiare uniformi
     }
   }, [cell, isVertex]);
 

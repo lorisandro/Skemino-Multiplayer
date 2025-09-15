@@ -15,10 +15,10 @@ interface BoardSquareProps {
 }
 
 const VERTEX_COLORS = {
-  'a1': { bg: 'linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 50%, #2a2a2a 100%)', circle: '#5DADE2' }, // Azzurro su grigio scuro
-  'f1': { bg: 'linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 50%, #2a2a2a 100%)', circle: '#58D68D' }, // Verde su grigio scuro
-  'a6': { bg: 'linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 50%, #2a2a2a 100%)', circle: '#EC7063' }, // Rosso su grigio scuro
-  'f6': { bg: 'linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 50%, #2a2a2a 100%)', circle: '#F4D03F' }  // Giallo su grigio scuro
+  'a1': { bg: 'linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 50%, #4a4a4a 100%)', circle: '#5DADE2' }, // Azzurro su grigio uniforme
+  'f1': { bg: 'linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 50%, #4a4a4a 100%)', circle: '#58D68D' }, // Verde su grigio uniforme
+  'a6': { bg: 'linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 50%, #4a4a4a 100%)', circle: '#EC7063' }, // Rosso su grigio uniforme
+  'f6': { bg: 'linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 50%, #4a4a4a 100%)', circle: '#F4D03F' }  // Giallo su grigio uniforme
 };
 
 export const BoardSquare = memo(({
@@ -45,25 +45,25 @@ export const BoardSquare = memo(({
       };
     }
 
-    // Caselle del diamante centrale - stile identico alle altre
+    // Caselle del diamante centrale - grigio uniforme come le altre
     if (isCentralDiamond) {
       return {
-        background: 'linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 50%, #2a2a2a 100%)',
+        background: 'linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 50%, #4a4a4a 100%)',
         border: '1px solid #666',
         position: 'relative' as const
       };
     }
 
-    // Pattern a scacchiera grigio identico al GameBoard principale
+    // Celle grigie uniformi con gradiente al centro come richiesto
     const isDark = (row + col) % 2 === 0;
     if (isDark) {
       return {
-        background: 'linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 50%, #1a1a1a 100%)', // Caselle scure
+        background: 'linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 50%, #4a4a4a 100%)', // Caselle grigie uniformi
         border: '1px solid #666'
       };
     } else {
       return {
-        background: 'linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 50%, #3a3a3a 100%)', // Caselle chiare
+        background: 'linear-gradient(135deg, #5a5a5a 0%, #4a4a4a 50%, #5a5a5a 100%)', // Caselle grigie chiare uniformi
         border: '1px solid #666'
       };
     }
