@@ -839,13 +839,13 @@ div.skemino-square-dark.skemino-central-d4,
   /* CSS Grid for perfect 6x6 layout */
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  grid-template-rows: repeat(6, auto);
+  grid-template-rows: repeat(6, 1fr);
 
   /* Rem-based spacing */
   gap: 0.125rem;
   padding: 0.5rem;
 
-  /* Fill container */
+  /* Fill container perfectly */
   width: 100%;
   height: 100%;
 
