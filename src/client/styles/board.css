@@ -95,16 +95,16 @@
   background: radial-gradient(circle at center, #ffffff 0%, #f5f5f5 100%);
 }
 
-/* Vertex squares - black background */
+/* Vertex squares - grigio uniforme come le altre celle */
 .square-vertex {
-  background: #000000 !important;
-  border: 1px solid #000 !important;
+  background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 50%, #4a4a4a 100%) !important;
+  border: 1px solid #666 !important;
 }
 
-/* Central diamond squares - black background */
+/* Central diamond squares - grigio uniforme come le altre celle */
 .square-central-diamond {
-  background: #000000 !important;
-  border: 1px solid #333 !important;
+  background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 50%, #4a4a4a 100%) !important;
+  border: 1px solid #666 !important;
 }
 
 .square-interactive {
@@ -203,8 +203,8 @@
   width: 100%;
   height: 100%;
   transform: rotate(45deg);
-  background: #000000; /* Diamante nero */
-  border: 2px solid #333;
+  background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 50%, #4a4a4a 100%); /* Diamante grigio uniforme */
+  border: 2px solid #666;
   overflow: visible;
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
 }
