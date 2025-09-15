@@ -43,7 +43,8 @@
       "Bash(rmdir:*)",
       "Bash(mkdir:*)",
       "Bash(cp:*)",
-      "mcp__ide__getDiagnostics"
+      "mcp__ide__getDiagnostics",
+      "Bash(npm run build:*)"
     ],
     "deny": [],
     "ask": []

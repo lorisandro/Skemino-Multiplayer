@@ -1,6 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { HandArea } from './Cards/HandArea';
+// import { HandArea } from './Cards/HandArea'; // Unused after PlayerZone implementation
+import { MobileCardArea } from './Cards/MobileCardArea';
+import { PlayerZone } from './Cards/PlayerZone';
 import { BoardSquare } from './Board/BoardSquare';
 import { useGameStore } from '../../store/gameStore';
 import { useCardDistribution, useResponsiveCardLayout, useCardSounds } from '../../hooks/useCardDistribution';
@@ -169,10 +171,32 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
         )}
       </AnimatePresence>
 
-      {/* Desktop layout */}
-      <div className="hidden lg:grid lg:grid-cols-[200px_1fr_200px] lg:grid-rows-[auto_1fr_auto] h-screen gap-4 p-4">
+      {/* Desktop layout with PlayerZones */}
+      <div className="hidden lg:block h-screen relative">
+        {/* PlayerZone Left */}
+        <PlayerZone
+          player={opponent}
+          cards={gameState.blackHand}
+          isCurrentPlayer={false}
+          position="left"
+          className="z-10"
+        />
+
+        {/* PlayerZone Right */}
+        <PlayerZone
+          player={currentPlayer}
+          cards={gameState.whiteHand}
+          isCurrentPlayer={true}
+          selectedCard={selectedCard}
+          onCardSelect={handleCardSelect}
+          position="right"
+          className="z-10"
+        />
+
+        {/* Main Game Area */}
+        <div className="xl:ml-80 xl:mr-36 lg:ml-72 lg:mr-32 grid grid-rows-[auto_1fr_auto] h-screen gap-4 p-4">
         {/* Top bar */}
-        <div className="col-span-3 flex justify-between items-center bg-white rounded-lg px-6 py-3 shadow-sm">
+        <div className="flex justify-between items-center bg-white dark:bg-slate-800 rounded-lg px-6 py-3 shadow-sm">
           <div className="flex items-center gap-4">
             <div className="font-semibold">{opponent.username}</div>
             <div className="text-sm text-gray-600">Rating: {opponent.rating}</div>
@@ -191,21 +215,6 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
             <div className="text-sm text-gray-600">Rating: {currentPlayer.rating}</div>
             <div className="font-semibold">{currentPlayer.username}</div>
           </div>
-        </div>
-
-        {/* Opponent hand (left) */}
-        <div className="flex items-center justify-center">
-          <HandArea
-            cards={gameState.blackHand}
-            playerColor="black"
-            selectedCard={null}
-            isPlayerTurn={gameState.currentTurn === 'black'}
-            isCurrentPlayer={false}
-            layout="fan"
-            orientation="vertical"
-            showCardBacks={true}
-            className="h-full"
-          />
         </div>
 
         {/* Game board (center) */}
@@ -250,23 +259,8 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
           </motion.div>
         </div>
 
-        {/* Current player hand (right) */}
-        <div className="flex items-center justify-center">
-          <HandArea
-            cards={gameState.whiteHand}
-            playerColor="white"
-            selectedCard={selectedCard}
-            isPlayerTurn={isMyTurn}
-            isCurrentPlayer={true}
-            layout="fan"
-            orientation="vertical"
-            onCardSelect={handleCardSelect}
-            className="h-full"
-          />
-        </div>
-
         {/* Bottom controls */}
-        <div className="col-span-3 flex justify-between items-center bg-white rounded-lg px-6 py-3 shadow-sm">
+        <div className="flex justify-between items-center bg-white dark:bg-slate-800 rounded-lg px-6 py-3 shadow-sm">
           <div className="flex gap-2">
             <button
               onClick={onResign}
@@ -294,6 +288,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
           <div className="text-sm text-gray-600">
             Move {gameState.moveHistory.length + 1}
           </div>
+        </div>
         </div>
       </div>
 
@@ -338,29 +333,22 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
         </div>
 
         {/* Hands */}
-        <HandArea
-          cards={gameState.whiteHand}
-          playerColor="white"
-          selectedCard={selectedCard}
-          isPlayerTurn={isMyTurn}
-          isCurrentPlayer={true}
-          layout="linear"
-          orientation="horizontal"
-          onCardSelect={handleCardSelect}
-          className="justify-center"
-        />
-
-        <HandArea
-          cards={gameState.blackHand}
-          playerColor="black"
-          selectedCard={null}
-          isPlayerTurn={gameState.currentTurn === 'black'}
-          isCurrentPlayer={false}
-          layout="linear"
-          orientation="horizontal"
-          showCardBacks={true}
-          className="justify-center"
-        />
+        <div className="space-y-3 px-4">
+          <MobileCardArea
+            player={currentPlayer}
+            cards={gameState.whiteHand}
+            isCurrentPlayer={true}
+            selectedCard={selectedCard}
+            onCardSelect={handleCardSelect}
+            className="max-w-md mx-auto"
+          />
+          <MobileCardArea
+            player={opponent}
+            cards={gameState.blackHand}
+            isCurrentPlayer={false}
+            className="max-w-md mx-auto"
+          />
+        </div>
       </div>
 
       {/* Mobile layout */}
@@ -402,31 +390,19 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
         </div>
 
         {/* Mobile hands */}
-        <div className="bg-white border-t">
-          <HandArea
+        <div className="bg-slate-800 border-t border-slate-700 space-y-2 p-2">
+          <MobileCardArea
+            player={currentPlayer}
             cards={gameState.whiteHand}
-            playerColor="white"
-            selectedCard={selectedCard}
-            isPlayerTurn={isMyTurn}
             isCurrentPlayer={true}
-            layout={layout.handLayout}
-            orientation="horizontal"
+            selectedCard={selectedCard}
             onCardSelect={handleCardSelect}
-            className="p-3"
           />
-          <div className="border-t border-gray-200">
-            <HandArea
-              cards={gameState.blackHand}
-              playerColor="black"
-              selectedCard={null}
-              isPlayerTurn={gameState.currentTurn === 'black'}
-              isCurrentPlayer={false}
-              layout="compact"
-              orientation="horizontal"
-              showCardBacks={true}
-              className="p-2 justify-center"
-            />
-          </div>
+          <MobileCardArea
+            player={opponent}
+            cards={gameState.blackHand}
+            isCurrentPlayer={false}
+          />
         </div>
       </div>
     </div>
