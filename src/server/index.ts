@@ -24,7 +24,7 @@ const PORT = process.env.PORT || 3005;
 // Middleware
 app.use(helmet());
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3007',
+  origin: process.env.CLIENT_URL || 'http://localhost:3000',
   credentials: true
 }));
 app.use(compression());
@@ -107,7 +107,7 @@ process.on('unhandledRejection', (reason, promise) => {
   process.exit(1);
 });
 
-// Start the server
+// Start the server with auth fixes
 startServer().catch((error) => {
   console.error('Failed to start server:', error);
   process.exit(1);
