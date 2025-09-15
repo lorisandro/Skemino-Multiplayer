@@ -23,7 +23,7 @@ export const authService = {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email: identifier, password, rememberMe }),
+        body: JSON.stringify({ identifier, password, rememberMe }),
         credentials: 'include'
       });
 

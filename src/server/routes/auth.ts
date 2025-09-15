@@ -89,17 +89,20 @@ router.post('/guest', async (req: Request, res: Response) => {
 // Regular user login
 router.post('/login', async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;
+    const { email, identifier, password } = req.body;
 
-    if (!email || !password) {
+    // Accept either 'email' or 'identifier' field for backward compatibility
+    const loginIdentifier = identifier || email;
+
+    if (!loginIdentifier || !password) {
       return res.status(400).json({
         success: false,
-        message: 'Email and password are required'
+        message: 'Email/username and password are required'
       });
     }
 
-    // Get user from database
-    const user = await DatabaseManager.getUserByEmail(email);
+    // Get user from database by email or username
+    const user = await DatabaseManager.getUserByEmailOrUsername(loginIdentifier);
     if (!user) {
       return res.status(401).json({
         success: false,

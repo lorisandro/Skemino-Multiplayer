@@ -163,16 +163,7 @@
   background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
-/* Vertex Circle */
-.vertex-circle {
-  position: absolute;
-  width: 60%;
-  height: 60%;
-  border-radius: 50%;
-  transform: translateZ(0);
-  animation: breathe 3s ease-in-out infinite;
-  pointer-events: none;
-}
+/* Vertex Circle - REMOVED to eliminate circular elements */
 
 /* Square Label */
 .square-label {

@@ -285,6 +285,29 @@ export class DatabaseManager {
     }
   }
 
+  public static async getUserByEmailOrUsername(identifier: string): Promise<User | null> {
+    try {
+      if (this.mockMode) {
+        const user = Array.from(this.mockUsers.values()).find(u =>
+          u.email === identifier || u.username === identifier
+        );
+        return user || null;
+      }
+
+      const client = await this.getClient();
+      const result = await client.query(
+        'SELECT * FROM users WHERE email = $1 OR username = $1',
+        [identifier]
+      );
+      client.release();
+
+      return result.rows.length > 0 ? this.mapUserRow(result.rows[0]) : null;
+    } catch (error) {
+      logger.error('Error getting user by email or username:', error);
+      return null;
+    }
+  }
+
   public static async createUser(userData: {
     username: string;
     email: string;
