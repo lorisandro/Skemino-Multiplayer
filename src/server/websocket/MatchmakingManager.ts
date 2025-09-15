@@ -1,6 +1,7 @@
 import { logger } from '../utils/logger';
 import { RedisManager } from '../services/RedisManager';
 import { v4 as uuidv4 } from 'uuid';
+import { EventEmitter } from 'events';
 
 export interface MatchmakingPlayer {
   userId: string;
@@ -30,7 +31,7 @@ interface MatchmakingQueue {
   lastMatch: number;
 }
 
-export class MatchmakingManager {
+export class MatchmakingManager extends EventEmitter {
   private queues: Map<string, MatchmakingQueue> = new Map();
   private readonly MATCH_INTERVAL = 2000; // Check for matches every 2 seconds
   private readonly MAX_WAIT_TIME = 300000; // Maximum wait time: 5 minutes
@@ -39,6 +40,7 @@ export class MatchmakingManager {
   private readonly EXPANSION_INTERVAL = 30000; // 30 seconds
 
   constructor() {
+    super();
     this.initializeStandardQueues();
     this.startMatchmaking();
   }
@@ -331,8 +333,14 @@ export class MatchmakingManager {
   }
 
   private async processAllQueues(): Promise<void> {
+    const totalPlayers = this.getTotalPlayersInQueues();
+    if (totalPlayers > 0) {
+      logger.debug(`🔍 Processing queues: ${totalPlayers} total players`);
+    }
+
     for (const [timeControl, queue] of this.queues) {
       if (queue.players.size >= 2) {
+        logger.debug(`⚡ Processing ${timeControl} queue: ${queue.players.size} players`);
         await this.processQueue(timeControl, queue);
       }
 
@@ -374,6 +382,7 @@ export class MatchmakingManager {
       // Emit match events (handled by calling code)
       matches.forEach(match => {
         this.emitMatch(match);
+        logger.info(`🔄 Processed queue match: ${match.white.username} vs ${match.black.username} (${timeControl})`);
       });
     }
   }
@@ -399,9 +408,9 @@ export class MatchmakingManager {
   }
 
   private emitMatch(match: Match): void {
-    // This method would typically emit an event that the SocketManager listens to
-    // For now, we'll log it. In a real implementation, this would use EventEmitter
-    logger.info(`✨ Match ready: ${match.gameId}`);
+    // Emit match event that SocketManager can listen to
+    this.emit('match:found', match);
+    logger.info(`✨ Match ready: ${match.gameId} - Event emitted`);
   }
 
   // Public methods for monitoring and administration
@@ -481,5 +490,13 @@ export class MatchmakingManager {
 
   public getTotalPlayersInQueues(): number {
     return Array.from(this.queues.values()).reduce((total, queue) => total + queue.players.size, 0);
+  }
+
+  public getEventListenerCount(): number {
+    return this.listenerCount('match:found');
+  }
+
+  public hasMatchFoundListeners(): boolean {
+    return this.listenerCount('match:found') > 0;
   }
 }

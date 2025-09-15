@@ -1,6 +1,6 @@
 import { Server as SocketIOServer, Socket } from 'socket.io';
 import { GameRoom } from './GameRoom';
-import { MatchmakingManager } from './MatchmakingManager';
+import { MatchmakingManager, Match } from './MatchmakingManager';
 import { RedisManager } from '../services/RedisManager';
 import { DatabaseManager } from '../database/DatabaseManager';
 import { logger } from '../utils/logger';
@@ -82,6 +82,7 @@ export class SocketManager {
   constructor(io: SocketIOServer) {
     this.io = io;
     this.matchmakingManager = new MatchmakingManager();
+    this.setupMatchmakingEvents();
   }
 
   public initialize(): void {
@@ -89,6 +90,22 @@ export class SocketManager {
     this.io.on('connection', this.handleConnection.bind(this));
     this.startHealthCheck();
     logger.info('🎮 WebSocket Manager initialized with real-time gaming support');
+  }
+
+  private setupMatchmakingEvents(): void {
+    // Listen for matches found by the periodic queue processing
+    this.matchmakingManager.on('match:found', async (match) => {
+      try {
+        logger.info(`🎯 Received automatic match event: ${match.gameId} (${match.white.username} vs ${match.black.username})`);
+        await this.createGameFromMatch(match);
+        logger.info(`✅ Automatic match processed successfully: ${match.gameId}`);
+      } catch (error) {
+        logger.error('❌ Error processing automatic match:', error);
+      }
+    });
+
+    const listenerCount = this.matchmakingManager.getEventListenerCount();
+    logger.info(`🔗 Matchmaking event listeners configured (${listenerCount} listener(s) for match:found)`);
   }
 
   private async authenticateSocket(socket: Socket, next: (err?: Error) => void): Promise<void> {
@@ -269,7 +286,8 @@ export class SocketManager {
         userId: socket.userId,
         username: socket.username,
         rating: socket.rating,
-        timeControl: timeControl || 'rapid'
+        timeControl: timeControl || 'rapid',
+        joinedAt: Date.now()
       });
 
       if (match) {
@@ -305,6 +323,7 @@ export class SocketManager {
         username: socket.username,
         rating: options.guestRating || socket.rating,
         timeControl: options.timeControl,
+        joinedAt: Date.now(),
         preferences: {
           ...options.preferences,
           maxRatingDifference: options.preferences?.maxRatingDifference || 400, // More flexible for guests
@@ -331,7 +350,7 @@ export class SocketManager {
     }
   }
 
-  private async createGameFromMatch(match: any): Promise<void> {
+  private async createGameFromMatch(match: Match): Promise<void> {
     try {
       const gameRoom = new GameRoom(match.gameId, {
         white: match.white,
@@ -667,6 +686,20 @@ export class SocketManager {
       return true;
     }
     return false;
+  }
+
+  public getMatchmakingStats(): {
+    totalPlayersInQueues: number;
+    queueStats: any;
+    hasEventListeners: boolean;
+    eventListenerCount: number;
+  } {
+    return {
+      totalPlayersInQueues: this.matchmakingManager.getTotalPlayersInQueues(),
+      queueStats: this.matchmakingManager.getQueueStats(),
+      hasEventListeners: this.matchmakingManager.hasMatchFoundListeners(),
+      eventListenerCount: this.matchmakingManager.getEventListenerCount()
+    };
   }
 }
 
