@@ -109,7 +109,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
   if (compact) {
     return (
       <motion.div
-        className={`h-full bg-white border-2 ${className}`}
+        className={`h-full border-2 backdrop-blur-sm ${className}`}
         variants={areaVariants}
         animate={isCurrentTurn ? 'active' : 'inactive'}
       >
@@ -151,12 +151,12 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
   if (orientation === 'vertical') {
     return (
       <motion.div
-        className={`h-full bg-white border-2 flex flex-col ${className}`}
+        className={`h-full border-2 flex flex-col backdrop-blur-sm ${className}`}
         variants={areaVariants}
         animate={isCurrentTurn ? 'active' : 'inactive'}
       >
         {/* Player header */}
-        <div className="p-4 border-b border-slate-200">
+        <div className="p-4 border-b border-slate-600/50">
           <div className="flex items-center justify-between">
             <PlayerInfo
               player={player}
@@ -187,7 +187,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
         <AnimatePresence>
           {isCurrentTurn && (
             <motion.div
-              className="p-2 bg-green-500 text-white text-center text-sm font-medium"
+              className="p-2 bg-gradient-to-r from-green-600 to-green-500 text-white text-center text-sm font-medium"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
@@ -203,7 +203,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
   // Desktop horizontal layout
   return (
     <motion.div
-      className={`h-full bg-white border-2 ${className}`}
+      className={`h-full border-2 backdrop-blur-sm ${className}`}
       variants={areaVariants}
       animate={isCurrentTurn ? 'active' : 'inactive'}
     >
@@ -238,12 +238,20 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
         <AnimatePresence>
           {isCurrentTurn && (
             <motion.div
-              className="absolute top-2 right-2 px-3 py-1 bg-green-500 text-white text-sm font-medium rounded-full"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0 }}
+              className="absolute top-4 right-4 px-3 py-1 bg-gradient-to-r from-green-500 to-green-400 text-white text-sm font-medium rounded-full shadow-lg"
+              initial={{ scale: 0, rotate: -10 }}
+              animate={{ scale: 1, rotate: 0 }}
+              exit={{ scale: 0, rotate: 10 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
-              Turn
+              <div className="flex items-center gap-1">
+                <motion.div
+                  className="w-2 h-2 bg-green-200 rounded-full"
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                />
+                Turn
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
