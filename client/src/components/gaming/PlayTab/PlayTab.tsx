@@ -6,7 +6,7 @@ import {
   ExclamationTriangleIcon,
 } from '@heroicons/react/24/outline';
 import { useMatchmaking } from '../../../hooks/useMatchmaking';
-import { MatchmakingDialog } from '../Matchmaking/MatchmakingDialog';
+import { MatchmakingTooltip } from './MatchmakingTooltip';
 
 interface PlayTabProps {
   currentPlayer?: {
@@ -23,16 +23,13 @@ export const PlayTab: React.FC<PlayTabProps> = ({
   onMatchFound,
 }) => {
   const [selectedTimeControl, setSelectedTimeControl] = useState<string>('rapid');
-  const [showMatchmaking, setShowMatchmaking] = useState(false);
 
   const { joinQueue, leaveQueue, isSearching, error } = useMatchmaking({
     onMatchFound: (data) => {
-      setShowMatchmaking(false);
       onMatchFound?.(data.gameId, data.opponent);
     },
     onError: (error) => {
       console.error('Matchmaking error:', error);
-      setShowMatchmaking(false);
     },
     isGuest: currentPlayer?.isGuest || false,
     userRating: currentPlayer?.rating || 1200,
@@ -70,10 +67,7 @@ export const PlayTab: React.FC<PlayTabProps> = ({
   ];
 
   const handleQuickPlay = async () => {
-    const success = await joinQueue(selectedTimeControl);
-    if (success) {
-      setShowMatchmaking(true);
-    }
+    await joinQueue(selectedTimeControl);
   };
 
   const handleTimeControlSelect = (timeControl: string) => {
@@ -82,7 +76,6 @@ export const PlayTab: React.FC<PlayTabProps> = ({
 
   const handleCancelMatchmaking = () => {
     leaveQueue();
-    setShowMatchmaking(false);
   };
 
   return (
@@ -90,25 +83,36 @@ export const PlayTab: React.FC<PlayTabProps> = ({
       <div>
         <h4 className="font-semibold text-gray-900 mb-4">Nuova Partita</h4>
 
-        {/* Quick Play Button */}
-        <motion.button
-          onClick={handleQuickPlay}
-          disabled={isSearching}
-          className={`
-            w-full font-semibold py-3 px-4 rounded-lg transition-all duration-200 mb-4
-            flex items-center justify-center space-x-2
-            ${isSearching
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-blue-600 hover:bg-blue-700 transform hover:scale-105'
-            }
-            text-white
-          `}
-          whileHover={!isSearching ? { scale: 1.02 } : {}}
-          whileTap={!isSearching ? { scale: 0.98 } : {}}
-        >
-          <PlayIcon className="w-5 h-5" />
-          <span>{isSearching ? 'Ricerca in corso...' : 'Gioca Online'}</span>
-        </motion.button>
+        {/* Quick Play Button with Tooltip */}
+        <div className="relative mb-4">
+          <motion.button
+            onClick={handleQuickPlay}
+            disabled={isSearching}
+            className={`
+              w-full font-semibold py-3 px-4 rounded-lg transition-all duration-200
+              flex items-center justify-center space-x-2
+              ${isSearching
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-blue-600 hover:bg-blue-700 transform hover:scale-105'
+              }
+              text-white
+            `}
+            whileHover={!isSearching ? { scale: 1.02 } : {}}
+            whileTap={!isSearching ? { scale: 0.98 } : {}}
+          >
+            <PlayIcon className="w-5 h-5" />
+            <span>{isSearching ? 'Ricerca in corso...' : 'Gioca Online'}</span>
+          </motion.button>
+
+          {/* Matchmaking Tooltip */}
+          <MatchmakingTooltip
+            isVisible={isSearching}
+            timeControl={selectedTimeControl}
+            onCancel={handleCancelMatchmaking}
+            userRating={currentPlayer?.rating || 1200}
+            isGuest={currentPlayer?.isGuest || false}
+          />
+        </div>
 
         {/* Time Control Selection */}
         <div className="space-y-3">
@@ -172,17 +176,6 @@ export const PlayTab: React.FC<PlayTabProps> = ({
           </motion.div>
         )}
       </div>
-
-      {/* Matchmaking Dialog */}
-      <MatchmakingDialog
-        isOpen={showMatchmaking}
-        onClose={() => setShowMatchmaking(false)}
-        timeControl={selectedTimeControl}
-        isGuest={currentPlayer?.isGuest || false}
-        userRating={currentPlayer?.rating || 1200}
-        onMatchFound={onMatchFound}
-        onCancel={handleCancelMatchmaking}
-      />
     </div>
   );
 };
