@@ -80,14 +80,14 @@ export const ZoomResistantBoardContainer: React.FC<ZoomResistantBoardContainerPr
             ${demoMode ? 'demo-mode' : ''}
           `}
           style={{
-            // Demo mode overrides with smaller fixed sizes (perfect square)
+            // Demo mode overrides with smaller fixed sizes (rectangular for 5:7 cells)
             ...(demoMode && {
               width: '30rem',
-              height: '30rem', // Perfect square for gaming board
+              height: '42rem', // Height adjusted for 5:7 cells (30 * 1.4)
               minWidth: '30rem',
-              minHeight: '30rem',
+              minHeight: '42rem',
               maxWidth: '35rem',
-              maxHeight: '35rem',
+              maxHeight: '49rem', // Max height adjusted for 5:7 cells (35 * 1.4)
             })
           }}
         >
@@ -108,17 +108,17 @@ export const useBoardContainerSize = () => {
   const getBoardSize = () => {
     switch (currentBreakpoint) {
       case 'mobile':
-        return { width: '35rem', height: '35rem' }; // Perfect square
+        return { width: '35rem', height: '49rem' }; // Height adjusted for 5:7 cells (35 * 1.4)
       case 'tablet':
-        return { width: '42rem', height: '42rem' }; // Perfect square
+        return { width: '42rem', height: '58.8rem' }; // Height adjusted for 5:7 cells (42 * 1.4)
       case 'desktop':
-        return { width: '48rem', height: '48rem' }; // Perfect square
+        return { width: '48rem', height: '67.2rem' }; // Height adjusted for 5:7 cells (48 * 1.4)
       case '2k':
-        return { width: '55rem', height: '55rem' }; // Perfect square
+        return { width: '55rem', height: '77rem' }; // Height adjusted for 5:7 cells (55 * 1.4)
       case 'ultrawide':
-        return { width: '60rem', height: '60rem' }; // Perfect square
+        return { width: '60rem', height: '84rem' }; // Height adjusted for 5:7 cells (60 * 1.4)
       default:
-        return { width: '42rem', height: '42rem' }; // Perfect square
+        return { width: '42rem', height: '58.8rem' }; // Height adjusted for 5:7 cells
     }
   };
 
