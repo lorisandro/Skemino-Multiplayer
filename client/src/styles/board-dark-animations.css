@@ -1098,6 +1098,12 @@ div.skemino-square-dark.skemino-central-d4,
   font-family: 'Monaco', 'Consolas', monospace;
   z-index: 1;
   opacity: 0.8;
+  /* Sfondino semitrasparente per notazioni zoom-resistant */
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 0.1875rem;
+  padding: 0.0625rem 0.25rem;
+  backdrop-filter: blur(1px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 /* Media query adjustments for notation */
