@@ -57,13 +57,13 @@ export const SkeminoCard: React.FC<SkeminoCardProps> = ({
   const getDimensions = () => {
     switch (size) {
       case 'small':
-        return mobile ? 'w-10 h-14' : 'w-12 h-16';
+        return mobile ? 'w-12 h-[68px]' : 'w-14 h-[78px]';
       case 'medium':
-        return mobile ? 'w-12 h-16' : 'w-16 h-22';
+        return mobile ? 'w-14 h-[78px]' : 'w-[72px] h-[100px]';
       case 'large':
-        return mobile ? 'w-14 h-19' : 'w-20 h-28';
+        return mobile ? 'w-16 h-[88px]' : 'w-24 h-32';
       default:
-        return mobile ? 'w-12 h-16' : 'w-16 h-22';
+        return mobile ? 'w-14 h-[78px]' : 'w-[72px] h-[100px]';
     }
   };
 

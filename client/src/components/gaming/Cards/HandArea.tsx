@@ -217,7 +217,7 @@ export const HandArea: React.FC<HandAreaProps> = ({
 const CardBack: React.FC<{ size: 'small' | 'medium' | 'large' }> = ({ size }) => {
   const dimensions = useMemo(() => {
     switch (size) {
-      case 'small': return { width: 48, height: 67 };
+      case 'small': return { width: 56, height: 78 };
       case 'medium': return { width: 60, height: 84 };
       case 'large': return { width: 80, height: 112 };
       default: return { width: 60, height: 84 };

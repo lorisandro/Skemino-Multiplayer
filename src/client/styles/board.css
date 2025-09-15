@@ -59,7 +59,7 @@
   position: relative;
   width: 100%;
   padding-bottom: 100%;
-  background: #f0f0f0;
+  background: #fafafa;
   border-radius: 0.5rem;
   overflow: hidden;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
@@ -77,7 +77,7 @@
   grid-template-rows: repeat(6, 1fr);
   gap: 1px;
   padding: 1px;
-  background: #999; /* Griglia grigia */
+  background: #d0d0d0; /* Griglia più chiara per contrasto con celle bianche */
 }
 
 /* Board Square Styles */
@@ -90,8 +90,8 @@
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   transform: translateZ(0);
   will-change: transform;
-  border: 1px solid #d0d0d0;
-  background-color: #e8e8e8;
+  border: 1px solid #e0e0e0;
+  background: radial-gradient(circle at center, #ffffff 0%, #f5f5f5 100%);
 }
 
 .square-interactive {

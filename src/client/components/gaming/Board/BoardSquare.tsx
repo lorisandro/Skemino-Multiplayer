@@ -54,10 +54,10 @@ export const BoardSquare = memo(({
       };
     }
 
-    // Tutte le caselle standard sono grigie chiare
+    // Tutte le caselle standard sono bianche con gradiente al centro
     return {
-      backgroundColor: '#e8e8e8',
-      border: '1px solid #d0d0d0'
+      background: 'radial-gradient(circle at center, #ffffff 0%, #f5f5f5 100%)',
+      border: '1px solid #e0e0e0'
     };
   }, [row, col, isVertex, isCentralDiamond]);
 

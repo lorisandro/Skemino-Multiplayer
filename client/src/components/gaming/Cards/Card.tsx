@@ -38,7 +38,7 @@ export const Card: React.FC<CardProps> = ({
   const dimensions = useMemo(() => {
     switch (size) {
       case 'small':
-        return { width: 48, height: 67, fontSize: 'text-xs' };
+        return { width: 56, height: 78, fontSize: 'text-xs' };
       case 'medium':
         return { width: 60, height: 84, fontSize: 'text-sm' };
       case 'large':
