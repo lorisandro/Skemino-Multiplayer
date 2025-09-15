@@ -21,6 +21,18 @@ const DashboardPage: React.FC = () => {
         {/* Left Sidebar */}
         <aside className="w-80 bg-black/40 backdrop-blur-xl border-r border-white/10 min-h-screen">
           <div className="p-6 space-y-6">
+            {/* Logo */}
+            <Link
+              to="/dashboard"
+              className="block hover:opacity-80 transition-opacity duration-200"
+            >
+              <img
+                src="/images/Skèmino.png"
+                alt="Skèmino"
+                className="h-12 w-auto mx-auto"
+              />
+            </Link>
+
             {/* Navigation Menu */}
             <nav className="space-y-2">
               {/* Gioca */}
