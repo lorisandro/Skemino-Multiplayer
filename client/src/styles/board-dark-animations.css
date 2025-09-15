@@ -817,10 +817,6 @@ div.skemino-square-dark.skemino-central-d4,
   margin: 0 auto;
   padding: 1rem; /* Black space around the actual board */
 
-  /* Ensure perfect horizontal centering */
-  left: 50%;
-  transform: translateX(-50%);
-
   /* Dark gaming theme - this creates the black area around the board */
   background: var(--skemino-bg-primary);
   border: 2px solid var(--skemino-border-primary);
