@@ -210,6 +210,7 @@ export const useAuth = (): AuthContextType => {
         username: `${provider}User${Math.floor(Math.random() * 1000)}`,
         email: `user@${provider}.com`,
         displayName: `${provider} User`,
+        countryCode: 'IT', // Default to Italy for social login
         rating: 1100 + Math.floor(Math.random() * 600),
         level: {
           name: 'Principiante',
@@ -284,6 +285,7 @@ export const useAuth = (): AuthContextType => {
         username: `Guest${Math.floor(Math.random() * 10000)}`,
         email: '',
         displayName: `Guest Player`,
+        countryCode: 'IT', // Default to Italy for guest users
         rating: 1000 + Math.floor(Math.random() * 200), // Slightly randomized guest rating
         level: {
           name: 'Ospite',
