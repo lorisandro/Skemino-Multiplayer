@@ -1,7 +1,6 @@
 import React, { memo, useMemo } from 'react';
 import { BoardSquare } from './BoardSquare';
 import { SkeminoLogo } from './SkeminoLogo';
-import { useGamePerformance } from '../../../hooks/useGamePerformance';
 
 interface GameBoardProps {
   gameState?: any;
@@ -18,7 +17,6 @@ export const GameBoard = memo(({
   selectedSquare = null,
   isPlayerTurn = false
 }: GameBoardProps) => {
-  const { fps, latency, memoryUsage } = useGamePerformance();
 
   const boardSquares = useMemo(() => {
     const squares = [];
@@ -48,11 +46,6 @@ export const GameBoard = memo(({
 
   return (
     <div className="skemino-board-container">
-      <div className="performance-overlay">
-        <span className="fps-counter" data-fps={fps}>FPS: {fps}</span>
-        <span className="latency-indicator">Latency: {latency}ms</span>
-        <span className="memory-usage">Memory: {memoryUsage}MB</span>
-      </div>
 
       {/* Coordinate Labels - Top */}
       <div className="coordinates-top">

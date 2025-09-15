@@ -91,10 +91,10 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
       `}
       style={{
         width: size,
-        height: size,
+        height: size * 1.4, // Card-like aspect ratio: taller than wide
         contain: 'layout style paint',
         background: isVertex ? undefined : 'radial-gradient(circle at center, rgba(255,255,255,0.02) 0%, transparent 70%)',
-        borderRadius: '4px',
+        borderRadius: '8px', // Slightly more rounded corners for card feel
         position: 'relative'
       }}
       onClick={onClick}

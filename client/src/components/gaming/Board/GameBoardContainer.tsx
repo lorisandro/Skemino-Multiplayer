@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { GameBoard } from './GameBoard';
 import { useGameStore } from '../../../store/gameStore';
 import { useSocket } from '../../../hooks/useSocket';
-import { useGamePerformance } from '../../../hooks/useGamePerformance';
 import { useResponsiveGameLayout } from '../../../hooks/useResponsiveGameLayout';
 
 interface GameBoardContainerProps {
@@ -22,7 +21,6 @@ export const GameBoardContainer: React.FC<GameBoardContainerProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const { gameState, currentPlayer, isMyTurn } = useGameStore();
   const { connected, latency } = useSocket();
-  const { fps, isOptimal, frameTime, memoryUsage } = useGamePerformance();
   const { breakpoint, boardSize, isMobile, isTablet, isDesktop, isUltrawide, containerWidth, containerHeight } = useResponsiveGameLayout(containerRef);
   const is2K = breakpoint === '2k';
 
@@ -61,36 +59,6 @@ export const GameBoardContainer: React.FC<GameBoardContainerProps> = ({
     return `${baseClasses} desktop-gaming-layout grid grid-cols-3 gap-6 p-6`;
   }, [isMobile, isTablet, is2K, isUltrawide]);
 
-  // Performance metrics component
-  const PerformanceOverlay = useCallback(() => {
-    if (!showPerformanceMetrics) return null;
-
-    return (
-      <motion.div
-        className="absolute top-2 right-2 z-50 bg-black/80 text-white text-xs font-mono p-2 rounded-lg"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3 }}
-      >
-        <div className="flex space-x-4">
-          <div className={`fps-display ${isOptimal ? 'text-green-400' : 'text-red-400'}`}>
-            {fps}FPS
-          </div>
-          <div className={`latency-display ${connected && latency && latency < 100 ? 'text-green-400' : 'text-yellow-400'}`}>
-            {connected && latency ? `${latency}ms` : 'N/A'}
-          </div>
-          {memoryUsage && (
-            <div className="memory-display text-blue-400">
-              {memoryUsage}MB
-            </div>
-          )}
-          <div className="frame-time text-purple-400">
-            {frameTime.toFixed(1)}ms
-          </div>
-        </div>
-      </motion.div>
-    );
-  }, [showPerformanceMetrics, fps, isOptimal, connected, latency, memoryUsage, frameTime]);
 
   // Connection status indicator
   const ConnectionStatus = useCallback(() => (
@@ -253,7 +221,6 @@ export const GameBoardContainer: React.FC<GameBoardContainerProps> = ({
           {/* Overlays and indicators */}
           <CoordinatesDisplay />
           <TurnIndicator />
-          <PerformanceOverlay />
           <ConnectionStatus />
 
           {/* 2K Display Enhancement Indicator */}
@@ -323,14 +290,6 @@ export const GameBoardContainer: React.FC<GameBoardContainerProps> = ({
                 {gameState?.currentTurn || 'N/A'}
               </span>
             </div>
-            {showPerformanceMetrics && (
-              <div className="flex items-center space-x-1">
-                <span className="font-medium">Performance:</span>
-                <span className={`font-mono ${isOptimal ? 'text-green-600' : 'text-yellow-600'}`}>
-                  {isOptimal ? 'Optimal' : 'Warning'}
-                </span>
-              </div>
-            )}
           </div>
         </motion.div>
       )}

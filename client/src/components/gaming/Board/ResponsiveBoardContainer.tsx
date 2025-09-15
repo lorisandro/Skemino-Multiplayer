@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { useGamePerformance } from '../../../hooks/useGamePerformance';
 
 interface ResponsiveBoardContainerProps {
   children: React.ReactNode;
@@ -24,7 +23,6 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerSize, setContainerSize] = useState(1600);
   const [breakpoint, setBreakpoint] = useState<'mobile' | 'tablet' | 'desktop' | '2k' | 'ultrawide'>('desktop');
-  const { fps, isOptimal } = useGamePerformance();
 
   // Determine current breakpoint with 2K support
   useEffect(() => {
@@ -92,14 +90,6 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
           break;
       }
 
-      // Performance-based adjustments optimized for modern hardware
-      if (!isOptimal && fps < 30) {
-        // More aggressive reduction only for very poor performance
-        baseSize = Math.min(baseSize, breakpoint === '2k' ? 1400 : 1200);
-      } else if (!isOptimal && fps < 45) {
-        // Moderate reduction for sub-optimal performance, maintain larger boards on 2K
-        baseSize = Math.min(baseSize, breakpoint === '2k' ? 1800 : 1600);
-      }
 
       // Apply aspect ratio
       if (aspectRatio !== 1) {
@@ -123,7 +113,7 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
     return () => {
       resizeObserver.disconnect();
     };
-  }, [breakpoint, fps, isOptimal, minSize, maxSize, aspectRatio, onSizeChange]);
+  }, [breakpoint, minSize, maxSize, aspectRatio, onSizeChange]);
 
   // Container styles based on breakpoint with enhanced scaling
   const getContainerClasses = () => {
@@ -224,7 +214,6 @@ export function useResponsiveBoardSize(
 ) {
   const [size, setSize] = useState(1400);
   const [isReduced, setIsReduced] = useState(false);
-  const { fps } = useGamePerformance();
 
   useEffect(() => {
     const updateSize = () => {
@@ -242,13 +231,7 @@ export function useResponsiveBoardSize(
         calculatedSize = Math.min(vw * 0.85, vh * 0.90, maxSize);
       }
 
-      // Performance adjustment with larger board support
-      if (fps < performanceThreshold) {
-        calculatedSize = Math.min(calculatedSize, 1200);
-        setIsReduced(true);
-      } else {
-        setIsReduced(false);
-      }
+      setIsReduced(false);
 
       setSize(Math.max(minSize, calculatedSize));
     };
@@ -256,7 +239,7 @@ export function useResponsiveBoardSize(
     updateSize();
     window.addEventListener('resize', updateSize);
     return () => window.removeEventListener('resize', updateSize);
-  }, [fps, minSize, maxSize, performanceThreshold]);
+  }, [minSize, maxSize, performanceThreshold]);
 
   return { size, isReduced };
 }

@@ -5,8 +5,6 @@ import { SkeminoLogo } from './SkeminoLogo';
 import { ResponsiveBoardContainer } from './ResponsiveBoardContainer';
 import { useGameStore } from '../../../store/gameStore';
 import { useSocket } from '../../../hooks/useSocket';
-import { useGamePerformance } from '../../../hooks/useGamePerformance';
-import { PerformanceUtils } from '../../../hooks/performance';
 import type { BoardCell } from '../../../types/game';
 import '../../../styles/board-dark-animations.css';
 
@@ -23,7 +21,6 @@ export const GameBoard: React.FC = () => {
   } = useGameStore();
 
   const { emitMove, connected, latency } = useSocket();
-  const { fps, isOptimal, frameTime, memoryUsage } = useGamePerformance();
   const boardRef = useRef<HTMLDivElement>(null);
   const [boardSize, setBoardSize] = useState(1200);
   const [is2K, setIs2K] = useState(false);
@@ -41,7 +38,7 @@ export const GameBoard: React.FC = () => {
           const is2KDisplay = screenWidth >= 1920 && screenWidth <= 2880 && window.innerHeight >= 1080;
           setIs2K(is2KDisplay);
 
-          const size = PerformanceUtils.getOptimalBoardSize(width, height, fps);
+          const size = Math.min(width * 0.9, height * 0.9, 1400);
           setBoardSize(size);
         }
       }
@@ -50,7 +47,7 @@ export const GameBoard: React.FC = () => {
     updateBoardSize();
     window.addEventListener('resize', updateBoardSize);
     return () => window.removeEventListener('resize', updateBoardSize);
-  }, [fps]);
+  }, []);
 
   const handleSquareClick = (cell: BoardCell) => {
     if (!isMyTurn || !selectedCard || !validMoves.includes(cell)) return;
@@ -203,25 +200,6 @@ export const GameBoard: React.FC = () => {
             </motion.div>
           )}
 
-          {/* Performance Indicator Dark Gaming */}
-          <motion.div
-            className={`
-              absolute top-3 left-3 px-3 py-2 text-xs rounded-lg z-40 font-mono font-medium backdrop-blur-sm border shadow-lg
-              ${isOptimal
-                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30 shadow-emerald-500/30'
-                : fps > 30
-                  ? 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30 shadow-yellow-500/30'
-                  : 'bg-red-500/20 text-red-300 border-red-500/30 shadow-red-500/30'
-              }
-            `}
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 400, damping: 25 }}
-          >
-            <div className="flex items-center space-x-2">
-              <div className={`w-2 h-2 rounded-full ${isOptimal ? 'bg-emerald-400' : fps > 30 ? 'bg-yellow-400' : 'bg-red-400'}`}></div>
-              <span>{fps}FPS</span>
-            </div>
-          </motion.div>
 
           {/* Latency Indicator Dark Gaming */}
           {connected && latency && (
