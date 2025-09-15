@@ -5,7 +5,7 @@ const HomePage: React.FC = () => {
   const navigate = useNavigate();
 
   const handlePlayOnline = () => {
-    navigate('/game');
+    navigate('/login');
   };
 
   return (

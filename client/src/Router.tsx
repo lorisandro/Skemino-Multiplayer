@@ -25,7 +25,7 @@ const RegisterPageWrapper = () => {
   const handleSocialLogin = (provider: string) => {
     console.log('Social login attempt:', provider);
     // TODO: Implement actual social login logic
-    navigate('/game');
+    navigate('/register');
   };
 
   return (

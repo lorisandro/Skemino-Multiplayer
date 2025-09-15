@@ -57,6 +57,8 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof RegisterCredentials, string>>>({});
+  const [authError, setAuthError] = useState<string>('');
+  const [rememberMe, setRememberMe] = useState<boolean>(false);
   const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>({
     score: 0,
     label: 'Molto debole',
@@ -178,12 +180,18 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
 
+      // Simulate authentication error for demo
+      if (formData.email === 'test@error.com') {
+        setAuthError('This password is incorrect.');
+        return;
+      }
+
       if (onRegister) {
-        onRegister(formData);
+        onRegister({ ...formData, rememberMe });
       }
     } catch (error) {
       console.error('Registration error:', error);
-      setErrors({ email: 'Errore durante la registrazione' });
+      setAuthError('Errore durante la registrazione. Riprova.');
     } finally {
       setIsLoading(false);
     }
@@ -330,6 +338,38 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
               <h2 className="text-2xl font-bold text-white mb-6 text-center">
                 Crea il tuo account
               </h2>
+
+              {/* Auth Error Banner */}
+              <AnimatePresence>
+                {authError && (
+                  <motion.div
+                    className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg backdrop-blur-sm"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <XCircleIcon className="w-5 h-5 text-red-400" />
+                        <span className="text-red-400 text-sm font-medium">{authError}</span>
+                      </div>
+                      <button
+                        onClick={() => setAuthError('')}
+                        className="text-red-400 hover:text-red-300 transition-colors"
+                      >
+                        <XCircleIcon className="w-4 h-4" />
+                      </button>
+                    </div>
+                    {authError.includes('password') && (
+                      <div className="mt-2 text-xs text-red-300">
+                        <a href="#" className="hover:text-red-200 underline transition-colors">
+                          Forgot / Reset password?
+                        </a>
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* Social Login Buttons */}
               <div className="mb-6">
@@ -597,6 +637,23 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
                       </motion.p>
                     )}
                   </AnimatePresence>
+                </div>
+
+                {/* Remember Me Checkbox */}
+                <div className="mb-4">
+                  <div className="flex items-center">
+                    <motion.input
+                      id="rememberMe"
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-600 rounded bg-gray-800"
+                      whileTap={{ scale: 0.9 }}
+                    />
+                    <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-300">
+                      Ricorda i miei dati su questo dispositivo
+                    </label>
+                  </div>
                 </div>
 
                 {/* Terms and Newsletter */}

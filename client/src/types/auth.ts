@@ -78,6 +78,7 @@ export interface RegisterCredentials {
   confirmPassword: string;
   acceptTerms: boolean;
   subscribeNewsletter?: boolean;
+  rememberMe?: boolean;
 }
 
 export interface AuthResponse {
