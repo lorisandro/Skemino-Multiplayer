@@ -81,47 +81,50 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
 
         {/* Main Game Area - Optimized for 2K displays */}
         <div className="flex-1 flex overflow-hidden">
-          {/* Left Sidebar - Slightly narrower for more board space */}
+          {/* Left Sidebar - Combined players with card slots */}
           <div className="w-64 bg-white border-r border-slate-200 flex flex-col">
-            <PlayerArea
-              player={opponent}
-              hand={opponentHand}
-              isOpponent={true}
-              isCurrentTurn={!isMyTurn}
-              timeRemaining={gameState?.blackTime || 0}
-              showCards={false}
-              orientation="vertical"
-            />
+            {/* Opponent Area - Top half */}
+            <div className="flex-1 border-b border-slate-200">
+              <PlayerArea
+                player={opponent}
+                hand={opponentHand}
+                isOpponent={true}
+                isCurrentTurn={!isMyTurn}
+                timeRemaining={gameState?.blackTime || 0}
+                showCards={true}
+                orientation="vertical"
+              />
+            </div>
+
+            {/* Current Player Area - Bottom half */}
+            <div className="flex-1">
+              <PlayerArea
+                player={currentPlayer}
+                hand={playerHand}
+                isOpponent={false}
+                isCurrentTurn={isMyTurn}
+                timeRemaining={gameState?.whiteTime || 0}
+                selectedCard={selectedCard}
+                onCardSelect={handleCardSelect}
+                showCards={true}
+                orientation="vertical"
+              />
+            </div>
           </div>
 
           {/* Center - Game Board with enhanced space for 2K */}
-          <div className="flex-1 flex items-center justify-end p-8 bg-gradient-to-br from-slate-50 to-slate-100">
-            <div className="relative w-full h-full flex items-center justify-end pr-16">
+          <div className="flex-1 flex items-center justify-center p-6 bg-gradient-to-br from-slate-50 to-slate-100">
+            <div className="relative w-full h-full flex items-center justify-center">
               <GameBoard demoMode={isDemoMode} />
             </div>
           </div>
 
-          {/* Right Sidebar - Slightly narrower for more board space */}
-          <div className="w-64 bg-white border-l border-slate-200 flex flex-col">
-            <PlayerArea
-              player={currentPlayer}
-              hand={playerHand}
-              isOpponent={false}
-              isCurrentTurn={isMyTurn}
-              timeRemaining={gameState?.whiteTime || 0}
-              selectedCard={selectedCard}
-              onCardSelect={handleCardSelect}
-              showCards={true}
-              orientation="vertical"
+          {/* Right Area - Move History */}
+          <div className="w-64 bg-white border-l border-slate-200">
+            <MoveHistory
+              moves={gameState?.moveHistory || []}
+              currentMoveIndex={gameState?.moveHistory.length || 0}
             />
-
-            {/* Move History */}
-            <div className="flex-1 border-t border-slate-200">
-              <MoveHistory
-                moves={gameState?.moveHistory || []}
-                currentMoveIndex={gameState?.moveHistory.length || 0}
-              />
-            </div>
           </div>
 
           {/* Game Sidebar (collapsible) - Optimized width for 2K */}
@@ -154,47 +157,50 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
 
         {/* Main Game Area */}
         <div className="flex-1 flex overflow-hidden">
-          {/* Left Sidebar - Opponent Area */}
+          {/* Left Sidebar - Combined players with card slots */}
           <div className="w-72 bg-white border-r border-slate-200 flex flex-col">
-            <PlayerArea
-              player={opponent}
-              hand={opponentHand}
-              isOpponent={true}
-              isCurrentTurn={!isMyTurn}
-              timeRemaining={gameState?.blackTime || 0}
-              showCards={false} // Hide opponent cards
-              orientation="vertical"
-            />
+            {/* Opponent Area - Top half */}
+            <div className="flex-1 border-b border-slate-200">
+              <PlayerArea
+                player={opponent}
+                hand={opponentHand}
+                isOpponent={true}
+                isCurrentTurn={!isMyTurn}
+                timeRemaining={gameState?.blackTime || 0}
+                showCards={true}
+                orientation="vertical"
+              />
+            </div>
+
+            {/* Current Player Area - Bottom half */}
+            <div className="flex-1">
+              <PlayerArea
+                player={currentPlayer}
+                hand={playerHand}
+                isOpponent={false}
+                isCurrentTurn={isMyTurn}
+                timeRemaining={gameState?.whiteTime || 0}
+                selectedCard={selectedCard}
+                onCardSelect={handleCardSelect}
+                showCards={true}
+                orientation="vertical"
+              />
+            </div>
           </div>
 
           {/* Center - Game Board */}
-          <div className="flex-1 flex items-center justify-end p-2 bg-gradient-to-br from-slate-50 to-slate-100">
-            <div className="relative w-full h-full flex items-center justify-end pr-12">
+          <div className="flex-1 flex items-center justify-center p-1 bg-gradient-to-br from-slate-50 to-slate-100">
+            <div className="relative w-full h-full flex items-center justify-center">
               <GameBoard demoMode={isDemoMode} />
             </div>
           </div>
 
-          {/* Right Sidebar - Current Player Area */}
-          <div className="w-72 bg-white border-l border-slate-200 flex flex-col">
-            <PlayerArea
-              player={currentPlayer}
-              hand={playerHand}
-              isOpponent={false}
-              isCurrentTurn={isMyTurn}
-              timeRemaining={gameState?.whiteTime || 0}
-              selectedCard={selectedCard}
-              onCardSelect={handleCardSelect}
-              showCards={true}
-              orientation="vertical"
+          {/* Right Area - Move History */}
+          <div className="w-72 bg-white border-l border-slate-200">
+            <MoveHistory
+              moves={gameState?.moveHistory || []}
+              currentMoveIndex={gameState?.moveHistory.length || 0}
             />
-
-            {/* Move History */}
-            <div className="flex-1 border-t border-slate-200">
-              <MoveHistory
-                moves={gameState?.moveHistory || []}
-                currentMoveIndex={gameState?.moveHistory.length || 0}
-              />
-            </div>
           </div>
 
           {/* Game Sidebar (collapsible) */}
@@ -242,8 +248,8 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
           </div>
 
           {/* Game Board - Center */}
-          <div className="flex-1 flex items-center justify-end p-2">
-            <div className="relative w-full h-full flex items-center justify-end pr-6">
+          <div className="flex-1 flex items-center justify-end p-1">
+            <div className="relative w-full h-full flex items-center justify-end pr-8">
               <GameBoard demoMode={isDemoMode} />
             </div>
           </div>
@@ -290,8 +296,8 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
         </div>
 
         {/* Game Board - Main Area */}
-        <div className="flex-1 flex items-center justify-end p-1">
-          <div className="relative w-full h-full flex items-center justify-end pr-4">
+        <div className="flex-1 flex items-center justify-end p-0.5">
+          <div className="relative w-full h-full flex items-center justify-end pr-6">
             <GameBoard demoMode={isDemoMode} />
           </div>
         </div>
