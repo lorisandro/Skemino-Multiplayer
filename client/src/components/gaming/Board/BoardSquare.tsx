@@ -51,9 +51,18 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
       }
     }
 
-    // Central strategic cells with special diagonal pattern
-    if (cell === 'c3' || cell === 'c4' || cell === 'd3' || cell === 'd4') {
-      return 'skemino-central-cell'; // Strategic center cells with diagonal pattern
+    // Central strategic cells with specific diagonal patterns
+    if (cell === 'c3') {
+      return 'skemino-central-c3'; // c3: Blue/Black diagonal
+    }
+    if (cell === 'c4') {
+      return 'skemino-central-c4'; // c4: Red/Black diagonal
+    }
+    if (cell === 'd3') {
+      return 'skemino-central-d3'; // d3: Green/Black diagonal
+    }
+    if (cell === 'd4') {
+      return 'skemino-central-d4'; // d4: Yellow/Black diagonal
     }
 
     // Standard squares: Pure white circular gradient for all non-vertex cells
@@ -61,19 +70,19 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
     return 'skemino-cell-gradient'; // Apply white circular gradient with gray center
   }, [cell, isVertex]);
 
-  // Dark Gaming Highlight styles - Professional competitive
+  // Dark Gaming Highlight styles - Pure CSS Professional competitive
   const getHighlightStyle = () => {
     if (isOver && canDrop) {
-      return 'ring-4 ring-emerald-400/80 ring-offset-2 ring-offset-gray-900 shadow-lg shadow-emerald-500/50';
+      return 'skemino-highlight-drop';
     }
     if (isValidMove && selectedCard) {
-      return 'ring-3 ring-blue-400/80 ring-offset-1 ring-offset-gray-900 animate-pulse shadow-lg shadow-blue-500/40';
+      return 'skemino-highlight-valid';
     }
     if (position?.isLastMove) {
-      return 'ring-3 ring-yellow-400/80 ring-offset-1 ring-offset-gray-900 shadow-lg shadow-yellow-500/40';
+      return 'skemino-highlight-last';
     }
     if (position?.isHighlighted) {
-      return 'ring-3 ring-purple-400/80 ring-offset-1 ring-offset-gray-900 shadow-lg shadow-purple-500/40';
+      return 'skemino-highlight-selected';
     }
     return '';
   };
@@ -110,7 +119,7 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
         <div className="skemino-vertex-container">
           <motion.div
             className={`
-              w-8 h-8 rounded-full ring-3 ring-white/30 shadow-2xl skemino-vertex-dark
+              skemino-vertex-dark skemino-vertex-circle
               ${cell === 'a1' ? 'skemino-vertex-indicator-blue' : ''}
               ${cell === 'f1' ? 'skemino-vertex-indicator-green' : ''}
               ${cell === 'a6' ? 'skemino-vertex-indicator-red' : ''}
