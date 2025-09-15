@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Card } from '../Cards/Card';
 import type { BoardPosition, Card as CardType } from '../../../types/game';
 import { useGameStore } from '../../../store/gameStore';
+import '../../../styles/board-dark-animations.css';
 
 interface BoardSquareProps {
   cell: string;
@@ -52,7 +53,7 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
 
     // Standard squares: Pure white circular gradient for all non-vertex cells
     // Professional gaming board style with subtle white depth gradient
-    return 'skemino-cell-gradient'; // Gradiente circolare bianco puro con profondità sottile
+    return 'skemino-cell-gradient'; // CSS class for gradient styling
   }, [cell, isVertex]);
 
   // Dark Gaming Highlight styles - Professional competitive
@@ -80,26 +81,13 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
         ${squareColor} ${getHighlightStyle()}
         cursor-pointer transition-all duration-200 ease-out
         hover:brightness-125 hover:scale-[1.02] active:scale-[0.98] active:brightness-90
-        backdrop-blur-sm
+        backdrop-blur-sm rounded-lg
       `}
       style={{
-        width: size,
-        height: size * 1.4, // Card-like aspect ratio: taller than wide
-        contain: 'layout style paint',
-        // Professional white circular gradient: pure white with subtle depth
-        background: isVertex ? undefined : `
-          radial-gradient(circle at center,
-            rgba(255, 255, 255, 1.0) 0%,      /* Pure white center */
-            rgba(255, 255, 255, 0.98) 20%,    /* Nearly pure white */
-            rgba(252, 252, 252, 0.95) 40%,    /* Very light white */
-            rgba(248, 248, 248, 0.92) 60%,    /* Light white */
-            rgba(245, 245, 245, 0.90) 80%,    /* Slightly off-white */
-            rgba(242, 242, 242, 0.88) 100%    /* Subtle white edge */
-          )
-        `.replace(/\s+/g, ' '),
-        borderRadius: '8px', // Slightly more rounded corners for card feel
-        position: 'relative'
-      }}
+        '--square-size': `${size}px`,
+        width: `${size}px`,
+        height: `${size * 1.4}px`
+      } as React.CSSProperties}
       onClick={onClick}
       whileHover={{
         scale: 1.02,
