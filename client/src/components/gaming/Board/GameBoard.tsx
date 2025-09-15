@@ -136,14 +136,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({ demoMode = false }) => {
             type: "tween"
           }}
         >
-          {/* Dark Gaming Background with Professional Finish */}
-          <div className="absolute inset-0 bg-black/10 rounded-xl" />
 
-          {/* Professional Gaming Border Inner Glow */}
-          <div className="absolute inset-1 rounded-lg ring-1 ring-white/5" />
 
           {/* Board Grid Dark Professional Gaming */}
-          <div className="relative z-10 border border-gray-600 rounded-lg overflow-hidden bg-black/20 backdrop-blur-sm">
+          <div className="relative z-10 border border-gray-600 rounded-lg overflow-hidden">
             <div className="grid grid-cols-6 grid-rows-6 gap-0 p-0">
               {renderBoard()}
             </div>
@@ -153,7 +149,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ demoMode = false }) => {
           {/* Vertex Control Indicators Dark Gaming */}
           <div className="absolute -top-10 left-0 right-0 flex justify-between px-6 z-30">
             <motion.div
-              className="flex items-center space-x-3 bg-gray-800/90 backdrop-blur-sm rounded-full px-4 py-2 border border-red-500/30"
+              className="flex items-center space-x-3 bg-black rounded-full px-4 py-2 border border-red-500/30"
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
             >
@@ -161,7 +157,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ demoMode = false }) => {
               <span className="text-red-300 font-semibold text-sm tracking-wide">Q III</span>
             </motion.div>
             <motion.div
-              className="flex items-center space-x-3 bg-gray-800/90 backdrop-blur-sm rounded-full px-4 py-2 border border-yellow-500/30"
+              className="flex items-center space-x-3 bg-black rounded-full px-4 py-2 border border-yellow-500/30"
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
             >
@@ -172,7 +168,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ demoMode = false }) => {
 
           <div className="absolute -bottom-10 left-0 right-0 flex justify-between px-6 z-30">
             <motion.div
-              className="flex items-center space-x-3 bg-gray-800/90 backdrop-blur-sm rounded-full px-4 py-2 border border-cyan-500/30"
+              className="flex items-center space-x-3 bg-black rounded-full px-4 py-2 border border-cyan-500/30"
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
             >
@@ -180,7 +176,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ demoMode = false }) => {
               <span className="text-cyan-300 font-semibold text-sm tracking-wide">Q I</span>
             </motion.div>
             <motion.div
-              className="flex items-center space-x-3 bg-gray-800/90 backdrop-blur-sm rounded-full px-4 py-2 border border-emerald-500/30"
+              className="flex items-center space-x-3 bg-black rounded-full px-4 py-2 border border-emerald-500/30"
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
             >
@@ -197,12 +193,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({ demoMode = false }) => {
           {connected && latency && (
             <motion.div
               className={`
-                absolute top-3 right-3 px-3 py-2 text-xs rounded-lg z-40 font-mono font-medium backdrop-blur-sm border shadow-lg
+                absolute top-3 right-3 px-3 py-2 text-xs rounded-lg z-40 font-mono font-medium border shadow-lg
                 ${latency < 50
-                  ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30 shadow-emerald-500/30'
+                  ? 'bg-black text-emerald-300 border-emerald-500/30 shadow-emerald-500/30'
                   : latency < 100
-                    ? 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30 shadow-yellow-500/30'
-                    : 'bg-red-500/20 text-red-300 border-red-500/30 shadow-red-500/30'
+                    ? 'bg-black text-yellow-300 border-yellow-500/30 shadow-yellow-500/30'
+                    : 'bg-black text-red-300 border-red-500/30 shadow-red-500/30'
                 }
               `}
               whileHover={{ scale: 1.05 }}
