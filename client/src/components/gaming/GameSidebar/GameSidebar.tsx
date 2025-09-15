@@ -2,11 +2,8 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   XMarkIcon,
-  ChartBarIcon,
   UsersIcon,
-  CogIcon,
   ChatBubbleLeftIcon,
-  InformationCircleIcon,
   PlayIcon,
 } from '@heroicons/react/24/outline';
 import { PlayTab } from '../PlayTab/PlayTab';
@@ -32,14 +29,12 @@ export const GameSidebar: React.FC<GameSidebarProps> = ({
   className = '',
   onMatchFound,
 }) => {
-  const [activeTab, setActiveTab] = useState<'play' | 'analysis' | 'spectators' | 'settings' | 'chat'>('play');
+  const [activeTab, setActiveTab] = useState<'play' | 'spectators' | 'chat'>('play');
 
   const tabs = [
     { id: 'play', label: 'Gioca', icon: PlayIcon },
-    { id: 'analysis', label: 'Analysis', icon: ChartBarIcon },
     { id: 'spectators', label: 'Spectators', icon: UsersIcon },
     { id: 'chat', label: 'Chat', icon: ChatBubbleLeftIcon },
-    { id: 'settings', label: 'Settings', icon: CogIcon },
   ] as const;
 
   // Mock data for development
@@ -63,49 +58,6 @@ export const GameSidebar: React.FC<GameSidebarProps> = ({
     />
   );
 
-  // Analysis tab content
-  const AnalysisTab = () => (
-    <div className="p-4 space-y-4">
-      <div>
-        <h4 className="font-semibold text-gray-900 mb-2">Game Analysis</h4>
-        <div className="space-y-3">
-          <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-            <span className="text-sm text-gray-600">Position Evaluation</span>
-            <span className="text-sm font-medium">Balanced</span>
-          </div>
-          <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-            <span className="text-sm text-gray-600">Vertex Control</span>
-            <span className="text-sm font-medium">2-2</span>
-          </div>
-          <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-            <span className="text-sm text-gray-600">Cards Played</span>
-            <span className="text-sm font-medium">{gameState?.moveHistory.length || 0}</span>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <h4 className="font-semibold text-gray-900 mb-2">Opening Theory</h4>
-        <div className="p-3 bg-blue-50 rounded-lg">
-          <p className="text-sm text-blue-700">
-            Standard opening detected. Consider controlling vertex quadrants early.
-          </p>
-        </div>
-      </div>
-
-      <div>
-        <h4 className="font-semibold text-gray-900 mb-2">Suggested Moves</h4>
-        <div className="space-y-2">
-          <div className="p-2 bg-green-50 border border-green-200 rounded text-sm">
-            <span className="font-mono">C7:d4</span> - Control center
-          </div>
-          <div className="p-2 bg-yellow-50 border border-yellow-200 rounded text-sm">
-            <span className="font-mono">P3:a6</span> - Vertex pressure
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 
   // Spectators tab content
   const SpectatorsTab = () => (
@@ -187,56 +139,6 @@ export const GameSidebar: React.FC<GameSidebarProps> = ({
     </div>
   );
 
-  // Settings tab content
-  const SettingsTab = () => (
-    <div className="p-4 space-y-4">
-      <div>
-        <h4 className="font-semibold text-gray-900 mb-3">Game Settings</h4>
-        <div className="space-y-3">
-          <label className="flex items-center justify-between">
-            <span className="text-sm text-gray-700">Sound Effects</span>
-            <input type="checkbox" defaultChecked className="rounded" />
-          </label>
-          <label className="flex items-center justify-between">
-            <span className="text-sm text-gray-700">Move Highlights</span>
-            <input type="checkbox" defaultChecked className="rounded" />
-          </label>
-          <label className="flex items-center justify-between">
-            <span className="text-sm text-gray-700">Auto-promote</span>
-            <input type="checkbox" className="rounded" />
-          </label>
-        </div>
-      </div>
-
-      <div>
-        <h4 className="font-semibold text-gray-900 mb-3">Display</h4>
-        <div className="space-y-3">
-          <label className="flex items-center justify-between">
-            <span className="text-sm text-gray-700">Show Coordinates</span>
-            <input type="checkbox" defaultChecked className="rounded" />
-          </label>
-          <label className="flex items-center justify-between">
-            <span className="text-sm text-gray-700">Highlight Last Move</span>
-            <input type="checkbox" defaultChecked className="rounded" />
-          </label>
-        </div>
-      </div>
-
-      <div>
-        <h4 className="font-semibold text-gray-900 mb-3">Performance</h4>
-        <div className="space-y-3">
-          <label className="flex items-center justify-between">
-            <span className="text-sm text-gray-700">Reduce Animations</span>
-            <input type="checkbox" className="rounded" />
-          </label>
-          <label className="flex items-center justify-between">
-            <span className="text-sm text-gray-700">Performance Mode</span>
-            <input type="checkbox" className="rounded" />
-          </label>
-        </div>
-      </div>
-    </div>
-  );
 
   return (
     <motion.div
@@ -292,10 +194,8 @@ export const GameSidebar: React.FC<GameSidebarProps> = ({
             className="h-full overflow-y-auto"
           >
             {activeTab === 'play' && <PlayTabContent />}
-            {activeTab === 'analysis' && <AnalysisTab />}
             {activeTab === 'spectators' && <SpectatorsTab />}
             {activeTab === 'chat' && <ChatTab />}
-            {activeTab === 'settings' && <SettingsTab />}
           </motion.div>
         </AnimatePresence>
       </div>
