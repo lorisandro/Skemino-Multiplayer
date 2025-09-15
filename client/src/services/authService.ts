@@ -27,9 +27,36 @@ export const authService = {
         credentials: 'include'
       });
 
-      const data = await response.json();
+      // Check if response is empty or invalid
+      if (!response.ok) {
+        let errorMessage = 'Credenziali non valide';
 
-      if (response.ok && data.success) {
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch (jsonError) {
+          // If JSON parsing fails, use status text
+          errorMessage = response.statusText || errorMessage;
+        }
+
+        return {
+          success: false,
+          message: errorMessage
+        };
+      }
+
+      let data;
+      try {
+        data = await response.json();
+      } catch (jsonError) {
+        console.error('JSON parsing error:', jsonError);
+        return {
+          success: false,
+          message: 'Risposta del server non valida'
+        };
+      }
+
+      if (data.success) {
         return {
           success: true,
           user: data.user,
@@ -61,9 +88,36 @@ export const authService = {
         credentials: 'include'
       });
 
-      const data = await response.json();
+      // Check if response is empty or invalid
+      if (!response.ok) {
+        let errorMessage = 'Guest login failed';
 
-      if (response.ok && data.success) {
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch (jsonError) {
+          // If JSON parsing fails, use status text
+          errorMessage = response.statusText || errorMessage;
+        }
+
+        return {
+          success: false,
+          message: errorMessage
+        };
+      }
+
+      let data;
+      try {
+        data = await response.json();
+      } catch (jsonError) {
+        console.error('JSON parsing error:', jsonError);
+        return {
+          success: false,
+          message: 'Risposta del server non valida'
+        };
+      }
+
+      if (data.success) {
         return {
           success: true,
           user: data.user,
@@ -95,9 +149,36 @@ export const authService = {
         credentials: 'include'
       });
 
-      const data = await response.json();
+      // Check if response is empty or invalid
+      if (!response.ok) {
+        let errorMessage = 'Errore durante la registrazione';
 
-      if (response.ok && data.success) {
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch (jsonError) {
+          // If JSON parsing fails, use status text
+          errorMessage = response.statusText || errorMessage;
+        }
+
+        return {
+          success: false,
+          message: errorMessage
+        };
+      }
+
+      let data;
+      try {
+        data = await response.json();
+      } catch (jsonError) {
+        console.error('JSON parsing error:', jsonError);
+        return {
+          success: false,
+          message: 'Risposta del server non valida'
+        };
+      }
+
+      if (data.success) {
         return {
           success: true,
           user: data.user,
