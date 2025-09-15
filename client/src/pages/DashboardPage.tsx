@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthContext } from '../contexts/AuthContext';
+import { FlagIcon } from '../components/ui/FlagIcon';
 
 const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
@@ -123,11 +124,16 @@ const DashboardPage: React.FC = () => {
             {/* Welcome Section */}
             <div className="bg-gradient-to-r from-amber-500/20 to-orange-600/20 rounded-2xl p-8 backdrop-blur-xl border border-white/10">
               <h1 className="text-4xl font-bold text-white mb-4">
-                Benvenuto {user?.displayName && (
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
-                    {user.displayName}
+                {user?.displayName ? (
+                  <span className="flex items-center gap-3">
+                    <FlagIcon countryCode={user.countryCode} size="lg" />
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
+                      {user.displayName}
+                    </span>
                   </span>
-                )} su <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-600">Skèmino</span>
+                ) : (
+                  <>Benvenuto su <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-600">Skèmino</span></>
+                )}
               </h1>
               <p className="text-xl text-gray-300 mb-6">
                 {user?.level && (

@@ -16,6 +16,7 @@ export const MOCK_USERS: Record<string, StoredUser> = {
     username: 'mariorossi',
     email: 'mario.rossi@example.com',
     displayName: 'Mario Rossi',
+    countryCode: 'IT',
     passwordHash: DEFAULT_PASSWORD_HASH,
     rating: 1650,
     level: {
@@ -62,6 +63,7 @@ export const MOCK_USERS: Record<string, StoredUser> = {
     username: 'giuliab',
     email: 'giulia.bianchi@example.com',
     displayName: 'Giulia Bianchi',
+    countryCode: 'IT',
     passwordHash: DEFAULT_PASSWORD_HASH,
     rating: 2150,
     level: {
@@ -111,6 +113,7 @@ export const MOCK_USERS: Record<string, StoredUser> = {
     username: 'lucaverdi',
     email: 'luca.verdi@example.com',
     displayName: 'Luca Verdi',
+    countryCode: 'FR',
     passwordHash: DEFAULT_PASSWORD_HASH,
     rating: 1250,
     level: {
@@ -156,6 +159,7 @@ export const MOCK_USERS: Record<string, StoredUser> = {
     username: 'demo_player',
     email: 'demo@skemino.com',
     displayName: 'Demo Player',
+    countryCode: 'US',
     passwordHash: DEFAULT_PASSWORD_HASH,
     rating: 1400,
     level: {
@@ -201,6 +205,7 @@ export const MOCK_USERS: Record<string, StoredUser> = {
     username: 'admin',
     email: 'admin@skemino.com',
     displayName: 'Administrator',
+    countryCode: 'DE',
     passwordHash: DEFAULT_PASSWORD_HASH,
     rating: 2700,
     level: {
@@ -295,6 +300,7 @@ export const registerNewUser = (
     username,
     email,
     displayName: displayName || username,
+    countryCode: 'IT', // Default to Italy, can be changed later in profile
     passwordHash: DEFAULT_PASSWORD_HASH, // In produzione useresti bcrypt.hash
     rating: 1000,
     level: {

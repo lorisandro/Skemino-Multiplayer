@@ -54,34 +54,21 @@ export const useMatchmaking = (options: UseMatchmakingOptions = {}) => {
         error: null,
       }));
 
-      // Demo: Simulate finding a match after 8-15 seconds
-      const matchDelay = Math.random() * 7000 + 8000; // 8-15 seconds
+      // Demo: Timeout after 1 minute with no match found
+      const timeoutDelay = 60000; // 1 minute
       setTimeout(() => {
-        const mockOpponent = {
-          userId: 'demo_opponent_' + Date.now(),
-          username: isGuest ? 'Player_' + Math.floor(Math.random() * 1000) : 'SkeminoMaster',
-          rating: userRating + (Math.random() - 0.5) * 200,
-          isGuest: Math.random() > 0.5,
-        };
-
-        const matchData: MatchFoundData = {
-          gameId: 'demo_game_' + Date.now(),
-          color: Math.random() > 0.5 ? 'white' : 'black',
-          opponent: mockOpponent,
-          timeControl,
-        };
-
         setState(prev => ({
           ...prev,
           isSearching: false,
           timeControl: null,
           queuePosition: null,
           estimatedWait: null,
+          error: 'Nessun avversario trovato!',
         }));
 
-        onMatchFound?.(matchData);
-        console.log('🎯 Demo match found:', matchData);
-      }, matchDelay);
+        onError?.('Nessun avversario trovato!');
+        console.log('⏰ Matchmaking timeout - no opponent found');
+      }, timeoutDelay);
 
       return true;
     } catch (error) {

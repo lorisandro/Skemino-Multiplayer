@@ -6,6 +6,7 @@ export interface User {
   email: string;
   displayName?: string;
   avatar?: string;
+  countryCode?: string;
   rating: number;
   level: UserLevel;
   isEmailVerified: boolean;

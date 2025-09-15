@@ -144,9 +144,35 @@ router.post('/login', async (req: Request, res: Response) => {
         id: user.id,
         username: user.username,
         email: user.email,
+        displayName: user.username, // Use username as display name for now
+        countryCode: user.countryCode || 'IT', // Default to Italy if not set
         rating: user.rating,
-        level: user.level,
+        level: user.level || {
+          name: 'Principiante',
+          tier: 'Principiante',
+          ratingRange: { min: 1000, max: 1199 },
+          color: '#10B981',
+          icon: '🌱'
+        },
         isGuest: false,
+        isEmailVerified: user.isVerified || false,
+        isOnline: true,
+        lastActive: new Date(),
+        registrationDate: user.createdAt,
+        preferences: user.preferences || {},
+        statistics: user.statistics || {
+          totalGames: user.gamesPlayed || 0,
+          gamesWon: user.gamesWon || 0,
+          gamesLost: user.gamesLost || 0,
+          gamesDraw: user.gamesDrawn || 0,
+          currentWinStreak: 0,
+          longestWinStreak: 0,
+          averageGameDuration: 0,
+          favoriteTimeControl: 'standard',
+          averageAccuracy: 0,
+          totalPlayTime: 0
+        },
+        achievements: []
       },
       message: 'Login successful'
     });
@@ -238,9 +264,35 @@ router.post('/register', async (req: Request, res: Response) => {
         id: newUser.id,
         username: newUser.username,
         email: newUser.email,
+        displayName: newUser.username, // Use username as display name for now
+        countryCode: newUser.countryCode || 'IT', // Default to Italy if not set
         rating: newUser.rating,
-        level: newUser.level,
+        level: newUser.level || {
+          name: 'Principiante',
+          tier: 'Principiante',
+          ratingRange: { min: 1000, max: 1199 },
+          color: '#10B981',
+          icon: '🌱'
+        },
         isGuest: false,
+        isEmailVerified: newUser.isVerified || false,
+        isOnline: true,
+        lastActive: new Date(),
+        registrationDate: newUser.createdAt,
+        preferences: newUser.preferences || {},
+        statistics: newUser.statistics || {
+          totalGames: newUser.gamesPlayed || 0,
+          gamesWon: newUser.gamesWon || 0,
+          gamesLost: newUser.gamesLost || 0,
+          gamesDraw: newUser.gamesDrawn || 0,
+          currentWinStreak: 0,
+          longestWinStreak: 0,
+          averageGameDuration: 0,
+          favoriteTimeControl: 'standard',
+          averageAccuracy: 0,
+          totalPlayTime: 0
+        },
+        achievements: []
       },
       message: 'Registration successful'
     });
