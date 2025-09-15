@@ -180,7 +180,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
           </div>
 
           {/* Center - Game Board */}
-          <div className="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-slate-50 to-slate-100">
+          <div className="flex-1 flex items-center justify-center p-2 bg-gradient-to-br from-slate-50 to-slate-100">
             <div className="relative w-full h-full flex items-center justify-center">
               <GameBoard demoMode={isDemoMode} />
             </div>

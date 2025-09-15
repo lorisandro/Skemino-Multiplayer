@@ -43,7 +43,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ demoMode = false }) => {
           setIs2K(is2KDisplay);
 
           // Account for 1.4:1 aspect ratio of cells when calculating board size
-          const size = Math.min(width * 0.95, (height * 0.95) / 1.4, 1400);
+          const size = Math.min(width * 0.98, (height * 0.98) / 1.4, 1400);
           setBoardSize(size);
         }
       }
