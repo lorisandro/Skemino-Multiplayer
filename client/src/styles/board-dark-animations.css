@@ -1091,7 +1091,7 @@ div.skemino-square-dark.skemino-central-d4,
   position: absolute;
   bottom: 0.125rem;
   right: 0.25rem;
-  font-size: 0.625rem;
+  font-size: 0.875rem;  /* Increased from 0.625rem */
   color: #000000;
   font-weight: 700;
   font-family: 'Monaco', 'Consolas', monospace;
@@ -1105,7 +1105,7 @@ div.skemino-square-dark.skemino-central-d4,
 /* Container query adjustments for notation */
 @container gameboard (max-width: 30rem) {
   .skemino-notation-zoom-resistant::after {
-    font-size: 0.5rem;
+    font-size: 0.75rem;  /* Increased from 0.5rem */
   }
 
   .skemino-vertex-zoom-resistant::before {
@@ -1118,7 +1118,7 @@ div.skemino-square-dark.skemino-central-d4,
 
 @container gameboard (min-width: 60rem) {
   .skemino-notation-zoom-resistant::after {
-    font-size: 0.75rem;
+    font-size: 1rem;  /* Increased from 0.75rem */
   }
 
   .skemino-vertex-zoom-resistant::before {
