@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider, RequireAuth } from './contexts/AuthContext';
 import App from './App';
 import AppDebug from './App.debug';
 import HomePage from './pages/HomePage';
@@ -52,10 +52,26 @@ export function Router() {
           <Route path="/home" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPageWrapper />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/pregame" element={<PreGamePage />} />
-          <Route path="/game" element={<GamePage />} />
-          <Route path="/game/:roomId" element={<GamePage />} />
+          <Route path="/dashboard" element={
+            <RequireAuth fallback={<Navigate to="/login" replace />}>
+              <DashboardPage />
+            </RequireAuth>
+          } />
+          <Route path="/pregame" element={
+            <RequireAuth fallback={<Navigate to="/login" replace />}>
+              <PreGamePage />
+            </RequireAuth>
+          } />
+          <Route path="/game" element={
+            <RequireAuth fallback={<Navigate to="/login" replace />}>
+              <GamePage />
+            </RequireAuth>
+          } />
+          <Route path="/game/:roomId" element={
+            <RequireAuth fallback={<Navigate to="/login" replace />}>
+              <GamePage />
+            </RequireAuth>
+          } />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>
