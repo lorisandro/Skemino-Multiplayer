@@ -136,7 +136,7 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
       {/* Cell label - Show only for legacy mode (zoom-resistant uses CSS notation) */}
       {!zoomResistant && (
         <div className={`skemino-cell-label ${isVertex ? 'skemino-cell-label-vertex' : 'skemino-cell-label-normal'}`}>
-          <span className={`${!isVertex ? 'bg-white/85 px-1.5 py-0.5 rounded text-xs backdrop-blur-sm' : ''}`}>
+          <span className={`${!isVertex ? 'bg-black/30 px-1.5 py-0.5 rounded text-xs backdrop-blur-sm text-black font-bold' : ''}`}>
             {cell}
           </span>
         </div>

@@ -1092,11 +1092,14 @@ div.skemino-square-dark.skemino-central-d4,
   bottom: 0.125rem;
   right: 0.25rem;
   font-size: 0.625rem;
-  color: #888;
-  font-weight: 400;
+  color: #000000;
+  font-weight: 700;
   font-family: 'Monaco', 'Consolas', monospace;
   z-index: 1;
-  opacity: 0.8;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  backdrop-filter: blur(2px);
 }
 
 /* Container query adjustments for notation */
