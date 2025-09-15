@@ -13,7 +13,7 @@ interface TimerProps {
 }
 
 /**
- * Timer component - Chess-style game timer with visual warnings
+ * Timer component - Circular chess-style game timer with visual warnings
  */
 export const Timer: React.FC<TimerProps> = ({
   timeRemaining,
@@ -102,14 +102,15 @@ export const Timer: React.FC<TimerProps> = ({
   const isDanger = displayTime <= danger && displayTime > 0;
   const isWarning = displayTime <= warning && displayTime > danger;
 
-  // Mobile layout
+  // Mobile layout - circular timer
   if (mobile) {
     return (
       <motion.div
         className={`
-          px-2 py-1 rounded-lg font-mono font-bold text-sm
+          w-12 h-12 rounded-full font-mono font-bold text-xs
           border-2 ${style.border} ${style.bg} ${style.text}
           ${isActive ? `ring-2 ${style.ring}` : ''}
+          flex items-center justify-center
           ${className}
         `}
         animate={isDanger ? {
@@ -126,15 +127,15 @@ export const Timer: React.FC<TimerProps> = ({
     );
   }
 
-  // Compact layout
+  // Compact layout - circular timer
   if (compact) {
     return (
       <motion.div
         className={`
-          px-3 py-2 rounded-lg font-mono font-bold text-lg
+          w-16 h-16 rounded-full font-mono font-bold text-sm
           border-2 ${style.border} ${style.bg} ${style.text}
           ${isActive ? `ring-2 ${style.ring}` : ''}
-          flex items-center justify-center min-w-[100px]
+          flex items-center justify-center
           ${className}
         `}
         animate={isDanger ? {
@@ -151,18 +152,12 @@ export const Timer: React.FC<TimerProps> = ({
     );
   }
 
-  // Full desktop layout
+  // Full desktop layout - circular timer with ring progress
   return (
-    <div className={`${className}`}>
-      {/* Timer display */}
+    <div className={`relative ${className}`}>
+      {/* Circular timer with SVG progress ring */}
       <motion.div
-        className={`
-          px-4 py-3 rounded-xl font-mono font-bold text-2xl
-          border-2 ${style.border} ${style.bg} ${style.text}
-          ${isActive ? `ring-4 ${style.ring}` : ''}
-          flex items-center justify-center min-w-[120px]
-          shadow-lg
-        `}
+        className="relative"
         animate={isDanger ? {
           scale: [1, 1.05, 1],
         } : isWarning ? {
@@ -178,76 +173,46 @@ export const Timer: React.FC<TimerProps> = ({
           ease: "easeInOut"
         } : {}}
       >
-        {formatTime(displayTime)}
+        {/* SVG progress ring */}
+        <svg className="w-20 h-20 transform -rotate-90">
+          <circle
+            cx="40"
+            cy="40"
+            r="36"
+            stroke="currentColor"
+            strokeWidth="4"
+            fill="none"
+            className="text-gray-200"
+          />
+          <circle
+            cx="40"
+            cy="40"
+            r="36"
+            stroke="currentColor"
+            strokeWidth="4"
+            fill="none"
+            strokeDasharray={`${2 * Math.PI * 36}`}
+            strokeDashoffset={`${2 * Math.PI * 36 * (1 - Math.max(0, Math.min(1, displayTime / 300)))}`}
+            className={`${
+              isDanger ? 'text-red-500' :
+              isWarning ? 'text-yellow-500' :
+              isActive ? 'text-green-500' :
+              'text-gray-400'
+            } transition-all duration-300`}
+          />
+        </svg>
+
+        {/* Timer display in center */}
+        <div
+          className={`
+            absolute inset-0 flex items-center justify-center
+            font-mono font-bold text-lg
+            ${style.text}
+          `}
+        >
+          {formatTime(displayTime)}
+        </div>
       </motion.div>
-
-      {/* Status indicator */}
-      <div className="mt-2 text-center">
-        {isActive && (
-          <motion.div
-            className="text-xs font-medium text-gray-600"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-          >
-            Active
-          </motion.div>
-        )}
-
-        {isDanger && (
-          <motion.div
-            className="text-xs font-bold text-red-600"
-            animate={{
-              opacity: [0.7, 1, 0.7],
-            }}
-            transition={{
-              duration: 0.5,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          >
-            TIME CRITICAL!
-          </motion.div>
-        )}
-
-        {isWarning && !isDanger && (
-          <motion.div
-            className="text-xs font-medium text-yellow-600"
-            animate={{
-              opacity: [0.8, 1, 0.8],
-            }}
-            transition={{
-              duration: 1,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          >
-            Low Time
-          </motion.div>
-        )}
-      </div>
-
-      {/* Progress bar for full layout */}
-      <div className="mt-3 w-full bg-gray-200 rounded-full h-2">
-        <motion.div
-          className={`h-2 rounded-full transition-all duration-300 ${
-            isDanger ? 'bg-red-500' :
-            isWarning ? 'bg-yellow-500' :
-            'bg-green-500'
-          }`}
-          style={{
-            width: `${Math.max(0, Math.min(100, (displayTime / 300) * 100))}%`
-          }}
-          animate={isDanger ? {
-            opacity: [0.7, 1, 0.7],
-          } : {}}
-          transition={isDanger ? {
-            duration: 0.5,
-            repeat: Infinity,
-            ease: "easeInOut"
-          } : {}}
-        />
-      </div>
     </div>
   );
 };

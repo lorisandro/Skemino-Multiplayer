@@ -66,18 +66,20 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
         <div className="h-full flex flex-col p-2">
           {/* Player info and timer in header */}
           <div className="flex items-center justify-between mb-2">
-            <PlayerInfo
-              player={player}
-              isOpponent={isOpponent}
-              isCurrentTurn={isCurrentTurn}
-              compact={true}
-              mobile={true}
-            />
-            <Timer
-              timeRemaining={timeRemaining}
-              isActive={isCurrentTurn}
-              compact={true}
-            />
+            <div className="flex items-center gap-2">
+              <PlayerInfo
+                player={player}
+                isOpponent={isOpponent}
+                isCurrentTurn={isCurrentTurn}
+                compact={true}
+                mobile={true}
+              />
+              <Timer
+                timeRemaining={timeRemaining}
+                isActive={isCurrentTurn}
+                mobile={true}
+              />
+            </div>
           </div>
 
           {/* Cards */}
@@ -108,13 +110,20 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
         animate={isCurrentTurn ? 'active' : 'inactive'}
       >
         <div className="h-full flex items-center p-4 space-x-4">
-          {/* Player info */}
-          <PlayerInfo
-            player={player}
-            isOpponent={isOpponent}
-            isCurrentTurn={isCurrentTurn}
-            compact={true}
-          />
+          {/* Player info with timer */}
+          <div className="flex items-center gap-3">
+            <PlayerInfo
+              player={player}
+              isOpponent={isOpponent}
+              isCurrentTurn={isCurrentTurn}
+              compact={true}
+            />
+            <Timer
+              timeRemaining={timeRemaining}
+              isActive={isCurrentTurn}
+              compact={true}
+            />
+          </div>
 
           {/* Cards */}
           <div className="flex-1 flex items-center justify-center">
@@ -129,13 +138,6 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
               maxCards={10}
             />
           </div>
-
-          {/* Timer */}
-          <Timer
-            timeRemaining={timeRemaining}
-            isActive={isCurrentTurn}
-            compact={true}
-          />
         </div>
       </motion.div>
     );
@@ -151,12 +153,12 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
       >
         {/* Player header */}
         <div className="p-4 border-b border-slate-200">
-          <PlayerInfo
-            player={player}
-            isOpponent={isOpponent}
-            isCurrentTurn={isCurrentTurn}
-          />
-          <div className="mt-3">
+          <div className="flex items-center justify-between">
+            <PlayerInfo
+              player={player}
+              isOpponent={isOpponent}
+              isCurrentTurn={isCurrentTurn}
+            />
             <Timer
               timeRemaining={timeRemaining}
               isActive={isCurrentTurn}
@@ -202,12 +204,16 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
       animate={isCurrentTurn ? 'active' : 'inactive'}
     >
       <div className="h-full flex items-center p-6 space-x-6">
-        {/* Player info */}
-        <div className="flex-shrink-0">
+        {/* Player info with timer */}
+        <div className="flex items-center gap-4 flex-shrink-0">
           <PlayerInfo
             player={player}
             isOpponent={isOpponent}
             isCurrentTurn={isCurrentTurn}
+          />
+          <Timer
+            timeRemaining={timeRemaining}
+            isActive={isCurrentTurn}
           />
         </div>
 
@@ -221,14 +227,6 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
             layout="grid"
             showHidden={!showCards}
             maxCards={10}
-          />
-        </div>
-
-        {/* Timer */}
-        <div className="flex-shrink-0">
-          <Timer
-            timeRemaining={timeRemaining}
-            isActive={isCurrentTurn}
           />
         </div>
 
