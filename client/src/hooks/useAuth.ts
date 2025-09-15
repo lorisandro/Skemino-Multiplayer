@@ -7,6 +7,7 @@ import type {
   AuthContextType,
   GuestUser
 } from '../types/auth';
+import { authService } from '../services/authService';
 
 /**
  * useAuth - Hook per la gestione dell'autenticazione Skèmino
@@ -66,8 +67,16 @@ export const useAuth = (): AuthContextType => {
     setIsLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Use real auth service
+      const response = await authService.login(
+        credentials.identifier,
+        credentials.password,
+        credentials.rememberMe
+      );
+
+      if (!response.success) {
+        throw new Error(response.message || 'Login failed');
+      }
 
       // Mock successful login
       const mockUser: User = {
