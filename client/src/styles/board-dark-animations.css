@@ -948,8 +948,8 @@ div.skemino-square-dark.skemino-central-d4,
 /* Desktop gaming */
 @media (min-width: 1025px) and (max-width: 1439px) {
   .skemino-board-zoom-resistant {
-    width: 50rem !important;
-    height: 70rem !important;
+    width: 36rem !important;
+    height: 50rem !important;
     border-width: 2px;
   }
 
@@ -972,8 +972,8 @@ div.skemino-square-dark.skemino-central-d4,
 /* 2K gaming optimized */
 @media (min-width: 1440px) and (max-width: 1919px) {
   .skemino-board-zoom-resistant {
-    width: 60rem !important;
-    height: 84rem !important;
+    width: 42rem !important;
+    height: 59rem !important;
     border-width: 3px;
   }
 
@@ -996,8 +996,8 @@ div.skemino-square-dark.skemino-central-d4,
 /* Ultrawide gaming */
 @media (min-width: 1920px) {
   .skemino-board-zoom-resistant {
-    width: 70rem !important;
-    height: 98rem !important;
+    width: 48rem !important;
+    height: 67rem !important;
     border-width: 3px;
   }
 

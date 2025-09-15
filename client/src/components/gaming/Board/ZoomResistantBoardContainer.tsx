@@ -112,11 +112,11 @@ export const useBoardContainerSize = () => {
       case 'tablet':
         return { width: '35rem', height: '49rem' };
       case 'desktop':
-        return { width: '50rem', height: '70rem' };
+        return { width: '36rem', height: '50rem' };
       case '2k':
-        return { width: '60rem', height: '84rem' };
+        return { width: '42rem', height: '59rem' };
       case 'ultrawide':
-        return { width: '70rem', height: '98rem' };
+        return { width: '48rem', height: '67rem' };
       default:
         return { width: '35rem', height: '49rem' };
     }
