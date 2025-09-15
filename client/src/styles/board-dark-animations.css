@@ -828,10 +828,12 @@ div.skemino-square-dark.skemino-central-d4,
   width: 35rem;  /* Default size */
   height: 49rem; /* Height calculated for 6x6 grid with 1:1.4 aspect ratio cells */
 
-  /* Centering and positioning with padding for black space around board */
+  /* Perfect centering with flexbox for gameboard grid */
   position: relative;
   margin: 0 auto;
-  padding: 1rem; /* Black space around the actual board */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   /* Dark gaming theme - this creates the black area around the board */
   background: var(--skemino-bg-primary);
