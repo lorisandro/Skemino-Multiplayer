@@ -1,12 +1,13 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuthContext } from '../contexts/AuthContext';
 
 const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
+  const { user, logout } = useAuthContext();
 
-  const handleLogout = () => {
-    // TODO: Implement actual logout logic
-    console.log('Logout requested');
+  const handleLogout = async () => {
+    await logout();
     navigate('/');
   };
 
@@ -63,9 +64,20 @@ const DashboardPage: React.FC = () => {
             {/* Welcome Section */}
             <div className="bg-gradient-to-r from-amber-500/20 to-orange-600/20 rounded-2xl p-8 backdrop-blur-xl border border-white/10">
               <h1 className="text-4xl font-bold text-white mb-4">
-                Benvenuto su <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-600">Skèmino</span>
+                Benvenuto {user?.displayName && (
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
+                    {user.displayName}
+                  </span>
+                )} su <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-600">Skèmino</span>
               </h1>
               <p className="text-xl text-gray-300 mb-6">
+                {user?.level && (
+                  <span className="inline-flex items-center gap-2 mb-2 px-3 py-1 bg-white/10 rounded-full text-sm font-medium" style={{ color: user.level.color }}>
+                    <span>{user.level.icon}</span>
+                    {user.level.name} • Rating: {user.rating}
+                  </span>
+                )}
+                <br />
                 Sei pronto per la tua prossima sfida strategica? Trova un avversario e dimostra le tue abilità!
               </p>
               <button
@@ -80,20 +92,26 @@ const DashboardPage: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-black/40 backdrop-blur-xl rounded-xl p-6 border border-white/10">
                 <h3 className="text-lg font-semibold text-white mb-2">Streak Attuale</h3>
-                <div className="text-3xl font-bold text-green-400">+5</div>
+                <div className="text-3xl font-bold text-green-400">
+                  +{user?.statistics?.currentWinStreak || 0}
+                </div>
                 <p className="text-gray-400 text-sm">Vittorie consecutive</p>
               </div>
 
               <div className="bg-black/40 backdrop-blur-xl rounded-xl p-6 border border-white/10">
-                <h3 className="text-lg font-semibold text-white mb-2">Tempo Medio</h3>
-                <div className="text-3xl font-bold text-blue-400">8:32</div>
-                <p className="text-gray-400 text-sm">Per partita</p>
+                <h3 className="text-lg font-semibold text-white mb-2">Partite Giocate</h3>
+                <div className="text-3xl font-bold text-blue-400">
+                  {user?.statistics?.totalGames || 0}
+                </div>
+                <p className="text-gray-400 text-sm">Totali</p>
               </div>
 
               <div className="bg-black/40 backdrop-blur-xl rounded-xl p-6 border border-white/10">
-                <h3 className="text-lg font-semibold text-white mb-2">Posizione</h3>
-                <div className="text-3xl font-bold text-amber-400">#247</div>
-                <p className="text-gray-400 text-sm">Classifica globale</p>
+                <h3 className="text-lg font-semibold text-white mb-2">Rating</h3>
+                <div className="text-3xl font-bold text-amber-400">
+                  {user?.rating || 1000}
+                </div>
+                <p className="text-gray-400 text-sm">{user?.level?.name || 'Non disponibile'}</p>
               </div>
             </div>
 
