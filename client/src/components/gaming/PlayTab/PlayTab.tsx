@@ -24,10 +24,6 @@ export const PlayTab: React.FC<PlayTabProps> = ({
 }) => {
   const [selectedTimeControl, setSelectedTimeControl] = useState<string>('rapid');
   const [showMatchmaking, setShowMatchmaking] = useState(false);
-  const [advancedOptions, setAdvancedOptions] = useState({
-    maxRatingDifference: 200,
-    preferredColor: 'random' as 'random' | 'white' | 'black',
-  });
 
   const { joinQueue, leaveQueue, isSearching, error } = useMatchmaking({
     onMatchFound: (data) => {
@@ -179,50 +175,6 @@ export const PlayTab: React.FC<PlayTabProps> = ({
           </motion.div>
         )}
 
-        {/* Advanced Options */}
-        <details className="mt-4">
-          <summary className="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-900">
-            Opzioni Avanzate
-          </summary>
-          <motion.div
-            className="mt-3 space-y-3"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            transition={{ duration: 0.2 }}
-          >
-            <label className="flex items-center justify-between text-sm">
-              <span>Differenza Rating Max:</span>
-              <select
-                value={advancedOptions.maxRatingDifference}
-                onChange={(e) => setAdvancedOptions(prev => ({
-                  ...prev,
-                  maxRatingDifference: parseInt(e.target.value)
-                }))}
-                className="text-xs border rounded px-2 py-1"
-              >
-                <option value={200}>±200</option>
-                <option value={400}>±400</option>
-                <option value={600}>±600</option>
-                <option value={1000}>Qualsiasi</option>
-              </select>
-            </label>
-            <label className="flex items-center justify-between text-sm">
-              <span>Colore Preferito:</span>
-              <select
-                value={advancedOptions.preferredColor}
-                onChange={(e) => setAdvancedOptions(prev => ({
-                  ...prev,
-                  preferredColor: e.target.value as 'random' | 'white' | 'black'
-                }))}
-                className="text-xs border rounded px-2 py-1"
-              >
-                <option value="random">Casuale</option>
-                <option value="white">Bianco</option>
-                <option value="black">Nero</option>
-              </select>
-            </label>
-          </motion.div>
-        </details>
 
         {/* Error Display */}
         {error && (
