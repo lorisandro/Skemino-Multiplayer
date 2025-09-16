@@ -268,7 +268,7 @@ const HomePage: React.FC = () => {
               <div className="bg-black/60 backdrop-blur-xl border border-amber-500/30 rounded-xl p-4 text-center group hover:border-amber-500/60 transition-all duration-300">
                 <div className="text-2xl mb-2 group-hover:scale-110 transition-transform duration-300">⚡</div>
                 <div className="text-amber-400 font-bold text-sm mb-1">MATCHMAKING ISTANTANEO</div>
-                <div className="text-gray-300 text-xs">Trova avversari in &lt;3 secondi</div>
+                <div className="text-gray-300 text-xs">Trova avversari in {"<3"} secondi</div>
               </div>
 
               {/* Professional System */}
