@@ -808,15 +808,15 @@ div.skemino-square-dark.skemino-central-d4,
   container-type: size;
   container-name: gameboard;
 
-  /* Rectangular sizing for 6x6 strategic gaming board - height elongated +1.5% - INCREASED BY 25% */
-  width: min(72.875rem, 90vw);  /* Increased by 25% from 58.3rem for better visibility */
-  height: min(103.556rem, 92vh); /* Increased by 25% from 82.845rem for better visibility */
+  /* Rectangular sizing for 6x6 strategic gaming board - height elongated +1.5% - INCREASED BY 43.75% TOTAL */
+  width: min(83.806rem, 90vw);  /* Increased by additional 15% from 72.875rem for even better visibility */
+  height: min(119.089rem, 92vh); /* Increased by additional 15% from 103.556rem for even better visibility */
 
-  /* Prevent overflow and ensure proper proportions - INCREASED BY 25% */
-  min-width: 51.0125rem; /* Increased by 25% from 40.81rem */
-  min-height: 72.49rem; /* Increased by 25% from 57.992rem */
-  max-width: 109.3125rem;  /* Increased by 25% from 87.45rem */
-  max-height: 155.5275rem; /* Increased by 25% from 124.422rem */
+  /* Prevent overflow and ensure proper proportions - INCREASED BY 43.75% TOTAL */
+  min-width: 58.664rem; /* Increased by additional 15% from 51.0125rem */
+  min-height: 83.364rem; /* Increased by additional 15% from 72.49rem */
+  max-width: 125.709rem;  /* Increased by additional 15% from 109.3125rem */
+  max-height: 178.857rem; /* Increased by additional 15% from 155.5275rem */
 
   /* Centering and positioning */
   position: relative;
@@ -901,12 +901,12 @@ div.skemino-square-dark.skemino-central-d4,
 
 /* ===== CONTAINER QUERY BREAKPOINTS - ZOOM RESISTANT ===== */
 
-/* Mobile gaming optimized - INCREASED BY 25% */
-@container gameboard (max-width: 111.25rem) {
+/* Mobile gaming optimized - INCREASED BY 43.75% TOTAL */
+@container gameboard (max-width: 127.94rem) {
   .skemino-board-zoom-resistant {
-    width: 58.3rem; /* Increased by 25% from 46.64rem */
-    height: min(82.845rem, 90vh); /* Increased by 25% from 66.276rem */
-    min-height: 82.845rem;
+    width: 67.045rem; /* Increased by additional 15% from 58.3rem */
+    height: min(95.272rem, 90vh); /* Increased by additional 15% from 82.845rem */
+    min-height: 95.272rem;
     border-width: 1px;
   }
 
@@ -926,12 +926,12 @@ div.skemino-square-dark.skemino-central-d4,
   }
 }
 
-/* Tablet gaming - INCREASED BY 25% */
-@container gameboard (min-width: 111.25rem) and (max-width: 150rem) {
+/* Tablet gaming - INCREASED BY 43.75% TOTAL */
+@container gameboard (min-width: 127.94rem) and (max-width: 172.5rem) {
   .skemino-board-zoom-resistant {
-    width: 65.5875rem; /* Increased by 25% from 52.47rem */
-    height: min(93.2rem, 90vh); /* Increased by 25% from 74.560rem */
-    min-height: 93.2rem;
+    width: 75.426rem; /* Increased by additional 15% from 65.5875rem */
+    height: min(107.18rem, 90vh); /* Increased by additional 15% from 93.2rem */
+    min-height: 107.18rem;
   }
 
   .skemino-grid-zoom-resistant {
@@ -950,12 +950,12 @@ div.skemino-square-dark.skemino-central-d4,
   }
 }
 
-/* Desktop gaming - INCREASED BY 25% */
-@container gameboard (min-width: 150rem) and (max-width: 185rem) {
+/* Desktop gaming - INCREASED BY 43.75% TOTAL */
+@container gameboard (min-width: 172.5rem) and (max-width: 212.75rem) {
   .skemino-board-zoom-resistant {
-    width: 72.875rem; /* Increased by 25% from 58.3rem */
-    height: min(103.556rem, 92vh); /* Increased by 25% from 82.845rem */
-    min-height: 103.556rem;
+    width: 83.806rem; /* Increased by additional 15% from 72.875rem */
+    height: min(119.089rem, 92vh); /* Increased by additional 15% from 103.556rem */
+    min-height: 119.089rem;
     border-width: 2px;
   }
 
@@ -975,12 +975,12 @@ div.skemino-square-dark.skemino-central-d4,
   }
 }
 
-/* 2K gaming optimized - INCREASED BY 25% */
-@container gameboard (min-width: 185rem) and (max-width: 222.5rem) {
+/* 2K gaming optimized - INCREASED BY 43.75% TOTAL */
+@container gameboard (min-width: 212.75rem) and (max-width: 255.88rem) {
   .skemino-board-zoom-resistant {
-    width: 80.1625rem; /* Increased by 25% from 64.13rem */
-    height: min(113.911rem, 94vh); /* Increased by 25% from 91.129rem */
-    min-height: 113.911rem;
+    width: 92.187rem; /* Increased by additional 15% from 80.1625rem */
+    height: min(130.997rem, 94vh); /* Increased by additional 15% from 113.911rem */
+    min-height: 130.997rem;
     border-width: 3px;
   }
 
@@ -1000,12 +1000,12 @@ div.skemino-square-dark.skemino-central-d4,
   }
 }
 
-/* Ultrawide gaming - INCREASED BY 25% */
-@container gameboard (min-width: 222.5rem) {
+/* Ultrawide gaming - INCREASED BY 43.75% TOTAL */
+@container gameboard (min-width: 255.88rem) {
   .skemino-board-zoom-resistant {
-    width: 87.45rem; /* Increased by 25% from 69.96rem */
-    height: min(124.268rem, 95vh); /* Increased by 25% from 99.414rem */
-    min-height: 124.268rem;
+    width: 100.568rem; /* Increased by additional 15% from 87.45rem */
+    height: min(142.908rem, 95vh); /* Increased by additional 15% from 124.268rem */
+    min-height: 142.908rem;
     border-width: 3px;
   }
 

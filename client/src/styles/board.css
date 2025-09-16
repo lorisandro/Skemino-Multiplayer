@@ -3,7 +3,7 @@
 .skemino-board-container {
   position: relative;
   width: 100%;
-  max-width: 1000px; /* Increased by 25% from 800px */
+  max-width: 1150px; /* Increased by 43.75% TOTAL from 800px */
   margin: 0 auto;
   padding: 2rem;
   display: grid;
