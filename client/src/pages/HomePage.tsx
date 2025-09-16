@@ -115,7 +115,7 @@ const HomePage: React.FC = () => {
       <section className="py-16">
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="bg-gray-900 rounded-2xl shadow-2xl p-8 border border-gray-800">
-          <div className="text-center mb-16">
+            <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
                 Affronta i Nostri Bot Intelligenti
@@ -227,6 +227,7 @@ const HomePage: React.FC = () => {
               </div>
             </div>
           </div>
+          </div>
         </div>
       </section>
 
@@ -234,7 +235,7 @@ const HomePage: React.FC = () => {
       <section className="py-16 mt-12">
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="bg-gray-900 rounded-2xl shadow-2xl p-8 border border-gray-800">
-          <div className="text-center mb-16">
+            <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-green-400">
                 Entra nella Comunità Globale Skèmino
@@ -328,7 +329,6 @@ const HomePage: React.FC = () => {
             </div>
           </div>
           </div>
-          </div>
         </div>
       </section>
 
@@ -336,7 +336,7 @@ const HomePage: React.FC = () => {
       <section className="py-16 mt-12">
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="bg-gray-900 rounded-2xl shadow-2xl p-8 border border-gray-800">
-          <div className="text-center mb-16">
+            <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
                 Analizza e Migliora il Tuo Gioco
@@ -479,7 +479,7 @@ const HomePage: React.FC = () => {
       <section className="py-16 mt-12">
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="bg-gray-900 rounded-2xl shadow-2xl p-8 border border-gray-800">
-          <div className="text-center mb-16">
+            <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-400">
                 Allena la Tua Mente con Puzzle Quotidiani
@@ -603,7 +603,7 @@ const HomePage: React.FC = () => {
       <section className="py-16 mt-12">
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="bg-gray-900 rounded-2xl shadow-2xl p-8 border border-gray-800">
-          <div className="text-center mb-16">
+            <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-400">
                 Padroneggia l'Arte Strategica di Skèmino
@@ -733,7 +733,7 @@ const HomePage: React.FC = () => {
       <section className="py-16 mt-12">
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="bg-gray-900 rounded-2xl shadow-2xl p-8 border border-gray-800">
-          <div className="text-center mb-16">
+            <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-red-400">
                 Conquista i Tornei Competitivi
