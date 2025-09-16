@@ -240,7 +240,7 @@ export const useAuth = (): AuthContextType => {
       console.log('✅ Received valid JWT token:', authToken.substring(0, 20) + '... (length: ' + authToken.length + ')');
 
       // Store auth data with versioning
-      const tokenVersion = '2025-09-16'; // Current token version
+      const tokenVersion = '2025-09-16-hotfix'; // Current token version
       if (credentials.rememberMe) {
         localStorage.setItem('skemino_auth_token', authToken);
         localStorage.setItem('skemino_user_data', JSON.stringify(authenticatedUser));
@@ -330,7 +330,7 @@ export const useAuth = (): AuthContextType => {
       console.log('✅ Received valid JWT token during registration:', authToken.substring(0, 20) + '... (length: ' + authToken.length + ')');
 
       // Store auth data in localStorage for registration (always persistent) with versioning
-      const tokenVersion = '2025-09-16'; // Current token version
+      const tokenVersion = '2025-09-16-hotfix'; // Current token version
       localStorage.setItem('skemino_auth_token', authToken);
       localStorage.setItem('skemino_user_data', JSON.stringify(registeredUser));
       localStorage.setItem('skemino_token_version', tokenVersion);
