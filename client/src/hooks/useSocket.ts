@@ -82,14 +82,17 @@ export const useSocket = (): UseSocketReturn => {
 
   // Initialize socket connection only once per application lifecycle
   useEffect(() => {
+    // Increment connection count for each component using this hook
+    socketConnectionCount++;
+    console.log(`🔗 Component mount, active connections: ${socketConnectionCount}`);
+
     if (!globalSocket && !isInitialized.current) {
       isInitialized.current = true;
       setConnecting(true);
-      socketConnectionCount++;
 
       const initializeSocket = async () => {
         try {
-          console.log(`🔗 Initializing socket connection #${socketConnectionCount}`);
+          console.log(`🔗 Initializing global socket connection`);
 
           // Ensure we have authentication
           const token = await ensureAuthentication();
@@ -117,7 +120,7 @@ export const useSocket = (): UseSocketReturn => {
 
           // Connection event handlers - set only once
           globalSocket.on('connect', () => {
-            console.log(`✅ Connected to server (connection #${socketConnectionCount})`);
+            console.log(`✅ Connected to server`);
             setConnected(true);
             setConnecting(false);
           });
