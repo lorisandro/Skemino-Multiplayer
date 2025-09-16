@@ -75,7 +75,7 @@ router.post('/guest', async (req: Request, res: Response) => {
 
     logger.info(`👤 Guest user created: ${guestUsername} (${guestId})`);
 
-    res.json({
+    return res.json({
       success: true,
       token,
       user: {
@@ -89,7 +89,7 @@ router.post('/guest', async (req: Request, res: Response) => {
 
   } catch (error) {
     logger.error('Error creating guest session:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: 'Failed to create guest session'
     });

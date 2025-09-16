@@ -192,7 +192,7 @@ export const Timer: React.FC<TimerProps> = ({
             strokeWidth="4"
             fill="none"
             strokeDasharray={`${2 * Math.PI * 36}`}
-            strokeDashoffset={`${2 * Math.PI * 36 * (1 - Math.max(0, Math.min(1, displayTime / 300)))}`}
+            strokeDashoffset={`${2 * Math.PI * 36 * (1 - Math.max(0, Math.min(1, displayTime / 1800)))}`}
             className={`${
               isDanger ? 'text-red-500' :
               isWarning ? 'text-yellow-500' :

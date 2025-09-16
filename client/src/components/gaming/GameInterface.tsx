@@ -89,7 +89,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
                 hand={opponentHand}
                 isOpponent={true}
                 isCurrentTurn={!isMyTurn}
-                timeRemaining={gameState?.blackTime || 0}
+                timeRemaining={gameState?.blackTime || 1800}
                 showCards={true}
                 orientation="vertical"
               />
@@ -102,7 +102,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
                 hand={playerHand}
                 isOpponent={false}
                 isCurrentTurn={isMyTurn}
-                timeRemaining={gameState?.whiteTime || 0}
+                timeRemaining={gameState?.whiteTime || 1800}
                 selectedCard={selectedCard}
                 onCardSelect={handleCardSelect}
                 showCards={true}
@@ -156,7 +156,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
                 hand={opponentHand}
                 isOpponent={true}
                 isCurrentTurn={!isMyTurn}
-                timeRemaining={gameState?.blackTime || 0}
+                timeRemaining={gameState?.blackTime || 1800}
                 showCards={true}
                 orientation="vertical"
               />
@@ -169,7 +169,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
                 hand={playerHand}
                 isOpponent={false}
                 isCurrentTurn={isMyTurn}
-                timeRemaining={gameState?.whiteTime || 0}
+                timeRemaining={gameState?.whiteTime || 1800}
                 selectedCard={selectedCard}
                 onCardSelect={handleCardSelect}
                 showCards={true}
@@ -221,7 +221,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
               hand={opponentHand}
               isOpponent={true}
               isCurrentTurn={!isMyTurn}
-              timeRemaining={gameState?.blackTime || 0}
+              timeRemaining={gameState?.blackTime || 1800}
               showCards={false}
               orientation="horizontal"
               compact={true}
@@ -240,7 +240,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
               hand={playerHand}
               isOpponent={false}
               isCurrentTurn={isMyTurn}
-              timeRemaining={gameState?.whiteTime || 0}
+              timeRemaining={gameState?.whiteTime || 1800}
               selectedCard={selectedCard}
               onCardSelect={handleCardSelect}
               showCards={true}
@@ -286,7 +286,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
             hand={playerHand}
             isOpponent={false}
             isCurrentTurn={isMyTurn}
-            timeRemaining={gameState?.whiteTime || 0}
+            timeRemaining={gameState?.whiteTime || 1800}
             selectedCard={selectedCard}
             onCardSelect={handleCardSelect}
             showCards={true}
