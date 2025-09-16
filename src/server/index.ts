@@ -83,25 +83,44 @@ app.use(errorHandler);
 // Initialize services
 async function initializeServices(): Promise<void> {
   try {
+    // Validate critical environment variables
+    console.log('🔧 Validating server configuration...');
+
+    if (!process.env.JWT_SECRET) {
+      console.error('❌ CRITICAL: JWT_SECRET environment variable is not set');
+      console.error('💡 Make sure your .env file contains: JWT_SECRET=your_secret_key_here');
+      process.exit(1);
+    }
+
+    if (process.env.JWT_SECRET.length < 32) {
+      console.warn('⚠️  WARNING: JWT_SECRET should be at least 32 characters for security');
+    }
+
+    console.log(`✅ JWT_SECRET loaded (length: ${process.env.JWT_SECRET.length})`);
+    console.log(`✅ Environment: ${process.env.NODE_ENV || 'development'}`);
+
     // Initialize Database Manager
     await DatabaseManager.initialize();
-    console.log('Database manager initialized');
+    console.log('✅ Database manager initialized');
 
-    // Initialize Socket.IO server
+    // Initialize Socket.IO server with authentication support
     const io = new SocketIOServer(httpServer, {
       cors: {
         origin: process.env.CLIENT_URL || 'http://localhost:3000',
         credentials: true
-      }
+      },
+      // Add connection timeout and auth timeout
+      connectTimeout: 45000,
+      transports: ['websocket', 'polling']
     });
 
-    // Initialize WebSocket manager
+    // Initialize WebSocket manager with authentication
     wsManager = new WebSocketManager(io);
     wsManager.initialize();
-    console.log('WebSocket manager initialized');
+    console.log('✅ WebSocket manager initialized with authentication');
 
   } catch (error) {
-    console.error('Failed to initialize services:', error);
+    console.error('❌ Failed to initialize services:', error);
     process.exit(1);
   }
 }

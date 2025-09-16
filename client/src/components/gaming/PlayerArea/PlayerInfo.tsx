@@ -30,7 +30,7 @@ export const PlayerInfo: React.FC<PlayerInfoProps> = ({
     username: isOpponent ? 'Opponent' : 'You',
     rating: 1000,
     color: isOpponent ? 'black' : 'white',
-    timeRemaining: 300,
+    timeRemaining: 1800,
     isOnline: true,
   };
 

@@ -47,8 +47,8 @@ export class GameRoom {
   private startTime: Date;
   private lastMoveTime: Date;
   private playerTimes: PlayerTimeData = {
-    white: 600000,
-    black: 600000,
+    white: 1800000,
+    black: 1800000,
     lastMoveTime: Date.now()
   };
   private disconnectedPlayers: Set<string> = new Set();
@@ -56,7 +56,7 @@ export class GameRoom {
   private moveTimeouts: Map<PlayerColor, NodeJS.Timeout> = new Map();
 
   // Time control parsing
-  private baseTime: number = 600000; // in milliseconds - initialized with default
+  private baseTime: number = 1800000; // in milliseconds - initialized with default (30 minutes)
   private increment: number = 0; // in milliseconds - initialized with default
 
   constructor(gameId: string, config: GameRoomConfig) {

@@ -23,7 +23,7 @@ export const GameContainer: React.FC = () => {
       username: 'YourName',
       rating: 1000,
       color: 'white' as const,
-      timeRemaining: 300,
+      timeRemaining: 1800,
       isOnline: true,
     };
 
@@ -32,7 +32,7 @@ export const GameContainer: React.FC = () => {
       username: 'Opponent',
       rating: 1000,
       color: 'black' as const,
-      timeRemaining: 300,
+      timeRemaining: 1800,
       isOnline: true,
     };
 
@@ -67,8 +67,8 @@ export const GameContainer: React.FC = () => {
       currentTurn: 'white' as const,
       whiteHand: mockWhiteHand,
       blackHand: mockBlackHand,
-      whiteTime: 300,
-      blackTime: 300,
+      whiteTime: 1800,
+      blackTime: 1800,
       moveHistory: [],
       status: 'active' as const,
     };

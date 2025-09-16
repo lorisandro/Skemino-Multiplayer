@@ -113,65 +113,77 @@ export class SocketManager {
   private async authenticateSocket(socket: Socket, next: (err?: Error) => void): Promise<void> {
     try {
       let token = socket.handshake.auth.token || socket.handshake.headers.authorization;
-      const isGuest = socket.handshake.auth.isGuest;
+      const isGuestFlag = socket.handshake.auth.isGuest;
 
-      logger.info(`🔑 Socket auth attempt - Token present: ${!!token}, Guest: ${isGuest}`);
+      logger.info(`🔑 WebSocket auth attempt - Token: ${!!token}, Guest flag: ${isGuestFlag}`);
+      logger.info(`🌍 JWT_SECRET loaded: ${!!process.env.JWT_SECRET}, length: ${process.env.JWT_SECRET?.length || 0}`);
 
+      // Handle case where no token is provided
       if (!token) {
-        logger.warn('❌ No token provided for socket authentication');
-        return next(new Error('Authentication required'));
+        logger.warn('❌ No authentication token provided');
+        return next(new Error('Authentication token required'));
       }
 
-      // Remove "Bearer " prefix if present
+      // Clean up token format (remove Bearer prefix if present)
       if (typeof token === 'string' && token.startsWith('Bearer ')) {
         token = token.substring(7);
-        logger.info('🔧 Removed Bearer prefix from token');
+        logger.info('🔧 Cleaned Bearer prefix from token');
       }
 
-      // Log token info for debugging (first few chars only for security)
-      logger.info(`🔐 Verifying token: ${token.substring(0, 20)}...`);
+      // Log token preview for debugging (first/last chars only for security)
+      const tokenPreview = `${token.substring(0, 8)}...${token.substring(token.length - 8)}`;
+      logger.info(`🔐 Processing token: ${tokenPreview}`);
 
-      // Try to decode without verification first to check if it's a guest token
-      const decodedWithoutVerify = jwt.decode(token) as any;
-      logger.info(`📝 Token decoded (no verify): isGuest=${decodedWithoutVerify?.isGuest}, userId=${decodedWithoutVerify?.userId}`);
+      // Verify JWT with proper secret
+      const jwtSecret = process.env.JWT_SECRET;
+      if (!jwtSecret) {
+        logger.error('❌ CRITICAL: JWT_SECRET environment variable not set');
+        return next(new Error('Server configuration error'));
+      }
 
       let decoded: any;
+      try {
+        // Always verify JWT signature for security
+        decoded = jwt.verify(token, jwtSecret) as any;
+        logger.info(`✅ JWT verification successful - User: ${decoded.userId}, Guest: ${decoded.isGuest}`);
+      } catch (jwtError: any) {
+        logger.error(`❌ JWT verification failed: ${jwtError.message}`);
 
-      // For guest tokens, skip strict JWT verification temporarily
-      if (decodedWithoutVerify?.isGuest || isGuest) {
-        logger.info('🎭 Guest token detected, using relaxed verification');
-        decoded = decodedWithoutVerify;
-      } else {
-        // For registered users, verify JWT signature
-        try {
-          decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
-        } catch (verifyError: any) {
-          logger.error(`❌ JWT verification failed for registered user: ${verifyError?.message || 'Unknown error'}`);
-          // Fallback: treat as guest if verification fails
-          logger.info('🔄 Treating failed auth as guest user');
-          decoded = {
-            ...decodedWithoutVerify,
-            isGuest: true,
-            userId: `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-          };
-        }
+        // If JWT verification fails, create a new guest user (graceful degradation)
+        logger.info('🎭 JWT failed, creating emergency guest session');
+        const emergencyGuestId = `emergency_guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const emergencyGuest = getOrCreateGuestUser(emergencyGuestId);
+
+        (socket as AuthenticatedSocket).userId = emergencyGuest.id;
+        (socket as AuthenticatedSocket).username = emergencyGuest.username;
+        (socket as AuthenticatedSocket).rating = emergencyGuest.rating;
+        (socket as AuthenticatedSocket).isGuest = true;
+
+        logger.info(`🆘 Emergency guest created: ${emergencyGuest.username} (${emergencyGuest.id})`);
+        return next();
       }
 
-      if (decoded.isGuest || isGuest) {
-        // Handle guest authentication - create guest with specific userId if doesn't exist
+      // Process authenticated user based on token content
+      if (decoded.isGuest) {
+        // Handle guest user authentication
+        logger.info(`🎭 Processing guest authentication for: ${decoded.userId}`);
+
         const guestUser = getOrCreateGuestUser(decoded.userId);
 
         (socket as AuthenticatedSocket).userId = guestUser.id;
         (socket as AuthenticatedSocket).username = guestUser.username;
-        (socket as AuthenticatedSocket).rating = guestUser.rating;
+        (socket as AuthenticatedSocket).rating = decoded.rating || guestUser.rating;
         (socket as AuthenticatedSocket).isGuest = true;
 
-        logger.info(`🎭 Guest authenticated: ${guestUser.username} (${guestUser.id}, rating: ${guestUser.rating})`);
+        logger.info(`✅ Guest authenticated: ${guestUser.username} (${guestUser.id}, rating: ${guestUser.rating})`);
       } else {
         // Handle registered user authentication
+        logger.info(`🔐 Processing registered user authentication for: ${decoded.userId}`);
+
         const user = await DatabaseManager.getUserById(decoded.userId);
         if (!user) {
-          return next(new Error('User not found'));
+          logger.error(`❌ Registered user not found in database: ${decoded.userId}`);
+          return next(new Error('User not found in database'));
         }
 
         (socket as AuthenticatedSocket).userId = user.id;
@@ -179,21 +191,32 @@ export class SocketManager {
         (socket as AuthenticatedSocket).rating = user.rating;
         (socket as AuthenticatedSocket).isGuest = false;
 
-        logger.info(`🔐 User authenticated: ${user.username} (${user.id})`);
+        logger.info(`✅ Registered user authenticated: ${user.username} (${user.id}, rating: ${user.rating})`);
       }
 
+      // Authentication successful
+      logger.info(`🎉 WebSocket authentication completed for ${(socket as AuthenticatedSocket).username}`);
       next();
+
     } catch (error) {
-      if (error instanceof jwt.JsonWebTokenError) {
-        logger.error(`❌ JWT verification failed: ${error.message}`);
-        logger.error(`JWT_SECRET configured: ${!!process.env.JWT_SECRET}`);
-        next(new Error(`Invalid token: ${error.message}`));
-      } else if (error instanceof jwt.TokenExpiredError) {
-        logger.error('❌ Token expired');
-        next(new Error('Token expired'));
-      } else {
-        logger.error('❌ Socket authentication failed:', error);
-        next(new Error('Authentication failed'));
+      logger.error('❌ Critical error in WebSocket authentication:', error);
+
+      // Last resort: create emergency guest to maintain service
+      try {
+        logger.info('🚨 Creating last-resort emergency guest due to auth failure');
+        const lastResortId = `critical_guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const lastResortGuest = getOrCreateGuestUser(lastResortId);
+
+        (socket as AuthenticatedSocket).userId = lastResortGuest.id;
+        (socket as AuthenticatedSocket).username = lastResortGuest.username;
+        (socket as AuthenticatedSocket).rating = lastResortGuest.rating;
+        (socket as AuthenticatedSocket).isGuest = true;
+
+        logger.info(`🆘 Last resort guest: ${lastResortGuest.username}`);
+        next();
+      } catch (finalError) {
+        logger.error('💥 Complete authentication failure:', finalError);
+        next(new Error('Authentication system failure'));
       }
     }
   }

@@ -56,7 +56,7 @@ export class GameEngine {
           color: 'white',
           hand: whiteCards,
           cardsPlayed: 0,
-          timeRemaining: 600000 // 10 minutes in ms
+          timeRemaining: 1800000 // 30 minutes in ms
         },
         black: {
           id: '',
@@ -65,7 +65,7 @@ export class GameEngine {
           color: 'black',
           hand: blackCards,
           cardsPlayed: 0,
-          timeRemaining: 600000
+          timeRemaining: 1800000
         }
       },
       currentTurn: 'white',

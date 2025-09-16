@@ -52,7 +52,16 @@ router.post('/guest', async (req: Request, res: Response) => {
     // Store guest session
     guestSessions.set(guestId, guestUser);
 
-    // Generate JWT token for guest
+    // Generate JWT token for guest with proper error handling
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      logger.error('❌ CRITICAL: JWT_SECRET not configured for guest token generation');
+      return res.status(500).json({
+        success: false,
+        message: 'Server configuration error'
+      });
+    }
+
     const token = jwt.sign(
       {
         userId: guestId,
@@ -60,7 +69,7 @@ router.post('/guest', async (req: Request, res: Response) => {
         isGuest: true,
         rating: 1200,
       },
-      process.env.JWT_SECRET || 'dev_secret',
+      jwtSecret,
       { expiresIn: '24h' }
     );
 
@@ -123,7 +132,16 @@ router.post('/login', async (req: Request, res: Response) => {
       });
     }
 
-    // Generate JWT token
+    // Generate JWT token with proper error handling
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      logger.error('❌ CRITICAL: JWT_SECRET not configured for user login');
+      return res.status(500).json({
+        success: false,
+        message: 'Server configuration error'
+      });
+    }
+
     const token = jwt.sign(
       {
         userId: user.id,
@@ -132,7 +150,7 @@ router.post('/login', async (req: Request, res: Response) => {
         rating: user.rating,
         isGuest: false,
       },
-      process.env.JWT_SECRET || 'dev_secret',
+      jwtSecret,
       { expiresIn: '7d' }
     );
 
@@ -246,7 +264,16 @@ router.post('/register', async (req: Request, res: Response) => {
       });
     }
 
-    // Generate JWT token
+    // Generate JWT token with proper error handling
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      logger.error('❌ CRITICAL: JWT_SECRET not configured for user registration');
+      return res.status(500).json({
+        success: false,
+        message: 'Server configuration error'
+      });
+    }
+
     const token = jwt.sign(
       {
         userId: newUser.id,
@@ -255,7 +282,7 @@ router.post('/register', async (req: Request, res: Response) => {
         rating: newUser.rating,
         isGuest: false,
       },
-      process.env.JWT_SECRET || 'dev_secret',
+      jwtSecret,
       { expiresIn: '7d' }
     );
 
@@ -340,7 +367,15 @@ router.get('/me', async (req: Request, res: Response) => {
       });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'dev_secret') as any;
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      return res.status(500).json({
+        success: false,
+        message: 'Server configuration error'
+      });
+    }
+
+    const decoded = jwt.verify(token, jwtSecret) as any;
 
     if (decoded.isGuest) {
       // Return guest user info
@@ -424,8 +459,16 @@ router.post('/convert-guest', async (req: Request, res: Response) => {
       });
     }
 
-    // Verify guest token
-    const decoded = jwt.verify(currentGuestToken, process.env.JWT_SECRET || 'dev_secret') as any;
+    // Verify guest token with proper error handling
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      return res.status(500).json({
+        success: false,
+        message: 'Server configuration error'
+      });
+    }
+
+    const decoded = jwt.verify(currentGuestToken, jwtSecret) as any;
 
     if (!decoded.isGuest) {
       return res.status(400).json({
@@ -481,7 +524,7 @@ router.post('/convert-guest', async (req: Request, res: Response) => {
         rating: newUser.rating,
         isGuest: false,
       },
-      process.env.JWT_SECRET || 'dev_secret',
+      jwtSecret, // Already validated above
       { expiresIn: '7d' }
     );
 

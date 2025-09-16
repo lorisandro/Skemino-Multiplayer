@@ -85,8 +85,8 @@ export class PSNParser {
         moveHistory: moveResult.moves || [],
         startTime: new Date(),
         players: {
-          white: { id: 'white', username: 'White', rating: 1200, color: 'white', hand: [], cardsPlayed: 0, timeRemaining: 600000 },
-          black: { id: 'black', username: 'Black', rating: 1200, color: 'black', hand: [], cardsPlayed: 0, timeRemaining: 600000 }
+          white: { id: 'white', username: 'White', rating: 1200, color: 'white', hand: [], cardsPlayed: 0, timeRemaining: 1800000 },
+          black: { id: 'black', username: 'Black', rating: 1200, color: 'black', hand: [], cardsPlayed: 0, timeRemaining: 1800000 }
         }
       };
 
