@@ -34,6 +34,7 @@ export const useAuth = (): AuthContextType => {
   const [user, setUser] = useState<User | null>(getInitialUser());
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(hasStoredToken());
+  const [isInitializing, setIsInitializing] = useState(true);
 
   // Initialize auth state on mount with simplified approach
   useEffect(() => {
@@ -88,6 +89,7 @@ export const useAuth = (): AuthContextType => {
         setIsAuthenticated(false);
       } finally {
         setIsLoading(false);
+        setIsInitializing(false);
       }
     };
 
@@ -539,6 +541,7 @@ export const useAuth = (): AuthContextType => {
     user,
     isAuthenticated,
     isLoading,
+    isInitializing,
     login,
     register,
     logout,
@@ -550,5 +553,7 @@ export const useAuth = (): AuthContextType => {
     updateProfile,
     // Extended methods
     loginAsGuest,
-  } as AuthContextType & { loginAsGuest: () => Promise<AuthResponse> };
+  } as AuthContextType & {
+    loginAsGuest: () => Promise<AuthResponse>;
+  };
 };

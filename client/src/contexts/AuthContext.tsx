@@ -91,17 +91,11 @@ export const RequireAuth: React.FC<{ children: ReactNode; fallback?: ReactNode }
   children,
   fallback
 }) => {
-  const { isAuthenticated, isLoading, user } = useAuthContext();
-  const [isInitializing, setIsInitializing] = React.useState(true);
+  const { isAuthenticated, isLoading, user, isInitializing } = useAuthContext();
   const [loadingTimeout, setLoadingTimeout] = React.useState(false);
 
-  // Handle initialization phase with timeout protection
+  // Handle loading timeout protection
   React.useEffect(() => {
-    // Give auth state time to initialize from storage
-    const initTimer = setTimeout(() => {
-      setIsInitializing(false);
-    }, 100);
-
     // Set a maximum timeout for loading state (reduced from 2000ms to 1000ms)
     const timeoutTimer = setTimeout(() => {
       if (isLoading) {
@@ -113,7 +107,6 @@ export const RequireAuth: React.FC<{ children: ReactNode; fallback?: ReactNode }
     }, 1000);
 
     return () => {
-      clearTimeout(initTimer);
       clearTimeout(timeoutTimer);
     };
   }, [isLoading]);
