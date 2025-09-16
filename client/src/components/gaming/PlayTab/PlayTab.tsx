@@ -23,7 +23,7 @@ export const PlayTab: React.FC<PlayTabProps> = ({
   currentPlayer,
   onMatchFound,
 }) => {
-  const [selectedTimeControl, setSelectedTimeControl] = useState<string>('rapid');
+  const [selectedTimeControl, setSelectedTimeControl] = useState<string>('classical');
   const [elapsed, setElapsed] = useState(0);
 
   const { joinQueue, leaveQueue, isSearching, error } = useMatchmaking({
@@ -56,22 +56,25 @@ export const PlayTab: React.FC<PlayTabProps> = ({
       id: 'bullet',
       name: 'Bullet',
       description: '1+0, 2+1',
-      color: 'from-orange-100 to-orange-200 text-orange-800',
-      hoverColor: 'hover:from-orange-200 hover:to-orange-300',
+      color: 'from-gray-100 to-gray-200 text-gray-400',
+      hoverColor: '',
+      disabled: true,
     },
     {
       id: 'blitz',
       name: 'Blitz',
       description: '3+2, 5+3',
-      color: 'from-yellow-100 to-yellow-200 text-yellow-800',
-      hoverColor: 'hover:from-yellow-200 hover:to-yellow-300',
+      color: 'from-gray-100 to-gray-200 text-gray-400',
+      hoverColor: '',
+      disabled: true,
     },
     {
       id: 'rapid',
       name: 'Rapid',
       description: '10+5, 15+10',
-      color: 'from-green-100 to-green-200 text-green-800',
-      hoverColor: 'hover:from-green-200 hover:to-green-300',
+      color: 'from-gray-100 to-gray-200 text-gray-400',
+      hoverColor: '',
+      disabled: true,
     },
     {
       id: 'classical',
@@ -79,6 +82,7 @@ export const PlayTab: React.FC<PlayTabProps> = ({
       description: '30+30',
       color: 'from-blue-100 to-blue-200 text-blue-800',
       hoverColor: 'hover:from-blue-200 hover:to-blue-300',
+      disabled: false,
     },
   ];
 
@@ -146,20 +150,32 @@ export const PlayTab: React.FC<PlayTabProps> = ({
               {timeControls.map((control) => (
                 <motion.button
                   key={control.id}
-                  onClick={() => handleTimeControlSelect(control.id)}
+                  onClick={() => !control.disabled && handleTimeControlSelect(control.id)}
+                  disabled={control.disabled}
                   className={`
                     p-3 rounded-lg text-sm font-medium transition-all duration-200
                     bg-gradient-to-br ${control.color} ${control.hoverColor}
-                    ${selectedTimeControl === control.id
+                    ${selectedTimeControl === control.id && !control.disabled
                       ? 'ring-2 ring-blue-500 ring-offset-1 transform scale-105'
                       : ''
                     }
+                    ${control.disabled
+                      ? 'cursor-not-allowed opacity-50'
+                      : 'cursor-pointer'
+                    }
                   `}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  whileHover={!control.disabled ? { scale: 1.02 } : {}}
+                  whileTap={!control.disabled ? { scale: 0.98 } : {}}
                 >
-                  {control.name}
-                  <div className="text-xs opacity-75">{control.description}</div>
+                  <div className="flex flex-col items-center">
+                    <span className={control.disabled ? 'line-through' : ''}>
+                      {control.name}
+                    </span>
+                    <div className="text-xs opacity-75">{control.description}</div>
+                    {control.disabled && (
+                      <div className="text-xs mt-1 text-gray-500">Prossimamente</div>
+                    )}
+                  </div>
                 </motion.button>
               ))}
             </div>
