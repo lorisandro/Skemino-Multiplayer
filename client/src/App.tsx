@@ -39,7 +39,7 @@ function AppContent() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/demo" element={<MatchmakingDemo />} />
-        <Route path="/game" element={<MatchmakingDemo />} />
+        <Route path="/game" element={<GameInterface className="demo-mode" />} />
         <Route path="/game/:roomId" element={<GameRoom />} />
         <Route path="*" element={<HomePage />} />
       </Routes>
