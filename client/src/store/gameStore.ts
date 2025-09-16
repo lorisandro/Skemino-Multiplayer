@@ -46,8 +46,8 @@ const initialGameState: GameState = {
   currentTurn: 'white',
   whiteHand: [],
   blackHand: [],
-  whiteTime: 300,
-  blackTime: 300,
+  whiteTime: 1800,
+  blackTime: 1800,
   moveHistory: [],
   status: 'waiting',
 };
