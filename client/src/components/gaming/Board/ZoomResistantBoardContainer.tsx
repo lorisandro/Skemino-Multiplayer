@@ -82,12 +82,12 @@ export const ZoomResistantBoardContainer: React.FC<ZoomResistantBoardContainerPr
           style={{
             // Demo mode overrides with smaller fixed sizes (rectangular for 5:7 cells)
             ...(demoMode && {
-              width: '36rem',
-              height: '50.4rem', // Height adjusted for 5:7 card cells (36 * 1.4)
-              minWidth: '36rem',
-              minHeight: '50.4rem',
-              maxWidth: '42rem',
-              maxHeight: '58.8rem', // Max height adjusted for 5:7 card cells (42 * 1.4)
+              width: '39rem',
+              height: '54.6rem', // Height adjusted for 5:7 card cells (39 * 1.4)
+              minWidth: '39rem',
+              minHeight: '54.6rem',
+              maxWidth: '46rem',
+              maxHeight: '64.4rem', // Max height adjusted for 5:7 card cells (46 * 1.4)
             })
           }}
         >
@@ -108,17 +108,17 @@ export const useBoardContainerSize = () => {
   const getBoardSize = () => {
     switch (currentBreakpoint) {
       case 'mobile':
-        return { width: '42rem', height: '58.8rem' }; // Height adjusted for 5:7 card cells (42 * 1.4)
+        return { width: '46rem', height: '64.4rem' }; // Height adjusted for 5:7 card cells (46 * 1.4)
       case 'tablet':
-        return { width: '50rem', height: '70rem' }; // Height adjusted for 5:7 card cells (50 * 1.4)
+        return { width: '54rem', height: '75.6rem' }; // Height adjusted for 5:7 card cells (54 * 1.4)
       case 'desktop':
-        return { width: '56rem', height: '78.4rem' }; // Height adjusted for 5:7 card cells (56 * 1.4)
+        return { width: '61rem', height: '85.4rem' }; // Height adjusted for 5:7 card cells (61 * 1.4)
       case '2k':
-        return { width: '65rem', height: '91rem' }; // Height adjusted for 5:7 card cells (65 * 1.4)
-      case 'ultrawide':
         return { width: '70rem', height: '98rem' }; // Height adjusted for 5:7 card cells (70 * 1.4)
+      case 'ultrawide':
+        return { width: '76rem', height: '106.4rem' }; // Height adjusted for 5:7 card cells (76 * 1.4)
       default:
-        return { width: '50rem', height: '70rem' }; // Height adjusted for 5:7 card cells
+        return { width: '54rem', height: '75.6rem' }; // Height adjusted for 5:7 card cells
     }
   };
 

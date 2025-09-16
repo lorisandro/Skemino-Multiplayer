@@ -809,14 +809,14 @@ div.skemino-square-dark.skemino-central-d4,
   container-name: gameboard;
 
   /* Rectangular sizing for 6x6 strategic gaming board with 5:7 aspect ratio cells */
-  width: min(56rem, 90vw);  /* Proper width for 6x6 board with card cells */
-  height: min(78.4rem, 90vh); /* Height for 5:7 card cells (56 * 1.4) */
+  width: min(61rem, 90vw);  /* Proper width for 6x6 board with card cells */
+  height: min(85.4rem, 90vh); /* Height for 5:7 card cells (61 * 1.4) */
 
   /* Prevent overflow and ensure proper proportions */
-  min-width: 36rem; /* Minimum playable size */
-  min-height: 50.4rem; /* Minimum height for 5:7 card cells (36 * 1.4) */
-  max-width: 84rem;  /* Maximum for large screens */
-  max-height: 117.6rem; /* Maximum height for 5:7 card cells (84 * 1.4) */
+  min-width: 39rem; /* Minimum playable size */
+  min-height: 54.6rem; /* Minimum height for 5:7 card cells (39 * 1.4) */
+  max-width: 91rem;  /* Maximum for large screens */
+  max-height: 127.4rem; /* Maximum height for 5:7 card cells (91 * 1.4) */
 
   /* Centering and positioning */
   position: relative;
@@ -904,9 +904,9 @@ div.skemino-square-dark.skemino-central-d4,
 /* Mobile gaming optimized */
 @container gameboard (max-width: 60rem) {
   .skemino-board-zoom-resistant {
-    width: 42rem;
-    height: 58.8rem; /* Height adjusted for 5:7 card cells (42 * 1.4) */
-    min-height: 58.8rem;
+    width: 46rem;
+    height: 64.4rem; /* Height adjusted for 5:7 card cells (46 * 1.4) */
+    min-height: 64.4rem;
     border-width: 1px;
   }
 
@@ -929,9 +929,9 @@ div.skemino-square-dark.skemino-central-d4,
 /* Tablet gaming */
 @container gameboard (min-width: 60rem) and (max-width: 80rem) {
   .skemino-board-zoom-resistant {
-    width: 80rem;
-    height: 112rem; /* Height adjusted for 5:7 cells (80 * 1.4) */
-    min-height: 112rem;
+    width: 86rem;
+    height: 120.4rem; /* Height adjusted for 5:7 cells (86 * 1.4) */
+    min-height: 120.4rem;
   }
 
   .skemino-grid-zoom-resistant {
@@ -953,9 +953,9 @@ div.skemino-square-dark.skemino-central-d4,
 /* Desktop gaming */
 @container gameboard (min-width: 80rem) and (max-width: 100rem) {
   .skemino-board-zoom-resistant {
-    width: 56rem;
-    height: 78.4rem; /* Height adjusted for 5:7 card cells (56 * 1.4) */
-    min-height: 78.4rem;
+    width: 61rem;
+    height: 85.4rem; /* Height adjusted for 5:7 card cells (61 * 1.4) */
+    min-height: 85.4rem;
     border-width: 2px;
   }
 
@@ -978,9 +978,9 @@ div.skemino-square-dark.skemino-central-d4,
 /* 2K gaming optimized */
 @container gameboard (min-width: 100rem) and (max-width: 120rem) {
   .skemino-board-zoom-resistant {
-    width: 65rem;
-    height: 91rem; /* Height adjusted for 5:7 card cells (65 * 1.4) */
-    min-height: 91rem;
+    width: 76rem;
+    height: 106.4rem; /* Height adjusted for 5:7 card cells (76 * 1.4) */
+    min-height: 106.4rem;
     border-width: 3px;
   }
 
@@ -1003,9 +1003,9 @@ div.skemino-square-dark.skemino-central-d4,
 /* Ultrawide gaming */
 @container gameboard (min-width: 120rem) {
   .skemino-board-zoom-resistant {
-    width: 70rem;
-    height: 98rem; /* Height adjusted for 5:7 card cells (70 * 1.4) */
-    min-height: 98rem;
+    width: 76rem;
+    height: 106.4rem; /* Height adjusted for 5:7 card cells (76 * 1.4) */
+    min-height: 106.4rem;
     border-width: 3px;
   }
 
