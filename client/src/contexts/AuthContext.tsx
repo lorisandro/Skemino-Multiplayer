@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import type { AuthContextType } from '../types/auth';
 
@@ -92,10 +92,41 @@ export const RequireAuth: React.FC<{ children: ReactNode; fallback?: ReactNode }
   fallback
 }) => {
   const { isAuthenticated, isLoading, user } = useAuthContext();
+  const [isInitializing, setIsInitializing] = React.useState(true);
+  const [loadingTimeout, setLoadingTimeout] = React.useState(false);
 
-  console.log('🔐 RequireAuth check:', { isAuthenticated, isLoading, user: user?.username || 'none' });
+  // Handle initialization phase with timeout protection
+  React.useEffect(() => {
+    // Give auth state time to initialize from storage
+    const initTimer = setTimeout(() => {
+      setIsInitializing(false);
+    }, 50);
 
-  if (isLoading) {
+    // Set a maximum timeout for loading state
+    const timeoutTimer = setTimeout(() => {
+      if (isLoading) {
+        console.warn('⚠️ Auth loading timeout reached, checking stored tokens');
+        setLoadingTimeout(true);
+      }
+    }, 2000);
+
+    return () => {
+      clearTimeout(initTimer);
+      clearTimeout(timeoutTimer);
+    };
+  }, [isLoading]);
+
+  console.log('🔐 RequireAuth check:', {
+    isAuthenticated,
+    isLoading,
+    isInitializing,
+    loadingTimeout,
+    user: user?.username || 'none',
+    hasStoredToken: !!(localStorage.getItem('skemino_auth_token') || sessionStorage.getItem('skemino_auth_token'))
+  });
+
+  // During initialization, show loading
+  if ((isLoading || isInitializing) && !loadingTimeout) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
         <div className="text-center">
@@ -106,6 +137,13 @@ export const RequireAuth: React.FC<{ children: ReactNode; fallback?: ReactNode }
     );
   }
 
+  // If loading timeout reached but we have stored tokens, allow access
+  if (loadingTimeout && (localStorage.getItem('skemino_auth_token') || sessionStorage.getItem('skemino_auth_token'))) {
+    console.log('✅ Loading timeout but tokens found, allowing access');
+    return <>{children}</>;
+  }
+
+  // Check authentication state
   if (!isAuthenticated) {
     console.log('❌ RequireAuth: User not authenticated, redirecting to login');
     return fallback || (

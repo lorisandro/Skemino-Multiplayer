@@ -12,8 +12,19 @@ const DashboardPage: React.FC = () => {
     navigate('/');
   };
 
-  const handlePlayNow = () => {
+  const handlePlayNow = async () => {
+    // Ensure auth is stable before navigation
+    if (!user) {
+      console.error('❌ No user found when attempting to navigate to game');
+      navigate('/login');
+      return;
+    }
+
+    // Small delay to ensure auth state is fully propagated
+    await new Promise(resolve => setTimeout(resolve, 10));
+
     // Navigate with intent parameter for auto-matchmaking
+    console.log('🎮 Navigating to game page from dashboard');
     navigate('/game?intent=quickmatch&mode=ranked');
   };
 

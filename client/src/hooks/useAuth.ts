@@ -14,11 +14,28 @@ import { authService } from '../services/authService';
  * Supporta login registrato, login guest e social authentication
  */
 export const useAuth = (): AuthContextType => {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // Initialize auth state optimistically from storage
+  const getInitialUser = (): User | null => {
+    try {
+      const userData = localStorage.getItem('skemino_user_data') || sessionStorage.getItem('skemino_user_data');
+      if (userData) {
+        return JSON.parse(userData);
+      }
+    } catch (error) {
+      console.error('Error parsing initial user data:', error);
+    }
+    return null;
+  };
 
-  // Initialize auth state on mount
+  const hasStoredToken = (): boolean => {
+    return !!(localStorage.getItem('skemino_auth_token') || sessionStorage.getItem('skemino_auth_token'));
+  };
+
+  const [user, setUser] = useState<User | null>(getInitialUser());
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(hasStoredToken());
+
+  // Initialize auth state on mount with optimistic loading
   useEffect(() => {
     const initializeAuth = async () => {
       try {
@@ -45,6 +62,7 @@ export const useAuth = (): AuthContextType => {
           if (!tokenVersion || tokenVersion !== currentTokenVersion) {
             console.log('🔄 Token version outdated, forcing re-authentication');
             await forceTokenInvalidation();
+            setIsLoading(false);
             return;
           }
 
@@ -52,19 +70,26 @@ export const useAuth = (): AuthContextType => {
           if (!isValidJWTFormat(token)) {
             console.error('❌ Invalid JWT format detected in storage, clearing tokens');
             await forceTokenInvalidation();
+            setIsLoading(false);
             return;
           }
 
-          // Validate token with server (in real app)
+          // Optimistically set auth state while validating
+          setUser(parsedUser);
+          setIsAuthenticated(true);
+
+          // Validate token with server asynchronously
           const isValid = await validateToken(token);
 
-          if (isValid) {
-            setUser(parsedUser);
-            setIsAuthenticated(true);
-          } else {
-            // Token expired or invalid, clean up both storages
+          if (!isValid) {
+            // Token expired or invalid, clean up
+            console.log('⚠️ Token validation failed, clearing auth state');
             await forceTokenInvalidation();
           }
+        } else {
+          // No stored auth, clear states
+          setUser(null);
+          setIsAuthenticated(false);
         }
       } catch (error) {
         console.error('Auth initialization error:', error);
@@ -75,7 +100,12 @@ export const useAuth = (): AuthContextType => {
       }
     };
 
-    initializeAuth();
+    // Delay initialization slightly to avoid race conditions
+    const timer = setTimeout(() => {
+      initializeAuth();
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, []);
 
   // Force invalidation of corrupted tokens (one-time cleanup)
@@ -248,14 +278,15 @@ export const useAuth = (): AuthContextType => {
         sessionStorage.setItem('skemino_token_version', tokenVersion);
       }
 
+      // Update state immediately after storing
+      setUser(authenticatedUser);
+      setIsAuthenticated(true);
+
       // Important: Update any active WebSocket connections with new token
       if ((window as any).websocketUpdateAuth) {
         (window as any).websocketUpdateAuth(authToken);
         console.log('🔄 Updated WebSocket connection with new auth token');
       }
-
-      setUser(authenticatedUser);
-      setIsAuthenticated(true);
 
       return {
         success: true,
