@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuthContext } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import { detectExtensionInterference, type ExtensionInterferenceInfo } from '../utils/browserExtensionDetector';
 import logoSkemino from '../assets/logo-skemino.webp';
+import type { LoginCredentials } from '../types/auth';
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const { login, socialLogin } = useAuthContext();
+  const { login, socialLogin } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -38,12 +39,14 @@ const LoginPage: React.FC = () => {
     }, 30000); // 30 second timeout
 
     try {
+      const credentials: LoginCredentials = {
+        identifier: formData.email,
+        password: formData.password,
+        rememberMe: formData.rememberMe
+      };
+
       const response = await Promise.race([
-        login({
-          identifier: formData.email,
-          password: formData.password,
-          rememberMe: formData.rememberMe
-        }),
+        login(credentials),
         new Promise<never>((_, reject) =>
           setTimeout(() => reject(new Error('LOGIN_UI_TIMEOUT')), 25000)
         )
@@ -54,7 +57,7 @@ const LoginPage: React.FC = () => {
       if (response.success) {
         console.log('Login successful, navigating to dashboard');
         setRetryCount(0); // Reset retry count on success
-        navigate('/home');
+        navigate('/dashboard');
       } else {
         setError(response.message || 'Credenziali non valide');
 
@@ -85,7 +88,7 @@ const LoginPage: React.FC = () => {
     try {
       const response = await socialLogin(provider);
       if (response.success) {
-        navigate('/home');
+        navigate('/dashboard');
       } else {
         setError(response.message || `Errore durante il login con ${provider}`);
       }

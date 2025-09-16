@@ -1,17 +1,4 @@
 chunk-GKJBSOWT.js?v=6006470b:21551 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
-LoginPage.tsx:25 Browser extension interference detected: Object
-(anonime) @ LoginPage.tsx:25
-LoginPage.tsx:25 Browser extension interference detected: Object
-(anonime) @ LoginPage.tsx:25
-useAuth.ts:230 ✅ Received valid JWT token: eyJhbGciOiJIUzI1NiIs... (length: 313)
-LoginPage.tsx:55 Login successful, navigating to dashboard
-home:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
-home:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
-home:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
-home:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
-home:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
-home:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
-home:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
 useSocket.ts:110 Connection error: Error: KNOWN_CORRUPTED_TOKEN - Please clear browser storage and re-authenticate
     at Socket2.onpacket (socket__io-client.js?v=6006470b:2625:21)
     at Emitter.emit (socket__io-client.js?v=6006470b:354:20)

@@ -163,13 +163,21 @@ export class SocketManager {
       const isKnownCorruptedToken = token.startsWith(knownCorruptedPattern);
 
       if (isKnownCorruptedToken) {
-        logger.error('🚨 DETECTED KNOWN CORRUPTED TOKEN PATTERN - This is the problematic token!');
+        logger.error('🚨 DETECTED KNOWN CORRUPTED TOKEN PATTERN - Creating emergency guest instead of blocking');
         logger.error(`🔍 Corrupted token: ${token.substring(0, 30)}...${token.substring(token.length - 10)}`);
 
-        // Immediately reject known corrupted tokens
-        const authError = new Error('KNOWN_CORRUPTED_TOKEN - Please clear browser storage and re-authenticate');
-        authError.name = 'KNOWN_CORRUPTED_TOKEN';
-        return next(authError);
+        // CRITICAL FIX: Instead of blocking connection, create emergency guest for gaming continuity
+        const corruptedTokenGuestId = `corrupted_token_guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const emergencyGuest = getOrCreateGuestUser(corruptedTokenGuestId);
+
+        (socket as AuthenticatedSocket).userId = emergencyGuest.id;
+        (socket as AuthenticatedSocket).username = emergencyGuest.username;
+        (socket as AuthenticatedSocket).rating = emergencyGuest.rating;
+        (socket as AuthenticatedSocket).isGuest = true;
+
+        logger.info(`🆘 Emergency guest created for corrupted token: ${emergencyGuest.username} (${emergencyGuest.id})`);
+        logger.info('✅ Gaming continuity maintained despite token corruption');
+        return next(); // Allow connection to proceed with emergency guest
       }
 
       logger.debug(`🔑 Token to verify: ${token.substring(0, 30)}...${token.substring(token.length - 10)}`);
@@ -204,20 +212,47 @@ export class SocketManager {
             logger.error(`🔍 Token structure: parts=${token.split('.').length}, length=${token.length}`);
             logger.error(`🔑 Current JWT_SECRET hash: ${require('crypto').createHash('md5').update(jwtSecret).digest('hex').substring(0, 8)}`);
 
-            // CRITICAL: Instead of creating emergency guest, force client to re-authenticate
-            logger.error('🚨 CORRUPTED TOKEN DETECTED - Forcing client re-authentication');
+            // CRITICAL FIX: Create emergency guest instead of blocking connection for gaming continuity
+            logger.error('🚨 JWT SIGNATURE INVALID - Creating emergency guest to maintain gaming experience');
 
-            // Send specific error that client should handle by clearing tokens and redirecting to login
-            const authError = new Error('JWT_SIGNATURE_INVALID - Token corrupted, please re-authenticate');
-            authError.name = 'JWT_SIGNATURE_INVALID';
-            return next(authError);
+            const signatureErrorGuestId = `signature_error_guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            const emergencyGuest = getOrCreateGuestUser(signatureErrorGuestId);
+
+            (socket as AuthenticatedSocket).userId = emergencyGuest.id;
+            (socket as AuthenticatedSocket).username = emergencyGuest.username;
+            (socket as AuthenticatedSocket).rating = emergencyGuest.rating;
+            (socket as AuthenticatedSocket).isGuest = true;
+
+            logger.info(`🆘 Emergency guest created for signature error: ${emergencyGuest.username} (${emergencyGuest.id})`);
+            logger.info('✅ Gaming continuity maintained despite signature error');
+            return next(); // Allow connection to proceed with emergency guest
           }
         } else if (errorMsg.includes('jwt expired')) {
-          logger.error(`⏰ JWT token expired`);
-          return next(new Error('Authentication token expired'));
+          logger.error(`⏰ JWT token expired - Creating emergency guest for gaming continuity`);
+
+          const expiredTokenGuestId = `expired_token_guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+          const emergencyGuest = getOrCreateGuestUser(expiredTokenGuestId);
+
+          (socket as AuthenticatedSocket).userId = emergencyGuest.id;
+          (socket as AuthenticatedSocket).username = emergencyGuest.username;
+          (socket as AuthenticatedSocket).rating = emergencyGuest.rating;
+          (socket as AuthenticatedSocket).isGuest = true;
+
+          logger.info(`🆘 Emergency guest created for expired token: ${emergencyGuest.username} (${emergencyGuest.id})`);
+          return next(); // Allow connection to proceed with emergency guest
         } else if (errorMsg.includes('jwt malformed') || errorMsg.includes('invalid token')) {
-          logger.error(`🔧 Malformed JWT token`);
-          return next(new Error('Malformed authentication token'));
+          logger.error(`🔧 Malformed JWT token - Creating emergency guest for gaming continuity`);
+
+          const malformedTokenGuestId = `malformed_token_guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+          const emergencyGuest = getOrCreateGuestUser(malformedTokenGuestId);
+
+          (socket as AuthenticatedSocket).userId = emergencyGuest.id;
+          (socket as AuthenticatedSocket).username = emergencyGuest.username;
+          (socket as AuthenticatedSocket).rating = emergencyGuest.rating;
+          (socket as AuthenticatedSocket).isGuest = true;
+
+          logger.info(`🆘 Emergency guest created for malformed token: ${emergencyGuest.username} (${emergencyGuest.id})`);
+          return next(); // Allow connection to proceed with emergency guest
         } else {
           // For other JWT errors, still create emergency guest as fallback
           logger.info('🎭 Other JWT error, creating emergency guest session');

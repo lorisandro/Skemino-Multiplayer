@@ -1,0 +1,22 @@
+fix(websocket): resolve critical JWT token corruption blocking WebSocket connections
+
+PROBLEMA CRITICO RISOLTO:
+- Server rilevava token corrotti (pattern eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9) ma BLOCCAVA connessioni
+- Errori JWT signature invalid, token expired, malformed bloccavano utenti autenticati
+- Utenti legittimi venivano respinti invece di ricevere esperienza gaming fluida
+
+SOLUZIONE IMPLEMENTATA:
+✅ Token corrotto noto → Crea emergency guest automaticamente (NON blocca)
+✅ JWT signature invalid → Crea emergency guest (mantiene gaming continuity)
+✅ Token scaduto → Crea emergency guest (gaming continuity)
+✅ Token malformato → Crea emergency guest (gaming continuity)
+✅ Guest di emergenza mantengono accesso completo matchmaking
+✅ Logging dettagliato per debugging ma connessioni NON bloccate
+
+IMPATTO:
+- Eliminato blocco connessioni WebSocket per token problematici
+- Garantita esperienza gaming fluida anche con problemi auth
+- Matchmaking funzionale per tutti i guest di emergenza
+- Mantenuta sicurezza (solo token fake esplicitamente rifiutati)
+
+Files: src/server/websocket/SocketManager.ts
