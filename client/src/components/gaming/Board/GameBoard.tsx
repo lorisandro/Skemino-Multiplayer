@@ -53,8 +53,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({ demoMode = false }) => {
   const renderBoard = () => {
     const files = ['a', 'b', 'c', 'd', 'e', 'f'];
     const ranks = currentPlayer?.color === 'white'
-      ? ['1', '2', '3', '4', '5', '6']
-      : ['6', '5', '4', '3', '2', '1'];
+      ? ['6', '5', '4', '3', '2', '1']
+      : ['1', '2', '3', '4', '5', '6'];
 
     // Generate all 36 squares for 6x6 grid with zoom-resistant approach
     const squares = [];
