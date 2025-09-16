@@ -502,11 +502,11 @@ div.skemino-square-dark.skemino-central-c3::before,
   right: 0;
   bottom: 0;
   background: radial-gradient(circle at center,
-    rgba(180, 220, 255, 0.3) 0%,
-    rgba(140, 200, 255, 0.2) 25%,
-    rgba(93, 173, 226, 0.15) 50%,
-    rgba(60, 140, 200, 0.1) 70%,
-    rgba(40, 120, 180, 0.05) 85%,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(240, 240, 240, 0.2) 25%,
+    rgba(220, 220, 220, 0.15) 50%,
+    rgba(200, 200, 200, 0.1) 70%,
+    rgba(180, 180, 180, 0.05) 85%,
     transparent 100%
   );
   pointer-events: none;
@@ -541,11 +541,11 @@ div.skemino-square-dark.skemino-central-c4::before,
   right: 0;
   bottom: 0;
   background: radial-gradient(circle at center,
-    rgba(255, 200, 200, 0.3) 0%,
-    rgba(255, 170, 170, 0.2) 25%,
-    rgba(248, 113, 113, 0.15) 50%,
-    rgba(239, 68, 68, 0.1) 70%,
-    rgba(220, 38, 38, 0.05) 85%,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(240, 240, 240, 0.2) 25%,
+    rgba(220, 220, 220, 0.15) 50%,
+    rgba(200, 200, 200, 0.1) 70%,
+    rgba(180, 180, 180, 0.05) 85%,
     transparent 100%
   );
   pointer-events: none;
@@ -579,11 +579,11 @@ div.skemino-square-dark.skemino-central-d3::before,
   right: 0;
   bottom: 0;
   background: radial-gradient(circle at center,
-    rgba(200, 255, 220, 0.3) 0%,
-    rgba(160, 255, 190, 0.2) 25%,
-    rgba(74, 222, 128, 0.15) 50%,
-    rgba(34, 197, 94, 0.1) 70%,
-    rgba(22, 163, 74, 0.05) 85%,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(240, 240, 240, 0.2) 25%,
+    rgba(220, 220, 220, 0.15) 50%,
+    rgba(200, 200, 200, 0.1) 70%,
+    rgba(180, 180, 180, 0.05) 85%,
     transparent 100%
   );
   pointer-events: none;
@@ -617,11 +617,11 @@ div.skemino-square-dark.skemino-central-d4::before,
   right: 0;
   bottom: 0;
   background: radial-gradient(circle at center,
-    rgba(255, 250, 200, 0.3) 0%,
-    rgba(255, 240, 160, 0.2) 25%,
-    rgba(253, 224, 71, 0.15) 50%,
-    rgba(250, 204, 21, 0.1) 70%,
-    rgba(234, 179, 8, 0.05) 85%,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(240, 240, 240, 0.2) 25%,
+    rgba(220, 220, 220, 0.15) 50%,
+    rgba(200, 200, 200, 0.1) 70%,
+    rgba(180, 180, 180, 0.05) 85%,
     transparent 100%
   );
   pointer-events: none;
