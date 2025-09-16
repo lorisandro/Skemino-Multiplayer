@@ -54,7 +54,7 @@ const LoginPage: React.FC = () => {
       if (response.success) {
         console.log('Login successful, navigating to dashboard');
         setRetryCount(0); // Reset retry count on success
-        navigate('/dashboard');
+        navigate('/home');
       } else {
         setError(response.message || 'Credenziali non valide');
 
@@ -85,7 +85,7 @@ const LoginPage: React.FC = () => {
     try {
       const response = await socialLogin(provider);
       if (response.success) {
-        navigate('/dashboard');
+        navigate('/home');
       } else {
         setError(response.message || `Errore durante il login con ${provider}`);
       }

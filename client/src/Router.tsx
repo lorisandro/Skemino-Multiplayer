@@ -30,6 +30,19 @@ const HomePageWrapper = () => {
   return <HomePage />;
 };
 
+// Componente per redirectare /dashboard a /home per utenti autenticati
+const DashboardWrapper = () => {
+  const { isAuthenticated, user } = useAuth();
+
+  // Se l'utente è autenticato, redirect a /home dove vedrà la dashboard
+  if (isAuthenticated && user) {
+    return <Navigate to="/home" replace />;
+  }
+
+  // Se non è autenticato, redirect al login
+  return <Navigate to="/login" replace />;
+};
+
 const RegisterPageWrapper = () => {
   const navigate = useNavigate();
   const { register } = useAuth();
@@ -44,7 +57,7 @@ const RegisterPageWrapper = () => {
 
       if (response.success) {
         toast.success('Registrazione completata con successo!');
-        navigate('/dashboard');
+        navigate('/home');
       } else {
         throw new Error(response.message || 'Registrazione fallita');
       }
@@ -88,11 +101,7 @@ export function Router() {
             <Route path="/home" element={<HomePageWrapper />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPageWrapper />} />
-            <Route path="/dashboard" element={
-              <RequireAuth fallback={<Navigate to="/login" replace />}>
-                <DashboardPage />
-              </RequireAuth>
-            } />
+            <Route path="/dashboard" element={<DashboardWrapper />} />
             <Route path="/pregame" element={
               <RequireAuth fallback={<Navigate to="/login" replace />}>
                 <PreGamePage />

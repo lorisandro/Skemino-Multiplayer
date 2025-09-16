@@ -37,7 +37,7 @@ const PreGamePage: React.FC = () => {
 
   const handleLeaveMatch = () => {
     console.log('Abbandono match richiesto');
-    navigate('/dashboard');
+    navigate('/home');
   };
 
   const handleShowSettings = () => {
