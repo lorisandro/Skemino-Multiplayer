@@ -17,7 +17,7 @@ const DashboardPage: React.FC = () => {
     if (process.env.NODE_ENV === 'development') {
       console.log('🎮 Navigating to game page from dashboard');
     }
-    navigate('/game?intent=quickmatch&mode=ranked');
+    navigate('/game');
   };
 
   return (
