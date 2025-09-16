@@ -80,14 +80,14 @@ export const ZoomResistantBoardContainer: React.FC<ZoomResistantBoardContainerPr
             ${demoMode ? 'demo-mode' : ''}
           `}
           style={{
-            // Demo mode overrides with smaller fixed sizes (rectangular for 5:7 cells) - 12% increase
+            // Demo mode overrides with smaller fixed sizes (rectangular for 5:7 cells) - 25% increase
             ...(demoMode && {
-              width: '46.3rem',
-              height: '64.82rem', // Height adjusted for 5:7 card cells (46.3 * 1.4)
-              minWidth: '46.3rem',
-              minHeight: '64.82rem',
-              maxWidth: '54.7rem',
-              maxHeight: '76.58rem', // Max height adjusted for 5:7 card cells (54.7 * 1.4)
+              width: '57.875rem',
+              height: '81.025rem', // Height adjusted for 5:7 card cells (57.875 * 1.4)
+              minWidth: '57.875rem',
+              minHeight: '81.025rem',
+              maxWidth: '68.375rem',
+              maxHeight: '95.725rem', // Max height adjusted for 5:7 card cells (68.375 * 1.4)
             })
           }}
         >
@@ -108,17 +108,17 @@ export const useBoardContainerSize = () => {
   const getBoardSize = () => {
     switch (currentBreakpoint) {
       case 'mobile':
-        return { width: '54.7rem', height: '76.58rem' }; // Height adjusted for 5:7 card cells (54.7 * 1.4) - 12% increase
+        return { width: '68.375rem', height: '95.725rem' }; // Height adjusted for 5:7 card cells (68.375 * 1.4) - 25% increase
       case 'tablet':
-        return { width: '64.1rem', height: '89.74rem' }; // Height adjusted for 5:7 card cells (64.1 * 1.4) - 12% increase
+        return { width: '80.125rem', height: '112.175rem' }; // Height adjusted for 5:7 card cells (80.125 * 1.4) - 25% increase
       case 'desktop':
-        return { width: '72.5rem', height: '101.5rem' }; // Height adjusted for 5:7 card cells (72.5 * 1.4) - 12% increase
+        return { width: '90.625rem', height: '126.875rem' }; // Height adjusted for 5:7 card cells (90.625 * 1.4) - 25% increase
       case '2k':
-        return { width: '83.1rem', height: '116.34rem' }; // Height adjusted for 5:7 card cells (83.1 * 1.4) - 12% increase
+        return { width: '103.875rem', height: '145.425rem' }; // Height adjusted for 5:7 card cells (103.875 * 1.4) - 25% increase
       case 'ultrawide':
-        return { width: '90.3rem', height: '126.42rem' }; // Height adjusted for 5:7 card cells (90.3 * 1.4) - 12% increase
+        return { width: '112.875rem', height: '158.025rem' }; // Height adjusted for 5:7 card cells (112.875 * 1.4) - 25% increase
       default:
-        return { width: '64.1rem', height: '89.74rem' }; // Height adjusted for 5:7 card cells - 12% increase
+        return { width: '80.125rem', height: '112.175rem' }; // Height adjusted for 5:7 card cells - 25% increase
     }
   };
 
