@@ -10,102 +10,381 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-      {/* Navigation Header */}
-      <header className="bg-black/30 backdrop-blur-md border-b border-white/10">
-        <nav className="container mx-auto px-6 py-4">
+      {/* Enhanced Gaming Navigation Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-xl border-b border-amber-500/20 shadow-2xl shadow-black/50">
+        <nav className="container mx-auto px-6 py-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl">S</span>
+            {/* Enhanced Gaming Logo */}
+            <div className="flex items-center space-x-3 group cursor-pointer">
+              <div className="relative">
+                {/* Animated gaming logo with glow effect */}
+                <div className="w-12 h-12 bg-gradient-to-br from-amber-400 via-orange-500 to-red-600 rounded-xl flex items-center justify-center transform group-hover:scale-110 transition-all duration-300 shadow-lg shadow-amber-500/30 group-hover:shadow-amber-500/60">
+                  <span className="text-white font-black text-2xl drop-shadow-lg">S</span>
+                </div>
+                {/* Pulse animation ring */}
+                <div className="absolute inset-0 rounded-xl border-2 border-amber-400 opacity-0 group-hover:opacity-100 animate-ping"></div>
               </div>
-              <span className="text-2xl font-bold text-white">Skèmino</span>
+              <div className="flex flex-col">
+                <span className="text-2xl font-black text-white tracking-wide group-hover:text-amber-300 transition-colors duration-300">Skèmino</span>
+                <span className="text-xs text-amber-400/80 font-medium tracking-wider hidden sm:block">STRATEGIC GAMING</span>
+              </div>
             </div>
 
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#" className="text-gray-300 hover:text-white transition-colors">Gioca</a>
-              <a href="#" className="text-gray-300 hover:text-white transition-colors">Impara</a>
-              <a href="#" className="text-gray-300 hover:text-white transition-colors">Tornei</a>
-              <a href="#" className="text-gray-300 hover:text-white transition-colors">Classifiche</a>
-              <a href="#" className="text-gray-300 hover:text-white transition-colors">Community</a>
+            {/* Enhanced Gaming Navigation Menu */}
+            <div className="hidden lg:flex items-center space-x-8">
+              {/* Play Menu Item with gaming icon */}
+              <a href="#" className="group flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-green-600/20 hover:to-green-500/20 transition-all duration-300 border border-transparent hover:border-green-500/30">
+                <svg className="w-5 h-5 text-green-400 group-hover:text-green-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span className="font-semibold">Gioca</span>
+              </a>
+
+              {/* Learn Menu Item with academy icon */}
+              <a href="#" className="group flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-blue-500/20 transition-all duration-300 border border-transparent hover:border-blue-500/30">
+                <svg className="w-5 h-5 text-blue-400 group-hover:text-blue-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                <span className="font-semibold">Academy</span>
+              </a>
+
+              {/* Tournaments Menu Item with trophy icon */}
+              <a href="#" className="group flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-yellow-600/20 hover:to-yellow-500/20 transition-all duration-300 border border-transparent hover:border-yellow-500/30">
+                <svg className="w-5 h-5 text-yellow-400 group-hover:text-yellow-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                </svg>
+                <span className="font-semibold">Tornei</span>
+              </a>
+
+              {/* Leaderboards Menu Item with ranking icon */}
+              <a href="#" className="group flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-purple-600/20 hover:to-purple-500/20 transition-all duration-300 border border-transparent hover:border-purple-500/30">
+                <svg className="w-5 h-5 text-purple-400 group-hover:text-purple-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                <span className="font-semibold">Classifiche</span>
+              </a>
+
+              {/* Community Menu Item with users icon */}
+              <a href="#" className="group flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-indigo-600/20 hover:to-indigo-500/20 transition-all duration-300 border border-transparent hover:border-indigo-500/30">
+                <svg className="w-5 h-5 text-indigo-400 group-hover:text-indigo-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                <span className="font-semibold">Community</span>
+              </a>
             </div>
 
+            {/* Enhanced Gaming CTA Buttons */}
             <div className="flex items-center space-x-4">
-              <Link to="/login" className="text-gray-300 hover:text-white transition-colors">
-                Accedi
+              {/* Login Button with gaming style */}
+              <Link to="/login" className="group relative px-6 py-2 text-gray-300 hover:text-white transition-all duration-300 font-semibold">
+                <span className="relative z-10">Accedi</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-gray-800/50 to-gray-700/50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </Link>
-              <Link to="/register" className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors">
-                Registrati
+
+              {/* Enhanced Register Button with gaming effects */}
+              <Link to="/register" className="group relative overflow-hidden px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white rounded-xl font-bold text-sm transition-all duration-300 transform hover:scale-105 shadow-lg shadow-green-600/30 hover:shadow-green-500/50">
+                <span className="relative z-10 flex items-center space-x-2">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                  </svg>
+                  <span>Registrati</span>
+                </span>
+                {/* Animated background effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
               </Link>
+
+              {/* Mobile Menu Button with burger animation */}
+              <button className="lg:hidden relative w-10 h-10 flex flex-col items-center justify-center space-y-1 group">
+                <div className="w-6 h-0.5 bg-white group-hover:bg-amber-400 transition-colors duration-300"></div>
+                <div className="w-6 h-0.5 bg-white group-hover:bg-amber-400 transition-colors duration-300"></div>
+                <div className="w-6 h-0.5 bg-white group-hover:bg-amber-400 transition-colors duration-300"></div>
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile Navigation Menu (hidden by default, would be toggled by JavaScript) */}
+          <div className="lg:hidden hidden mt-4 pb-4">
+            <div className="space-y-2">
+              <a href="#" className="block px-4 py-3 text-gray-300 hover:text-white hover:bg-green-600/20 rounded-lg transition-all duration-300 font-semibold">🎮 Gioca</a>
+              <a href="#" className="block px-4 py-3 text-gray-300 hover:text-white hover:bg-blue-600/20 rounded-lg transition-all duration-300 font-semibold">📚 Academy</a>
+              <a href="#" className="block px-4 py-3 text-gray-300 hover:text-white hover:bg-yellow-600/20 rounded-lg transition-all duration-300 font-semibold">🏆 Tornei</a>
+              <a href="#" className="block px-4 py-3 text-gray-300 hover:text-white hover:bg-purple-600/20 rounded-lg transition-all duration-300 font-semibold">📊 Classifiche</a>
+              <a href="#" className="block px-4 py-3 text-gray-300 hover:text-white hover:bg-indigo-600/20 rounded-lg transition-all duration-300 font-semibold">👥 Community</a>
             </div>
           </div>
         </nav>
       </header>
 
-      {/* Hero Section */}
-      <section className="container mx-auto px-6 py-20">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left Content */}
-          <div className="space-y-8">
-            <div className="space-y-4">
-              <h1 className="text-6xl font-bold text-white leading-tight">
-                Gioca a <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-600">Skèmino</span> Online
-              </h1>
-              <p className="text-xl text-gray-300">
-                Il gioco strategico che combina tattica, controllo del territorio e mosse calcolate.
-                Sfida giocatori da tutto il mondo con le 39 Chain Cards e conquista la tavola 6x6.
-              </p>
+      {/* Enhanced Hero Section - Ultra Modern Gaming Landing */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Dynamic Background Effects */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-black"></div>
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-br from-amber-500/10 to-orange-600/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-to-br from-green-500/10 to-blue-600/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
+          <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-gradient-to-br from-purple-500/5 to-pink-600/5 rounded-full blur-3xl animate-pulse transform -translate-x-1/2 -translate-y-1/2" style={{animationDelay: '2s'}}></div>
+        </div>
+
+        <div className="container mx-auto px-6 py-20 pt-32 relative z-10">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Enhanced Left Content */}
+            <div className="space-y-10">
+              {/* Attention-grabbing badge */}
+              <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-600/20 to-emerald-600/20 border border-green-500/30 rounded-full backdrop-blur-sm">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse mr-3"></div>
+                <span className="text-green-400 font-semibold text-sm">🎮 OLTRE 500K GIOCATORI ONLINE</span>
+              </div>
+
+              {/* Main Headlines */}
+              <div className="space-y-6">
+                <h1 className="text-6xl lg:text-7xl font-black text-white leading-tight tracking-tight">
+                  <span className="block">Il Futuro del</span>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 animate-gradient">
+                    Gaming Strategico
+                  </span>
+                </h1>
+
+                <div className="space-y-4">
+                  <p className="text-2xl text-gray-200 font-medium leading-relaxed">
+                    <span className="text-amber-400 font-bold">Skèmino</span> ridefinisce la strategia online.
+                    <br />39 Chain Cards, infinite possibilità.
+                  </p>
+
+                  <p className="text-lg text-gray-400 max-w-xl">
+                    Entra nell'arena competitiva più avanzata al mondo. Sistema ELO professionale,
+                    matchmaking intelligente e tornei con premi reali ti aspettano.
+                  </p>
+                </div>
+              </div>
+
+              {/* Enhanced CTA Button */}
+              <div className="flex justify-start">
+                <button
+                  onClick={handlePlayOnline}
+                  className="group relative overflow-hidden px-12 py-6 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-2xl font-bold text-xl shadow-2xl hover:shadow-green-500/40 transform hover:scale-[1.02] transition-all duration-300"
+                >
+                  <span className="relative z-10 flex items-center justify-center space-x-3">
+                    <svg className="w-7 h-7 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>ENTRA IN PARTITA</span>
+                    <div className="bg-green-300 text-green-800 text-xs px-2 py-1 rounded-full font-black">GRATIS</div>
+                  </span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                </button>
+              </div>
+
+              {/* Enhanced Trust Indicators - Fixed Visibility */}
+              <div className="pt-8">
+                <div className="grid grid-cols-3 gap-8">
+                  <div className="text-center group cursor-pointer">
+                    <div className="text-4xl font-black text-amber-400 group-hover:scale-110 transition-transform duration-300">12M+</div>
+                    <div className="text-sm text-gray-300 font-medium mt-1">Partite Epiche</div>
+                  </div>
+                  <div className="text-center group cursor-pointer">
+                    <div className="text-4xl font-black text-green-400 group-hover:scale-110 transition-transform duration-300">750K+</div>
+                    <div className="text-sm text-gray-300 font-medium mt-1">Strateghi Attivi</div>
+                  </div>
+                  <div className="text-center group cursor-pointer">
+                    <div className="text-4xl font-black text-purple-400 group-hover:scale-110 transition-transform duration-300">€50K+</div>
+                    <div className="text-sm text-gray-300 font-medium mt-1">Premi Mensili</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Social Proof */}
+              <div className="flex items-center space-x-8 pt-6">
+                <div className="flex items-center space-x-2">
+                  <div className="flex -space-x-2">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 border-2 border-gray-800 flex items-center justify-center text-white font-bold">👨</div>
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-pink-600 border-2 border-gray-800 flex items-center justify-center text-white font-bold">👩</div>
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-green-600 border-2 border-gray-800 flex items-center justify-center text-white font-bold">👨</div>
+                  </div>
+                  <span className="text-gray-300 font-medium">+1,247 si sono uniti oggi</span>
+                </div>
+
+                <div className="flex items-center space-x-1">
+                  <div className="flex text-yellow-400">
+                    ⭐⭐⭐⭐⭐
+                  </div>
+                  <span className="text-gray-300 font-medium ml-2">4.9/5 stelle</span>
+                </div>
+              </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button
-                onClick={handlePlayOnline}
-                className="group relative px-8 py-4 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl font-bold text-lg shadow-2xl hover:shadow-green-500/25 transform hover:scale-105 transition-all duration-200"
-              >
-                <span className="flex items-center justify-center space-x-2">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span>Gioca Online</span>
-                </span>
-              </button>
+            {/* Enhanced Right Content - Interactive Board */}
+            <div className="relative lg:ml-8">
+              {/* Floating elements around board */}
+              <div className="absolute -top-8 -left-8 w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center text-white font-bold text-xl animate-bounce">🏆</div>
+              <div className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center text-white font-bold animate-pulse">⚡</div>
+              <div className="absolute -bottom-6 -left-6 w-14 h-14 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-lg animate-bounce" style={{animationDelay: '1s'}}>🎯</div>
 
-              <button className="px-8 py-4 bg-white/10 backdrop-blur border border-white/20 text-white rounded-xl font-bold text-lg hover:bg-white/20 transition-all duration-200">
-                <span className="flex items-center justify-center space-x-2">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                  <span>Gioca vs Computer</span>
-                </span>
-              </button>
-            </div>
+              {/* Main board container with enhanced effects */}
+              <div className="relative group">
+                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/30 to-orange-600/30 blur-2xl group-hover:blur-3xl transition-all duration-500"></div>
+                <div className="absolute inset-0 bg-gradient-to-tl from-green-500/20 to-blue-600/20 blur-2xl group-hover:blur-3xl transition-all duration-700"></div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-6 pt-8">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-amber-400">10M+</div>
-                <div className="text-sm text-gray-400">Partite Giocate</div>
+                <div className="relative bg-black/50 backdrop-blur-2xl rounded-3xl p-10 border border-white/20 group-hover:border-amber-400/50 transition-all duration-500 shadow-2xl">
+                  {/* Premium badge */}
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-sm font-bold rounded-full shadow-lg">
+                    LIVE GAMEPLAY
+                  </div>
+
+                  <img
+                    src="/img/Tabellone/tabellone_skemino.webp"
+                    alt="Skèmino Professional Gaming Board"
+                    className="w-full h-auto rounded-2xl shadow-2xl group-hover:scale-[1.02] transition-transform duration-500"
+                  />
+
+                  {/* Live indicator */}
+                  <div className="absolute bottom-4 right-4 flex items-center space-x-2 bg-red-600/90 backdrop-blur-sm px-3 py-2 rounded-full">
+                    <div className="w-2 h-2 bg-red-300 rounded-full animate-pulse"></div>
+                    <span className="text-white text-xs font-bold">LIVE</span>
+                  </div>
+                </div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-amber-400">500K+</div>
-                <div className="text-sm text-gray-400">Giocatori Attivi</div>
+
+              {/* Floating stats cards */}
+              <div className="absolute -right-8 top-1/4 bg-black/80 backdrop-blur-xl border border-green-500/30 rounded-xl p-4 shadow-2xl animate-pulse">
+                <div className="text-green-400 font-bold text-sm">⚡ PARTITE ATTIVE</div>
+                <div className="text-white font-black text-2xl">42,156</div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-amber-400">39</div>
-                <div className="text-sm text-gray-400">Chain Cards</div>
+
+              <div className="absolute -left-8 bottom-1/4 bg-black/80 backdrop-blur-xl border border-purple-500/30 rounded-xl p-4 shadow-2xl animate-pulse" style={{animationDelay: '1s'}}>
+                <div className="text-purple-400 font-bold text-sm">🏆 TORNEI OGGI</div>
+                <div className="text-white font-black text-2xl">247</div>
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Right Content - Game Board Image */}
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-amber-500/20 to-orange-600/20 blur-3xl"></div>
-            <div className="relative bg-black/40 backdrop-blur-xl rounded-2xl p-8 border border-white/10">
-              <img
-                src="/img/Tabellone/tabellone_skemino.webp"
-                alt="Skèmino Game Board"
-                className="w-full h-auto rounded-xl"
-              />
+        {/* Key Benefits Strip */}
+        <div className="absolute bottom-20 left-0 right-0 z-20">
+          <div className="container mx-auto px-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+              {/* Instant Matchmaking */}
+              <div className="bg-black/60 backdrop-blur-xl border border-amber-500/30 rounded-xl p-4 text-center group hover:border-amber-500/60 transition-all duration-300">
+                <div className="text-2xl mb-2 group-hover:scale-110 transition-transform duration-300">⚡</div>
+                <div className="text-amber-400 font-bold text-sm mb-1">MATCHMAKING ISTANTANEO</div>
+                <div className="text-gray-300 text-xs">Trova avversari in &lt;3 secondi</div>
+              </div>
+
+              {/* Professional System */}
+              <div className="bg-black/60 backdrop-blur-xl border border-green-500/30 rounded-xl p-4 text-center group hover:border-green-500/60 transition-all duration-300">
+                <div className="text-2xl mb-2 group-hover:scale-110 transition-transform duration-300">🏆</div>
+                <div className="text-green-400 font-bold text-sm mb-1">SISTEMA PROFESSIONALE</div>
+                <div className="text-gray-300 text-xs">ELO ufficiale + Tornei live</div>
+              </div>
+
+              {/* Global Community */}
+              <div className="bg-black/60 backdrop-blur-xl border border-purple-500/30 rounded-xl p-4 text-center group hover:border-purple-500/60 transition-all duration-300">
+                <div className="text-2xl mb-2 group-hover:scale-110 transition-transform duration-300">🌍</div>
+                <div className="text-purple-400 font-bold text-sm mb-1">COMMUNITY GLOBALE</div>
+                <div className="text-gray-300 text-xs">100+ paesi connessi</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
+            <div className="w-1 h-3 bg-white/50 rounded-full mt-2 animate-pulse"></div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section - Right after Hero */}
+      <section className="py-16 bg-gray-900/50">
+        <div className="container mx-auto px-6 max-w-6xl">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-white mb-4">
+              Cosa Dicono i <span className="text-amber-400">Pro Players</span>
+            </h2>
+            <p className="text-gray-400">Testimonianze dai migliori strateghi della community</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Testimonial 1 */}
+            <div className="bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6 hover:border-amber-500/30 transition-all duration-300">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center text-white font-bold text-lg mr-4">
+                  M
+                </div>
+                <div>
+                  <div className="text-white font-bold">Marco_GrandMaster</div>
+                  <div className="text-amber-400 text-sm">2587 ELO • Gran Maestro</div>
+                </div>
+              </div>
+              <div className="text-yellow-400 mb-3">⭐⭐⭐⭐⭐</div>
+              <p className="text-gray-300 italic leading-relaxed">
+                "La profondità strategica di Skèmino supera qualsiasi altro gioco da tavolo online.
+                Il sistema di rating è precisissimo e i tornei sono avvincenti."
+              </p>
+            </div>
+
+            {/* Testimonial 2 */}
+            <div className="bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6 hover:border-green-500/30 transition-all duration-300">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center text-white font-bold text-lg mr-4">
+                  S
+                </div>
+                <div>
+                  <div className="text-white font-bold">Sofia_Tactical</div>
+                  <div className="text-green-400 text-sm">2234 ELO • Maestro</div>
+                </div>
+              </div>
+              <div className="text-yellow-400 mb-3">⭐⭐⭐⭐⭐</div>
+              <p className="text-gray-300 italic leading-relaxed">
+                "Perfetto per chi ama la strategia pura. Le 39 Chain Cards offrono infinite
+                possibilità tattiche. Matchmaking velocissimo!"
+              </p>
+            </div>
+
+            {/* Testimonial 3 */}
+            <div className="bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6 hover:border-purple-500/30 transition-all duration-300">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-lg mr-4">
+                  A
+                </div>
+                <div>
+                  <div className="text-white font-bold">Alex_Strategist</div>
+                  <div className="text-purple-400 text-sm">1987 ELO • Esperto</div>
+                </div>
+              </div>
+              <div className="text-yellow-400 mb-3">⭐⭐⭐⭐⭐</div>
+              <p className="text-gray-300 italic leading-relaxed">
+                "La community è fantastica e l'interfaccia è fluida. Ho già vinto €200
+                nei tornei mensili. Consigliatissimo!"
+              </p>
+            </div>
+          </div>
+
+          {/* Stats Bar */}
+          <div className="mt-12 pt-8 border-t border-gray-700/50">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+              <div>
+                <div className="text-2xl font-black text-amber-400">4.9</div>
+                <div className="text-gray-400 text-sm">Rating Medio</div>
+                <div className="text-yellow-400 text-xs mt-1">⭐⭐⭐⭐⭐</div>
+              </div>
+              <div>
+                <div className="text-2xl font-black text-green-400">98%</div>
+                <div className="text-gray-400 text-sm">Soddisfazione</div>
+                <div className="text-green-400 text-xs mt-1">Verificato</div>
+              </div>
+              <div>
+                <div className="text-2xl font-black text-purple-400">24/7</div>
+                <div className="text-gray-400 text-sm">Supporto Live</div>
+                <div className="text-purple-400 text-xs mt-1">Multilingua</div>
+              </div>
+              <div>
+                <div className="text-2xl font-black text-blue-400">0€</div>
+                <div className="text-gray-400 text-sm">Per Sempre</div>
+                <div className="text-blue-400 text-xs mt-1">Gratis</div>
+              </div>
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useWebSocket } from './useWebSocket';
+import { useSocket } from './useSocket';
 
 export interface MatchmakingState {
   isSearching: boolean;
@@ -30,7 +30,7 @@ interface UseMatchmakingOptions {
 
 export const useMatchmaking = (options: UseMatchmakingOptions = {}) => {
   const { onMatchFound, onError, isGuest = false, userRating = 1200 } = options;
-  const { socket, isConnected } = useWebSocket();
+  const { connected, socket } = useSocket();
 
   const [state, setState] = useState<MatchmakingState>({
     isSearching: false,
@@ -42,7 +42,7 @@ export const useMatchmaking = (options: UseMatchmakingOptions = {}) => {
 
   // Join matchmaking queue
   const joinQueue = useCallback(async (timeControl: string) => {
-    if (!socket || !isConnected) {
+    if (!socket || !connected) {
       onError?.('Non connesso al server');
       return false;
     }

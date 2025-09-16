@@ -12,6 +12,7 @@ import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import PreGamePage from './pages/PreGamePage';
 import { MatchmakingDemo } from './pages/MatchmakingDemo';
+import GamePageWithSidebar from './components/gaming/GamePageWithSidebar';
 
 const GamePage = () => {
   return <App />;
@@ -158,7 +159,7 @@ export function Router() {
             } />
             <Route path="/game" element={
               <RequireAuth fallback={<Navigate to="/login" replace />}>
-                <MatchmakingDemo />
+                <GamePageWithSidebar />
               </RequireAuth>
             } />
             <Route path="/game/:roomId" element={

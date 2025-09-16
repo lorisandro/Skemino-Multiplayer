@@ -8,6 +8,7 @@ interface UseSocketReturn {
   connected: boolean;
   connecting: boolean;
   latency: number;
+  socket: Socket | null;
   emitMove: (data: { card: Card; to: BoardCell }) => void;
   emitResign: () => void;
   emitDrawOffer: () => void;
@@ -24,6 +25,13 @@ export const useSocket = (): UseSocketReturn => {
   const [connected, setConnected] = useState(false);
   const [connecting, setConnecting] = useState(false);
   const [latency, setLatency] = useState(0);
+
+  // Store socket globally for access from other hooks
+  useEffect(() => {
+    if (socket) {
+      (window as any).__skemino_socket = socket;
+    }
+  }, []);
 
   const {
     setGameState,
@@ -409,6 +417,7 @@ export const useSocket = (): UseSocketReturn => {
     connected,
     connecting,
     latency,
+    socket,
     emitMove,
     emitResign,
     emitDrawOffer,
