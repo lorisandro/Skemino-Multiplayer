@@ -23,12 +23,12 @@ export const MatchmakingButton: React.FC<MatchmakingButtonProps> = ({ className,
     const playerData = user ? {
       playerId: user.id || `player_${Math.random().toString(36).substr(2, 9)}`,
       username: user.displayName || user.email?.split('@')[0] || 'Guest',
-      rating: user.rating || 1200,
-      level: user.level?.name || 'Beginner',
+      rating: user.rating || 1000,
+      level: user.level?.name || 'Principiante',
     } : {
       playerId: `player_${Math.random().toString(36).substr(2, 9)}`,
       username: `Player${Math.floor(Math.random() * 1000)}`,
-      rating: 1200 + Math.floor(Math.random() * 800), // Random rating 1200-2000
+      rating: 1000, // Default initial rating
     };
 
     console.log('Starting matchmaking:', playerData);
@@ -100,7 +100,7 @@ export const MatchmakingButton: React.FC<MatchmakingButtonProps> = ({ className,
             <span className="text-sm font-medium">Searching for opponent...</span>
           </div>
           <div className="text-xs text-gray-500 mt-1">
-            {user ? `Matching for rating ${user.rating || 1200}` : 'Rating-based matching in progress'}
+            {user ? `Matching for rating ${user.rating || 1000}` : 'Rating-based matching in progress'}
           </div>
         </motion.div>
       )}

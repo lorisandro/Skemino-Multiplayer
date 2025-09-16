@@ -36,25 +36,30 @@ export const PlayerInfo: React.FC<PlayerInfoProps> = ({
 
   // Get rating color based on rating range (Gaming-optimized for dark backgrounds)
   const getRatingColor = (rating: number) => {
-    if (rating < 1200) return 'text-slate-400';    // Beginner
-    if (rating < 1400) return 'text-green-400';    // Novice
-    if (rating < 1600) return 'text-blue-400';     // Intermediate
-    if (rating < 1800) return 'text-purple-400';   // Advanced
-    if (rating < 2000) return 'text-orange-400';   // Expert
-    if (rating < 2200) return 'text-red-400';      // Master
-    return 'text-yellow-400';                      // Grand Master+
+    if (rating < 1200) return 'text-slate-400';    // Principiante
+    if (rating < 1400) return 'text-green-400';    // Dilettante Cat. D
+    if (rating < 1600) return 'text-blue-400';     // Dilettante Cat. C
+    if (rating < 1800) return 'text-cyan-400';     // Dilettante Cat. B
+    if (rating < 2000) return 'text-purple-400';   // Dilettante Cat. A
+    if (rating < 2200) return 'text-orange-400';   // Candidato Maestro
+    if (rating < 2400) return 'text-red-400';      // Maestro
+    if (rating < 2500) return 'text-pink-400';     // Maestro Internazionale
+    if (rating < 2700) return 'text-yellow-400';   // Gran Maestro
+    return 'text-yellow-300';                      // Super Gran Maestro
   };
 
-  // Get title based on rating
+  // Get title based on rating (Official Skèmino levels)
   const getTitle = (rating: number) => {
-    if (rating < 1200) return 'Beginner';
-    if (rating < 1400) return 'Novice';
-    if (rating < 1600) return 'Intermediate';
-    if (rating < 1800) return 'Advanced';
-    if (rating < 2000) return 'Expert';
-    if (rating < 2200) return 'Master';
-    if (rating < 2400) return 'Grand Master';
-    return 'Super Grand Master';
+    if (rating < 1200) return 'Principiante';
+    if (rating < 1400) return 'Dilettante Cat. D';
+    if (rating < 1600) return 'Dilettante Cat. C';
+    if (rating < 1800) return 'Dilettante Cat. B';
+    if (rating < 2000) return 'Dilettante Cat. A';
+    if (rating < 2200) return 'Candidato Maestro';
+    if (rating < 2400) return 'Maestro';
+    if (rating < 2500) return 'Maestro Internazionale';
+    if (rating < 2700) return 'Gran Maestro';
+    return 'Super Gran Maestro';
   };
 
   // Get rank border gradient for avatar (Gaming-style rank indication)

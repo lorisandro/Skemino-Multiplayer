@@ -61,8 +61,8 @@ export const MatchmakingDemo: React.FC = () => {
       const playerData = {
         playerId: user.id || `player_${Math.random().toString(36).substr(2, 9)}`,
         username: user.displayName || user.email?.split('@')[0] || 'Guest',
-        rating: user.rating || 1200,
-        level: user.level?.name || 'Beginner',
+        rating: user.rating || 1000,
+        level: user.level?.name || 'Principiante',
         mode: mode || 'ranked'
       };
 
