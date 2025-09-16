@@ -46,8 +46,18 @@ const RootPageWrapper = () => {
 const HomePageWrapper = () => {
   const { isAuthenticated, user, isLoading } = useAuth();
 
+  // DEBUG: Log dello stato per capire cosa succede dopo il login
+  console.log('🔍 HomePageWrapper - State debug:', {
+    isLoading,
+    isAuthenticated,
+    hasUser: !!user,
+    userType: user?.id?.includes('guest') ? 'guest' : 'registered',
+    userId: user?.id?.substring(0, 10) + '...'
+  });
+
   // Mostra loading durante la verifica dell'autenticazione per evitare flash
   if (isLoading) {
+    console.log('🔄 HomePageWrapper - Showing loading state');
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
         <div className="text-center">
@@ -60,10 +70,12 @@ const HomePageWrapper = () => {
 
   // Se l'utente è autenticato, mostra la dashboard
   if (isAuthenticated && user) {
+    console.log('✅ HomePageWrapper - User authenticated, showing DashboardPage');
     return <DashboardPage />;
   }
 
   // Altrimenti mostra la HomePage normale
+  console.log('❌ HomePageWrapper - User not authenticated, showing HomePage');
   return <HomePage />;
 };
 
