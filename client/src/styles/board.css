@@ -102,7 +102,7 @@
   grid-area: board;
   position: relative;
   width: 100%;
-  padding-bottom: 103.5%; /* Allungato del 3.5% per board più alto */
+  padding-bottom: 101.5%; /* Allungato del 1.5% per board leggermente più alto */
   background: #1a1a1a;
   border-radius: 0.5rem;
   overflow: hidden;
