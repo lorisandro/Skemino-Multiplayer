@@ -18,8 +18,8 @@ import {
   Card,
   PSNHeader,
   BoardCell,
-  PlayerColor
-} from '../../../shared/types/GameTypes';
+  PlayerColor,
+} from "../../../shared/types/GameTypes";
 
 export class PSNGenerator {
   /**
@@ -31,7 +31,7 @@ export class PSNGenerator {
     const moves = this.generateMoves(gameState.moveHistory);
     const result = this.generateResult(gameState);
 
-    return [headers, setup, moves, result].filter(Boolean).join('\n\n');
+    return [headers, setup, moves, result].filter(Boolean).join("\n\n");
   }
 
   /**
@@ -39,15 +39,15 @@ export class PSNGenerator {
    */
   private generateHeaders(gameState: GameState): string {
     const headers: PSNHeader = {
-      event: 'Skèmino Game',
-      site: 'Skèmino Platform',
-      date: gameState.startTime.toISOString().split('T')[0].replace(/-/g, '.'),
+      event: "Skèmino Game",
+      site: "Skèmino Platform",
+      date: gameState.startTime.toISOString().split("T")[0].replace(/-/g, "."),
       white: gameState.players.white.username,
       black: gameState.players.black.username,
       result: this.getGameResult(gameState),
       whiteRating: gameState.players.white.rating,
       blackRating: gameState.players.black.rating,
-      timeControl: `${Math.floor(gameState.players.white.timeRemaining / 60000)}+0`
+      timeControl: `${Math.floor(gameState.players.white.timeRemaining / 60000)}+0`,
     };
 
     const requiredHeaders = [
@@ -57,7 +57,7 @@ export class PSNGenerator {
       `[Round "1"]`,
       `[White "${headers.white}"]`,
       `[Black "${headers.black}"]`,
-      `[Result "${headers.result}"]`
+      `[Result "${headers.result}"]`,
     ];
 
     const optionalHeaders = [];
@@ -71,22 +71,22 @@ export class PSNGenerator {
       optionalHeaders.push(`[TimeControl "${headers.timeControl}"]`);
     }
 
-    return [...requiredHeaders, ...optionalHeaders].join('\n');
+    return [...requiredHeaders, ...optionalHeaders].join("\n");
   }
 
   /**
    * Determines game result for PSN header
    */
-  private getGameResult(gameState: GameState): '1-0' | '0-1' | '1/2-1/2' | '*' {
-    if (gameState.status !== 'completed') {
-      return '*';
+  private getGameResult(gameState: GameState): "1-0" | "0-1" | "1/2-1/2" | "*" {
+    if (gameState.status !== "completed") {
+      return "*";
     }
 
     if (!gameState.winner) {
-      return '1/2-1/2'; // Draw
+      return "1/2-1/2"; // Draw
     }
 
-    return gameState.winner === 'white' ? '1-0' : '0-1';
+    return gameState.winner === "white" ? "1-0" : "0-1";
   }
 
   /**
@@ -100,7 +100,7 @@ export class PSNGenerator {
       return `0.SETUP:${setupCell}/${bicolor}`;
     }
 
-    return '';
+    return "";
   }
 
   /**
@@ -115,9 +115,9 @@ export class PSNGenerator {
       const notation = this.generateMoveNotation(move);
 
       // White moves start new line, Black moves complete line
-      if (move.player === 'white') {
+      if (move.player === "white") {
         if (currentLine.length > 0) {
-          moveLines.push(currentLine.join(' '));
+          moveLines.push(currentLine.join(" "));
         }
         currentLine = [`${move.turnNumber}.${notation}`];
       } else {
@@ -126,11 +126,11 @@ export class PSNGenerator {
 
       // Handle end of game or single white move
       if (i === moves.length - 1 && currentLine.length > 0) {
-        moveLines.push(currentLine.join(' '));
+        moveLines.push(currentLine.join(" "));
       }
     }
 
-    return moveLines.join('\n');
+    return moveLines.join("\n");
   }
 
   /**
@@ -141,13 +141,15 @@ export class PSNGenerator {
     const positionNotation = move.toPosition;
 
     // Build special symbols
-    let symbols = '';
-    if (move.capturedCard) symbols += '*';
-    if (move.isVertexControl) symbols += '#';
-    if (move.isLoopTrigger) symbols += '@';
+    let symbols = "";
+    if (move.capturedCard) symbols += "*";
+    if (move.isVertexControl) symbols += "#";
+    if (move.isLoopTrigger) symbols += "@";
 
     // Add timing if present
-    const timing = move.thinkTimeMs ? `/${Math.round(move.thinkTimeMs / 1000)}` : '';
+    const timing = move.thinkTimeMs
+      ? `/${Math.round(move.thinkTimeMs / 1000)}`
+      : "";
 
     return `${cardNotation}:${positionNotation}${symbols}${timing}`;
   }
@@ -156,10 +158,14 @@ export class PSNGenerator {
    * Formats a card for PSN notation
    */
   private formatCard(card: Card): string {
-    const valueStr = card.value === 'J' ? 'J' :
-                     card.value === 'Q' ? 'Q' :
-                     card.value === 'K' ? 'K' :
-                     card.value;
+    const valueStr =
+      card.value === "J"
+        ? "J"
+        : card.value === "Q"
+          ? "Q"
+          : card.value === "K"
+            ? "K"
+            : card.value;
     return `${card.suit}${valueStr}`;
   }
 
@@ -168,17 +174,21 @@ export class PSNGenerator {
    */
   private generateResult(gameState: GameState): string {
     const result = this.getGameResult(gameState);
-    return result === '*' ? '' : result;
+    return result === "*" ? "" : result;
   }
 
   /**
    * Validates PSN move notation syntax
    */
-  public validateMoveNotation(notation: string): { isValid: boolean; errors: string[] } {
+  public validateMoveNotation(notation: string): {
+    isValid: boolean;
+    errors: string[];
+  } {
     const errors: string[] = [];
 
     // Basic format: CARD:POSITION[SYMBOLS][/TIME]
-    const moveRegex = /^([PFC](?:[1-9]|1[0-3]|[JQK])):([a-f][1-6])([*#@+]*)(\/\d+)?$/;
+    const moveRegex =
+      /^([PFC](?:[1-9]|1[0-3]|[JQK])):([a-f][1-6])([*#@+]*)(\/\d+)?$/;
 
     if (!moveRegex.test(notation)) {
       errors.push(`Invalid move notation format: ${notation}`);
@@ -206,7 +216,7 @@ export class PSNGenerator {
     }
 
     // Validate symbols (no duplicate symbols)
-    const symbolSet = new Set(symbols.split(''));
+    const symbolSet = new Set(symbols.split(""));
     if (symbolSet.size !== symbols.length) {
       errors.push(`Duplicate symbols in move notation: ${symbols}`);
     }
@@ -225,7 +235,10 @@ export class PSNGenerator {
   /**
    * Validates card notation
    */
-  private validateCardNotation(cardStr: string): { isValid: boolean; errors: string[] } {
+  private validateCardNotation(cardStr: string): {
+    isValid: boolean;
+    errors: string[];
+  } {
     const errors: string[] = [];
 
     if (cardStr.length < 2) {
@@ -233,16 +246,16 @@ export class PSNGenerator {
       return { isValid: false, errors };
     }
 
-    const suit = cardStr[0] as 'P' | 'F' | 'C';
+    const suit = cardStr[0] as "P" | "F" | "C";
     const valueStr = cardStr.substring(1);
 
     // Validate suit
-    if (!['P', 'F', 'C'].includes(suit)) {
+    if (!["P", "F", "C"].includes(suit)) {
       errors.push(`Invalid card suit: ${suit}`);
     }
 
     // Validate value
-    if (['J', 'Q', 'K'].includes(valueStr)) {
+    if (["J", "Q", "K"].includes(valueStr)) {
       // Face cards are valid
     } else {
       const value = parseInt(valueStr);
@@ -257,7 +270,10 @@ export class PSNGenerator {
   /**
    * Validates board position
    */
-  private validatePosition(position: string): { isValid: boolean; errors: string[] } {
+  private validatePosition(position: string): {
+    isValid: boolean;
+    errors: string[];
+  } {
     const errors: string[] = [];
 
     if (position.length !== 2) {
@@ -268,11 +284,11 @@ export class PSNGenerator {
     const file = position[0];
     const rank = position[1];
 
-    if (!'abcdef'.includes(file)) {
+    if (!"abcdef".includes(file)) {
       errors.push(`Invalid file: ${file}`);
     }
 
-    if (!'123456'.includes(rank)) {
+    if (!"123456".includes(rank)) {
       errors.push(`Invalid rank: ${rank}`);
     }
 
@@ -288,22 +304,30 @@ export class PSNGenerator {
       return null;
     }
 
-    const suit = cardStr[0] as 'P' | 'F' | 'C';
+    const suit = cardStr[0] as "P" | "F" | "C";
     const valueStr = cardStr.substring(1);
 
     let value: string;
     switch (valueStr) {
-      case 'J': value = 'J'; break;
-      case 'Q': value = 'Q'; break;
-      case 'K': value = 'K'; break;
-      default: value = valueStr; break;
+      case "J":
+        value = "J";
+        break;
+      case "Q":
+        value = "Q";
+        break;
+      case "K":
+        value = "K";
+        break;
+      default:
+        value = valueStr;
+        break;
     }
 
     return {
       id: `${suit}${value}`,
       suit,
       value: value as any,
-      displayName: `${suit}${value}`
+      displayName: `${suit}${value}`,
     };
   }
 
@@ -316,9 +340,9 @@ export class PSNGenerator {
     createsLoop: boolean;
   } {
     return {
-      isCapture: notation.includes('*'),
-      hasVertexControl: notation.includes('#'),
-      createsLoop: notation.includes('@')
+      isCapture: notation.includes("*"),
+      hasVertexControl: notation.includes("#"),
+      createsLoop: notation.includes("@"),
     };
   }
 
@@ -335,7 +359,7 @@ export class PSNGenerator {
    */
   public exportGameToPSN(gameState: GameState): string {
     const psn = this.generateGamePSN(gameState);
-    return psn + '\n'; // Add final newline for file format
+    return psn + "\n"; // Add final newline for file format
   }
 
   /**
@@ -345,6 +369,6 @@ export class PSNGenerator {
     // Generate moves without headers for compact storage
     const moves = this.generateMoves(gameState.moveHistory);
     const result = this.generateResult(gameState);
-    return [moves, result].filter(Boolean).join('\n');
+    return [moves, result].filter(Boolean).join("\n");
   }
 }

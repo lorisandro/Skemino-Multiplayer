@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from "react";
 
 export const useGamePerformance = () => {
   const [fps, setFps] = useState(60);
@@ -14,12 +14,16 @@ export const useGamePerformance = () => {
       frameCount.current++;
 
       if (currentTime >= lastTime.current + 1000) {
-        setFps(Math.round((frameCount.current * 1000) / (currentTime - lastTime.current)));
+        setFps(
+          Math.round(
+            (frameCount.current * 1000) / (currentTime - lastTime.current),
+          ),
+        );
         frameCount.current = 0;
         lastTime.current = currentTime;
 
         // Measure memory if available
-        if ('memory' in performance) {
+        if ("memory" in performance) {
           const memory = (performance as any).memory;
           setMemoryUsage(Math.round(memory.usedJSHeapSize / 1048576));
         }

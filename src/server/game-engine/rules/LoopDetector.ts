@@ -2,9 +2,9 @@ import {
   GameBoard,
   BoardCell,
   Card,
-  LoopDetection
-} from '../../../shared/types/GameTypes';
-import { CardManager } from '../core/CardManager';
+  LoopDetection,
+} from "../../../shared/types/GameTypes";
+import { CardManager } from "../core/CardManager";
 
 export class LoopDetector {
   private cardManager: CardManager;
@@ -16,8 +16,8 @@ export class LoopDetector {
   public checkForLoop(
     board: GameBoard,
     targetCell: BoardCell,
-    newCard: Card
-  ): LoopDetection & { type?: 'symbolic' | 'numeric' | 'invalid' } {
+    newCard: Card,
+  ): LoopDetection & { type?: "symbolic" | "numeric" | "invalid" } {
     // Get all adjacent cells
     const adjacentCells = this.getAdjacentCells(targetCell);
     const adjacentCards: Array<{ cell: BoardCell; card: Card }> = [];
@@ -40,8 +40,8 @@ export class LoopDetector {
     if (symbolicLoop.hasLoop) {
       return {
         hasLoop: true,
-        type: 'symbolic',
-        cells: [targetCell, ...symbolicLoop.cells!]
+        type: "symbolic",
+        cells: [targetCell, ...symbolicLoop.cells!],
       };
     }
 
@@ -50,8 +50,8 @@ export class LoopDetector {
     if (numericLoop.hasLoop) {
       return {
         hasLoop: true,
-        type: 'numeric',
-        cells: [targetCell, ...numericLoop.cells!]
+        type: "numeric",
+        cells: [targetCell, ...numericLoop.cells!],
       };
     }
 
@@ -60,23 +60,23 @@ export class LoopDetector {
 
   private checkSymbolicLoop(
     adjacentCards: Array<{ cell: BoardCell; card: Card }>,
-    newCard: Card
+    newCard: Card,
   ): LoopDetection {
-    const allCards = [...adjacentCards.map(ac => ac.card), newCard];
-    const suits = new Set(allCards.map(c => c.suit));
+    const allCards = [...adjacentCards.map((ac) => ac.card), newCard];
+    const suits = new Set(allCards.map((c) => c.suit));
 
     // Symbolic loop requires at least 3 different symbols
     if (suits.size >= 3) {
       // Find connected cells that form the loop
       const loopCells = this.findConnectedLoop(
-        adjacentCards.map(ac => ac.cell),
-        adjacentCards[0].cell
+        adjacentCards.map((ac) => ac.cell),
+        adjacentCards[0].cell,
       );
 
       return {
         hasLoop: true,
-        type: 'symbolic',
-        cells: loopCells
+        type: "symbolic",
+        cells: loopCells,
       };
     }
 
@@ -85,13 +85,13 @@ export class LoopDetector {
 
   private checkNumericLoop(
     adjacentCards: Array<{ cell: BoardCell; card: Card }>,
-    newCard: Card
+    newCard: Card,
   ): LoopDetection {
-    const allCards = [...adjacentCards.map(ac => ac.card), newCard];
+    const allCards = [...adjacentCards.map((ac) => ac.card), newCard];
 
     // Check for Ace and King
-    const aceCard = allCards.find(c => c.value === '1');
-    const kingCard = allCards.find(c => c.value === 'K');
+    const aceCard = allCards.find((c) => c.value === "1");
+    const kingCard = allCards.find((c) => c.value === "K");
 
     if (!aceCard || !kingCard) {
       return { hasLoop: false };
@@ -103,8 +103,8 @@ export class LoopDetector {
     }
 
     // Need at least one more card to complete the loop
-    const otherCards = allCards.filter(c =>
-      c.value !== '1' && c.value !== 'K'
+    const otherCards = allCards.filter(
+      (c) => c.value !== "1" && c.value !== "K",
     );
 
     if (otherCards.length === 0) {
@@ -113,17 +113,20 @@ export class LoopDetector {
 
     // Find the cells involved in the numeric loop
     const loopCells: BoardCell[] = [];
-    adjacentCards.forEach(ac => {
-      if (ac.card.value === '1' || ac.card.value === 'K' ||
-          otherCards.includes(ac.card)) {
+    adjacentCards.forEach((ac) => {
+      if (
+        ac.card.value === "1" ||
+        ac.card.value === "K" ||
+        otherCards.includes(ac.card)
+      ) {
         loopCells.push(ac.cell);
       }
     });
 
     return {
       hasLoop: true,
-      type: 'numeric',
-      cells: loopCells
+      type: "numeric",
+      cells: loopCells,
     };
   }
 
@@ -154,7 +157,7 @@ export class LoopDetector {
 
   private findConnectedLoop(
     cells: BoardCell[],
-    startCell: BoardCell
+    startCell: BoardCell,
   ): BoardCell[] {
     // Simple BFS to find connected cells that could form a loop
     const visited = new Set<BoardCell>();
@@ -180,10 +183,7 @@ export class LoopDetector {
   }
 
   // Check if a loop would create a "hole" (unplayable position)
-  public checkForHole(
-    board: GameBoard,
-    loopCells: BoardCell[]
-  ): BoardCell[] {
+  public checkForHole(board: GameBoard, loopCells: BoardCell[]): BoardCell[] {
     const holes: BoardCell[] = [];
 
     // Check each cell inside the loop
@@ -199,12 +199,12 @@ export class LoopDetector {
   private isInsideLoop(
     cell: BoardCell,
     loopCells: BoardCell[],
-    board: GameBoard
+    board: GameBoard,
   ): boolean {
     // Simplified check - a cell is "inside" a loop if it's surrounded
     // by loop cells on multiple sides
     const adjacent = this.getAdjacentCells(cell);
-    const loopAdjacent = adjacent.filter(adj => loopCells.includes(adj));
+    const loopAdjacent = adjacent.filter((adj) => loopCells.includes(adj));
 
     // If surrounded by 3+ loop cells, it's likely inside
     return loopAdjacent.length >= 3;
@@ -212,10 +212,11 @@ export class LoopDetector {
 
   // Detect all loops on the current board
   public detectAllLoops(board: GameBoard): Array<{
-    type: 'symbolic' | 'numeric';
+    type: "symbolic" | "numeric";
     cells: BoardCell[];
   }> {
-    const loops: Array<{ type: 'symbolic' | 'numeric'; cells: BoardCell[] }> = [];
+    const loops: Array<{ type: "symbolic" | "numeric"; cells: BoardCell[] }> =
+      [];
     const checked = new Set<string>();
 
     for (const [cell, position] of board.positions) {
@@ -223,7 +224,7 @@ export class LoopDetector {
 
       // Create a key for this group of adjacent cards
       const adjacentCells = this.getAdjacentCells(cell);
-      const groupKey = [cell, ...adjacentCells].sort().join(',');
+      const groupKey = [cell, ...adjacentCells].sort().join(",");
 
       if (checked.has(groupKey)) continue;
       checked.add(groupKey);
@@ -239,19 +240,19 @@ export class LoopDetector {
 
       if (adjacentCards.length >= 2) {
         // Check for symbolic loop
-        const cards = [position.card, ...adjacentCards.map(ac => ac.card)];
+        const cards = [position.card, ...adjacentCards.map((ac) => ac.card)];
         if (this.cardManager.isSymbolicLoop(cards)) {
           loops.push({
-            type: 'symbolic',
-            cells: [cell, ...adjacentCards.map(ac => ac.cell)]
+            type: "symbolic",
+            cells: [cell, ...adjacentCards.map((ac) => ac.cell)],
           });
         }
 
         // Check for numeric loop
         if (this.cardManager.isNumericLoop(cards)) {
           loops.push({
-            type: 'numeric',
-            cells: [cell, ...adjacentCards.map(ac => ac.cell)]
+            type: "numeric",
+            cells: [cell, ...adjacentCards.map((ac) => ac.cell)],
           });
         }
       }

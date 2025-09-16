@@ -1,5 +1,5 @@
-import { Server as HTTPServer } from 'http';
-import { Server as SocketIOServer } from 'socket.io';
+import { Server as HTTPServer } from "http";
+import { Server as SocketIOServer } from "socket.io";
 
 interface GameRoom {
   id: string;
@@ -8,9 +8,9 @@ interface GameRoom {
     playerId: string;
     username: string;
     rating: number;
-    color: 'white' | 'black';
+    color: "white" | "black";
   }>;
-  status: 'waiting' | 'matchmaking' | 'distributing' | 'active' | 'finished';
+  status: "waiting" | "matchmaking" | "distributing" | "active" | "finished";
   gameState?: any;
   createdAt: number;
 }
@@ -23,97 +23,118 @@ export class WebSocketManager {
   constructor(server: HTTPServer) {
     this.io = new SocketIOServer(server, {
       cors: {
-        origin: ['http://localhost:5173', 'http://localhost:3001', 'http://localhost:3007'],
-        methods: ['GET', 'POST'],
-        credentials: true
+        origin: [
+          "http://localhost:5173",
+          "http://localhost:3001",
+          "http://localhost:3007",
+        ],
+        methods: ["GET", "POST"],
+        credentials: true,
       },
       // Gaming-optimized WebSocket settings per skemino-realtime-specialist
       pingTimeout: 60000,
       pingInterval: 25000,
       upgradeTimeout: 30000,
-      allowUpgrades: true
+      allowUpgrades: true,
     });
 
     this.setupEventHandlers();
   }
 
   private setupEventHandlers() {
-    this.io.on('connection', (socket) => {
-      console.log('New client connected:', socket.id);
+    this.io.on("connection", (socket) => {
+      console.log("New client connected:", socket.id);
 
       // Real-time gaming connection setup
-      socket.emit('connection:established', {
+      socket.emit("connection:established", {
         socketId: socket.id,
         timestamp: Date.now(),
-        serverTime: new Date().toISOString()
+        serverTime: new Date().toISOString(),
       });
 
       // Matchmaking events
-      socket.on('matchmaking:start', (data: { playerId: string; username: string; rating: number; gameMode?: string }) => {
-        this.handleMatchmakingStart(socket, data);
-      });
+      socket.on(
+        "matchmaking:start",
+        (data: {
+          playerId: string;
+          username: string;
+          rating: number;
+          gameMode?: string;
+        }) => {
+          this.handleMatchmakingStart(socket, data);
+        },
+      );
 
-      socket.on('matchmaking:cancel', () => {
+      socket.on("matchmaking:cancel", () => {
         this.handleMatchmakingCancel(socket);
       });
 
       // Game lifecycle events
-      socket.on('game:join', (data: { roomId: string; playerId?: string }) => {
+      socket.on("game:join", (data: { roomId: string; playerId?: string }) => {
         this.handleGameJoin(socket, data);
       });
 
-      socket.on('game:leave', (data: { roomId: string }) => {
+      socket.on("game:leave", (data: { roomId: string }) => {
         this.handleGameLeave(socket, data);
       });
 
-      socket.on('game:ready', (data: { roomId: string }) => {
+      socket.on("game:ready", (data: { roomId: string }) => {
         this.handlePlayerReady(socket, data);
       });
 
       // Real-time gaming events
-      socket.on('move:make', (data: any) => {
+      socket.on("move:make", (data: any) => {
         this.handleMove(socket, data);
       });
 
-      socket.on('game:resign', () => {
+      socket.on("game:resign", () => {
         this.handleResign(socket);
       });
 
-      socket.on('draw:offer', () => {
+      socket.on("draw:offer", () => {
         this.handleDrawOffer(socket);
       });
 
-      socket.on('draw:response', (data: { accept: boolean }) => {
+      socket.on("draw:response", (data: { accept: boolean }) => {
         this.handleDrawResponse(socket, data);
       });
 
       // Connection health monitoring
-      socket.on('ping', () => {
-        socket.emit('pong', { timestamp: Date.now() });
+      socket.on("ping", () => {
+        socket.emit("pong", { timestamp: Date.now() });
       });
 
       // Disconnection handling
-      socket.on('disconnect', (reason) => {
+      socket.on("disconnect", (reason) => {
         console.log(`Client disconnected: ${socket.id}, reason: ${reason}`);
         this.handleDisconnection(socket, reason);
       });
     });
   }
 
-  private handleMatchmakingStart(socket: any, data: { playerId: string; username: string; rating: number; gameMode?: string }) {
+  private handleMatchmakingStart(
+    socket: any,
+    data: {
+      playerId: string;
+      username: string;
+      rating: number;
+      gameMode?: string;
+    },
+  ) {
     console.log(`Matchmaking started for player ${data.playerId}`);
 
     // Store player socket mapping
     this.playerSockets.set(socket.id, data.playerId);
 
     // Simple matchmaking logic (da migliorare con rating-based matching)
-    const waitingPlayers = Array.from(this.gameRooms.values())
-      .filter(room => room.status === 'waiting' && room.players.length === 1);
+    const waitingPlayers = Array.from(this.gameRooms.values()).filter(
+      (room) => room.status === "waiting" && room.players.length === 1,
+    );
 
     if (waitingPlayers.length > 0) {
       // Match found - join existing game
       const gameRoom = waitingPlayers[0];
-      this.addPlayerToRoom(socket, gameRoom, data, 'black');
+      this.addPlayerToRoom(socket, gameRoom, data, "black");
 
       // Trigger game start sequence
       this.startGameSequence(gameRoom.id);
@@ -123,34 +144,41 @@ export class WebSocketManager {
       const newRoom: GameRoom = {
         id: roomId,
         players: [],
-        status: 'waiting',
-        createdAt: Date.now()
+        status: "waiting",
+        createdAt: Date.now(),
       };
 
       this.gameRooms.set(roomId, newRoom);
-      this.addPlayerToRoom(socket, newRoom, data, 'white');
+      this.addPlayerToRoom(socket, newRoom, data, "white");
 
-      socket.emit('matchmaking:waiting', {
+      socket.emit("matchmaking:waiting", {
         roomId,
         position: 1,
-        estimatedWait: 30000 // 30 seconds estimate
+        estimatedWait: 30000, // 30 seconds estimate
       });
     }
   }
 
-  private addPlayerToRoom(socket: any, room: GameRoom, playerData: any, color: 'white' | 'black') {
+  private addPlayerToRoom(
+    socket: any,
+    room: GameRoom,
+    playerData: any,
+    color: "white" | "black",
+  ) {
     const player = {
       socketId: socket.id,
       playerId: playerData.playerId,
       username: playerData.username,
       rating: playerData.rating,
-      color
+      color,
     };
 
     room.players.push(player);
     socket.join(`game:${room.id}`);
 
-    console.log(`Player ${playerData.username} joined room ${room.id} as ${color}`);
+    console.log(
+      `Player ${playerData.username} joined room ${room.id} as ${color}`,
+    );
   }
 
   private async startGameSequence(roomId: string) {
@@ -160,25 +188,25 @@ export class WebSocketManager {
     console.log(`Starting game sequence for room ${roomId}`);
 
     // Step 1: Match found notification
-    room.status = 'matchmaking';
-    this.io.to(`game:${roomId}`).emit('game:found', {
+    room.status = "matchmaking";
+    this.io.to(`game:${roomId}`).emit("game:found", {
       roomId,
-      players: room.players.map(p => ({
+      players: room.players.map((p) => ({
         username: p.username,
         rating: p.rating,
-        color: p.color
+        color: p.color,
       })),
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     // Small delay for UI acknowledgment
     await this.delay(500);
 
     // Step 2: Game starting notification
-    this.io.to(`game:${roomId}`).emit('game:starting', {
+    this.io.to(`game:${roomId}`).emit("game:starting", {
       roomId,
-      message: 'Preparing game...',
-      timestamp: Date.now()
+      message: "Preparing game...",
+      timestamp: Date.now(),
     });
 
     await this.delay(300);
@@ -193,24 +221,24 @@ export class WebSocketManager {
 
     console.log(`Starting card distribution for room ${roomId}`);
 
-    room.status = 'distributing';
+    room.status = "distributing";
 
     // Generate game cards (5 per player)
     const gameCards = this.generateGameCards();
 
     // Initial distribution notification
-    this.io.to(`game:${roomId}`).emit('cards:distribution-start', {
-      phase: 'shuffling',
-      timestamp: Date.now()
+    this.io.to(`game:${roomId}`).emit("cards:distribution-start", {
+      phase: "shuffling",
+      timestamp: Date.now(),
     });
 
     // Simulate shuffling phase (800ms per skemino-ui timing)
     await this.delay(800);
 
     // Start dealing phase
-    this.io.to(`game:${roomId}`).emit('cards:distribution-phase', {
-      phase: 'dealing',
-      timestamp: Date.now()
+    this.io.to(`game:${roomId}`).emit("cards:distribution-phase", {
+      phase: "dealing",
+      timestamp: Date.now(),
     });
 
     // Deal cards with timing (200ms delay between cards per skemino-ui)
@@ -220,13 +248,13 @@ export class WebSocketManager {
       const isWhiteCard = i % 2 === 0;
 
       // Send individual card distribution event
-      this.io.to(`game:${roomId}`).emit('cards:card-dealt', {
+      this.io.to(`game:${roomId}`).emit("cards:card-dealt", {
         cardNumber: i + 1,
         totalCards: totalCards,
-        player: isWhiteCard ? 'white' : 'black',
+        player: isWhiteCard ? "white" : "black",
         cardIndex,
         progress: ((i + 1) / totalCards) * 100,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
 
       await this.delay(200); // 200ms between each card
@@ -236,26 +264,26 @@ export class WebSocketManager {
     await this.delay(500);
 
     // Complete distribution and activate game
-    room.status = 'active';
+    room.status = "active";
 
     // Initialize game state
     const initialGameState = {
       board: new Map(),
-      currentTurn: 'white',
+      currentTurn: "white",
       whiteHand: gameCards.whiteCards,
       blackHand: gameCards.blackCards,
       whiteTime: 1800, // 30 minutes
       blackTime: 1800,
       moveHistory: [],
-      status: 'active'
+      status: "active",
     };
 
     room.gameState = initialGameState;
 
     // Send complete game state to both players
-    this.io.to(`game:${roomId}`).emit('cards:distribution-complete', {
+    this.io.to(`game:${roomId}`).emit("cards:distribution-complete", {
       gameState: initialGameState,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     console.log(`Game ${roomId} is now active`);
@@ -263,21 +291,21 @@ export class WebSocketManager {
 
   private generateGameCards() {
     // Generate demo cards for now
-    const suits = ['P', 'F', 'C'] as const;
-    const values = ['1', '2', '3', '4', '5'] as const;
+    const suits = ["P", "F", "C"] as const;
+    const values = ["1", "2", "3", "4", "5"] as const;
 
     const whiteCards = Array.from({ length: 5 }, (_, i) => ({
       id: `white-${i}`,
       suit: suits[i % 3],
       value: values[i],
-      owner: 'white' as const
+      owner: "white" as const,
     }));
 
     const blackCards = Array.from({ length: 5 }, (_, i) => ({
       id: `black-${i}`,
       suit: suits[(i + 1) % 3],
       value: values[i],
-      owner: 'black' as const
+      owner: "black" as const,
     }));
 
     return { whiteCards, blackCards };
@@ -289,8 +317,11 @@ export class WebSocketManager {
 
     // Remove from waiting rooms
     for (const [roomId, room] of this.gameRooms.entries()) {
-      if (room.status === 'waiting' && room.players.some(p => p.socketId === socket.id)) {
-        room.players = room.players.filter(p => p.socketId !== socket.id);
+      if (
+        room.status === "waiting" &&
+        room.players.some((p) => p.socketId === socket.id)
+      ) {
+        room.players = room.players.filter((p) => p.socketId !== socket.id);
         if (room.players.length === 0) {
           this.gameRooms.delete(roomId);
         }
@@ -299,7 +330,7 @@ export class WebSocketManager {
       }
     }
 
-    socket.emit('matchmaking:cancelled');
+    socket.emit("matchmaking:cancelled");
   }
 
   private handleGameJoin(socket: any, data: { roomId: string }) {
@@ -314,30 +345,30 @@ export class WebSocketManager {
 
   private handlePlayerReady(socket: any, data: { roomId: string }) {
     // Handle player ready state
-    socket.to(`game:${data.roomId}`).emit('player:ready', {
+    socket.to(`game:${data.roomId}`).emit("player:ready", {
       socketId: socket.id,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
   }
 
   private handleMove(socket: any, data: any) {
     // TODO: Implement move validation and broadcast
-    console.log('Move received:', data);
+    console.log("Move received:", data);
   }
 
   private handleResign(socket: any) {
     // TODO: Implement resign logic
-    console.log('Player resigned:', socket.id);
+    console.log("Player resigned:", socket.id);
   }
 
   private handleDrawOffer(socket: any) {
     // TODO: Implement draw offer logic
-    console.log('Draw offer from:', socket.id);
+    console.log("Draw offer from:", socket.id);
   }
 
   private handleDrawResponse(socket: any, data: { accept: boolean }) {
     // TODO: Implement draw response logic
-    console.log('Draw response:', data.accept, 'from:', socket.id);
+    console.log("Draw response:", data.accept, "from:", socket.id);
   }
 
   private handleDisconnection(socket: any, reason: string) {
@@ -347,17 +378,17 @@ export class WebSocketManager {
 
       // Handle game state on disconnection
       for (const [roomId, room] of this.gameRooms.entries()) {
-        if (room.players.some(p => p.socketId === socket.id)) {
-          if (room.status === 'active') {
+        if (room.players.some((p) => p.socketId === socket.id)) {
+          if (room.status === "active") {
             // Pause game and notify opponent
-            socket.to(`game:${roomId}`).emit('player:disconnected', {
+            socket.to(`game:${roomId}`).emit("player:disconnected", {
               reason,
               timestamp: Date.now(),
-              grace_period: 60000 // 1 minute to reconnect
+              grace_period: 60000, // 1 minute to reconnect
             });
-          } else if (room.status === 'waiting') {
+          } else if (room.status === "waiting") {
             // Remove from waiting room
-            room.players = room.players.filter(p => p.socketId !== socket.id);
+            room.players = room.players.filter((p) => p.socketId !== socket.id);
             if (room.players.length === 0) {
               this.gameRooms.delete(roomId);
             }
@@ -369,11 +400,11 @@ export class WebSocketManager {
   }
 
   private generateGameId(): string {
-    return 'game_' + Math.random().toString(36).substring(2, 15);
+    return "game_" + Math.random().toString(36).substring(2, 15);
   }
 
   private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   public getIO(): SocketIOServer {

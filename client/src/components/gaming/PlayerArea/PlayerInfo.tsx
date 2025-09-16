@@ -10,6 +10,7 @@ interface PlayerInfoProps {
   mobile?: boolean;
   showDetails?: boolean;
   className?: string;
+  gameStarted?: boolean; // Add flag to know if game has started
 }
 
 /**
@@ -23,6 +24,7 @@ export const PlayerInfo: React.FC<PlayerInfoProps> = ({
   mobile = false,
   showDetails = true,
   className = '',
+  gameStarted = false,
 }) => {
   // Default player data for development
   const displayPlayer = player || {
@@ -101,8 +103,8 @@ export const PlayerInfo: React.FC<PlayerInfoProps> = ({
           {/* Online indicator */}
           <div className={`absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full border border-slate-800 ${displayPlayer.isOnline ? 'bg-green-500' : 'bg-red-500'}`} />
 
-          {/* Turn indicator */}
-          {isCurrentTurn && (
+          {/* Turn indicator - only show when game has started */}
+          {gameStarted && isCurrentTurn && (
             <motion.div
               className="absolute -top-0.5 -left-0.5 w-2 h-2 bg-green-400 rounded-full"
               animate={{
@@ -147,8 +149,8 @@ export const PlayerInfo: React.FC<PlayerInfoProps> = ({
           {/* Online indicator */}
           <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-slate-800 ${displayPlayer.isOnline ? 'bg-green-500' : 'bg-red-500'}`} />
 
-          {/* Turn indicator */}
-          {isCurrentTurn && (
+          {/* Turn indicator - only show when game has started */}
+          {gameStarted && isCurrentTurn && (
             <motion.div
               className="absolute -top-1 -left-1 w-3 h-3 bg-green-400 rounded-full"
               animate={{
@@ -199,8 +201,8 @@ export const PlayerInfo: React.FC<PlayerInfoProps> = ({
           {/* Online indicator */}
           <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-slate-800 ${displayPlayer.isOnline ? 'bg-green-500' : 'bg-red-500'}`} />
 
-          {/* Turn indicator */}
-          {isCurrentTurn && (
+          {/* Turn indicator - only show when game has started */}
+          {gameStarted && isCurrentTurn && (
             <motion.div
               className="absolute -top-1 -left-1 w-4 h-4 bg-green-400 rounded-full"
               animate={{
@@ -255,7 +257,7 @@ export const PlayerInfo: React.FC<PlayerInfoProps> = ({
             </div>
           </div>
 
-          {isCurrentTurn && (
+          {gameStarted && isCurrentTurn && (
             <motion.div
               className="mt-3 px-4 py-2 bg-gradient-to-r from-green-800/30 to-green-700/30 border border-green-600/50 rounded-lg text-center backdrop-blur-sm"
               initial={{ opacity: 0, y: 10, scale: 0.95 }}

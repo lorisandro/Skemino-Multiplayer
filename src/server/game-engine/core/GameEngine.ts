@@ -8,16 +8,16 @@ import {
   GameStatus,
   VictoryCondition,
   LoopDetection,
-  GAME_CONSTANTS
-} from '../../../shared/types/GameTypes';
-import { GameBoard } from './GameBoard';
-import { CardManager } from './CardManager';
-import { MoveValidator } from '../validation/MoveValidator';
-import { LoopDetector } from '../rules/LoopDetector';
-import { VertexController } from '../rules/VertexController';
-import { VictoryChecker } from '../rules/VictoryChecker';
-import { PSNGenerator } from '../psn/PSNGenerator';
-import { v4 as uuidv4 } from 'uuid';
+  GAME_CONSTANTS,
+} from "../../../shared/types/GameTypes";
+import { GameBoard } from "./GameBoard";
+import { CardManager } from "./CardManager";
+import { MoveValidator } from "../validation/MoveValidator";
+import { LoopDetector } from "../rules/LoopDetector";
+import { VertexController } from "../rules/VertexController";
+import { VictoryChecker } from "../rules/VictoryChecker";
+import { PSNGenerator } from "../psn/PSNGenerator";
+import { v4 as uuidv4 } from "uuid";
 
 export class GameEngine {
   private gameState: GameState;
@@ -50,42 +50,44 @@ export class GameEngine {
       board: this.board.getState(),
       players: {
         white: {
-          id: '',
-          username: '',
+          id: "",
+          username: "",
           rating: 1200,
-          color: 'white',
+          color: "white",
           hand: whiteCards,
           cardsPlayed: 0,
-          timeRemaining: 1800000 // 30 minutes in ms
+          timeRemaining: 1800000, // 30 minutes in ms
         },
         black: {
-          id: '',
-          username: '',
+          id: "",
+          username: "",
           rating: 1200,
-          color: 'black',
+          color: "black",
           hand: blackCards,
           cardsPlayed: 0,
-          timeRemaining: 1800000
-        }
+          timeRemaining: 1800000,
+        },
       },
-      currentTurn: 'white',
-      status: 'waiting',
+      currentTurn: "white",
+      status: "waiting",
       moveCount: 0,
       moveHistory: [],
-      startTime: new Date()
+      startTime: new Date(),
     };
   }
 
   // Setup phase with 3 dice
   public setupInitialPosition(): void {
     const numericDice = Math.floor(Math.random() * 6) + 1;
-    const alphabeticDice = String.fromCharCode(97 + Math.floor(Math.random() * 6)); // a-f
-    const bicolorDice = Math.random() < 0.5 ? 'white' : 'black';
+    const alphabeticDice = String.fromCharCode(
+      97 + Math.floor(Math.random() * 6),
+    ); // a-f
+    const bicolorDice = Math.random() < 0.5 ? "white" : "black";
 
     this.gameState.setupDice = {
       numeric: numericDice,
       alphabetic: alphabeticDice,
-      bicolor: bicolorDice as PlayerColor
+      bicolor: bicolorDice as PlayerColor,
     };
 
     // Place initial card based on dice
@@ -94,41 +96,45 @@ export class GameEngine {
 
     if (player.hand.length > 0) {
       const initialCard = player.hand[0];
-      this.board.placeCard(initialCell, initialCard, bicolorDice as PlayerColor);
+      this.board.placeCard(
+        initialCell,
+        initialCard,
+        bicolorDice as PlayerColor,
+      );
       player.hand = player.hand.slice(1);
       player.cardsPlayed++;
     }
 
     this.gameState.currentTurn = bicolorDice as PlayerColor;
-    this.gameState.status = 'active';
+    this.gameState.status = "active";
   }
 
   // Validate a move
   public validateMove(move: Move): MoveValidation {
     // Basic validation
-    if (this.gameState.status !== 'active') {
-      return { valid: false, reason: 'Game is not active' };
+    if (this.gameState.status !== "active") {
+      return { valid: false, reason: "Game is not active" };
     }
 
     if (move.player !== this.gameState.currentTurn) {
-      return { valid: false, reason: 'Not your turn' };
+      return { valid: false, reason: "Not your turn" };
     }
 
     // Check if player has the card
     const player = this.gameState.players[move.player];
-    const hasCard = player.hand.some(c =>
-      c.suit === move.card.suit && c.value === move.card.value
+    const hasCard = player.hand.some(
+      (c) => c.suit === move.card.suit && c.value === move.card.value,
     );
 
     if (!hasCard) {
-      return { valid: false, reason: 'Card not in hand' };
+      return { valid: false, reason: "Card not in hand" };
     }
 
     // Validate move with rule engine
     const validation = this.moveValidator.validate(
       move,
       this.board.getState(),
-      this.gameState
+      this.gameState,
     );
 
     if (!validation.valid) {
@@ -139,11 +145,15 @@ export class GameEngine {
     const loopCheck = this.loopDetector.checkForLoop(
       this.board.getState(),
       move.toPosition,
-      move.card
+      move.card,
     );
 
     // Fix: Check against valid loop types instead of "invalid"
-    if (loopCheck.hasLoop && loopCheck.type && (loopCheck.type === 'symbolic' || loopCheck.type === 'numeric')) {
+    if (
+      loopCheck.hasLoop &&
+      loopCheck.type &&
+      (loopCheck.type === "symbolic" || loopCheck.type === "numeric")
+    ) {
       // For now, we'll allow loops but track them
       // The actual game rules would determine if this creates a valid or invalid state
     }
@@ -160,13 +170,17 @@ export class GameEngine {
 
     // Remove card from player's hand
     const player = this.gameState.players[move.player];
-    player.hand = player.hand.filter(c =>
-      !(c.suit === move.card.suit && c.value === move.card.value)
+    player.hand = player.hand.filter(
+      (c) => !(c.suit === move.card.suit && c.value === move.card.value),
     );
     player.cardsPlayed++;
 
     // Apply move to board
-    const capturedCard = this.board.placeCard(move.toPosition, move.card, move.player);
+    const capturedCard = this.board.placeCard(
+      move.toPosition,
+      move.card,
+      move.player,
+    );
     if (capturedCard) {
       move.capturedCard = capturedCard;
     }
@@ -175,7 +189,7 @@ export class GameEngine {
     const vertexControl = this.vertexController.checkVertexControl(
       this.board.getState(),
       move.toPosition,
-      move.player
+      move.player,
     );
     move.isVertexControl = vertexControl.isControlled;
 
@@ -183,7 +197,7 @@ export class GameEngine {
     const loopCheck = this.loopDetector.checkForLoop(
       this.board.getState(),
       move.toPosition,
-      move.card
+      move.card,
     );
     move.isLoopTrigger = loopCheck.hasLoop;
 
@@ -198,18 +212,18 @@ export class GameEngine {
     const victoryCheck = this.victoryChecker.checkVictory(
       this.gameState,
       this.board.getState(),
-      move
+      move,
     );
 
     if (victoryCheck.isVictory) {
-      this.gameState.status = 'completed';
+      this.gameState.status = "completed";
       this.gameState.winner = move.player;
       this.gameState.victoryCondition = victoryCheck.condition;
       this.gameState.endTime = new Date();
     } else {
       // Switch turns
       this.gameState.currentTurn =
-        this.gameState.currentTurn === 'white' ? 'black' : 'white';
+        this.gameState.currentTurn === "white" ? "black" : "white";
     }
 
     return this.gameState;
@@ -217,7 +231,7 @@ export class GameEngine {
 
   // Get valid moves for current player
   public getValidMoves(): BoardCell[] {
-    if (this.gameState.status !== 'active') {
+    if (this.gameState.status !== "active") {
       return [];
     }
 
@@ -263,7 +277,7 @@ export class GameEngine {
     boardState.positions.forEach((position) => {
       if (position.card) {
         const cardValue = GAME_CONSTANTS.CARD_VALUES[position.card.value];
-        if (this.board.getCardOwner(position.cell) === 'white') {
+        if (this.board.getCardOwner(position.cell) === "white") {
           whiteScore += cardValue;
         } else {
           blackScore += cardValue;
@@ -280,9 +294,9 @@ export class GameEngine {
 
     if (this.gameState.players[player].timeRemaining <= 0) {
       // Player loses on time
-      this.gameState.status = 'completed';
-      this.gameState.winner = player === 'white' ? 'black' : 'white';
-      this.gameState.victoryCondition = 'ERA3'; // Time loss counts as ERA3
+      this.gameState.status = "completed";
+      this.gameState.winner = player === "white" ? "black" : "white";
+      this.gameState.victoryCondition = "ERA3"; // Time loss counts as ERA3
       this.gameState.endTime = new Date();
     }
   }
@@ -295,8 +309,8 @@ export class GameEngine {
 
   // Resign game
   public resign(player: PlayerColor): void {
-    this.gameState.status = 'completed';
-    this.gameState.winner = player === 'white' ? 'black' : 'white';
+    this.gameState.status = "completed";
+    this.gameState.winner = player === "white" ? "black" : "white";
     this.gameState.endTime = new Date();
   }
 }

@@ -5,9 +5,9 @@ import {
   GameBoard,
   BoardCell,
   Card,
-  GAME_CONSTANTS
-} from '../../../shared/types/GameTypes';
-import { CardManager } from '../core/CardManager';
+  GAME_CONSTANTS,
+} from "../../../shared/types/GameTypes";
+import { CardManager } from "../core/CardManager";
 
 export class MoveValidator {
   private cardManager: CardManager;
@@ -16,33 +16,37 @@ export class MoveValidator {
     this.cardManager = new CardManager();
   }
 
-  public validate(move: Move, board: GameBoard, gameState: GameState): MoveValidation {
+  public validate(
+    move: Move,
+    board: GameBoard,
+    gameState: GameState,
+  ): MoveValidation {
     // 1. Check if it's the player's turn
     if (move.player !== gameState.currentTurn) {
       return {
         valid: false,
-        reason: 'Not your turn'
+        reason: "Not your turn",
       };
     }
 
     // 2. Check if game is active
-    if (gameState.status !== 'active') {
+    if (gameState.status !== "active") {
       return {
         valid: false,
-        reason: 'Game is not active'
+        reason: "Game is not active",
       };
     }
 
     // 3. Check if player has the card
     const player = gameState.players[move.player];
-    const hasCard = player.hand.some(c =>
-      c.suit === move.card.suit && c.value === move.card.value
+    const hasCard = player.hand.some(
+      (c) => c.suit === move.card.suit && c.value === move.card.value,
     );
 
     if (!hasCard) {
       return {
         valid: false,
-        reason: 'Card not in your hand'
+        reason: "Card not in your hand",
       };
     }
 
@@ -50,7 +54,7 @@ export class MoveValidator {
     if (!this.isValidCell(move.toPosition)) {
       return {
         valid: false,
-        reason: 'Invalid target cell'
+        reason: "Invalid target cell",
       };
     }
 
@@ -58,7 +62,7 @@ export class MoveValidator {
     if (board.holes.includes(move.toPosition)) {
       return {
         valid: false,
-        reason: 'Cannot place card on a hole'
+        reason: "Cannot place card on a hole",
       };
     }
 
@@ -66,7 +70,7 @@ export class MoveValidator {
     if (!this.checkAdjacency(move.toPosition, board)) {
       return {
         valid: false,
-        reason: 'Card must be placed adjacent to an existing card'
+        reason: "Card must be placed adjacent to an existing card",
       };
     }
 
@@ -75,7 +79,7 @@ export class MoveValidator {
     if (!targetPosition) {
       return {
         valid: false,
-        reason: 'Invalid board position'
+        reason: "Invalid board position",
       };
     }
 
@@ -86,13 +90,13 @@ export class MoveValidator {
         targetPosition.card,
         move.player,
         move.toPosition,
-        board
+        board,
       );
 
       if (!canCapture) {
         return {
           valid: false,
-          reason: 'Cannot capture this card'
+          reason: "Cannot capture this card",
         };
       }
     }
@@ -103,7 +107,7 @@ export class MoveValidator {
         move.toPosition,
         move.card,
         move.player,
-        board
+        board,
       );
 
       if (!vertexValidation.valid) {
@@ -114,7 +118,12 @@ export class MoveValidator {
     // All validations passed
     return {
       valid: true,
-      validMoves: this.getValidMovesForCard(move.card, move.player, board, gameState)
+      validMoves: this.getValidMovesForCard(
+        move.card,
+        move.player,
+        board,
+        gameState,
+      ),
     };
   }
 
@@ -126,8 +135,9 @@ export class MoveValidator {
 
   private checkAdjacency(cell: BoardCell, board: GameBoard): boolean {
     // First move can be placed anywhere
-    const occupiedCells = Array.from(board.positions.values())
-      .filter(pos => pos.card !== null).length;
+    const occupiedCells = Array.from(board.positions.values()).filter(
+      (pos) => pos.card !== null,
+    ).length;
 
     if (occupiedCells === 0) {
       return true; // First card can go anywhere
@@ -135,7 +145,7 @@ export class MoveValidator {
 
     // Check if adjacent to at least one existing card
     const adjacentCells = this.getAdjacentCells(cell);
-    return adjacentCells.some(adjCell => {
+    return adjacentCells.some((adjCell) => {
       const pos = board.positions.get(adjCell);
       return pos && pos.card !== null;
     });
@@ -171,7 +181,7 @@ export class MoveValidator {
     defender: Card,
     attackerPlayer: string,
     targetCell: BoardCell,
-    board: GameBoard
+    board: GameBoard,
   ): boolean {
     // Cannot capture your own card
     const defenderPosition = board.positions.get(targetCell);
@@ -179,17 +189,18 @@ export class MoveValidator {
 
     // Apply Morra Cinese rules
     const result = this.cardManager.compareCards(attacker, defender);
-    return result === 'win';
+    return result === "win";
   }
 
   private validateVertexMove(
     vertex: BoardCell,
     card: Card,
     player: string,
-    board: GameBoard
+    board: GameBoard,
   ): MoveValidation {
     // Check if vertex is already controlled
-    const vertexControl = board.vertexControl[vertex as 'a1' | 'f1' | 'a6' | 'f6'];
+    const vertexControl =
+      board.vertexControl[vertex as "a1" | "f1" | "a6" | "f6"];
 
     if (vertexControl && vertexControl !== player) {
       // Vertex is controlled by opponent
@@ -201,13 +212,14 @@ export class MoveValidator {
           card,
           existingCard,
           vertex,
-          board
+          board,
         );
 
         if (!canReverse) {
           return {
             valid: false,
-            reason: 'Cannot capture controlled vertex without reverser condition'
+            reason:
+              "Cannot capture controlled vertex without reverser condition",
           };
         }
       }
@@ -220,20 +232,23 @@ export class MoveValidator {
     attacker: Card,
     defender: Card,
     vertex: BoardCell,
-    board: GameBoard
+    board: GameBoard,
   ): boolean {
     // ERA4: Reverser card can capture vertex + adjacent cards
     // Check if attacker can beat defender
     const result = this.cardManager.compareCards(attacker, defender);
-    if (result !== 'win') return false;
+    if (result !== "win") return false;
 
     // Check if attacker can also beat adjacent cards
     const adjacentCells = this.getAdjacentCells(vertex);
     for (const cell of adjacentCells) {
       const position = board.positions.get(cell);
       if (position?.card) {
-        const adjResult = this.cardManager.compareCards(attacker, position.card);
-        if (adjResult !== 'win') {
+        const adjResult = this.cardManager.compareCards(
+          attacker,
+          position.card,
+        );
+        if (adjResult !== "win") {
           return false; // Must beat all adjacent cards for reverser
         }
       }
@@ -246,23 +261,23 @@ export class MoveValidator {
     card: Card,
     player: string,
     board: GameBoard,
-    gameState: GameState
+    gameState: GameState,
   ): BoardCell[] {
     const validMoves: BoardCell[] = [];
 
     // Check all cells on the board
     for (const [cell, position] of board.positions) {
       const testMove: Move = {
-        id: 'test',
+        id: "test",
         turnNumber: gameState.moveCount + 1,
-        player: player as 'white' | 'black',
+        player: player as "white" | "black",
         card,
         toPosition: cell,
         isVertexControl: false,
         isLoopTrigger: false,
-        notation: '',
+        notation: "",
         timestamp: new Date(),
-        thinkTimeMs: 0
+        thinkTimeMs: 0,
       };
 
       const validation = this.validate(testMove, board, gameState);
@@ -278,7 +293,7 @@ export class MoveValidator {
   public validateLoopFormation(
     cell: BoardCell,
     card: Card,
-    board: GameBoard
+    board: GameBoard,
   ): boolean {
     const adjacentCells = this.getAdjacentCells(cell);
     const adjacentCards: Card[] = [];
@@ -308,14 +323,19 @@ export class MoveValidator {
 
   // Check if any valid moves exist for a player
   public hasValidMoves(
-    player: 'white' | 'black',
+    player: "white" | "black",
     board: GameBoard,
-    gameState: GameState
+    gameState: GameState,
   ): boolean {
     const playerData = gameState.players[player];
 
     for (const card of playerData.hand) {
-      const validMoves = this.getValidMovesForCard(card, player, board, gameState);
+      const validMoves = this.getValidMovesForCard(
+        card,
+        player,
+        board,
+        gameState,
+      );
       if (validMoves.length > 0) {
         return true;
       }

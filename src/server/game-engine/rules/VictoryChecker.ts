@@ -5,11 +5,11 @@ import {
   PlayerColor,
   VictoryCondition,
   BoardCell,
-  GAME_CONSTANTS
-} from '../../../shared/types/GameTypes';
-import { CardManager } from '../core/CardManager';
-import { VertexController } from './VertexController';
-import { MoveValidator } from '../validation/MoveValidator';
+  GAME_CONSTANTS,
+} from "../../../shared/types/GameTypes";
+import { CardManager } from "../core/CardManager";
+import { VertexController } from "./VertexController";
+import { MoveValidator } from "../validation/MoveValidator";
 
 interface VictoryCheckResult {
   isVictory: boolean;
@@ -32,7 +32,7 @@ export class VictoryChecker {
   public checkVictory(
     gameState: GameState,
     board: GameBoard,
-    lastMove: Move
+    lastMove: Move,
   ): VictoryCheckResult {
     // Check ERA1: Vertex victory
     const era1 = this.checkERA1(gameState, board, lastMove);
@@ -65,7 +65,7 @@ export class VictoryChecker {
   private checkERA1(
     gameState: GameState,
     board: GameBoard,
-    lastMove: Move
+    lastMove: Move,
   ): VictoryCheckResult {
     // Check if move was on a vertex
     if (!GAME_CONSTANTS.VERTICES.includes(lastMove.toPosition)) {
@@ -79,16 +79,15 @@ export class VictoryChecker {
     }
 
     // Check if player controls the vertex
-    const vertexControl = board.vertexControl[
-      lastMove.toPosition as 'a1' | 'f1' | 'a6' | 'f6'
-    ];
+    const vertexControl =
+      board.vertexControl[lastMove.toPosition as "a1" | "f1" | "a6" | "f6"];
 
     if (vertexControl === lastMove.player) {
       return {
         isVictory: true,
-        condition: 'ERA1',
+        condition: "ERA1",
         winner: lastMove.player,
-        details: `Victory by placing last card on controlled vertex ${lastMove.toPosition}`
+        details: `Victory by placing last card on controlled vertex ${lastMove.toPosition}`,
       };
     }
 
@@ -98,26 +97,26 @@ export class VictoryChecker {
   // ERA2: Win when opponent cannot place cards (board saturation)
   private checkERA2(
     gameState: GameState,
-    board: GameBoard
+    board: GameBoard,
   ): VictoryCheckResult {
     // Check if current player has valid moves
     const currentPlayer = gameState.currentTurn;
     const hasValidMoves = this.moveValidator.hasValidMoves(
       currentPlayer,
       board,
-      gameState
+      gameState,
     );
 
     if (!hasValidMoves) {
       // Current player cannot move - calculate scores
       const scores = this.calculateScores(board);
-      const winner = scores.white > scores.black ? 'white' : 'black';
+      const winner = scores.white > scores.black ? "white" : "black";
 
       return {
         isVictory: true,
-        condition: 'ERA2',
+        condition: "ERA2",
         winner,
-        details: `Board saturation - Winner by score: White ${scores.white}, Black ${scores.black}`
+        details: `Board saturation - Winner by score: White ${scores.white}, Black ${scores.black}`,
       };
     }
 
@@ -127,7 +126,7 @@ export class VictoryChecker {
   // ERA3: Win when decks are exhausted
   private checkERA3(
     gameState: GameState,
-    board: GameBoard
+    board: GameBoard,
   ): VictoryCheckResult {
     // Check if both players have no cards left
     const whiteCards = gameState.players.white.hand.length;
@@ -136,13 +135,13 @@ export class VictoryChecker {
     if (whiteCards === 0 && blackCards === 0) {
       // Calculate scores
       const scores = this.calculateScores(board);
-      const winner = scores.white > scores.black ? 'white' : 'black';
+      const winner = scores.white > scores.black ? "white" : "black";
 
       return {
         isVictory: true,
-        condition: 'ERA3',
+        condition: "ERA3",
         winner,
-        details: `Deck exhaustion - Winner by score: White ${scores.white}, Black ${scores.black}`
+        details: `Deck exhaustion - Winner by score: White ${scores.white}, Black ${scores.black}`,
       };
     }
 
@@ -150,18 +149,18 @@ export class VictoryChecker {
     if (gameState.players.white.timeRemaining <= 0) {
       return {
         isVictory: true,
-        condition: 'ERA3',
-        winner: 'black',
-        details: 'White player ran out of time'
+        condition: "ERA3",
+        winner: "black",
+        details: "White player ran out of time",
       };
     }
 
     if (gameState.players.black.timeRemaining <= 0) {
       return {
         isVictory: true,
-        condition: 'ERA3',
-        winner: 'white',
-        details: 'Black player ran out of time'
+        condition: "ERA3",
+        winner: "white",
+        details: "Black player ran out of time",
       };
     }
 
@@ -172,7 +171,7 @@ export class VictoryChecker {
   private checkERA4(
     gameState: GameState,
     board: GameBoard,
-    lastMove: Move
+    lastMove: Move,
   ): VictoryCheckResult {
     // Check if move was on a vertex
     if (!GAME_CONSTANTS.VERTICES.includes(lastMove.toPosition)) {
@@ -185,14 +184,18 @@ export class VictoryChecker {
     }
 
     // Reverser move captures vertex and all adjacent cards
-    const capturedCount = this.countReverserCaptures(board, lastMove.toPosition);
+    const capturedCount = this.countReverserCaptures(
+      board,
+      lastMove.toPosition,
+    );
 
-    if (capturedCount >= 2) { // Vertex + at least 1 adjacent
+    if (capturedCount >= 2) {
+      // Vertex + at least 1 adjacent
       return {
         isVictory: true,
-        condition: 'ERA4',
+        condition: "ERA4",
         winner: lastMove.player,
-        details: `Reverser victory on ${lastMove.toPosition} capturing ${capturedCount} cards`
+        details: `Reverser victory on ${lastMove.toPosition} capturing ${capturedCount} cards`,
       };
     }
 
@@ -209,10 +212,8 @@ export class VictoryChecker {
     for (const cell of adjacentCells) {
       const position = board.positions.get(cell);
       if (position?.card) {
-        const canCapture = this.cardManager.compareCards(
-          move.card,
-          position.card
-        ) === 'win';
+        const canCapture =
+          this.cardManager.compareCards(move.card, position.card) === "win";
         if (!canCapture) {
           return false;
         }
@@ -224,7 +225,7 @@ export class VictoryChecker {
 
   private countReverserCaptures(
     board: GameBoard,
-    vertexCell: BoardCell
+    vertexCell: BoardCell,
   ): number {
     let count = 1; // The vertex itself
 
@@ -256,9 +257,9 @@ export class VictoryChecker {
     // Add vertex control bonuses
     const vertexStatus = this.vertexController.getVertexStatus(board);
     vertexStatus.forEach((status, vertex) => {
-      if (status.controller === 'white') {
+      if (status.controller === "white") {
         whiteScore += status.isExclusive ? 20 : 10;
-      } else if (status.controller === 'black') {
+      } else if (status.controller === "black") {
         blackScore += status.isExclusive ? 20 : 10;
       }
     });
@@ -273,8 +274,10 @@ export class VictoryChecker {
 
     if (row < 6) adjacent.push(`${cell[0]}${row + 1}` as BoardCell);
     if (row > 1) adjacent.push(`${cell[0]}${row - 1}` as BoardCell);
-    if (col < 5) adjacent.push(`${String.fromCharCode(98 + col)}${row}` as BoardCell);
-    if (col > 0) adjacent.push(`${String.fromCharCode(96 + col)}${row}` as BoardCell);
+    if (col < 5)
+      adjacent.push(`${String.fromCharCode(98 + col)}${row}` as BoardCell);
+    if (col > 0)
+      adjacent.push(`${String.fromCharCode(96 + col)}${row}` as BoardCell);
 
     return adjacent;
   }
@@ -289,7 +292,7 @@ export class VictoryChecker {
     // Check for 50-move rule
     const lastCapture = gameState.moveHistory
       .reverse()
-      .findIndex(m => m.capturedCard !== undefined);
+      .findIndex((m) => m.capturedCard !== undefined);
 
     if (lastCapture === -1 && gameState.moveHistory.length >= 50) {
       return true;
@@ -305,22 +308,24 @@ export class VictoryChecker {
   // Evaluate position for AI/analysis
   public evaluatePosition(
     board: GameBoard,
-    currentPlayer: PlayerColor
+    currentPlayer: PlayerColor,
   ): number {
     let evaluation = 0;
 
     // Material count
     const cardCount = this.countCards(board);
-    const materialDiff = currentPlayer === 'white' ?
-      cardCount.white - cardCount.black :
-      cardCount.black - cardCount.white;
+    const materialDiff =
+      currentPlayer === "white"
+        ? cardCount.white - cardCount.black
+        : cardCount.black - cardCount.white;
     evaluation += materialDiff * 10;
 
     // Vertex control
     const vertexDominance = this.vertexController.checkDominance(board);
-    const vertexDiff = currentPlayer === 'white' ?
-      vertexDominance.white - vertexDominance.black :
-      vertexDominance.black - vertexDominance.white;
+    const vertexDiff =
+      currentPlayer === "white"
+        ? vertexDominance.white - vertexDominance.black
+        : vertexDominance.black - vertexDominance.white;
     evaluation += vertexDiff * 25;
 
     // Central control
@@ -337,9 +342,9 @@ export class VictoryChecker {
 
   private evaluateCentralControl(
     board: GameBoard,
-    player: PlayerColor
+    player: PlayerColor,
   ): number {
-    const centralSquares: BoardCell[] = ['c3', 'c4', 'd3', 'd4'];
+    const centralSquares: BoardCell[] = ["c3", "c4", "d3", "d4"];
     let control = 0;
 
     for (const square of centralSquares) {

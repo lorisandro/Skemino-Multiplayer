@@ -2,8 +2,8 @@ import {
   GameBoard,
   BoardCell,
   PlayerColor,
-  GAME_CONSTANTS
-} from '../../../shared/types/GameTypes';
+  GAME_CONSTANTS,
+} from "../../../shared/types/GameTypes";
 
 interface VertexControlResult {
   isControlled: boolean;
@@ -12,24 +12,27 @@ interface VertexControlResult {
 }
 
 export class VertexController {
-  private readonly vertices: BoardCell[] = ['a1', 'f1', 'a6', 'f6'];
+  private readonly vertices: BoardCell[] = ["a1", "f1", "a6", "f6"];
   // Fix: Complete the Record type mapping
-  private readonly quadrantCenters: Record<'a1' | 'f1' | 'a6' | 'f6', BoardCell> = {
-    'a1': 'b2', // Quadrant 1
-    'f1': 'e2', // Quadrant 2
-    'a6': 'b5', // Quadrant 3
-    'f6': 'e5'  // Quadrant 4
+  private readonly quadrantCenters: Record<
+    "a1" | "f1" | "a6" | "f6",
+    BoardCell
+  > = {
+    a1: "b2", // Quadrant 1
+    f1: "e2", // Quadrant 2
+    a6: "b5", // Quadrant 3
+    f6: "e5", // Quadrant 4
   };
 
   public checkVertexControl(
     board: GameBoard,
     moveCell: BoardCell,
-    player: PlayerColor
+    player: PlayerColor,
   ): VertexControlResult {
     const result: VertexControlResult = {
       isControlled: false,
       isExclusive: false,
-      controlledVertices: []
+      controlledVertices: [],
     };
 
     // Check if the move is on a vertex
@@ -42,7 +45,8 @@ export class VertexController {
     result.controlledVertices.push(moveCell);
 
     // Check for exclusive control (vertex + central square)
-    const centralSquare = this.quadrantCenters[moveCell as 'a1' | 'f1' | 'a6' | 'f6'];
+    const centralSquare =
+      this.quadrantCenters[moveCell as "a1" | "f1" | "a6" | "f6"];
     const centralPosition = board.positions.get(centralSquare);
 
     if (centralPosition?.card) {
@@ -55,23 +59,31 @@ export class VertexController {
     return result;
   }
 
-  public getVertexStatus(board: GameBoard): Map<BoardCell, {
-    controller: PlayerColor | null;
-    isExclusive: boolean;
-  }> {
-    const status = new Map<BoardCell, {
+  public getVertexStatus(board: GameBoard): Map<
+    BoardCell,
+    {
       controller: PlayerColor | null;
       isExclusive: boolean;
-    }>();
+    }
+  > {
+    const status = new Map<
+      BoardCell,
+      {
+        controller: PlayerColor | null;
+        isExclusive: boolean;
+      }
+    >();
 
     for (const vertex of this.vertices) {
-      const vertexControl = board.vertexControl[vertex as 'a1' | 'f1' | 'a6' | 'f6'];
-      const centralSquare = this.quadrantCenters[vertex as 'a1' | 'f1' | 'a6' | 'f6'];
+      const vertexControl =
+        board.vertexControl[vertex as "a1" | "f1" | "a6" | "f6"];
+      const centralSquare =
+        this.quadrantCenters[vertex as "a1" | "f1" | "a6" | "f6"];
       const centralPosition = board.positions.get(centralSquare);
 
       status.set(vertex, {
         controller: vertexControl,
-        isExclusive: vertexControl !== null && centralPosition?.card !== null
+        isExclusive: vertexControl !== null && centralPosition?.card !== null,
       });
     }
 
@@ -80,12 +92,12 @@ export class VertexController {
 
   public countControlledVertices(
     board: GameBoard,
-    player: PlayerColor
+    player: PlayerColor,
   ): number {
     let count = 0;
 
     for (const vertex of this.vertices) {
-      const control = board.vertexControl[vertex as 'a1' | 'f1' | 'a6' | 'f6'];
+      const control = board.vertexControl[vertex as "a1" | "f1" | "a6" | "f6"];
       if (control === player) {
         count++;
       }
@@ -96,7 +108,7 @@ export class VertexController {
 
   public getQuadrantControl(
     board: GameBoard,
-    quadrant: 1 | 2 | 3 | 4
+    quadrant: 1 | 2 | 3 | 4,
   ): {
     vertex: BoardCell;
     center: BoardCell;
@@ -105,26 +117,27 @@ export class VertexController {
     isExclusive: boolean;
   } {
     const vertexMap: Record<number, BoardCell> = {
-      1: 'a1',
-      2: 'f1',
-      3: 'a6',
-      4: 'f6'
+      1: "a1",
+      2: "f1",
+      3: "a6",
+      4: "f6",
     };
 
     const vertex = vertexMap[quadrant];
-    const center = this.quadrantCenters[vertex as 'a1' | 'f1' | 'a6' | 'f6'];
+    const center = this.quadrantCenters[vertex as "a1" | "f1" | "a6" | "f6"];
 
     const vertexPosition = board.positions.get(vertex);
     const centerPosition = board.positions.get(center);
 
-    const vertexController = board.vertexControl[vertex as 'a1' | 'f1' | 'a6' | 'f6'];
+    const vertexController =
+      board.vertexControl[vertex as "a1" | "f1" | "a6" | "f6"];
 
     return {
       vertex,
       center,
       vertexController,
       centerController: centerPosition?.card ? vertexController : null, // Simplified
-      isExclusive: vertexController !== null && centerPosition?.card !== null
+      isExclusive: vertexController !== null && centerPosition?.card !== null,
     };
   }
 
@@ -133,20 +146,20 @@ export class VertexController {
     white: number;
     black: number;
   } {
-    const whiteVertices = this.countControlledVertices(board, 'white');
-    const blackVertices = this.countControlledVertices(board, 'black');
+    const whiteVertices = this.countControlledVertices(board, "white");
+    const blackVertices = this.countControlledVertices(board, "black");
 
     let dominant: PlayerColor | null = null;
     if (whiteVertices > blackVertices) {
-      dominant = 'white';
+      dominant = "white";
     } else if (blackVertices > whiteVertices) {
-      dominant = 'black';
+      dominant = "black";
     }
 
     return {
       dominant,
       white: whiteVertices,
-      black: blackVertices
+      black: blackVertices,
     };
   }
 
@@ -154,7 +167,7 @@ export class VertexController {
   public checkVertexVictory(
     board: GameBoard,
     lastMove: BoardCell,
-    player: PlayerColor
+    player: PlayerColor,
   ): boolean {
     // ERA1: Win by placing last card on a controlled vertex
     if (!this.vertices.includes(lastMove)) {
@@ -168,10 +181,7 @@ export class VertexController {
   }
 
   // Get strategic value of a vertex
-  public getVertexValue(
-    board: GameBoard,
-    vertex: BoardCell
-  ): number {
+  public getVertexValue(board: GameBoard, vertex: BoardCell): number {
     if (!this.vertices.includes(vertex)) {
       return 0;
     }
@@ -179,7 +189,7 @@ export class VertexController {
     let value = 10; // Base value for vertex
 
     // Add value for central square control
-    const center = this.quadrantCenters[vertex as 'a1' | 'f1' | 'a6' | 'f6'];
+    const center = this.quadrantCenters[vertex as "a1" | "f1" | "a6" | "f6"];
     const centerPosition = board.positions.get(center);
     if (centerPosition?.card) {
       value += 5; // Exclusive control bonus
@@ -206,10 +216,12 @@ export class VertexController {
 
     if (row < 6) adjacent.push(`${cell[0]}${row + 1}` as BoardCell);
     if (row > 1) adjacent.push(`${cell[0]}${row - 1}` as BoardCell);
-    if (col < 5) adjacent.push(`${String.fromCharCode(98 + col)}${row}` as BoardCell);
-    if (col > 0) adjacent.push(`${String.fromCharCode(96 + col)}${row}` as BoardCell);
+    if (col < 5)
+      adjacent.push(`${String.fromCharCode(98 + col)}${row}` as BoardCell);
+    if (col > 0)
+      adjacent.push(`${String.fromCharCode(96 + col)}${row}` as BoardCell);
 
-    return adjacent.filter(c => this.isValidCell(c));
+    return adjacent.filter((c) => this.isValidCell(c));
   }
 
   private isValidCell(cell: string): boolean {
@@ -229,7 +241,7 @@ export class VertexController {
     const secure = new Map<BoardCell, PlayerColor>();
 
     for (const vertex of this.vertices) {
-      const control = board.vertexControl[vertex as 'a1' | 'f1' | 'a6' | 'f6'];
+      const control = board.vertexControl[vertex as "a1" | "f1" | "a6" | "f6"];
       const position = board.positions.get(vertex);
 
       if (!control && !position?.card) {
@@ -259,7 +271,7 @@ export class VertexController {
     return {
       criticalVertices: critical,
       contestedVertices: contested,
-      secureVertices: secure
+      secureVertices: secure,
     };
   }
 }

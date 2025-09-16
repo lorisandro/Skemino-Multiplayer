@@ -1,16 +1,16 @@
-import { GameEngine } from '../game-engine/core/GameEngine';
-import { DatabaseManager } from '../database/DatabaseManager';
-import { RedisManager } from '../services/RedisManager';
-import { ELOCalculator } from '../game-engine/rules/ELOCalculator';
-import { logger } from '../utils/logger';
+import { GameEngine } from "../game-engine/core/GameEngine";
+import { DatabaseManager } from "../database/DatabaseManager";
+import { RedisManager } from "../services/RedisManager";
+import { ELOCalculator } from "../game-engine/rules/ELOCalculator";
+import { logger } from "../utils/logger";
 import {
   GameState,
   Move,
   PlayerColor,
   GameStatus,
-  Player
-} from '../../shared/types/GameTypes';
-import { v4 as uuidv4 } from 'uuid';
+  Player,
+} from "../../shared/types/GameTypes";
+import { v4 as uuidv4 } from "uuid";
 
 export interface GameRoomPlayer {
   userId: string;
@@ -49,7 +49,7 @@ export class GameRoom {
   private playerTimes: PlayerTimeData = {
     white: 1800000,
     black: 1800000,
-    lastMoveTime: Date.now()
+    lastMoveTime: Date.now(),
   };
   private disconnectedPlayers: Set<string> = new Set();
   private drawOffers: Map<PlayerColor, boolean> = new Map();
@@ -64,8 +64,8 @@ export class GameRoom {
     this.config = config;
     this.gameEngine = new GameEngine(gameId);
     this.players = new Map();
-    this.players.set('white', config.white);
-    this.players.set('black', config.black);
+    this.players.set("white", config.white);
+    this.players.set("black", config.black);
 
     // Initialize dates with current time
     this.startTime = new Date();
@@ -78,7 +78,7 @@ export class GameRoom {
   }
 
   private parseTimeControl(timeControl: string): void {
-    const parts = timeControl.split('+');
+    const parts = timeControl.split("+");
     this.baseTime = parseInt(parts[0]) * 60 * 1000; // Convert minutes to milliseconds
     this.increment = parts.length > 1 ? parseInt(parts[1]) * 1000 : 0; // Convert seconds to milliseconds
 
@@ -86,7 +86,7 @@ export class GameRoom {
     this.playerTimes = {
       white: this.baseTime,
       black: this.baseTime,
-      lastMoveTime: Date.now()
+      lastMoveTime: Date.now(),
     };
   }
 
@@ -94,8 +94,8 @@ export class GameRoom {
     const gameState = this.gameEngine.getGameState();
 
     // Set player information
-    const whitePlayer = this.players.get('white')!;
-    const blackPlayer = this.players.get('black')!;
+    const whitePlayer = this.players.get("white")!;
+    const blackPlayer = this.players.get("black")!;
 
     gameState.players.white.id = whitePlayer.userId;
     gameState.players.white.username = whitePlayer.username;
@@ -130,8 +130,8 @@ export class GameRoom {
   }
 
   public canPlayerJoin(userId: string): boolean {
-    const whitePlayer = this.players.get('white');
-    const blackPlayer = this.players.get('black');
+    const whitePlayer = this.players.get("white");
+    const blackPlayer = this.players.get("black");
 
     return whitePlayer?.userId === userId || blackPlayer?.userId === userId;
   }
@@ -139,7 +139,7 @@ export class GameRoom {
   public canPlayerMove(userId: string): boolean {
     const gameState = this.gameEngine.getGameState();
 
-    if (gameState.status !== 'active') {
+    if (gameState.status !== "active") {
       return false;
     }
 
@@ -155,8 +155,8 @@ export class GameRoom {
       if (!this.canPlayerMove(userId)) {
         return {
           success: false,
-          error: 'Not your turn or game not active',
-          gameState
+          error: "Not your turn or game not active",
+          gameState,
         };
       }
 
@@ -179,8 +179,8 @@ export class GameRoom {
       if (!validation.valid) {
         return {
           success: false,
-          error: validation.reason || 'Invalid move',
-          gameState
+          error: validation.reason || "Invalid move",
+          gameState,
         };
       }
 
@@ -199,7 +199,7 @@ export class GameRoom {
       this.lastMoveTime = now;
 
       // Start timer for next player if game continues
-      if (updatedGameState.status === 'active') {
+      if (updatedGameState.status === "active") {
         this.startMoveTimer(updatedGameState.currentTurn);
       }
 
@@ -210,20 +210,21 @@ export class GameRoom {
       this.cacheGameState();
 
       // Log the move
-      logger.info(`📝 Move applied in ${this.gameId}: ${move.notation} by ${userId}`);
+      logger.info(
+        `📝 Move applied in ${this.gameId}: ${move.notation} by ${userId}`,
+      );
 
       return {
         success: true,
         move,
-        gameState: updatedGameState
+        gameState: updatedGameState,
       };
-
     } catch (error) {
       logger.error(`Error applying move in game ${this.gameId}:`, error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-        gameState: this.gameEngine.getGameState()
+        error: error instanceof Error ? error.message : "Unknown error",
+        gameState: this.gameEngine.getGameState(),
       };
     }
   }
@@ -288,8 +289,8 @@ export class GameRoom {
     this.gameEngine.resign(resigningColor);
 
     // Clear all timers
-    this.clearMoveTimer('white');
-    this.clearMoveTimer('black');
+    this.clearMoveTimer("white");
+    this.clearMoveTimer("black");
 
     this.cacheGameState();
     logger.info(`🏳️ Player ${userId} resigned in game ${this.gameId}`);
@@ -297,15 +298,15 @@ export class GameRoom {
 
   public acceptDraw(): void {
     const gameState = this.gameEngine.getGameState();
-    gameState.status = 'completed';
+    gameState.status = "completed";
     gameState.endTime = new Date();
     // No winner indicates draw
 
     this.gameEngine.loadGameState(gameState);
 
     // Clear all timers
-    this.clearMoveTimer('white');
-    this.clearMoveTimer('black');
+    this.clearMoveTimer("white");
+    this.clearMoveTimer("black");
 
     this.cacheGameState();
     logger.info(`🤝 Draw accepted in game ${this.gameId}`);
@@ -320,7 +321,7 @@ export class GameRoom {
       const now = Date.now();
       const gameState = this.gameEngine.getGameState();
 
-      if (gameState.currentTurn === color && gameState.status === 'active') {
+      if (gameState.currentTurn === color && gameState.status === "active") {
         const timeUsed = now - this.lastMoveTime.getTime();
         this.updatePlayerTime(color, timeUsed);
         this.clearMoveTimer(color);
@@ -338,7 +339,7 @@ export class GameRoom {
       const gameState = this.gameEngine.getGameState();
 
       // Resume timer if it's player's turn
-      if (gameState.currentTurn === color && gameState.status === 'active') {
+      if (gameState.currentTurn === color && gameState.status === "active") {
         this.lastMoveTime = new Date();
         this.startMoveTimer(color);
       }
@@ -362,7 +363,7 @@ export class GameRoom {
       await RedisManager.setGame(this.gameId, {
         ...gameState,
         playerTimes: this.playerTimes,
-        disconnectedPlayers: Array.from(this.disconnectedPlayers)
+        disconnectedPlayers: Array.from(this.disconnectedPlayers),
       });
     } catch (error) {
       logger.error(`Error caching game state for ${this.gameId}:`, error);
@@ -375,13 +376,13 @@ export class GameRoom {
       const psnNotation = this.gameEngine.generatePSN();
 
       // Fix: Use proper result type conversion
-      const getGameResult = (): '1-0' | '0-1' | '1/2-1/2' => {
-        if (gameState.winner === 'white') {
-          return '1-0';
-        } else if (gameState.winner === 'black') {
-          return '0-1';
+      const getGameResult = (): "1-0" | "0-1" | "1/2-1/2" => {
+        if (gameState.winner === "white") {
+          return "1-0";
+        } else if (gameState.winner === "black") {
+          return "0-1";
         } else {
-          return '1/2-1/2'; // Draw
+          return "1/2-1/2"; // Draw
         }
       };
 
@@ -398,7 +399,7 @@ export class GameRoom {
         timeControl: this.config.timeControl,
         victoryCondition: gameState.victoryCondition,
         whiteTime: this.playerTimes.white,
-        blackTime: this.playerTimes.black
+        blackTime: this.playerTimes.black,
       };
 
       await DatabaseManager.saveGame(gameRecord);
@@ -427,38 +428,54 @@ export class GameRoom {
         const whiteNewRating = ELOCalculator.calculateNewRating(
           whitePlayer.rating,
           blackPlayer.rating,
-          0.5
+          0.5,
         );
         const blackNewRating = ELOCalculator.calculateNewRating(
           blackPlayer.rating,
           whitePlayer.rating,
-          0.5
+          0.5,
         );
 
-        await DatabaseManager.updatePlayerRating(whitePlayer.id, whiteNewRating);
-        await DatabaseManager.updatePlayerRating(blackPlayer.id, blackNewRating);
+        await DatabaseManager.updatePlayerRating(
+          whitePlayer.id,
+          whiteNewRating,
+        );
+        await DatabaseManager.updatePlayerRating(
+          blackPlayer.id,
+          blackNewRating,
+        );
 
-        logger.info(`📊 Ratings updated for draw: ${whitePlayer.username} ${whitePlayer.rating}→${whiteNewRating}, ${blackPlayer.username} ${blackPlayer.rating}→${blackNewRating}`);
+        logger.info(
+          `📊 Ratings updated for draw: ${whitePlayer.username} ${whitePlayer.rating}→${whiteNewRating}, ${blackPlayer.username} ${blackPlayer.rating}→${blackNewRating}`,
+        );
       } else {
         // Win/Loss
-        const whiteScore = gameState.winner === 'white' ? 1 : 0;
+        const whiteScore = gameState.winner === "white" ? 1 : 0;
         const blackScore = 1 - whiteScore;
 
         const whiteNewRating = ELOCalculator.calculateNewRating(
           whitePlayer.rating,
           blackPlayer.rating,
-          whiteScore
+          whiteScore,
         );
         const blackNewRating = ELOCalculator.calculateNewRating(
           blackPlayer.rating,
           whitePlayer.rating,
-          blackScore
+          blackScore,
         );
 
-        await DatabaseManager.updatePlayerRating(whitePlayer.id, whiteNewRating);
-        await DatabaseManager.updatePlayerRating(blackPlayer.id, blackNewRating);
+        await DatabaseManager.updatePlayerRating(
+          whitePlayer.id,
+          whiteNewRating,
+        );
+        await DatabaseManager.updatePlayerRating(
+          blackPlayer.id,
+          blackNewRating,
+        );
 
-        logger.info(`📊 Ratings updated: Winner ${gameState.winner === 'white' ? whitePlayer.username : blackPlayer.username}, ${whitePlayer.username} ${whitePlayer.rating}→${whiteNewRating}, ${blackPlayer.username} ${blackPlayer.rating}→${blackNewRating}`);
+        logger.info(
+          `📊 Ratings updated: Winner ${gameState.winner === "white" ? whitePlayer.username : blackPlayer.username}, ${whitePlayer.username} ${whitePlayer.rating}→${whiteNewRating}, ${blackPlayer.username} ${blackPlayer.rating}→${blackNewRating}`,
+        );
       }
     } catch (error) {
       logger.error(`Error updating ratings for game ${this.gameId}:`, error);
@@ -475,12 +492,12 @@ export class GameRoom {
   }
 
   public getPlayers(): string[] {
-    return Array.from(this.players.values()).map(p => p.userId);
+    return Array.from(this.players.values()).map((p) => p.userId);
   }
 
   public isActive(): boolean {
     const status = this.gameEngine.getGameState().status;
-    return status === 'active' || status === 'paused';
+    return status === "active" || status === "paused";
   }
 
   public getPlayerTimes(): PlayerTimeData {
@@ -498,11 +515,11 @@ export class GameRoom {
   // Cleanup method
   public cleanup(): void {
     // Clear all timers
-    this.clearMoveTimer('white');
-    this.clearMoveTimer('black');
+    this.clearMoveTimer("white");
+    this.clearMoveTimer("black");
 
     // Clear Redis cache
-    RedisManager.deleteGame(this.gameId).catch(error => {
+    RedisManager.deleteGame(this.gameId).catch((error) => {
       logger.error(`Error clearing game cache for ${this.gameId}:`, error);
     });
 

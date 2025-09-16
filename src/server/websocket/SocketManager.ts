@@ -1,17 +1,17 @@
-import { Server as SocketIOServer, Socket } from 'socket.io';
-import { GameRoom } from './GameRoom';
-import { MatchmakingManager, Match } from './MatchmakingManager';
-import { RedisManager } from '../services/RedisManager';
-import { DatabaseManager } from '../database/DatabaseManager';
-import { logger } from '../utils/logger';
-import { getGuestUser, getOrCreateGuestUser } from '../routes/auth';
-import jwt from 'jsonwebtoken';
+import { Server as SocketIOServer, Socket } from "socket.io";
+import { GameRoom } from "./GameRoom";
+import { MatchmakingManager, Match } from "./MatchmakingManager";
+import { RedisManager } from "../services/RedisManager";
+import { DatabaseManager } from "../database/DatabaseManager";
+import { logger } from "../utils/logger";
+import { getGuestUser, getOrCreateGuestUser } from "../routes/auth";
+import jwt from "jsonwebtoken";
 import {
   GameState,
   Move,
   PlayerColor,
-  GameStatus
-} from '../../shared/types/GameTypes';
+  GameStatus,
+} from "../../shared/types/GameTypes";
 
 export interface AuthenticatedSocket extends Socket {
   userId: string;
@@ -23,7 +23,7 @@ export interface AuthenticatedSocket extends Socket {
 
 interface PlayerConnection {
   socket: AuthenticatedSocket;
-  status: 'online' | 'ingame' | 'disconnected';
+  status: "online" | "ingame" | "disconnected";
   lastPing: number;
   gameRoomId?: string;
   reconnectionAttempts: number;
@@ -31,43 +31,51 @@ interface PlayerConnection {
 
 export interface WebSocketEvents {
   // Authentication
-  'auth:login': (token: string) => void;
-  'auth:logout': () => void;
+  "auth:login": (token: string) => void;
+  "auth:logout": () => void;
 
   // Matchmaking
-  'matchmaking:join': (timeControl?: string) => void;
-  'matchmaking:join-guest': (options: { timeControl: string; guestRating: number; preferences?: any }) => void;
-  'matchmaking:leave': () => void;
-  'matchmaking:leave-guest': () => void;
-  'match:found': (gameId: string, opponent: any) => void;
-  'match:declined': (gameId: string) => void;
+  "matchmaking:join": (timeControl?: string) => void;
+  "matchmaking:join-guest": (options: {
+    timeControl: string;
+    guestRating: number;
+    preferences?: any;
+  }) => void;
+  "matchmaking:leave": () => void;
+  "matchmaking:leave-guest": () => void;
+  "match:found": (gameId: string, opponent: any) => void;
+  "match:declined": (gameId: string) => void;
 
   // Game events
-  'game:join': (gameId: string) => void;
-  'game:leave': (gameId: string) => void;
-  'game:state': (gameState: GameState) => void;
-  'game:move': (move: Move) => void;
-  'game:move-result': (result: { success: boolean; error?: string; gameState?: GameState }) => void;
-  'game:resign': () => void;
-  'game:offer-draw': () => void;
-  'game:accept-draw': () => void;
-  'game:decline-draw': () => void;
-  'game:ended': (result: any) => void;
+  "game:join": (gameId: string) => void;
+  "game:leave": (gameId: string) => void;
+  "game:state": (gameState: GameState) => void;
+  "game:move": (move: Move) => void;
+  "game:move-result": (result: {
+    success: boolean;
+    error?: string;
+    gameState?: GameState;
+  }) => void;
+  "game:resign": () => void;
+  "game:offer-draw": () => void;
+  "game:accept-draw": () => void;
+  "game:decline-draw": () => void;
+  "game:ended": (result: any) => void;
 
   // Player presence
-  'player:online': (playerId: string) => void;
-  'player:offline': (playerId: string) => void;
-  'player:reconnected': (playerId: string) => void;
+  "player:online": (playerId: string) => void;
+  "player:offline": (playerId: string) => void;
+  "player:reconnected": (playerId: string) => void;
 
   // Real-time updates
-  'time:update': (timeData: { white: number; black: number }) => void;
-  'move:validated': (move: Move) => void;
-  'move:invalid': (reason: string) => void;
+  "time:update": (timeData: { white: number; black: number }) => void;
+  "move:validated": (move: Move) => void;
+  "move:invalid": (reason: string) => void;
 
   // Error handling
-  'error': (error: { code: string; message: string }) => void;
-  'disconnect': () => void;
-  'reconnect': () => void;
+  error: (error: { code: string; message: string }) => void;
+  disconnect: () => void;
+  reconnect: () => void;
 }
 
 export class SocketManager {
@@ -87,41 +95,59 @@ export class SocketManager {
 
   public initialize(): void {
     this.io.use(this.authenticateSocket.bind(this));
-    this.io.on('connection', (socket: Socket) => {
+    this.io.on("connection", (socket: Socket) => {
       this.handleConnection(socket as AuthenticatedSocket);
     });
     this.startHealthCheck();
-    logger.info('🎮 WebSocket Manager initialized with real-time gaming support');
+    logger.info(
+      "🎮 WebSocket Manager initialized with real-time gaming support",
+    );
   }
 
   private setupMatchmakingEvents(): void {
     // Listen for matches found by the periodic queue processing
-    this.matchmakingManager.on('match:found', async (match) => {
+    this.matchmakingManager.on("match:found", async (match) => {
       try {
-        logger.info(`🎯 Received automatic match event: ${match.gameId} (${match.white.username} vs ${match.black.username})`);
+        logger.info(
+          `🎯 Received automatic match event: ${match.gameId} (${match.white.username} vs ${match.black.username})`,
+        );
         await this.createGameFromMatch(match);
-        logger.info(`✅ Automatic match processed successfully: ${match.gameId}`);
+        logger.info(
+          `✅ Automatic match processed successfully: ${match.gameId}`,
+        );
       } catch (error) {
-        logger.error('❌ Error processing automatic match:', error);
+        logger.error("❌ Error processing automatic match:", error);
       }
     });
 
     const listenerCount = this.matchmakingManager.getEventListenerCount();
-    logger.info(`🔗 Matchmaking event listeners configured (${listenerCount} listener(s) for match:found)`);
+    logger.info(
+      `🔗 Matchmaking event listeners configured (${listenerCount} listener(s) for match:found)`,
+    );
   }
 
-  private async authenticateSocket(socket: Socket, next: (err?: Error) => void): Promise<void> {
+  private async authenticateSocket(
+    socket: Socket,
+    next: (err?: Error) => void,
+  ): Promise<void> {
     try {
-      let token = socket.handshake.auth.token || socket.handshake.headers.authorization;
+      let token =
+        socket.handshake.auth.token || socket.handshake.headers.authorization;
       const isGuestFlag = socket.handshake.auth.isGuest;
 
-      logger.info(`🔑 WebSocket auth attempt - Token: ${!!token}, Guest flag: ${isGuestFlag}`);
-      logger.info(`🌍 JWT_SECRET loaded: ${!!process.env.JWT_SECRET}, length: ${process.env.JWT_SECRET?.length || 0}`);
+      logger.info(
+        `🔑 WebSocket auth attempt - Token: ${!!token}, Guest flag: ${isGuestFlag}`,
+      );
+      logger.info(
+        `🌍 JWT_SECRET loaded: ${!!process.env.JWT_SECRET}, length: ${process.env.JWT_SECRET?.length || 0}`,
+      );
 
       // Handle case where no token is provided (only allow if explicitly guest)
-      if (!token || token === 'null' || token === 'undefined') {
-        if (isGuestFlag === true || isGuestFlag === 'true') {
-          logger.info('🎭 No token provided but guest flag set - allowing guest access');
+      if (!token || token === "null" || token === "undefined") {
+        if (isGuestFlag === true || isGuestFlag === "true") {
+          logger.info(
+            "🎭 No token provided but guest flag set - allowing guest access",
+          );
           // Create emergency guest user for explicit guest connections
           const emergencyGuestId = `no_token_guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
           const emergencyGuest = getOrCreateGuestUser(emergencyGuestId);
@@ -131,18 +157,22 @@ export class SocketManager {
           (socket as AuthenticatedSocket).rating = emergencyGuest.rating;
           (socket as AuthenticatedSocket).isGuest = true;
 
-          logger.info(`🎭 Guest user created for no-token connection: ${emergencyGuest.username}`);
+          logger.info(
+            `🎭 Guest user created for no-token connection: ${emergencyGuest.username}`,
+          );
           return next();
         } else {
-          logger.warn('❌ No authentication token provided and not marked as guest');
-          return next(new Error('Authentication token required'));
+          logger.warn(
+            "❌ No authentication token provided and not marked as guest",
+          );
+          return next(new Error("Authentication token required"));
         }
       }
 
       // Clean up token format (remove Bearer prefix if present)
-      if (typeof token === 'string' && token.startsWith('Bearer ')) {
+      if (typeof token === "string" && token.startsWith("Bearer ")) {
         token = token.substring(7);
-        logger.info('🔧 Cleaned Bearer prefix from token');
+        logger.info("🔧 Cleaned Bearer prefix from token");
       }
 
       // Log token preview for debugging (first/last chars only for security)
@@ -152,19 +182,25 @@ export class SocketManager {
       // Verify JWT with proper secret
       const jwtSecret = process.env.JWT_SECRET;
       if (!jwtSecret) {
-        logger.error('❌ CRITICAL: JWT_SECRET environment variable not set');
-        return next(new Error('Server configuration error'));
+        logger.error("❌ CRITICAL: JWT_SECRET environment variable not set");
+        return next(new Error("Server configuration error"));
       }
 
-      logger.info(`🔑 JWT_SECRET for verification: ${jwtSecret.substring(0, 10)}...${jwtSecret.substring(jwtSecret.length - 4)} (length: ${jwtSecret.length})`);
+      logger.info(
+        `🔑 JWT_SECRET for verification: ${jwtSecret.substring(0, 10)}...${jwtSecret.substring(jwtSecret.length - 4)} (length: ${jwtSecret.length})`,
+      );
 
       // Check for the specific corrupted token pattern we've been seeing
-      const knownCorruptedPattern = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9';
+      const knownCorruptedPattern = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
       const isKnownCorruptedToken = token.startsWith(knownCorruptedPattern);
 
       if (isKnownCorruptedToken) {
-        logger.error('🚨 DETECTED KNOWN CORRUPTED TOKEN PATTERN - Creating emergency guest instead of blocking');
-        logger.error(`🔍 Corrupted token: ${token.substring(0, 30)}...${token.substring(token.length - 10)}`);
+        logger.error(
+          "🚨 DETECTED KNOWN CORRUPTED TOKEN PATTERN - Creating emergency guest instead of blocking",
+        );
+        logger.error(
+          `🔍 Corrupted token: ${token.substring(0, 30)}...${token.substring(token.length - 10)}`,
+        );
 
         // CRITICAL FIX: Instead of blocking connection, create emergency guest for gaming continuity
         const corruptedTokenGuestId = `corrupted_token_guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -175,45 +211,72 @@ export class SocketManager {
         (socket as AuthenticatedSocket).rating = emergencyGuest.rating;
         (socket as AuthenticatedSocket).isGuest = true;
 
-        logger.info(`🆘 Emergency guest created for corrupted token: ${emergencyGuest.username} (${emergencyGuest.id})`);
-        logger.info('✅ Gaming continuity maintained despite token corruption');
+        logger.info(
+          `🆘 Emergency guest created for corrupted token: ${emergencyGuest.username} (${emergencyGuest.id})`,
+        );
+        logger.info("✅ Gaming continuity maintained despite token corruption");
         return next(); // Allow connection to proceed with emergency guest
       }
 
-      logger.debug(`🔑 Token to verify: ${token.substring(0, 30)}...${token.substring(token.length - 10)}`);
+      logger.debug(
+        `🔑 Token to verify: ${token.substring(0, 30)}...${token.substring(token.length - 10)}`,
+      );
 
       let decoded: any;
       try {
         // Always verify JWT signature for security with explicit algorithm
-        decoded = jwt.verify(token, jwtSecret, { algorithms: ['HS256'] }) as any;
-        logger.info(`✅ JWT verification successful - User: ${decoded.userId}, Guest: ${decoded.isGuest}`);
-        logger.info(`✅ JWT details: Issued: ${new Date((decoded.iat || 0) * 1000).toISOString()}, Expires: ${new Date((decoded.exp || 0) * 1000).toISOString()}`);
-        logger.info(`✅ JWT payload preview: ${JSON.stringify({...decoded, exp: undefined, iat: undefined}).substring(0, 100)}...`);
+        decoded = jwt.verify(token, jwtSecret, {
+          algorithms: ["HS256"],
+        }) as any;
+        logger.info(
+          `✅ JWT verification successful - User: ${decoded.userId}, Guest: ${decoded.isGuest}`,
+        );
+        logger.info(
+          `✅ JWT details: Issued: ${new Date((decoded.iat || 0) * 1000).toISOString()}, Expires: ${new Date((decoded.exp || 0) * 1000).toISOString()}`,
+        );
+        logger.info(
+          `✅ JWT payload preview: ${JSON.stringify({ ...decoded, exp: undefined, iat: undefined }).substring(0, 100)}...`,
+        );
       } catch (jwtError: any) {
         logger.error(`❌ JWT verification failed: ${jwtError.message}`);
         logger.error(`❌ Token preview: ${token.substring(0, 20)}...`);
 
         // Only create emergency guest for specific cases, otherwise reject
-        const errorMsg = jwtError.message || 'Unknown JWT error';
+        const errorMsg = jwtError.message || "Unknown JWT error";
 
         // Check if this is a fake token vs legitimate JWT signature issue
-        const isFakeToken = token.startsWith('token_') ||
-                           token.startsWith('guest_token_') ||
-                           token.startsWith('mock_') ||
-                           !token.includes('.');
+        const isFakeToken =
+          token.startsWith("token_") ||
+          token.startsWith("guest_token_") ||
+          token.startsWith("mock_") ||
+          !token.includes(".");
 
-        if (errorMsg.includes('invalid signature')) {
+        if (errorMsg.includes("invalid signature")) {
           if (isFakeToken) {
-            logger.error(`🚫 Detected FAKE token pattern: ${token.substring(0, 20)}... - this should NOT happen anymore!`);
-            logger.error('🚨 CRITICAL: Client still generating fake tokens instead of using server tokens');
-            return next(new Error('Invalid authentication: fake token detected'));
+            logger.error(
+              `🚫 Detected FAKE token pattern: ${token.substring(0, 20)}... - this should NOT happen anymore!`,
+            );
+            logger.error(
+              "🚨 CRITICAL: Client still generating fake tokens instead of using server tokens",
+            );
+            return next(
+              new Error("Invalid authentication: fake token detected"),
+            );
           } else {
-            logger.error(`🚫 Invalid JWT signature for legitimate token - possible token corruption or version mismatch`);
-            logger.error(`🔍 Token structure: parts=${token.split('.').length}, length=${token.length}`);
-            logger.error(`🔑 Current JWT_SECRET hash: ${require('crypto').createHash('md5').update(jwtSecret).digest('hex').substring(0, 8)}`);
+            logger.error(
+              `🚫 Invalid JWT signature for legitimate token - possible token corruption or version mismatch`,
+            );
+            logger.error(
+              `🔍 Token structure: parts=${token.split(".").length}, length=${token.length}`,
+            );
+            logger.error(
+              `🔑 Current JWT_SECRET hash: ${require("crypto").createHash("md5").update(jwtSecret).digest("hex").substring(0, 8)}`,
+            );
 
             // CRITICAL FIX: Create emergency guest instead of blocking connection for gaming continuity
-            logger.error('🚨 JWT SIGNATURE INVALID - Creating emergency guest to maintain gaming experience');
+            logger.error(
+              "🚨 JWT SIGNATURE INVALID - Creating emergency guest to maintain gaming experience",
+            );
 
             const signatureErrorGuestId = `signature_error_guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
             const emergencyGuest = getOrCreateGuestUser(signatureErrorGuestId);
@@ -223,12 +286,18 @@ export class SocketManager {
             (socket as AuthenticatedSocket).rating = emergencyGuest.rating;
             (socket as AuthenticatedSocket).isGuest = true;
 
-            logger.info(`🆘 Emergency guest created for signature error: ${emergencyGuest.username} (${emergencyGuest.id})`);
-            logger.info('✅ Gaming continuity maintained despite signature error');
+            logger.info(
+              `🆘 Emergency guest created for signature error: ${emergencyGuest.username} (${emergencyGuest.id})`,
+            );
+            logger.info(
+              "✅ Gaming continuity maintained despite signature error",
+            );
             return next(); // Allow connection to proceed with emergency guest
           }
-        } else if (errorMsg.includes('jwt expired')) {
-          logger.error(`⏰ JWT token expired - Creating emergency guest for gaming continuity`);
+        } else if (errorMsg.includes("jwt expired")) {
+          logger.error(
+            `⏰ JWT token expired - Creating emergency guest for gaming continuity`,
+          );
 
           const expiredTokenGuestId = `expired_token_guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
           const emergencyGuest = getOrCreateGuestUser(expiredTokenGuestId);
@@ -238,10 +307,17 @@ export class SocketManager {
           (socket as AuthenticatedSocket).rating = emergencyGuest.rating;
           (socket as AuthenticatedSocket).isGuest = true;
 
-          logger.info(`🆘 Emergency guest created for expired token: ${emergencyGuest.username} (${emergencyGuest.id})`);
+          logger.info(
+            `🆘 Emergency guest created for expired token: ${emergencyGuest.username} (${emergencyGuest.id})`,
+          );
           return next(); // Allow connection to proceed with emergency guest
-        } else if (errorMsg.includes('jwt malformed') || errorMsg.includes('invalid token')) {
-          logger.error(`🔧 Malformed JWT token - Creating emergency guest for gaming continuity`);
+        } else if (
+          errorMsg.includes("jwt malformed") ||
+          errorMsg.includes("invalid token")
+        ) {
+          logger.error(
+            `🔧 Malformed JWT token - Creating emergency guest for gaming continuity`,
+          );
 
           const malformedTokenGuestId = `malformed_token_guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
           const emergencyGuest = getOrCreateGuestUser(malformedTokenGuestId);
@@ -251,11 +327,13 @@ export class SocketManager {
           (socket as AuthenticatedSocket).rating = emergencyGuest.rating;
           (socket as AuthenticatedSocket).isGuest = true;
 
-          logger.info(`🆘 Emergency guest created for malformed token: ${emergencyGuest.username} (${emergencyGuest.id})`);
+          logger.info(
+            `🆘 Emergency guest created for malformed token: ${emergencyGuest.username} (${emergencyGuest.id})`,
+          );
           return next(); // Allow connection to proceed with emergency guest
         } else {
           // For other JWT errors, still create emergency guest as fallback
-          logger.info('🎭 Other JWT error, creating emergency guest session');
+          logger.info("🎭 Other JWT error, creating emergency guest session");
           const emergencyGuestId = `emergency_guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
           const emergencyGuest = getOrCreateGuestUser(emergencyGuestId);
 
@@ -264,7 +342,9 @@ export class SocketManager {
           (socket as AuthenticatedSocket).rating = emergencyGuest.rating;
           (socket as AuthenticatedSocket).isGuest = true;
 
-          logger.info(`🆘 Emergency guest created: ${emergencyGuest.username} (${emergencyGuest.id})`);
+          logger.info(
+            `🆘 Emergency guest created: ${emergencyGuest.username} (${emergencyGuest.id})`,
+          );
           return next();
         }
       }
@@ -272,24 +352,33 @@ export class SocketManager {
       // Process authenticated user based on token content
       if (decoded.isGuest) {
         // Handle guest user authentication
-        logger.info(`🎭 Processing guest authentication for: ${decoded.userId}`);
+        logger.info(
+          `🎭 Processing guest authentication for: ${decoded.userId}`,
+        );
 
         const guestUser = getOrCreateGuestUser(decoded.userId);
 
         (socket as AuthenticatedSocket).userId = guestUser.id;
         (socket as AuthenticatedSocket).username = guestUser.username;
-        (socket as AuthenticatedSocket).rating = decoded.rating || guestUser.rating;
+        (socket as AuthenticatedSocket).rating =
+          decoded.rating || guestUser.rating;
         (socket as AuthenticatedSocket).isGuest = true;
 
-        logger.info(`✅ Guest authenticated: ${guestUser.username} (${guestUser.id}, rating: ${guestUser.rating})`);
+        logger.info(
+          `✅ Guest authenticated: ${guestUser.username} (${guestUser.id}, rating: ${guestUser.rating})`,
+        );
       } else {
         // Handle registered user authentication
-        logger.info(`🔐 Processing registered user authentication for: ${decoded.userId}`);
+        logger.info(
+          `🔐 Processing registered user authentication for: ${decoded.userId}`,
+        );
 
         const user = await DatabaseManager.getUserById(decoded.userId);
         if (!user) {
-          logger.error(`❌ Registered user not found in database: ${decoded.userId}`);
-          return next(new Error('User not found in database'));
+          logger.error(
+            `❌ Registered user not found in database: ${decoded.userId}`,
+          );
+          return next(new Error("User not found in database"));
         }
 
         (socket as AuthenticatedSocket).userId = user.id;
@@ -297,19 +386,24 @@ export class SocketManager {
         (socket as AuthenticatedSocket).rating = user.rating;
         (socket as AuthenticatedSocket).isGuest = false;
 
-        logger.info(`✅ Registered user authenticated: ${user.username} (${user.id}, rating: ${user.rating})`);
+        logger.info(
+          `✅ Registered user authenticated: ${user.username} (${user.id}, rating: ${user.rating})`,
+        );
       }
 
       // Authentication successful
-      logger.info(`🎉 WebSocket authentication completed for ${(socket as AuthenticatedSocket).username}`);
+      logger.info(
+        `🎉 WebSocket authentication completed for ${(socket as AuthenticatedSocket).username}`,
+      );
       next();
-
     } catch (error) {
-      logger.error('❌ Critical error in WebSocket authentication:', error);
+      logger.error("❌ Critical error in WebSocket authentication:", error);
 
       // Last resort: create emergency guest to maintain service
       try {
-        logger.info('🚨 Creating last-resort emergency guest due to auth failure');
+        logger.info(
+          "🚨 Creating last-resort emergency guest due to auth failure",
+        );
         const lastResortId = `critical_guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         const lastResortGuest = getOrCreateGuestUser(lastResortId);
 
@@ -321,8 +415,8 @@ export class SocketManager {
         logger.info(`🆘 Last resort guest: ${lastResortGuest.username}`);
         next();
       } catch (finalError) {
-        logger.error('💥 Complete authentication failure:', finalError);
-        next(new Error('Authentication system failure'));
+        logger.error("💥 Complete authentication failure:", finalError);
+        next(new Error("Authentication system failure"));
       }
     }
   }
@@ -333,7 +427,7 @@ export class SocketManager {
 
     // Handle reconnection
     const existingConnection = this.connections.get(playerId);
-    if (existingConnection && existingConnection.status === 'disconnected') {
+    if (existingConnection && existingConnection.status === "disconnected") {
       this.handleReconnection(socket, existingConnection);
     } else {
       this.createNewConnection(socket);
@@ -346,9 +440,9 @@ export class SocketManager {
   private createNewConnection(socket: AuthenticatedSocket): void {
     const connection: PlayerConnection = {
       socket,
-      status: 'online',
+      status: "online",
       lastPing: Date.now(),
-      reconnectionAttempts: 0
+      reconnectionAttempts: 0,
     };
 
     this.connections.set(socket.userId, connection);
@@ -357,7 +451,10 @@ export class SocketManager {
     socket.join(`user:${socket.userId}`);
   }
 
-  private handleReconnection(socket: AuthenticatedSocket, existingConnection: PlayerConnection): void {
+  private handleReconnection(
+    socket: AuthenticatedSocket,
+    existingConnection: PlayerConnection,
+  ): void {
     logger.info(`🔄 Player ${socket.username} reconnected`);
 
     existingConnection.socket = socket;
@@ -367,20 +464,24 @@ export class SocketManager {
       const gameRoom = this.gameRooms.get(existingConnection.gameRoomId);
       if (gameRoom && gameRoom.isActive()) {
         // Game is still active - rejoin
-        existingConnection.status = 'ingame';
+        existingConnection.status = "ingame";
         socket.gameRoomId = existingConnection.gameRoomId;
         socket.join(existingConnection.gameRoomId);
-        logger.info(`✅ Player ${socket.username} rejoined active game ${existingConnection.gameRoomId}`);
+        logger.info(
+          `✅ Player ${socket.username} rejoined active game ${existingConnection.gameRoomId}`,
+        );
       } else {
         // Game is no longer active - reset status
-        existingConnection.status = 'online';
+        existingConnection.status = "online";
         existingConnection.gameRoomId = undefined;
         socket.gameRoomId = undefined;
-        logger.info(`🔄 Player ${socket.username} reconnected but game no longer active - status reset to online`);
+        logger.info(
+          `🔄 Player ${socket.username} reconnected but game no longer active - status reset to online`,
+        );
       }
     } else {
       // Not in a game - set to online
-      existingConnection.status = 'online';
+      existingConnection.status = "online";
     }
 
     existingConnection.lastPing = Date.now();
@@ -389,140 +490,180 @@ export class SocketManager {
     socket.join(`user:${socket.userId}`);
 
     // Send game state if rejoined an active game
-    if (existingConnection.status === 'ingame' && existingConnection.gameRoomId) {
+    if (
+      existingConnection.status === "ingame" &&
+      existingConnection.gameRoomId
+    ) {
       const gameRoom = this.gameRooms.get(existingConnection.gameRoomId);
       if (gameRoom) {
         // Send current game state
         const gameState = gameRoom.getGameState();
-        socket.emit('game:state', gameState);
+        socket.emit("game:state", gameState);
 
         // Notify opponent of reconnection
-        socket.to(existingConnection.gameRoomId).emit('player:reconnected', socket.userId);
+        socket
+          .to(existingConnection.gameRoomId)
+          .emit("player:reconnected", socket.userId);
       }
     }
 
-    socket.emit('reconnect', { success: true });
+    socket.emit("reconnect", { success: true });
   }
 
   private setupSocketEventHandlers(socket: AuthenticatedSocket): void {
     // Matchmaking events
-    socket.on('matchmaking:join', async (timeControl?: string) => {
+    socket.on("matchmaking:join", async (timeControl?: string) => {
       await this.handleJoinMatchmaking(socket, timeControl);
     });
 
-    socket.on('matchmaking:join-guest', async (options: { timeControl: string; guestRating: number; preferences?: any }) => {
-      await this.handleJoinGuestMatchmaking(socket, options);
-    });
+    socket.on(
+      "matchmaking:join-guest",
+      async (options: {
+        timeControl: string;
+        guestRating: number;
+        preferences?: any;
+      }) => {
+        await this.handleJoinGuestMatchmaking(socket, options);
+      },
+    );
 
-    socket.on('matchmaking:leave', () => {
+    socket.on("matchmaking:leave", () => {
       this.matchmakingManager.removeFromQueue(socket.userId);
     });
 
-    socket.on('matchmaking:leave-guest', () => {
+    socket.on("matchmaking:leave-guest", () => {
       this.matchmakingManager.removeFromQueue(socket.userId);
     });
 
     // Game events
-    socket.on('game:join', async (gameId: string) => {
+    socket.on("game:join", async (gameId: string) => {
       await this.handleJoinGame(socket, gameId);
     });
 
-    socket.on('game:move', async (move: Move) => {
+    socket.on("game:move", async (move: Move) => {
       await this.handleGameMove(socket, move);
     });
 
-    socket.on('game:resign', () => {
+    socket.on("game:resign", () => {
       this.handleResignGame(socket);
     });
 
-    socket.on('game:offer-draw', () => {
+    socket.on("game:offer-draw", () => {
       this.handleOfferDraw(socket);
     });
 
-    socket.on('game:accept-draw', () => {
+    socket.on("game:accept-draw", () => {
       this.handleAcceptDraw(socket);
     });
 
-    socket.on('game:decline-draw', () => {
+    socket.on("game:decline-draw", () => {
       this.handleDeclineDraw(socket);
     });
 
     // Connection management
-    socket.on('ping', () => {
+    socket.on("ping", () => {
       const connection = this.connections.get(socket.userId);
       if (connection) {
         connection.lastPing = Date.now();
       }
-      socket.emit('pong');
+      socket.emit("pong");
     });
 
     // Status reset request from client
-    socket.on('request:status-reset', () => {
+    socket.on("request:status-reset", () => {
       const success = this.resetPlayerStatus(socket.userId);
       if (success) {
-        logger.info(`✅ Status reset for player ${socket.username} via client request`);
-        socket.emit('status:reset', { success: true });
+        logger.info(
+          `✅ Status reset for player ${socket.username} via client request`,
+        );
+        socket.emit("status:reset", { success: true });
       } else {
-        logger.warn(`⚠️ Could not reset status for ${socket.username} - might be in active game`);
-        socket.emit('status:reset', { success: false, reason: 'Active game in progress' });
+        logger.warn(
+          `⚠️ Could not reset status for ${socket.username} - might be in active game`,
+        );
+        socket.emit("status:reset", {
+          success: false,
+          reason: "Active game in progress",
+        });
       }
     });
 
-    socket.on('disconnect', (reason) => {
+    socket.on("disconnect", (reason) => {
       this.handleDisconnection(socket, reason);
     });
 
-    socket.on('error', (error) => {
+    socket.on("error", (error) => {
       logger.error(`Socket error for ${socket.username}:`, error);
     });
   }
 
-  private async handleJoinMatchmaking(socket: AuthenticatedSocket, timeControl?: string): Promise<void> {
+  private async handleJoinMatchmaking(
+    socket: AuthenticatedSocket,
+    timeControl?: string,
+  ): Promise<void> {
     try {
       const connection = this.connections.get(socket.userId);
-      if (!connection || connection.status === 'ingame') {
-        socket.emit('error', { code: 'INVALID_STATE', message: 'Cannot join matchmaking while in game' });
+      if (!connection || connection.status === "ingame") {
+        socket.emit("error", {
+          code: "INVALID_STATE",
+          message: "Cannot join matchmaking while in game",
+        });
         return;
       }
 
-      const actualTimeControl = timeControl || 'rapid';
-      logger.info(`🎯 Player ${socket.username} joining matchmaking with timeControl: "${actualTimeControl}" (received: "${timeControl}")`);
+      const actualTimeControl = timeControl || "rapid";
+      logger.info(
+        `🎯 Player ${socket.username} joining matchmaking with timeControl: "${actualTimeControl}" (received: "${timeControl}")`,
+      );
 
       const match = await this.matchmakingManager.addToQueue({
         userId: socket.userId,
         username: socket.username,
         rating: socket.rating,
         timeControl: actualTimeControl,
-        joinedAt: Date.now()
+        joinedAt: Date.now(),
       });
 
       if (match) {
         // Match found immediately
-        logger.info(`🚀 Immediate match found for ${socket.username}: ${match.gameId}`);
+        logger.info(
+          `🚀 Immediate match found for ${socket.username}: ${match.gameId}`,
+        );
         await this.createGameFromMatch(match);
       } else {
-        logger.info(`⏳ Player ${socket.username} queued for ${actualTimeControl} matchmaking`);
-        socket.emit('matchmaking:queued', { timeControl: actualTimeControl });
+        logger.info(
+          `⏳ Player ${socket.username} queued for ${actualTimeControl} matchmaking`,
+        );
+        socket.emit("matchmaking:queued", { timeControl: actualTimeControl });
       }
     } catch (error) {
-      logger.error('Error joining matchmaking:', error);
-      socket.emit('error', { code: 'MATCHMAKING_ERROR', message: 'Failed to join matchmaking' });
+      logger.error("Error joining matchmaking:", error);
+      socket.emit("error", {
+        code: "MATCHMAKING_ERROR",
+        message: "Failed to join matchmaking",
+      });
     }
   }
 
   private async handleJoinGuestMatchmaking(
     socket: AuthenticatedSocket,
-    options: { timeControl: string; guestRating: number; preferences?: any }
+    options: { timeControl: string; guestRating: number; preferences?: any },
   ): Promise<void> {
     try {
       const connection = this.connections.get(socket.userId);
-      if (!connection || connection.status === 'ingame') {
-        socket.emit('error', { code: 'INVALID_STATE', message: 'Cannot join matchmaking while in game' });
+      if (!connection || connection.status === "ingame") {
+        socket.emit("error", {
+          code: "INVALID_STATE",
+          message: "Cannot join matchmaking while in game",
+        });
         return;
       }
 
       if (!socket.isGuest) {
-        socket.emit('error', { code: 'INVALID_REQUEST', message: 'Guest matchmaking only for guest users' });
+        socket.emit("error", {
+          code: "INVALID_REQUEST",
+          message: "Guest matchmaking only for guest users",
+        });
         return;
       }
 
@@ -535,25 +676,27 @@ export class SocketManager {
         preferences: {
           ...options.preferences,
           maxRatingDifference: options.preferences?.maxRatingDifference || 400, // More flexible for guests
-        }
+        },
       });
 
       if (match) {
         // Match found immediately
         await this.createGameFromMatch(match);
       } else {
-        socket.emit('matchmaking:guest-queued', {
+        socket.emit("matchmaking:guest-queued", {
           timeControl: options.timeControl,
-          isGuest: true
+          isGuest: true,
         });
       }
 
-      logger.info(`🎭 Guest ${socket.username} joined ${options.timeControl} matchmaking queue`);
+      logger.info(
+        `🎭 Guest ${socket.username} joined ${options.timeControl} matchmaking queue`,
+      );
     } catch (error) {
-      logger.error('Error joining guest matchmaking:', error);
-      socket.emit('matchmaking:guest-error', {
-        code: 'GUEST_MATCHMAKING_ERROR',
-        message: 'Failed to join guest matchmaking'
+      logger.error("Error joining guest matchmaking:", error);
+      socket.emit("matchmaking:guest-error", {
+        code: "GUEST_MATCHMAKING_ERROR",
+        message: "Failed to join guest matchmaking",
       });
     }
   }
@@ -563,7 +706,7 @@ export class SocketManager {
       const gameRoom = new GameRoom(match.gameId, {
         white: match.white,
         black: match.black,
-        timeControl: match.timeControl
+        timeControl: match.timeControl,
       });
 
       this.gameRooms.set(match.gameId, gameRoom);
@@ -579,35 +722,45 @@ export class SocketManager {
       if (whiteSocket) {
         whiteSocket.gameRoomId = match.gameId;
         whiteSocket.join(match.gameId);
-        this.updateConnectionStatus(whiteSocket.userId, 'ingame', match.gameId);
+        this.updateConnectionStatus(whiteSocket.userId, "ingame", match.gameId);
         const whiteMatchData = {
           gameId: match.gameId,
-          color: 'white',
+          color: "white",
           opponent: match.black,
-          timeControl: match.timeControl
+          timeControl: match.timeControl,
         };
-        whiteSocket.emit('match:found', whiteMatchData);
-        logger.info(`✅ Sent match:found event to white player: ${match.white.username}`, whiteMatchData);
+        whiteSocket.emit("match:found", whiteMatchData);
+        logger.info(
+          `✅ Sent match:found event to white player: ${match.white.username}`,
+          whiteMatchData,
+        );
         whiteJoined = true;
       } else {
-        logger.error(`❌ White socket not found for user: ${match.white.userId}`);
+        logger.error(
+          `❌ White socket not found for user: ${match.white.userId}`,
+        );
       }
 
       if (blackSocket) {
         blackSocket.gameRoomId = match.gameId;
         blackSocket.join(match.gameId);
-        this.updateConnectionStatus(blackSocket.userId, 'ingame', match.gameId);
+        this.updateConnectionStatus(blackSocket.userId, "ingame", match.gameId);
         const blackMatchData = {
           gameId: match.gameId,
-          color: 'black',
+          color: "black",
           opponent: match.white,
-          timeControl: match.timeControl
+          timeControl: match.timeControl,
         };
-        blackSocket.emit('match:found', blackMatchData);
-        logger.info(`✅ Sent match:found event to black player: ${match.black.username}`, blackMatchData);
+        blackSocket.emit("match:found", blackMatchData);
+        logger.info(
+          `✅ Sent match:found event to black player: ${match.black.username}`,
+          blackMatchData,
+        );
         blackJoined = true;
       } else {
-        logger.error(`❌ Black socket not found for user: ${match.black.userId}`);
+        logger.error(
+          `❌ Black socket not found for user: ${match.black.userId}`,
+        );
       }
 
       // Only start the game if at least one player joined
@@ -617,25 +770,29 @@ export class SocketManager {
 
         // Send initial game state
         const gameState = gameRoom.getGameState();
-        this.io.to(match.gameId).emit('game:state', gameState);
+        this.io.to(match.gameId).emit("game:state", gameState);
 
-        logger.info(`🎮 Game created: ${match.gameId} (${match.white.username} vs ${match.black.username})`);
+        logger.info(
+          `🎮 Game created: ${match.gameId} (${match.white.username} vs ${match.black.username})`,
+        );
       } else {
         // Neither player could join - clean up
-        logger.error(`❌ Failed to create game ${match.gameId}: Neither player could join`);
+        logger.error(
+          `❌ Failed to create game ${match.gameId}: Neither player could join`,
+        );
         this.gameRooms.delete(match.gameId);
 
         // Reset any player statuses that were set
-        this.updateConnectionStatus(match.white.userId, 'online');
-        this.updateConnectionStatus(match.black.userId, 'online');
+        this.updateConnectionStatus(match.white.userId, "online");
+        this.updateConnectionStatus(match.black.userId, "online");
       }
     } catch (error) {
-      logger.error('Error creating game from match:', error);
+      logger.error("Error creating game from match:", error);
 
       // Rollback on error - reset player statuses
       try {
-        this.updateConnectionStatus(match.white.userId, 'online');
-        this.updateConnectionStatus(match.black.userId, 'online');
+        this.updateConnectionStatus(match.white.userId, "online");
+        this.updateConnectionStatus(match.black.userId, "online");
 
         // Clean up game room if it was created
         if (this.gameRooms.has(match.gameId)) {
@@ -646,73 +803,91 @@ export class SocketManager {
         const whiteSocket = this.getSocketByUserId(match.white.userId);
         const blackSocket = this.getSocketByUserId(match.black.userId);
 
-        const errorMessage = { code: 'GAME_CREATE_ERROR', message: 'Failed to create game. Please try again.' };
+        const errorMessage = {
+          code: "GAME_CREATE_ERROR",
+          message: "Failed to create game. Please try again.",
+        };
         if (whiteSocket) {
           whiteSocket.gameRoomId = undefined;
           whiteSocket.leave(match.gameId);
-          whiteSocket.emit('error', errorMessage);
+          whiteSocket.emit("error", errorMessage);
         }
         if (blackSocket) {
           blackSocket.gameRoomId = undefined;
           blackSocket.leave(match.gameId);
-          blackSocket.emit('error', errorMessage);
+          blackSocket.emit("error", errorMessage);
         }
       } catch (rollbackError) {
-        logger.error('Error during rollback:', rollbackError);
+        logger.error("Error during rollback:", rollbackError);
       }
     }
   }
 
-  private async handleJoinGame(socket: AuthenticatedSocket, gameId: string): Promise<void> {
+  private async handleJoinGame(
+    socket: AuthenticatedSocket,
+    gameId: string,
+  ): Promise<void> {
     try {
       const gameRoom = this.gameRooms.get(gameId);
       if (!gameRoom) {
-        socket.emit('error', { code: 'GAME_NOT_FOUND', message: 'Game not found' });
+        socket.emit("error", {
+          code: "GAME_NOT_FOUND",
+          message: "Game not found",
+        });
         return;
       }
 
       if (!gameRoom.canPlayerJoin(socket.userId)) {
-        socket.emit('error', { code: 'ACCESS_DENIED', message: 'Cannot join this game' });
+        socket.emit("error", {
+          code: "ACCESS_DENIED",
+          message: "Cannot join this game",
+        });
         return;
       }
 
       socket.gameRoomId = gameId;
       socket.join(gameId);
-      this.updateConnectionStatus(socket.userId, 'ingame', gameId);
+      this.updateConnectionStatus(socket.userId, "ingame", gameId);
 
       // Send current game state
       const gameState = gameRoom.getGameState();
-      socket.emit('game:state', gameState);
+      socket.emit("game:state", gameState);
 
       // Notify other player
-      socket.to(gameId).emit('player:joined', {
+      socket.to(gameId).emit("player:joined", {
         userId: socket.userId,
-        username: socket.username
+        username: socket.username,
       });
 
       logger.info(`Player ${socket.username} joined game ${gameId}`);
     } catch (error) {
-      logger.error('Error joining game:', error);
-      socket.emit('error', { code: 'JOIN_GAME_ERROR', message: 'Failed to join game' });
+      logger.error("Error joining game:", error);
+      socket.emit("error", {
+        code: "JOIN_GAME_ERROR",
+        message: "Failed to join game",
+      });
     }
   }
 
-  private async handleGameMove(socket: AuthenticatedSocket, move: Move): Promise<void> {
+  private async handleGameMove(
+    socket: AuthenticatedSocket,
+    move: Move,
+  ): Promise<void> {
     try {
       if (!socket.gameRoomId) {
-        socket.emit('move:invalid', 'Not in a game');
+        socket.emit("move:invalid", "Not in a game");
         return;
       }
 
       const gameRoom = this.gameRooms.get(socket.gameRoomId);
       if (!gameRoom) {
-        socket.emit('move:invalid', 'Game room not found');
+        socket.emit("move:invalid", "Game room not found");
         return;
       }
 
       // Validate move timing and player turn
       if (!gameRoom.canPlayerMove(socket.userId)) {
-        socket.emit('move:invalid', 'Not your turn or game not active');
+        socket.emit("move:invalid", "Not your turn or game not active");
         return;
       }
 
@@ -721,22 +896,31 @@ export class SocketManager {
 
       if (result.success) {
         // Broadcast validated move to both players
-        this.io.to(socket.gameRoomId).emit('move:validated', result.move);
-        this.io.to(socket.gameRoomId).emit('game:state', result.gameState);
+        this.io.to(socket.gameRoomId).emit("move:validated", result.move);
+        this.io.to(socket.gameRoomId).emit("game:state", result.gameState);
 
         // Check if game ended
-        if (result.gameState.status === 'completed') {
+        if (result.gameState.status === "completed") {
           await this.handleGameEnd(socket.gameRoomId, result.gameState);
         }
 
-        socket.emit('game:move-result', { success: true, gameState: result.gameState });
+        socket.emit("game:move-result", {
+          success: true,
+          gameState: result.gameState,
+        });
       } else {
-        socket.emit('game:move-result', { success: false, error: result.error });
-        socket.emit('move:invalid', result.error);
+        socket.emit("game:move-result", {
+          success: false,
+          error: result.error,
+        });
+        socket.emit("move:invalid", result.error);
       }
     } catch (error) {
-      logger.error('Error handling game move:', error);
-      socket.emit('game:move-result', { success: false, error: 'Internal server error' });
+      logger.error("Error handling game move:", error);
+      socket.emit("game:move-result", {
+        success: false,
+        error: "Internal server error",
+      });
     }
   }
 
@@ -749,16 +933,16 @@ export class SocketManager {
     gameRoom.resignGame(socket.userId);
     const gameState = gameRoom.getGameState();
 
-    this.io.to(socket.gameRoomId).emit('game:state', gameState);
+    this.io.to(socket.gameRoomId).emit("game:state", gameState);
     this.handleGameEnd(socket.gameRoomId, gameState);
   }
 
   private handleOfferDraw(socket: AuthenticatedSocket): void {
     if (!socket.gameRoomId) return;
 
-    socket.to(socket.gameRoomId).emit('game:draw-offered', {
+    socket.to(socket.gameRoomId).emit("game:draw-offered", {
       fromPlayer: socket.userId,
-      username: socket.username
+      username: socket.username,
     });
   }
 
@@ -771,19 +955,22 @@ export class SocketManager {
     gameRoom.acceptDraw();
     const gameState = gameRoom.getGameState();
 
-    this.io.to(socket.gameRoomId).emit('game:state', gameState);
+    this.io.to(socket.gameRoomId).emit("game:state", gameState);
     this.handleGameEnd(socket.gameRoomId, gameState);
   }
 
   private handleDeclineDraw(socket: AuthenticatedSocket): void {
     if (!socket.gameRoomId) return;
 
-    socket.to(socket.gameRoomId).emit('game:draw-declined', {
-      fromPlayer: socket.userId
+    socket.to(socket.gameRoomId).emit("game:draw-declined", {
+      fromPlayer: socket.userId,
     });
   }
 
-  private async handleGameEnd(gameRoomId: string, gameState: GameState): Promise<void> {
+  private async handleGameEnd(
+    gameRoomId: string,
+    gameState: GameState,
+  ): Promise<void> {
     try {
       const gameRoom = this.gameRooms.get(gameRoomId);
       if (!gameRoom) return;
@@ -795,22 +982,25 @@ export class SocketManager {
       await gameRoom.updatePlayerRatings();
 
       // Notify players
-      this.io.to(gameRoomId).emit('game:ended', {
-        result: gameState.winner ?
-          (gameState.winner === 'white' ? '1-0' : '0-1') : '1/2-1/2',
+      this.io.to(gameRoomId).emit("game:ended", {
+        result: gameState.winner
+          ? gameState.winner === "white"
+            ? "1-0"
+            : "0-1"
+          : "1/2-1/2",
         winner: gameState.winner,
         victoryCondition: gameState.victoryCondition,
-        psn: gameRoom.generatePSN()
+        psn: gameRoom.generatePSN(),
       });
 
       // Clean up connections
       const players = gameRoom.getPlayers();
-      players.forEach(playerId => {
+      players.forEach((playerId) => {
         const socket = this.getSocketByUserId(playerId);
         if (socket) {
           socket.leave(gameRoomId);
           socket.gameRoomId = undefined;
-          this.updateConnectionStatus(playerId, 'online');
+          this.updateConnectionStatus(playerId, "online");
         }
       });
 
@@ -819,20 +1009,23 @@ export class SocketManager {
         this.gameRooms.delete(gameRoomId);
       }, 5000);
 
-      logger.info(`🏁 Game ${gameRoomId} ended: ${gameState.winner || 'draw'}`);
+      logger.info(`🏁 Game ${gameRoomId} ended: ${gameState.winner || "draw"}`);
     } catch (error) {
-      logger.error('Error handling game end:', error);
+      logger.error("Error handling game end:", error);
     }
   }
 
-  private handleDisconnection(socket: AuthenticatedSocket, reason: string): void {
+  private handleDisconnection(
+    socket: AuthenticatedSocket,
+    reason: string,
+  ): void {
     logger.info(`🔌 Player ${socket.username} disconnected: ${reason}`);
 
     const connection = this.connections.get(socket.userId);
     if (!connection) return;
 
     // Always mark as disconnected first
-    connection.status = 'disconnected';
+    connection.status = "disconnected";
     connection.lastPing = Date.now();
 
     // If player is in a game, start disconnect timer
@@ -842,7 +1035,7 @@ export class SocketManager {
         gameRoom.handlePlayerDisconnection(socket.userId);
 
         // Notify opponent
-        socket.to(socket.gameRoomId).emit('player:offline', socket.userId);
+        socket.to(socket.gameRoomId).emit("player:offline", socket.userId);
 
         // Start reconnection timer
         setTimeout(() => {
@@ -850,15 +1043,19 @@ export class SocketManager {
         }, 30000); // 30 seconds to reconnect
       } else {
         // Game room doesn't exist or is not active - reset status to online
-        logger.info(`🔄 Resetting status to online for ${socket.username} - game room not active`);
-        connection.status = 'online';
+        logger.info(
+          `🔄 Resetting status to online for ${socket.username} - game room not active`,
+        );
+        connection.status = "online";
         connection.gameRoomId = undefined;
       }
     } else {
       // Not in a game - ensure status is reset to online if it was 'ingame'
-      if (connection.status === 'disconnected' && !connection.gameRoomId) {
+      if (connection.status === "disconnected" && !connection.gameRoomId) {
         // Player disconnected but wasn't in a game - can safely remove connection
-        logger.info(`🗑️ Removing connection for ${socket.username} - not in game`);
+        logger.info(
+          `🗑️ Removing connection for ${socket.username} - not in game`,
+        );
         this.connections.delete(socket.userId);
       }
     }
@@ -868,7 +1065,7 @@ export class SocketManager {
 
   private handleReconnectionTimeout(playerId: string): void {
     const connection = this.connections.get(playerId);
-    if (!connection || connection.status !== 'disconnected') return;
+    if (!connection || connection.status !== "disconnected") return;
 
     connection.reconnectionAttempts++;
 
@@ -880,7 +1077,7 @@ export class SocketManager {
           gameRoom.resignGame(playerId);
           const gameState = gameRoom.getGameState();
 
-          this.io.to(connection.gameRoomId).emit('game:state', gameState);
+          this.io.to(connection.gameRoomId).emit("game:state", gameState);
           this.handleGameEnd(connection.gameRoomId, gameState);
         }
       }
@@ -892,10 +1089,16 @@ export class SocketManager {
 
   private getSocketByUserId(userId: string): AuthenticatedSocket | null {
     const connection = this.connections.get(userId);
-    return connection && connection.status !== 'disconnected' ? connection.socket : null;
+    return connection && connection.status !== "disconnected"
+      ? connection.socket
+      : null;
   }
 
-  private updateConnectionStatus(userId: string, status: PlayerConnection['status'], gameRoomId?: string): void {
+  private updateConnectionStatus(
+    userId: string,
+    status: PlayerConnection["status"],
+    gameRoomId?: string,
+  ): void {
     const connection = this.connections.get(userId);
     if (connection) {
       connection.status = status;
@@ -904,17 +1107,17 @@ export class SocketManager {
   }
 
   private notifyPlayerOnline(socket: AuthenticatedSocket): void {
-    socket.broadcast.emit('player:online', {
+    socket.broadcast.emit("player:online", {
       userId: socket.userId,
       username: socket.username,
-      rating: socket.rating
+      rating: socket.rating,
     });
   }
 
   private notifyPlayerOffline(socket: AuthenticatedSocket): void {
-    socket.broadcast.emit('player:offline', {
+    socket.broadcast.emit("player:offline", {
       userId: socket.userId,
-      username: socket.username
+      username: socket.username,
     });
   }
 
@@ -930,7 +1133,7 @@ export class SocketManager {
       });
 
       // Clean up stale connections
-      staleConnections.forEach(userId => {
+      staleConnections.forEach((userId) => {
         const connection = this.connections.get(userId);
         if (connection) {
           connection.socket.disconnect();
@@ -938,7 +1141,9 @@ export class SocketManager {
         }
       });
 
-      logger.debug(`🏥 Health check: ${this.connections.size} active connections, ${staleConnections.length} stale removed`);
+      logger.debug(
+        `🏥 Health check: ${this.connections.size} active connections, ${staleConnections.length} stale removed`,
+      );
     }, this.PING_INTERVAL);
   }
 
@@ -951,7 +1156,7 @@ export class SocketManager {
     return this.gameRooms.size;
   }
 
-  public getPlayerStatus(userId: string): PlayerConnection['status'] | null {
+  public getPlayerStatus(userId: string): PlayerConnection["status"] | null {
     return this.connections.get(userId)?.status || null;
   }
 
@@ -975,7 +1180,7 @@ export class SocketManager {
       totalPlayersInQueues: this.matchmakingManager.getTotalPlayersInQueues(),
       queueStats: this.matchmakingManager.getQueueStats(),
       hasEventListeners: this.matchmakingManager.hasMatchFoundListeners(),
-      eventListenerCount: this.matchmakingManager.getEventListenerCount()
+      eventListenerCount: this.matchmakingManager.getEventListenerCount(),
     };
   }
 
@@ -987,13 +1192,15 @@ export class SocketManager {
     if (connection.gameRoomId) {
       const gameRoom = this.gameRooms.get(connection.gameRoomId);
       if (gameRoom && gameRoom.isActive()) {
-        logger.warn(`⚠️ Cannot reset status for ${userId} - active game in progress`);
+        logger.warn(
+          `⚠️ Cannot reset status for ${userId} - active game in progress`,
+        );
         return false;
       }
     }
 
     // Reset status to online
-    connection.status = 'online';
+    connection.status = "online";
     connection.gameRoomId = undefined;
     if (connection.socket) {
       connection.socket.gameRoomId = undefined;
@@ -1007,13 +1214,13 @@ export class SocketManager {
     let resetCount = 0;
 
     this.connections.forEach((connection, userId) => {
-      if (connection.status === 'ingame') {
+      if (connection.status === "ingame") {
         // Check if game is still active
         if (connection.gameRoomId) {
           const gameRoom = this.gameRooms.get(connection.gameRoomId);
           if (!gameRoom || !gameRoom.isActive()) {
             // Game no longer active - reset status
-            connection.status = 'online';
+            connection.status = "online";
             connection.gameRoomId = undefined;
             if (connection.socket) {
               connection.socket.gameRoomId = undefined;
@@ -1023,9 +1230,11 @@ export class SocketManager {
           }
         } else {
           // Status is 'ingame' but no gameRoomId - definitely stuck
-          connection.status = 'online';
+          connection.status = "online";
           resetCount++;
-          logger.info(`✅ Reset stuck 'ingame' status (no game) for player ${userId}`);
+          logger.info(
+            `✅ Reset stuck 'ingame' status (no game) for player ${userId}`,
+          );
         }
       }
     });
@@ -1034,15 +1243,25 @@ export class SocketManager {
     return resetCount;
   }
 
-  public getAllPlayerStatuses(): Array<{userId: string, username: string, status: string, gameRoomId?: string}> {
-    const statuses: Array<{userId: string, username: string, status: string, gameRoomId?: string}> = [];
+  public getAllPlayerStatuses(): Array<{
+    userId: string;
+    username: string;
+    status: string;
+    gameRoomId?: string;
+  }> {
+    const statuses: Array<{
+      userId: string;
+      username: string;
+      status: string;
+      gameRoomId?: string;
+    }> = [];
 
     this.connections.forEach((connection, userId) => {
       statuses.push({
         userId,
-        username: connection.socket?.username || 'Unknown',
+        username: connection.socket?.username || "Unknown",
         status: connection.status,
-        gameRoomId: connection.gameRoomId
+        gameRoomId: connection.gameRoomId,
       });
     });
 
@@ -1050,7 +1269,7 @@ export class SocketManager {
   }
 
   public logDetailedMatchmakingStatus(): void {
-    logger.info('🚨 === DETAILED MATCHMAKING DEBUG STATUS ===');
+    logger.info("🚨 === DETAILED MATCHMAKING DEBUG STATUS ===");
     logger.info(`🔌 Active connections: ${this.connections.size}`);
     logger.info(`🎮 Active games: ${this.gameRooms.size}`);
 
@@ -1060,17 +1279,19 @@ export class SocketManager {
     let disconnectedCount = 0;
 
     this.connections.forEach((connection, userId) => {
-      if (connection.status === 'ingame') inGameCount++;
-      else if (connection.status === 'online') onlineCount++;
+      if (connection.status === "ingame") inGameCount++;
+      else if (connection.status === "online") onlineCount++;
       else disconnectedCount++;
     });
 
-    logger.info(`👥 Connection stats: ${onlineCount} online, ${inGameCount} in-game, ${disconnectedCount} disconnected`);
+    logger.info(
+      `👥 Connection stats: ${onlineCount} online, ${inGameCount} in-game, ${disconnectedCount} disconnected`,
+    );
 
     // Log matchmaking detailed status
     this.matchmakingManager.logFullQueueStatus();
 
-    logger.info('🚨 === END DETAILED DEBUG STATUS ===');
+    logger.info("🚨 === END DETAILED DEBUG STATUS ===");
   }
 }
 

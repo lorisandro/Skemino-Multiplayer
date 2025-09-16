@@ -4,8 +4,8 @@ import {
   BoardPosition,
   Card,
   PlayerColor,
-  GAME_CONSTANTS
-} from '../../../shared/types/GameTypes';
+  GAME_CONSTANTS,
+} from "../../../shared/types/GameTypes";
 
 export class GameBoard {
   private board: Map<BoardCell, BoardPosition>;
@@ -32,13 +32,13 @@ export class GameBoard {
           cell,
           card: null,
           isVertex: GAME_CONSTANTS.VERTICES.includes(cell),
-          quadrant
+          quadrant,
         });
       }
     }
 
     // Initialize vertex control
-    GAME_CONSTANTS.VERTICES.forEach(vertex => {
+    GAME_CONSTANTS.VERTICES.forEach((vertex) => {
       this.vertexControl.set(vertex as BoardCell, null);
     });
   }
@@ -53,7 +53,11 @@ export class GameBoard {
     return 4; // d4-f6
   }
 
-  public placeCard(cell: BoardCell, card: Card, player: PlayerColor): Card | null {
+  public placeCard(
+    cell: BoardCell,
+    card: Card,
+    player: PlayerColor,
+  ): Card | null {
     const position = this.board.get(cell);
     if (!position) {
       throw new Error(`Invalid cell: ${cell}`);
@@ -98,7 +102,7 @@ export class GameBoard {
 
   public isAdjacentToCard(cell: BoardCell): boolean {
     const adjacentCells = this.getAdjacentCells(cell);
-    return adjacentCells.some(adjCell => this.hasCard(adjCell));
+    return adjacentCells.some((adjCell) => this.hasCard(adjCell));
   }
 
   public getAdjacentCells(cell: BoardCell): BoardCell[] {
@@ -123,7 +127,7 @@ export class GameBoard {
       adjacent.push(`${String.fromCharCode(96 + col)}${row}` as BoardCell);
     }
 
-    return adjacent.filter(c => this.board.has(c));
+    return adjacent.filter((c) => this.board.has(c));
   }
 
   public getAllCells(): BoardCell[] {
@@ -147,7 +151,10 @@ export class GameBoard {
     const centralSquare = this.getCentralSquare(quadrant);
 
     // Check if player controls the central square for "exclusive" control
-    if (this.hasCard(centralSquare) && this.getCardOwner(centralSquare) === player) {
+    if (
+      this.hasCard(centralSquare) &&
+      this.getCardOwner(centralSquare) === player
+    ) {
       this.vertexControl.set(vertex, player);
     } else {
       this.vertexControl.set(vertex, player); // Basic control
@@ -156,10 +163,10 @@ export class GameBoard {
 
   private getCentralSquare(quadrant: 1 | 2 | 3 | 4): BoardCell {
     const centralSquares: Record<number, BoardCell> = {
-      1: 'b2',
-      2: 'e2',
-      3: 'b5',
-      4: 'e5'
+      1: "b2",
+      2: "e2",
+      3: "b5",
+      4: "e5",
     };
     return centralSquares[quadrant];
   }
@@ -184,12 +191,12 @@ export class GameBoard {
     return {
       positions: new Map(this.board),
       vertexControl: {
-        a1: this.vertexControl.get('a1') || null,
-        f1: this.vertexControl.get('f1') || null,
-        a6: this.vertexControl.get('a6') || null,
-        f6: this.vertexControl.get('f6') || null
+        a1: this.vertexControl.get("a1") || null,
+        f1: this.vertexControl.get("f1") || null,
+        a6: this.vertexControl.get("a6") || null,
+        f6: this.vertexControl.get("f6") || null,
       },
-      holes: Array.from(this.holes)
+      holes: Array.from(this.holes),
     };
   }
 
@@ -198,10 +205,10 @@ export class GameBoard {
     this.board = new Map(state.positions);
 
     // Load vertex control
-    this.vertexControl.set('a1', state.vertexControl.a1);
-    this.vertexControl.set('f1', state.vertexControl.f1);
-    this.vertexControl.set('a6', state.vertexControl.a6);
-    this.vertexControl.set('f6', state.vertexControl.f6);
+    this.vertexControl.set("a1", state.vertexControl.a1);
+    this.vertexControl.set("f1", state.vertexControl.f1);
+    this.vertexControl.set("a6", state.vertexControl.a6);
+    this.vertexControl.set("f6", state.vertexControl.f6);
 
     // Load holes
     this.holes = new Set(state.holes);
@@ -235,16 +242,18 @@ export class GameBoard {
       const defenderValue = GAME_CONSTANTS.CARD_VALUES[existingCard.value];
 
       // Special case: Ace beats King
-      if (card.value === '1' && existingCard.value === 'K') return true;
+      if (card.value === "1" && existingCard.value === "K") return true;
       // King doesn't beat Ace
-      if (card.value === 'K' && existingCard.value === '1') return false;
+      if (card.value === "K" && existingCard.value === "1") return false;
 
       return attackerValue > defenderValue;
     }
   }
 
   // Get all cards in a specific quadrant
-  public getQuadrantCards(quadrant: 1 | 2 | 3 | 4): Array<{ cell: BoardCell; card: Card }> {
+  public getQuadrantCards(
+    quadrant: 1 | 2 | 3 | 4,
+  ): Array<{ cell: BoardCell; card: Card }> {
     const cards: Array<{ cell: BoardCell; card: Card }> = [];
 
     this.board.forEach((position, cell) => {
@@ -262,7 +271,7 @@ export class GameBoard {
     let blackCount = 0;
 
     this.cardOwners.forEach((owner) => {
-      if (owner === 'white') whiteCount++;
+      if (owner === "white") whiteCount++;
       else blackCount++;
     });
 

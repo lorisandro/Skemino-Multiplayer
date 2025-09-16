@@ -20,8 +20,8 @@ import {
   GameResult,
   BoardPosition,
   PlayerId,
-  PSNParseResult
-} from '../../../shared/types/game';
+  PSNParseResult,
+} from "../../../shared/types/game";
 
 export interface PSNParseOptions {
   strict: boolean; // Strict mode fails on first error, permissive continues
@@ -35,13 +35,16 @@ export class PSNParser {
     strict: false,
     validateMoves: true,
     includeTimings: true,
-    maxErrors: 10
+    maxErrors: 10,
   };
 
   /**
    * Parses complete PSN string into GameState
    */
-  public parseGame(psnString: string, options: Partial<PSNParseOptions> = {}): PSNParseResult {
+  public parseGame(
+    psnString: string,
+    options: Partial<PSNParseOptions> = {},
+  ): PSNParseResult {
     const opts = { ...this.defaultOptions, ...options };
     const errors: string[] = [];
     const warnings: string[] = [];
@@ -80,25 +83,44 @@ export class PSNParser {
         id: this.generateGameId(),
         status: this.determineGameStatus(headerResult.headers?.result),
         board: this.constructBoard(moveResult.moves || []),
-        currentTurn: this.determineCurrentPlayer(moveResult.moves || []) as 'white' | 'black',
+        currentTurn: this.determineCurrentPlayer(moveResult.moves || []) as
+          | "white"
+          | "black",
         moveCount: this.calculateCurrentTurn(moveResult.moves || []),
         moveHistory: moveResult.moves || [],
         startTime: new Date(),
         players: {
-          white: { id: 'white', username: 'White', rating: 1200, color: 'white', hand: [], cardsPlayed: 0, timeRemaining: 1800000 },
-          black: { id: 'black', username: 'Black', rating: 1200, color: 'black', hand: [], cardsPlayed: 0, timeRemaining: 1800000 }
-        }
+          white: {
+            id: "white",
+            username: "White",
+            rating: 1200,
+            color: "white",
+            hand: [],
+            cardsPlayed: 0,
+            timeRemaining: 1800000,
+          },
+          black: {
+            id: "black",
+            username: "Black",
+            rating: 1200,
+            color: "black",
+            hand: [],
+            cardsPlayed: 0,
+            timeRemaining: 1800000,
+          },
+        },
       };
 
       return {
         isValid: errors.length === 0,
         game: gameState,
         errors,
-        warnings
+        warnings,
       };
-
     } catch (error) {
-      errors.push(`Critical parsing error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      errors.push(
+        `Critical parsing error: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
       return { isValid: false, errors, warnings };
     }
   }
@@ -108,9 +130,9 @@ export class PSNParser {
    */
   private preprocessLines(psnString: string): string[] {
     return psnString
-      .split('\n')
-      .map(line => line.trim())
-      .filter(line => line.length > 0);
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0);
   }
 
   /**
@@ -129,7 +151,7 @@ export class PSNParser {
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
-      if (!line.startsWith('[')) break; // End of headers section
+      if (!line.startsWith("[")) break; // End of headers section
 
       const match = line.match(headerRegex);
       if (!match) {
@@ -142,7 +164,15 @@ export class PSNParser {
     }
 
     // Validate required headers
-    const requiredHeaders = ['event', 'site', 'date', 'round', 'white', 'black', 'result'];
+    const requiredHeaders = [
+      "event",
+      "site",
+      "date",
+      "round",
+      "white",
+      "black",
+      "result",
+    ];
     for (const required of requiredHeaders) {
       if (!headerMap.has(required)) {
         errors.push(`Missing required header: ${required}`);
@@ -155,19 +185,29 @@ export class PSNParser {
 
     // Construct headers object
     const headers: GameHeaders = {
-      event: headerMap.get('event')!,
-      site: headerMap.get('site')!,
-      date: this.parseDate(headerMap.get('date')!),
-      round: headerMap.get('round')!,
-      white: headerMap.get('white')!,
-      black: headerMap.get('black')!,
-      result: this.parseResult(headerMap.get('result')!),
-      whiteElo: headerMap.has('whiteelo') ? parseInt(headerMap.get('whiteelo')!) : undefined,
-      blackElo: headerMap.has('blackelo') ? parseInt(headerMap.get('blackelo')!) : undefined,
-      strategy: headerMap.get('strategy'),
-      whiteTime: headerMap.has('whitetime') ? parseInt(headerMap.get('whitetime')!) : undefined,
-      blackTime: headerMap.has('blacktime') ? parseInt(headerMap.get('blacktime')!) : undefined,
-      nCard: headerMap.has('ncard') ? parseInt(headerMap.get('ncard')!) : undefined
+      event: headerMap.get("event")!,
+      site: headerMap.get("site")!,
+      date: this.parseDate(headerMap.get("date")!),
+      round: headerMap.get("round")!,
+      white: headerMap.get("white")!,
+      black: headerMap.get("black")!,
+      result: this.parseResult(headerMap.get("result")!),
+      whiteElo: headerMap.has("whiteelo")
+        ? parseInt(headerMap.get("whiteelo")!)
+        : undefined,
+      blackElo: headerMap.has("blackelo")
+        ? parseInt(headerMap.get("blackelo")!)
+        : undefined,
+      strategy: headerMap.get("strategy"),
+      whiteTime: headerMap.has("whitetime")
+        ? parseInt(headerMap.get("whitetime")!)
+        : undefined,
+      blackTime: headerMap.has("blacktime")
+        ? parseInt(headerMap.get("blacktime")!)
+        : undefined,
+      nCard: headerMap.has("ncard")
+        ? parseInt(headerMap.get("ncard")!)
+        : undefined,
     };
 
     return { isValid: true, headers, errors: [] };
@@ -186,15 +226,16 @@ export class PSNParser {
     const warnings: string[] = [];
 
     // Find setup line (starts with "0.")
-    const setupLine = lines.find(line => line.startsWith('0.'));
+    const setupLine = lines.find((line) => line.startsWith("0."));
 
     if (!setupLine) {
-      warnings.push('No setup line found - assuming default setup');
+      warnings.push("No setup line found - assuming default setup");
       return { isValid: true, errors: [], warnings };
     }
 
     // Parse setup format: 0.SETUP_CARD:position/white_cards:White/black_cards:Black
-    const setupRegex = /^0\.([PFC](?:[1-9]|1[0-3]|[JQK])):([a-f][1-6])\/(.+):White\/(.+):Black$/;
+    const setupRegex =
+      /^0\.([PFC](?:[1-9]|1[0-3]|[JQK])):([a-f][1-6])\/(.+):White\/(.+):Black$/;
     const match = setupLine.match(setupRegex);
 
     if (!match) {
@@ -214,7 +255,9 @@ export class PSNParser {
     }
 
     // For now, return success with warnings about incomplete implementation
-    warnings.push('Setup parsing is partially implemented - full validation pending');
+    warnings.push(
+      "Setup parsing is partially implemented - full validation pending",
+    );
 
     return { isValid: errors.length === 0, errors, warnings };
   }
@@ -222,7 +265,10 @@ export class PSNParser {
   /**
    * Parses move lines into Move objects
    */
-  private parseMoves(lines: string[], options: PSNParseOptions): {
+  private parseMoves(
+    lines: string[],
+    options: PSNParseOptions,
+  ): {
     isValid: boolean;
     moves?: Move[];
     errors: string[];
@@ -233,17 +279,25 @@ export class PSNParser {
     const moves: Move[] = [];
 
     // Skip header and setup lines
-    const moveLines = lines.filter(line => !line.startsWith('[') && !line.startsWith('0.'));
+    const moveLines = lines.filter(
+      (line) => !line.startsWith("[") && !line.startsWith("0."),
+    );
 
     // Filter out result lines
     const resultPattern = /^(1-0|0-1|1\/2-1\/2|\*)$/;
-    const actualMoveLines = moveLines.filter(line => !resultPattern.test(line.trim()));
+    const actualMoveLines = moveLines.filter(
+      (line) => !resultPattern.test(line.trim()),
+    );
 
     for (let lineIndex = 0; lineIndex < actualMoveLines.length; lineIndex++) {
       const line = actualMoveLines[lineIndex];
 
       try {
-        const lineMoves = this.parseMoveLineToMoves(line, lineIndex + 1, options);
+        const lineMoves = this.parseMoveLineToMoves(
+          line,
+          lineIndex + 1,
+          options,
+        );
         moves.push(...lineMoves.moves);
         errors.push(...lineMoves.errors);
         warnings.push(...lineMoves.warnings);
@@ -253,7 +307,9 @@ export class PSNParser {
           break;
         }
       } catch (error) {
-        errors.push(`Error parsing line ${lineIndex + 1}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        errors.push(
+          `Error parsing line ${lineIndex + 1}: ${error instanceof Error ? error.message : "Unknown error"}`,
+        );
       }
     }
 
@@ -261,14 +317,18 @@ export class PSNParser {
       isValid: errors.length === 0,
       moves,
       errors,
-      warnings
+      warnings,
     };
   }
 
   /**
    * Parses a single line of moves (e.g., "1.C4:d3 F1:f6*")
    */
-  private parseMoveLineToMoves(line: string, lineNumber: number, options: PSNParseOptions): {
+  private parseMoveLineToMoves(
+    line: string,
+    lineNumber: number,
+    options: PSNParseOptions,
+  ): {
     moves: Move[];
     errors: string[];
     warnings: string[];
@@ -278,7 +338,7 @@ export class PSNParser {
     const moves: Move[] = [];
 
     // Split line into individual moves
-    const tokens = line.split(/\s+/).filter(token => token.length > 0);
+    const tokens = line.split(/\s+/).filter((token) => token.length > 0);
 
     for (const token of tokens) {
       try {
@@ -286,10 +346,14 @@ export class PSNParser {
         if (move) {
           moves.push(move);
         } else {
-          errors.push(`Failed to parse move token at line ${lineNumber}: ${token}`);
+          errors.push(
+            `Failed to parse move token at line ${lineNumber}: ${token}`,
+          );
         }
       } catch (error) {
-        errors.push(`Error parsing move token "${token}" at line ${lineNumber}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        errors.push(
+          `Error parsing move token "${token}" at line ${lineNumber}: ${error instanceof Error ? error.message : "Unknown error"}`,
+        );
       }
     }
 
@@ -299,9 +363,14 @@ export class PSNParser {
   /**
    * Parses individual move token (e.g., "1.C4:d3*#")
    */
-  public parseMove(moveToken: string, lineNumber?: number, options?: PSNParseOptions): Move | null {
+  public parseMove(
+    moveToken: string,
+    lineNumber?: number,
+    options?: PSNParseOptions,
+  ): Move | null {
     // Parse format: TURN.CARD:POSITION[SYMBOLS][/TIME]
-    const moveRegex = /^(\d+)\.([PFC](?:[1-9]|1[0-3]|[JQK])):([a-f][1-6])([*#@+]*)(\/(\d+))?$/;
+    const moveRegex =
+      /^(\d+)\.([PFC](?:[1-9]|1[0-3]|[JQK])):([a-f][1-6])([*#@+]*)(\/(\d+))?$/;
     const match = moveToken.match(moveRegex);
 
     if (!match) {
@@ -319,7 +388,7 @@ export class PSNParser {
     }
 
     // Determine player based on turn (odd = white, even = black)
-    const player: PlayerId = turn % 2 === 1 ? 'white' : 'black';
+    const player: PlayerId = turn % 2 === 1 ? "white" : "black";
 
     // Parse special symbols
     const specialProps = this.parseSpecialSymbols(symbols);
@@ -334,7 +403,7 @@ export class PSNParser {
       isVertexControl: specialProps.hasVertexControl,
       isLoopTrigger: specialProps.createsLoop || false,
       notation: moveToken,
-      thinkTimeMs: 0
+      thinkTimeMs: 0,
     };
   }
 
@@ -346,22 +415,30 @@ export class PSNParser {
       return null;
     }
 
-    const suit = cardStr[0] as 'P' | 'F' | 'C';
+    const suit = cardStr[0] as "P" | "F" | "C";
     const valueStr = cardStr.substring(1);
 
     let value: number;
     switch (valueStr) {
-      case 'J': value = 11; break;
-      case 'Q': value = 12; break;
-      case 'K': value = 13; break;
-      default: value = parseInt(valueStr); break;
+      case "J":
+        value = 11;
+        break;
+      case "Q":
+        value = 12;
+        break;
+      case "K":
+        value = 13;
+        break;
+      default:
+        value = parseInt(valueStr);
+        break;
     }
 
     return {
       id: `${suit}${value}`,
       suit,
       value: value.toString() as any,
-      displayName: `${suit}${value}`
+      displayName: `${suit}${value}`,
     };
   }
 
@@ -375,10 +452,10 @@ export class PSNParser {
     isCheck: boolean;
   } {
     return {
-      isCapture: symbols.includes('*'),
-      hasVertexControl: symbols.includes('#'),
-      createsLoop: symbols.includes('@'),
-      isCheck: symbols.includes('+')
+      isCapture: symbols.includes("*"),
+      hasVertexControl: symbols.includes("#"),
+      createsLoop: symbols.includes("@"),
+      isCheck: symbols.includes("+"),
     };
   }
 
@@ -411,7 +488,7 @@ export class PSNParser {
    * Parses result string
    */
   private parseResult(resultStr: string): GameResult {
-    if (['1-0', '0-1', '1/2-1/2', '*'].includes(resultStr)) {
+    if (["1-0", "0-1", "1/2-1/2", "*"].includes(resultStr)) {
       return resultStr as GameResult;
     }
     throw new Error(`Invalid result: ${resultStr}`);
@@ -426,31 +503,35 @@ export class PSNParser {
 
   private getDefaultHeaders(): GameHeaders {
     return {
-      event: 'Casual Game',
-      site: 'Unknown',
-      date: new Date().toISOString().split('T')[0].replace(/-/g, '.'),
-      round: '1',
-      white: 'White',
-      black: 'Black',
-      result: '*'
+      event: "Casual Game",
+      site: "Unknown",
+      date: new Date().toISOString().split("T")[0].replace(/-/g, "."),
+      round: "1",
+      white: "White",
+      black: "Black",
+      result: "*",
     };
   }
 
   private determineCurrentPlayer(moves: Move[]): PlayerId {
-    if (moves.length === 0) return 'white';
+    if (moves.length === 0) return "white";
     const lastMove = moves[moves.length - 1];
-    return lastMove.player === 'white' ? 'black' : 'white';
+    return lastMove.player === "white" ? "black" : "white";
   }
 
   private calculateCurrentTurn(moves: Move[]): number {
     if (moves.length === 0) return 1;
     const lastMove = moves[moves.length - 1];
-    return lastMove.player === 'white' ? lastMove.turnNumber : lastMove.turnNumber + 1;
+    return lastMove.player === "white"
+      ? lastMove.turnNumber
+      : lastMove.turnNumber + 1;
   }
 
-  private determineGameStatus(result?: GameResult): 'waiting' | 'active' | 'completed' {
-    if (!result || result === '*') return 'active';
-    return 'completed';
+  private determineGameStatus(
+    result?: GameResult,
+  ): "waiting" | "active" | "completed" {
+    if (!result || result === "*") return "active";
+    return "completed";
   }
 
   private constructBoard(moves: Move[]): any {
@@ -466,8 +547,8 @@ export class PSNParser {
         positions.set(move.toPosition, {
           cell: move.toPosition,
           card: move.card,
-          isVertex: ['a1', 'f1', 'a6', 'f6'].includes(move.toPosition),
-          quadrant: 1 // Simplified quadrant assignment
+          isVertex: ["a1", "f1", "a6", "f6"].includes(move.toPosition),
+          quadrant: 1, // Simplified quadrant assignment
         });
       }
     }
@@ -478,19 +559,29 @@ export class PSNParser {
   /**
    * Parses PSN from file content
    */
-  public parseFromFile(fileContent: string, options: Partial<PSNParseOptions> = {}): PSNParseResult {
+  public parseFromFile(
+    fileContent: string,
+    options: Partial<PSNParseOptions> = {},
+  ): PSNParseResult {
     return this.parseGame(fileContent, options);
   }
 
   /**
    * Validates PSN format without full parsing
    */
-  public validatePSNFormat(psnString: string): { isValid: boolean; errors: string[]; warnings: string[] } {
-    const result = this.parseGame(psnString, { strict: false, validateMoves: false });
+  public validatePSNFormat(psnString: string): {
+    isValid: boolean;
+    errors: string[];
+    warnings: string[];
+  } {
+    const result = this.parseGame(psnString, {
+      strict: false,
+      validateMoves: false,
+    });
     return {
       isValid: result.isValid,
       errors: result.errors,
-      warnings: result.warnings
+      warnings: result.warnings,
     };
   }
 
@@ -498,7 +589,10 @@ export class PSNParser {
    * Extracts just the moves from PSN without full parsing
    */
   public extractMoves(psnString: string): Move[] {
-    const result = this.parseGame(psnString, { strict: false, validateMoves: false });
+    const result = this.parseGame(psnString, {
+      strict: false,
+      validateMoves: false,
+    });
     return result.game?.moves || [];
   }
 

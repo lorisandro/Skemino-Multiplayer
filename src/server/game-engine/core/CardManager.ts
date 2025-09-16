@@ -1,5 +1,5 @@
-import { Card, CardSuit, CardValue } from '../../../shared/types/GameTypes';
-import { v4 as uuidv4 } from 'uuid';
+import { Card, CardSuit, CardValue } from "../../../shared/types/GameTypes";
+import { v4 as uuidv4 } from "uuid";
 
 export class CardManager {
   private allCards: Card[];
@@ -12,29 +12,43 @@ export class CardManager {
 
   private createFullDeck(): Card[] {
     const cards: Card[] = [];
-    const suits: CardSuit[] = ['P', 'F', 'C']; // Pietra, Forbici, Carta
-    const values: CardValue[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+    const suits: CardSuit[] = ["P", "F", "C"]; // Pietra, Forbici, Carta
+    const values: CardValue[] = [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "J",
+      "Q",
+      "K",
+    ];
 
     const suitNames = {
-      'P': 'Pietra',
-      'F': 'Forbici',
-      'C': 'Carta'
+      P: "Pietra",
+      F: "Forbici",
+      C: "Carta",
     };
 
     const valueNames = {
-      '1': 'Asso',
-      '2': 'Due',
-      '3': 'Tre',
-      '4': 'Quattro',
-      '5': 'Cinque',
-      '6': 'Sei',
-      '7': 'Sette',
-      '8': 'Otto',
-      '9': 'Nove',
-      '10': 'Dieci',
-      'J': 'Jack',
-      'Q': 'Regina',
-      'K': 'Re'
+      "1": "Asso",
+      "2": "Due",
+      "3": "Tre",
+      "4": "Quattro",
+      "5": "Cinque",
+      "6": "Sei",
+      "7": "Sette",
+      "8": "Otto",
+      "9": "Nove",
+      "10": "Dieci",
+      J: "Jack",
+      Q: "Regina",
+      K: "Re",
     };
 
     for (const suit of suits) {
@@ -43,7 +57,7 @@ export class CardManager {
           id: `${suit}${value}`,
           suit,
           value,
-          displayName: `${valueNames[value]} di ${suitNames[suit]}`
+          displayName: `${valueNames[value]} di ${suitNames[suit]}`,
         });
       }
     }
@@ -66,7 +80,9 @@ export class CardManager {
 
   public drawCards(count: number): Card[] {
     if (count > this.deck.length) {
-      throw new Error(`Cannot draw ${count} cards, only ${this.deck.length} remaining`);
+      throw new Error(
+        `Cannot draw ${count} cards, only ${this.deck.length} remaining`,
+      );
     }
 
     const drawnCards: Card[] = [];
@@ -88,7 +104,7 @@ export class CardManager {
   }
 
   public getCard(suit: CardSuit, value: CardValue): Card | undefined {
-    return this.allCards.find(c => c.suit === suit && c.value === value);
+    return this.allCards.find((c) => c.suit === suit && c.value === value);
   }
 
   public getRemainingCards(): number {
@@ -100,19 +116,22 @@ export class CardManager {
   }
 
   // Compare two cards according to Skèmino rules
-  public compareCards(attacker: Card, defender: Card): 'win' | 'lose' | 'equal' {
+  public compareCards(
+    attacker: Card,
+    defender: Card,
+  ): "win" | "lose" | "equal" {
     // Different suits - apply Morra Cinese rules
     if (attacker.suit !== defender.suit) {
       const winConditions: Record<CardSuit, CardSuit> = {
-        'P': 'F', // Pietra beats Forbici
-        'F': 'C', // Forbici beats Carta
-        'C': 'P'  // Carta beats Pietra
+        P: "F", // Pietra beats Forbici
+        F: "C", // Forbici beats Carta
+        C: "P", // Carta beats Pietra
       };
 
       if (winConditions[attacker.suit] === defender.suit) {
-        return 'win';
+        return "win";
       } else {
-        return 'lose';
+        return "lose";
       }
     }
 
@@ -121,26 +140,37 @@ export class CardManager {
     const defenderValue = this.getNumericValue(defender.value);
 
     // Special case: Ace beats King
-    if (attacker.value === '1' && defender.value === 'K') {
-      return 'win';
+    if (attacker.value === "1" && defender.value === "K") {
+      return "win";
     }
-    if (attacker.value === 'K' && defender.value === '1') {
-      return 'lose';
+    if (attacker.value === "K" && defender.value === "1") {
+      return "lose";
     }
 
     if (attackerValue > defenderValue) {
-      return 'win';
+      return "win";
     } else if (attackerValue < defenderValue) {
-      return 'lose';
+      return "lose";
     } else {
-      return 'equal';
+      return "equal";
     }
   }
 
   private getNumericValue(value: CardValue): number {
     const values: Record<CardValue, number> = {
-      '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7,
-      '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13
+      "1": 1,
+      "2": 2,
+      "3": 3,
+      "4": 4,
+      "5": 5,
+      "6": 6,
+      "7": 7,
+      "8": 8,
+      "9": 9,
+      "10": 10,
+      J: 11,
+      Q: 12,
+      K: 13,
     };
     return values[value];
   }
@@ -149,7 +179,7 @@ export class CardManager {
   public isSymbolicLoop(cards: Card[]): boolean {
     if (cards.length < 3) return false;
 
-    const suits = new Set(cards.map(c => c.suit));
+    const suits = new Set(cards.map((c) => c.suit));
     return suits.size >= 3; // At least 3 different symbols
   }
 
@@ -157,14 +187,14 @@ export class CardManager {
   public isNumericLoop(cards: Card[]): boolean {
     if (cards.length < 3) return false;
 
-    const hasAce = cards.some(c => c.value === '1');
-    const hasKing = cards.some(c => c.value === 'K');
+    const hasAce = cards.some((c) => c.value === "1");
+    const hasKing = cards.some((c) => c.value === "K");
 
     if (!hasAce || !hasKing) return false;
 
     // Check if Ace and King are same suit
-    const aceCard = cards.find(c => c.value === '1');
-    const kingCard = cards.find(c => c.value === 'K');
+    const aceCard = cards.find((c) => c.value === "1");
+    const kingCard = cards.find((c) => c.value === "K");
 
     if (!aceCard || !kingCard) return false;
 

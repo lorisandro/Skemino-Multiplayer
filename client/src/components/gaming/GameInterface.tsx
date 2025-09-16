@@ -92,6 +92,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
                 timeRemaining={gameState?.blackTime || 1800}
                 showCards={true}
                 orientation="vertical"
+                gameStarted={gameState?.status === 'active'}
               />
             </div>
 
@@ -107,6 +108,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
                 onCardSelect={handleCardSelect}
                 showCards={true}
                 orientation="vertical"
+                gameStarted={gameState?.status === 'active'}
               />
             </div>
           </div>
@@ -159,6 +161,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
                 timeRemaining={gameState?.blackTime || 1800}
                 showCards={true}
                 orientation="vertical"
+                gameStarted={gameState?.status === 'active'}
               />
             </div>
 
@@ -174,6 +177,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
                 onCardSelect={handleCardSelect}
                 showCards={true}
                 orientation="vertical"
+                gameStarted={gameState?.status === 'active'}
               />
             </div>
           </div>
@@ -225,6 +229,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
               showCards={false}
               orientation="horizontal"
               compact={true}
+              gameStarted={gameState?.status === 'active'}
             />
           </div>
 
@@ -246,6 +251,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
               showCards={true}
               orientation="horizontal"
               compact={true}
+              gameStarted={gameState?.status === 'active'}
             />
           </div>
         </div>
@@ -293,6 +299,7 @@ export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) 
             orientation="horizontal"
             compact={true}
             mobile={true}
+            gameStarted={gameState?.status === 'active'}
           />
         </div>
       </div>

@@ -9,9 +9,9 @@
  * - Archive management tools
  */
 
-export { PSNGenerator } from './PSNGenerator';
-export { PSNParser, PSNParseOptions } from './PSNParser';
-export { PSNUtils, PSNArchiveStats, PSNValidationReport } from './PSNUtils';
+export { PSNGenerator } from "./PSNGenerator";
+export { PSNParser, PSNParseOptions } from "./PSNParser";
+export { PSNUtils, PSNArchiveStats, PSNValidationReport } from "./PSNUtils";
 
 // Re-export types for convenience
 export {
@@ -24,16 +24,16 @@ export {
   PlayerId,
   BoardPosition,
   CardSuit,
-  CardValue
-} from '../../../shared/types/game';
+  CardValue,
+} from "../../../shared/types/game";
 
 /**
  * Quick PSN operations - convenience functions
  */
-import { PSNGenerator } from './PSNGenerator';
-import { PSNParser } from './PSNParser';
-import { PSNUtils } from './PSNUtils';
-import { GameState, PSNParseResult } from '../../../shared/types/game';
+import { PSNGenerator } from "./PSNGenerator";
+import { PSNParser } from "./PSNParser";
+import { PSNUtils } from "./PSNUtils";
+import { GameState, PSNParseResult } from "../../../shared/types/game";
 
 // Singleton instances for quick operations
 const generator = new PSNGenerator();
@@ -57,7 +57,10 @@ export function parsePSN(psnString: string): PSNParseResult {
 /**
  * Quick validation of PSN format
  */
-export function validatePSN(psnString: string): { isValid: boolean; errors: string[] } {
+export function validatePSN(psnString: string): {
+  isValid: boolean;
+  errors: string[];
+} {
   const result = parser.validatePSNFormat(psnString);
   return { isValid: result.isValid, errors: result.errors };
 }
@@ -79,15 +82,18 @@ export function parseMove(moveNotation: string): any {
 /**
  * Quick PSN repair for common issues
  */
-export function repairPSN(psnString: string): { repaired: string; changes: string[] } {
+export function repairPSN(psnString: string): {
+  repaired: string;
+  changes: string[];
+} {
   return utils.repairPSNString(psnString);
 }
 
 /**
  * PSN System Information
  */
-export const PSN_VERSION = '1.0.0';
-export const PSN_FORMAT_NAME = 'Portable Skèmino Notation';
+export const PSN_VERSION = "1.0.0";
+export const PSN_FORMAT_NAME = "Portable Skèmino Notation";
 
 /**
  * Supported PSN features
@@ -109,14 +115,14 @@ export const PSN_FEATURES = {
  * PSN special symbols
  */
 export const PSN_SYMBOLS = {
-  CAPTURE: '*',
-  VERTEX_CONTROL: '#',
-  LOOP: '@',
-  CHECK: '+',
-  SETUP_DELIMITER: ':',
-  TIME_DELIMITER: '/',
-  MOVE_SEPARATOR: ' ',
-  TURN_DELIMITER: '.',
+  CAPTURE: "*",
+  VERTEX_CONTROL: "#",
+  LOOP: "@",
+  CHECK: "+",
+  SETUP_DELIMITER: ":",
+  TIME_DELIMITER: "/",
+  MOVE_SEPARATOR: " ",
+  TURN_DELIMITER: ".",
 } as const;
 
 /**

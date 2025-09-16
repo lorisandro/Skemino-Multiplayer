@@ -18,6 +18,7 @@ interface PlayerAreaProps {
   compact?: boolean;
   mobile?: boolean;
   className?: string;
+  gameStarted?: boolean;
 }
 
 /**
@@ -37,6 +38,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
   compact = false,
   mobile = false,
   className = '',
+  gameStarted = false,
 }) => {
   // Calculate hand size for display (always show 10 cards - 2 rows of 5)
   const displayHand = showCards ? hand : Array(10).fill(null);
@@ -77,6 +79,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
                 isCurrentTurn={isCurrentTurn}
                 compact={true}
                 mobile={true}
+                gameStarted={gameStarted}
               />
               <Timer
                 timeRemaining={timeRemaining}
@@ -121,6 +124,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
               isOpponent={isOpponent}
               isCurrentTurn={isCurrentTurn}
               compact={true}
+              gameStarted={gameStarted}
             />
             <Timer
               timeRemaining={timeRemaining}
@@ -162,6 +166,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
               player={player}
               isOpponent={isOpponent}
               isCurrentTurn={isCurrentTurn}
+              gameStarted={gameStarted}
             />
             <Timer
               timeRemaining={timeRemaining}
@@ -214,6 +219,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
             player={player}
             isOpponent={isOpponent}
             isCurrentTurn={isCurrentTurn}
+            gameStarted={gameStarted}
           />
           <Timer
             timeRemaining={timeRemaining}

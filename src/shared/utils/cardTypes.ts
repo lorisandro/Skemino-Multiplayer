@@ -5,7 +5,7 @@
  * card representation between client and server.
  */
 
-export type CardSuit = 'P' | 'F' | 'C';
+export type CardSuit = "P" | "F" | "C";
 export type CardValue = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13;
 export type CardCode = `${CardSuit}${CardValue}`;
 
@@ -49,22 +49,22 @@ export interface SuitRelationship {
 export const CARD_CONSTANTS = {
   TOTAL_CARDS: 39,
   CARDS_PER_SUIT: 13,
-  SUITS: ['P', 'F', 'C'] as const,
+  SUITS: ["P", "F", "C"] as const,
   VALUES: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] as const,
 
   // Suit information
   SUIT_INFO: {
-    P: { code: 'P' as const, name: 'Pietra', symbol: '🪨', color: '#8B4513' },
-    F: { code: 'F' as const, name: 'Forbici', symbol: '✂️', color: '#C0C0C0' },
-    C: { code: 'C' as const, name: 'Carta', symbol: '📄', color: '#FFFFFF' }
+    P: { code: "P" as const, name: "Pietra", symbol: "🪨", color: "#8B4513" },
+    F: { code: "F" as const, name: "Forbici", symbol: "✂️", color: "#C0C0C0" },
+    C: { code: "C" as const, name: "Carta", symbol: "📄", color: "#FFFFFF" },
   } as Record<CardSuit, CardSuitInfo>,
 
   // Rock-Paper-Scissors relationships (Morra Cinese)
   SUIT_RELATIONSHIPS: {
-    P: { beats: 'F', beatenBy: 'C' }, // Pietra beats Forbici, beaten by Carta
-    F: { beats: 'C', beatenBy: 'P' }, // Forbici beats Carta, beaten by Pietra
-    C: { beats: 'P', beatenBy: 'F' }  // Carta beats Pietra, beaten by Forbici
-  } as Record<CardSuit, SuitRelationship>
+    P: { beats: "F", beatenBy: "C" }, // Pietra beats Forbici, beaten by Carta
+    F: { beats: "C", beatenBy: "P" }, // Forbici beats Carta, beaten by Pietra
+    C: { beats: "P", beatenBy: "F" }, // Carta beats Pietra, beaten by Forbici
+  } as Record<CardSuit, SuitRelationship>,
 } as const;
 
 /**
@@ -74,7 +74,7 @@ export const SPECIAL_VALUES = {
   ACE: 1,
   JACK: 11,
   QUEEN: 12,
-  KING: 13
+  KING: 13,
 } as const;
 
 /**
@@ -86,11 +86,16 @@ export const CardUtils = {
    */
   getDisplayValue(value: CardValue): string {
     switch (value) {
-      case 1: return 'A';
-      case 11: return 'J';
-      case 12: return 'Q';
-      case 13: return 'K';
-      default: return value.toString();
+      case 1:
+        return "A";
+      case 11:
+        return "J";
+      case 12:
+        return "Q";
+      case 13:
+        return "K";
+      default:
+        return value.toString();
     }
   },
 
@@ -99,9 +104,19 @@ export const CardUtils = {
    */
   getValueName(value: CardValue): string {
     const names: Record<CardValue, string> = {
-      1: 'Ace', 2: 'Two', 3: 'Three', 4: 'Four', 5: 'Five',
-      6: 'Six', 7: 'Seven', 8: 'Eight', 9: 'Nine', 10: 'Ten',
-      11: 'Jack', 12: 'Queen', 13: 'King'
+      1: "Ace",
+      2: "Two",
+      3: "Three",
+      4: "Four",
+      5: "Five",
+      6: "Six",
+      7: "Seven",
+      8: "Eight",
+      9: "Nine",
+      10: "Ten",
+      11: "Jack",
+      12: "Queen",
+      13: "King",
     };
     return names[value];
   },
@@ -132,31 +147,34 @@ export const CardUtils = {
   /**
    * Compare two cards by suit relationship and value
    */
-  compareCards(card1: CardCode, card2: CardCode): {
+  compareCards(
+    card1: CardCode,
+    card2: CardCode,
+  ): {
     winner: CardCode | null;
-    reason: 'suit' | 'value' | 'tie';
+    reason: "suit" | "value" | "tie";
   } {
     const { suit: suit1, value: value1 } = CardUtils.parseCode(card1);
     const { suit: suit2, value: value2 } = CardUtils.parseCode(card2);
 
     // First check suit relationship (Morra Cinese)
     if (CardUtils.suitBeats(suit1, suit2)) {
-      return { winner: card1, reason: 'suit' };
+      return { winner: card1, reason: "suit" };
     }
     if (CardUtils.suitBeats(suit2, suit1)) {
-      return { winner: card2, reason: 'suit' };
+      return { winner: card2, reason: "suit" };
     }
 
     // Same suit, compare by value
     if (value1 > value2) {
-      return { winner: card1, reason: 'value' };
+      return { winner: card1, reason: "value" };
     }
     if (value2 > value1) {
-      return { winner: card2, reason: 'value' };
+      return { winner: card2, reason: "value" };
     }
 
     // Exact same card (shouldn't happen in normal game)
-    return { winner: null, reason: 'tie' };
+    return { winner: null, reason: "tie" };
   },
 
   /**
@@ -176,5 +194,5 @@ export const CardUtils = {
       value <= 13 &&
       valueStr === value.toString()
     );
-  }
+  },
 } as const;

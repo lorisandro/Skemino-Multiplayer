@@ -15,8 +15,8 @@ import {
   GameState,
   Move,
   GameHeaders,
-  PSNParseResult
-} from './index';
+  PSNParseResult,
+} from "./index";
 
 /**
  * Example: Game Engine with PSN Recording
@@ -37,12 +37,16 @@ export class SkeminoGameWithPSN {
   /**
    * Make a move and update PSN notation
    */
-  public makeMove(card: any, position: string, specialEffects?: {
-    isCapture?: boolean;
-    hasVertexControl?: boolean;
-    createsLoop?: boolean;
-    isCheck?: boolean;
-  }): { success: boolean; psnMove?: string; error?: string } {
+  public makeMove(
+    card: any,
+    position: string,
+    specialEffects?: {
+      isCapture?: boolean;
+      hasVertexControl?: boolean;
+      createsLoop?: boolean;
+      isCheck?: boolean;
+    },
+  ): { success: boolean; psnMove?: string; error?: string } {
     try {
       // Create move object
       const move: Move = {
@@ -54,7 +58,7 @@ export class SkeminoGameWithPSN {
         isCapture: specialEffects?.isCapture || false,
         hasVertexControl: specialEffects?.hasVertexControl || false,
         createsLoop: specialEffects?.createsLoop || false,
-        isCheck: specialEffects?.isCheck || false
+        isCheck: specialEffects?.isCheck || false,
       };
 
       // Validate move notation
@@ -62,7 +66,7 @@ export class SkeminoGameWithPSN {
       const validation = this.generator.validateMoveNotation(notation);
 
       if (!validation.isValid) {
-        return { success: false, error: validation.errors.join(', ') };
+        return { success: false, error: validation.errors.join(", ") };
       }
 
       // Add move to game state
@@ -70,11 +74,10 @@ export class SkeminoGameWithPSN {
       this.updateGameState();
 
       return { success: true, psnMove: notation };
-
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   }
@@ -101,7 +104,7 @@ export class SkeminoGameWithPSN {
       await this.utils.saveGameToPSN(this.gameState, filePath);
       return true;
     } catch (error) {
-      console.error('Export failed:', error);
+      console.error("Export failed:", error);
       return false;
     }
   }
@@ -109,7 +112,9 @@ export class SkeminoGameWithPSN {
   /**
    * Load game from PSN file
    */
-  public static async loadGame(filePath: string): Promise<SkeminoGameWithPSN | null> {
+  public static async loadGame(
+    filePath: string,
+  ): Promise<SkeminoGameWithPSN | null> {
     const utils = new PSNUtils();
     const result = await utils.loadGameFromPSN(filePath);
 
@@ -117,14 +122,15 @@ export class SkeminoGameWithPSN {
       return new SkeminoGameWithPSN(result.game);
     }
 
-    console.error('Failed to load game:', result.errors);
+    console.error("Failed to load game:", result.errors);
     return null;
   }
 
   private updateGameState(): void {
     // Update current player and turn
-    this.gameState.currentPlayer = this.gameState.currentPlayer === 'white' ? 'black' : 'white';
-    if (this.gameState.currentPlayer === 'white') {
+    this.gameState.currentPlayer =
+      this.gameState.currentPlayer === "white" ? "black" : "white";
+    if (this.gameState.currentPlayer === "white") {
       this.gameState.turn++;
     }
   }
@@ -157,7 +163,7 @@ export class LiveGamePSNStreamer {
     const notation = this.generator.generateMoveNotation(move);
 
     // Notify all observers
-    this.observers.forEach(callback => callback(notation));
+    this.observers.forEach((callback) => callback(notation));
   }
 
   /**
@@ -165,15 +171,15 @@ export class LiveGamePSNStreamer {
    */
   public getCurrentGamePSN(headers: GameHeaders): string {
     const gameState: GameState = {
-      id: 'live-game',
+      id: "live-game",
       headers,
       moves: this.moveHistory,
-      currentPlayer: this.moveHistory.length % 2 === 0 ? 'white' : 'black',
+      currentPlayer: this.moveHistory.length % 2 === 0 ? "white" : "black",
       turn: Math.floor(this.moveHistory.length / 2) + 1,
-      status: 'playing',
+      status: "playing",
       board: new Map(),
       whiteCards: [],
-      blackCards: []
+      blackCards: [],
     };
 
     return this.generator.generateGamePSN(gameState);
@@ -207,7 +213,7 @@ export class PSNArchiveManager {
     return {
       stats,
       validationReport,
-      totalGames: stats.totalGames
+      totalGames: stats.totalGames,
     };
   }
 
@@ -216,16 +222,18 @@ export class PSNArchiveManager {
    */
   public async findGamesByPlayer(
     directoryPath: string,
-    playerName: string
+    playerName: string,
   ): Promise<PSNParseResult[]> {
     const games = await this.utils.loadGamesFromDirectory(directoryPath);
 
     return games
-      .map(g => g.result)
-      .filter(result =>
-        result.isValid &&
-        result.game &&
-        (result.game.headers.white === playerName || result.game.headers.black === playerName)
+      .map((g) => g.result)
+      .filter(
+        (result) =>
+          result.isValid &&
+          result.game &&
+          (result.game.headers.white === playerName ||
+            result.game.headers.black === playerName),
       );
   }
 
@@ -237,8 +245,8 @@ export class PSNArchiveManager {
     repaired: number;
     errors: string[];
   }> {
-    const files = await require('fs').promises.readdir(directoryPath);
-    const psnFiles = files.filter((file: string) => file.endsWith('.psn'));
+    const files = await require("fs").promises.readdir(directoryPath);
+    const psnFiles = files.filter((file: string) => file.endsWith(".psn"));
 
     let processed = 0;
     let repaired = 0;
@@ -246,19 +254,28 @@ export class PSNArchiveManager {
 
     for (const fileName of psnFiles) {
       try {
-        const filePath = require('path').join(directoryPath, fileName);
-        const content = await require('fs').promises.readFile(filePath, 'utf-8');
+        const filePath = require("path").join(directoryPath, fileName);
+        const content = await require("fs").promises.readFile(
+          filePath,
+          "utf-8",
+        );
 
         const repair = this.utils.repairPSNString(content);
 
         if (repair.changes.length > 0) {
-          await require('fs').promises.writeFile(filePath, repair.repaired, 'utf-8');
+          await require("fs").promises.writeFile(
+            filePath,
+            repair.repaired,
+            "utf-8",
+          );
           repaired++;
         }
 
         processed++;
       } catch (error) {
-        errors.push(`${fileName}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        errors.push(
+          `${fileName}: ${error instanceof Error ? error.message : "Unknown error"}`,
+        );
       }
     }
 
@@ -281,12 +298,15 @@ export class PSNGameAnalyzer {
   /**
    * Analyze opening moves from PSN collection
    */
-  public analyzeOpenings(games: GameState[]): Map<string, {
-    count: number;
-    whiteWins: number;
-    blackWins: number;
-    draws: number;
-  }> {
+  public analyzeOpenings(games: GameState[]): Map<
+    string,
+    {
+      count: number;
+      whiteWins: number;
+      blackWins: number;
+      draws: number;
+    }
+  > {
     const openingStats = new Map();
 
     for (const game of games) {
@@ -295,15 +315,15 @@ export class PSNGameAnalyzer {
       // Get first 6 moves (3 for each player)
       const opening = game.moves
         .slice(0, 6)
-        .map(move => this.generator.generateMoveNotation(move))
-        .join(' ');
+        .map((move) => this.generator.generateMoveNotation(move))
+        .join(" ");
 
       if (!openingStats.has(opening)) {
         openingStats.set(opening, {
           count: 0,
           whiteWins: 0,
           blackWins: 0,
-          draws: 0
+          draws: 0,
         });
       }
 
@@ -311,9 +331,15 @@ export class PSNGameAnalyzer {
       stats.count++;
 
       switch (game.headers.result) {
-        case '1-0': stats.whiteWins++; break;
-        case '0-1': stats.blackWins++; break;
-        case '1/2-1/2': stats.draws++; break;
+        case "1-0":
+          stats.whiteWins++;
+          break;
+        case "0-1":
+          stats.blackWins++;
+          break;
+        case "1/2-1/2":
+          stats.draws++;
+          break;
       }
     }
 
@@ -335,7 +361,7 @@ export class PSNGameAnalyzer {
       vertexControls: 0,
       loops: 0,
       checks: 0,
-      combinations: 0
+      combinations: 0,
     };
 
     for (const game of games) {
@@ -350,7 +376,7 @@ export class PSNGameAnalyzer {
           move.isCapture,
           move.hasVertexControl,
           move.createsLoop,
-          move.isCheck
+          move.isCheck,
         ].filter(Boolean).length;
 
         if (effectCount > 1) patterns.combinations++;
@@ -365,75 +391,68 @@ export class PSNGameAnalyzer {
  * Example usage and integration tests
  */
 export async function exampleUsage(): Promise<void> {
-  console.log('=== PSN System Integration Examples ===');
+  console.log("=== PSN System Integration Examples ===");
 
   // Example 1: Create a game with PSN recording
   const headers: GameHeaders = {
-    event: 'Example Tournament',
-    site: 'Example City, Example Region EXA',
-    date: '2025.09.14',
-    round: '1',
-    white: 'Alice',
-    black: 'Bob',
-    result: '*'
+    event: "Example Tournament",
+    site: "Example City, Example Region EXA",
+    date: "2025.09.14",
+    round: "1",
+    white: "Alice",
+    black: "Bob",
+    result: "*",
   };
 
   const initialGameState: GameState = {
-    id: 'example-game',
+    id: "example-game",
     headers,
     moves: [],
-    currentPlayer: 'white',
+    currentPlayer: "white",
     turn: 1,
-    status: 'playing',
+    status: "playing",
     board: new Map(),
     whiteCards: [],
-    blackCards: []
+    blackCards: [],
   };
 
   const game = new SkeminoGameWithPSN(initialGameState);
 
   // Make some moves
-  console.log('\n--- Making Moves ---');
+  console.log("\n--- Making Moves ---");
 
-  let result = game.makeMove(
-    { suit: 'P', value: 4 },
-    'd3'
-  );
-  console.log('Move 1:', result);
+  let result = game.makeMove({ suit: "P", value: 4 }, "d3");
+  console.log("Move 1:", result);
 
-  result = game.makeMove(
-    { suit: 'F', value: 1 },
-    'f6',
-    { isCapture: true }
-  );
-  console.log('Move 2:', result);
+  result = game.makeMove({ suit: "F", value: 1 }, "f6", { isCapture: true });
+  console.log("Move 2:", result);
 
   // Get PSN representation
-  console.log('\n--- Current PSN ---');
+  console.log("\n--- Current PSN ---");
   console.log(game.getCurrentPSN());
 
   // Example 2: Live streaming
-  console.log('\n--- Live PSN Streaming ---');
+  console.log("\n--- Live PSN Streaming ---");
   const streamer = new LiveGamePSNStreamer();
 
   streamer.onMoveNotation((notation) => {
-    console.log('Live move:', notation);
+    console.log("Live move:", notation);
   });
 
   // Simulate moves
   streamer.recordMove({
     turn: 1,
-    player: 'white',
-    card: { suit: 'C', value: 7 },
-    position: 'c2',
+    player: "white",
+    card: { suit: "C", value: 7 },
+    position: "c2",
     timestamp: new Date(),
     isCapture: false,
     hasVertexControl: true,
     createsLoop: false,
-    isCheck: false
+    isCheck: false,
   });
 
-  console.log('\nLive game PSN:');
+  console.log("\nLive game PSN:");
   console.log(streamer.getCurrentGamePSN(headers));
 }
 

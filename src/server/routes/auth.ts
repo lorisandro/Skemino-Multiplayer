@@ -1,9 +1,9 @@
-import { Router, Request, Response } from 'express';
-import * as jwt from 'jsonwebtoken';
-import * as bcrypt from 'bcrypt';
-import { v4 as uuidv4 } from 'uuid';
-import { DatabaseManager } from '../database/DatabaseManager';
-import { logger } from '../utils/logger';
+import { Router, Request, Response } from "express";
+import * as jwt from "jsonwebtoken";
+import * as bcrypt from "bcrypt";
+import { v4 as uuidv4 } from "uuid";
+import { DatabaseManager } from "../database/DatabaseManager";
+import { logger } from "../utils/logger";
 
 const router = Router();
 
@@ -21,23 +21,27 @@ const guestSessions = new Map<string, GuestUser>();
 let guestCounter = 1000; // Counter for guest usernames
 
 // Clean up expired guest sessions every hour
-setInterval(() => {
-  const now = Date.now();
-  for (const [id, guest] of guestSessions.entries()) {
-    if (guest.expiresAt < now) {
-      guestSessions.delete(id);
+setInterval(
+  () => {
+    const now = Date.now();
+    for (const [id, guest] of guestSessions.entries()) {
+      if (guest.expiresAt < now) {
+        guestSessions.delete(id);
+      }
     }
-  }
-}, 60 * 60 * 1000);
+  },
+  60 * 60 * 1000,
+);
 
 // Guest login endpoint
-router.post('/guest', async (req: Request, res: Response) => {
+router.post("/guest", async (req: Request, res: Response) => {
   try {
     const { username } = req.body;
 
     // Generate guest user
-    const guestId = 'guest_' + uuidv4();
-    const guestUsername = username || `Guest_${Math.floor(Math.random() * 10000)}`;
+    const guestId = "guest_" + uuidv4();
+    const guestUsername =
+      username || `Guest_${Math.floor(Math.random() * 10000)}`;
     const now = Date.now();
 
     const guestUser: GuestUser = {
@@ -46,7 +50,7 @@ router.post('/guest', async (req: Request, res: Response) => {
       rating: 1200, // Default guest rating
       isGuest: true,
       createdAt: now,
-      expiresAt: now + (24 * 60 * 60 * 1000), // Expires in 24 hours
+      expiresAt: now + 24 * 60 * 60 * 1000, // Expires in 24 hours
     };
 
     // Store guest session
@@ -55,10 +59,12 @@ router.post('/guest', async (req: Request, res: Response) => {
     // Generate JWT token for guest with proper error handling
     const jwtSecret = process.env.JWT_SECRET;
     if (!jwtSecret) {
-      logger.error('❌ CRITICAL: JWT_SECRET not configured for guest token generation');
+      logger.error(
+        "❌ CRITICAL: JWT_SECRET not configured for guest token generation",
+      );
       return res.status(500).json({
         success: false,
-        message: 'Server configuration error'
+        message: "Server configuration error",
       });
     }
 
@@ -67,16 +73,18 @@ router.post('/guest', async (req: Request, res: Response) => {
       username: guestUsername,
       isGuest: true,
       rating: 1200,
-      iat: Math.floor(Date.now() / 1000) // Explicit issued at time
+      iat: Math.floor(Date.now() / 1000), // Explicit issued at time
     };
 
     const token = jwt.sign(
       tokenPayload,
       jwtSecret,
-      { expiresIn: '24h', algorithm: 'HS256' } // Explicit algorithm
+      { expiresIn: "24h", algorithm: "HS256" }, // Explicit algorithm
     );
 
-    logger.info(`🔐 Guest JWT created - Preview: ${token.substring(0, 20)}... (${token.length} chars)`);
+    logger.info(
+      `🔐 Guest JWT created - Preview: ${token.substring(0, 20)}... (${token.length} chars)`,
+    );
     logger.info(`🔐 Payload: ${JSON.stringify(tokenPayload)}`);
 
     logger.info(`👤 Guest user created: ${guestUsername} (${guestId})`);
@@ -90,25 +98,26 @@ router.post('/guest', async (req: Request, res: Response) => {
         rating: 1200,
         isGuest: true,
       },
-      message: 'Guest session created successfully'
+      message: "Guest session created successfully",
     });
-
   } catch (error) {
-    logger.error('Error creating guest session:', error);
+    logger.error("Error creating guest session:", error);
     return res.status(500).json({
       success: false,
-      message: 'Failed to create guest session'
+      message: "Failed to create guest session",
     });
   }
 });
 
 // Regular user login
-router.post('/login', async (req: Request, res: Response) => {
+router.post("/login", async (req: Request, res: Response) => {
   try {
     const { email, identifier, password } = req.body;
 
     // Debug log to see what's being received
-    logger.info(`Login attempt received - Body: ${JSON.stringify({ email, identifier, password: password ? '***' : undefined })}`);
+    logger.info(
+      `Login attempt received - Body: ${JSON.stringify({ email, identifier, password: password ? "***" : undefined })}`,
+    );
 
     // Accept either 'email' or 'identifier' field for backward compatibility
     const loginIdentifier = identifier || email;
@@ -116,16 +125,17 @@ router.post('/login', async (req: Request, res: Response) => {
     if (!loginIdentifier || !password) {
       return res.status(400).json({
         success: false,
-        message: 'Email/username and password are required'
+        message: "Email/username and password are required",
       });
     }
 
     // Get user from database by email or username
-    const user = await DatabaseManager.getUserByEmailOrUsername(loginIdentifier);
+    const user =
+      await DatabaseManager.getUserByEmailOrUsername(loginIdentifier);
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid credentials'
+        message: "Invalid credentials",
       });
     }
 
@@ -134,17 +144,17 @@ router.post('/login', async (req: Request, res: Response) => {
     if (!isValidPassword) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid credentials'
+        message: "Invalid credentials",
       });
     }
 
     // Generate JWT token with proper error handling
     const jwtSecret = process.env.JWT_SECRET;
     if (!jwtSecret) {
-      logger.error('❌ CRITICAL: JWT_SECRET not configured for user login');
+      logger.error("❌ CRITICAL: JWT_SECRET not configured for user login");
       return res.status(500).json({
         success: false,
-        message: 'Server configuration error'
+        message: "Server configuration error",
       });
     }
 
@@ -154,16 +164,18 @@ router.post('/login', async (req: Request, res: Response) => {
       email: user.email,
       rating: user.rating,
       isGuest: false,
-      iat: Math.floor(Date.now() / 1000) // Explicit issued at time
+      iat: Math.floor(Date.now() / 1000), // Explicit issued at time
     };
 
     const token = jwt.sign(
       tokenPayload,
       jwtSecret,
-      { expiresIn: '7d', algorithm: 'HS256' } // Explicit algorithm
+      { expiresIn: "7d", algorithm: "HS256" }, // Explicit algorithm
     );
 
-    logger.info(`🔐 User JWT created - Preview: ${token.substring(0, 20)}... (${token.length} chars)`);
+    logger.info(
+      `🔐 User JWT created - Preview: ${token.substring(0, 20)}... (${token.length} chars)`,
+    );
     logger.info(`🔐 Payload: ${JSON.stringify(tokenPayload)}`);
 
     // Update last login
@@ -179,14 +191,14 @@ router.post('/login', async (req: Request, res: Response) => {
         username: user.username,
         email: user.email,
         displayName: user.username, // Use username as display name for now
-        countryCode: user.countryCode || 'IT', // Default to Italy if not set
+        countryCode: user.countryCode || "IT", // Default to Italy if not set
         rating: user.rating,
         level: user.level || {
-          name: 'Principiante',
-          tier: 'Principiante',
+          name: "Principiante",
+          tier: "Principiante",
           ratingRange: { min: 1000, max: 1199 },
-          color: '#10B981',
-          icon: '🌱'
+          color: "#10B981",
+          icon: "🌱",
         },
         isGuest: false,
         isEmailVerified: user.isVerified || false,
@@ -202,26 +214,25 @@ router.post('/login', async (req: Request, res: Response) => {
           currentWinStreak: 0,
           longestWinStreak: 0,
           averageGameDuration: 0,
-          favoriteTimeControl: 'standard',
+          favoriteTimeControl: "standard",
           averageAccuracy: 0,
-          totalPlayTime: 0
+          totalPlayTime: 0,
         },
-        achievements: []
+        achievements: [],
       },
-      message: 'Login successful'
+      message: "Login successful",
     });
-
   } catch (error) {
-    logger.error('Error during login:', error);
+    logger.error("Error during login:", error);
     return res.status(500).json({
       success: false,
-      message: 'Internal server error'
+      message: "Internal server error",
     });
   }
 });
 
 // User registration
-router.post('/register', async (req: Request, res: Response) => {
+router.post("/register", async (req: Request, res: Response) => {
   try {
     const { username, email, password } = req.body;
 
@@ -229,14 +240,14 @@ router.post('/register', async (req: Request, res: Response) => {
     if (!username || !email || !password) {
       return res.status(400).json({
         success: false,
-        message: 'Username, email, and password are required'
+        message: "Username, email, and password are required",
       });
     }
 
     if (password.length < 6) {
       return res.status(400).json({
         success: false,
-        message: 'Password must be at least 6 characters long'
+        message: "Password must be at least 6 characters long",
       });
     }
 
@@ -245,7 +256,7 @@ router.post('/register', async (req: Request, res: Response) => {
     if (existingUser) {
       return res.status(409).json({
         success: false,
-        message: 'User with this email already exists'
+        message: "User with this email already exists",
       });
     }
 
@@ -253,7 +264,7 @@ router.post('/register', async (req: Request, res: Response) => {
     if (existingUsername) {
       return res.status(409).json({
         success: false,
-        message: 'Username is already taken'
+        message: "Username is already taken",
       });
     }
 
@@ -272,17 +283,19 @@ router.post('/register', async (req: Request, res: Response) => {
     if (!newUser) {
       return res.status(500).json({
         success: false,
-        message: 'Failed to create user'
+        message: "Failed to create user",
       });
     }
 
     // Generate JWT token with proper error handling
     const jwtSecret = process.env.JWT_SECRET;
     if (!jwtSecret) {
-      logger.error('❌ CRITICAL: JWT_SECRET not configured for user registration');
+      logger.error(
+        "❌ CRITICAL: JWT_SECRET not configured for user registration",
+      );
       return res.status(500).json({
         success: false,
-        message: 'Server configuration error'
+        message: "Server configuration error",
       });
     }
 
@@ -292,16 +305,18 @@ router.post('/register', async (req: Request, res: Response) => {
       email: newUser.email,
       rating: newUser.rating,
       isGuest: false,
-      iat: Math.floor(Date.now() / 1000) // Explicit issued at time
+      iat: Math.floor(Date.now() / 1000), // Explicit issued at time
     };
 
     const token = jwt.sign(
       tokenPayload,
       jwtSecret,
-      { expiresIn: '7d', algorithm: 'HS256' } // Explicit algorithm
+      { expiresIn: "7d", algorithm: "HS256" }, // Explicit algorithm
     );
 
-    logger.info(`🔐 Registration JWT created - Preview: ${token.substring(0, 20)}... (${token.length} chars)`);
+    logger.info(
+      `🔐 Registration JWT created - Preview: ${token.substring(0, 20)}... (${token.length} chars)`,
+    );
     logger.info(`🔐 Payload: ${JSON.stringify(tokenPayload)}`);
 
     logger.info(`✨ New user registered: ${username} (${newUser.id})`);
@@ -314,14 +329,14 @@ router.post('/register', async (req: Request, res: Response) => {
         username: newUser.username,
         email: newUser.email,
         displayName: newUser.username, // Use username as display name for now
-        countryCode: newUser.countryCode || 'IT', // Default to Italy if not set
+        countryCode: newUser.countryCode || "IT", // Default to Italy if not set
         rating: newUser.rating,
         level: newUser.level || {
-          name: 'Principiante',
-          tier: 'Principiante',
+          name: "Principiante",
+          tier: "Principiante",
           ratingRange: { min: 1000, max: 1199 },
-          color: '#10B981',
-          icon: '🌱'
+          color: "#10B981",
+          icon: "🌱",
         },
         isGuest: false,
         isEmailVerified: newUser.isVerified || false,
@@ -337,51 +352,50 @@ router.post('/register', async (req: Request, res: Response) => {
           currentWinStreak: 0,
           longestWinStreak: 0,
           averageGameDuration: 0,
-          favoriteTimeControl: 'standard',
+          favoriteTimeControl: "standard",
           averageAccuracy: 0,
-          totalPlayTime: 0
+          totalPlayTime: 0,
         },
-        achievements: []
+        achievements: [],
       },
-      message: 'Registration successful'
+      message: "Registration successful",
     });
-
   } catch (error) {
-    logger.error('Error during registration:', error);
+    logger.error("Error during registration:", error);
     return res.status(500).json({
       success: false,
-      message: 'Internal server error'
+      message: "Internal server error",
     });
   }
 });
 
 // Logout
-router.post('/logout', (_req: Request, res: Response) => {
+router.post("/logout", (_req: Request, res: Response) => {
   try {
     // In a more sophisticated setup, we'd invalidate the JWT token
     // For now, we just return success and let the client handle token removal
     return res.json({
       success: true,
-      message: 'Logout successful'
+      message: "Logout successful",
     });
   } catch (error) {
-    logger.error('Error during logout:', error);
+    logger.error("Error during logout:", error);
     return res.status(500).json({
       success: false,
-      message: 'Internal server error'
+      message: "Internal server error",
     });
   }
 });
 
 // Get current user (from token)
-router.get('/me', async (req: Request, res: Response) => {
+router.get("/me", async (req: Request, res: Response) => {
   try {
-    const token = req.headers.authorization?.replace('Bearer ', '');
+    const token = req.headers.authorization?.replace("Bearer ", "");
 
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: 'No token provided'
+        message: "No token provided",
       });
     }
 
@@ -389,7 +403,7 @@ router.get('/me', async (req: Request, res: Response) => {
     if (!jwtSecret) {
       return res.status(500).json({
         success: false,
-        message: 'Server configuration error'
+        message: "Server configuration error",
       });
     }
 
@@ -401,7 +415,7 @@ router.get('/me', async (req: Request, res: Response) => {
       if (!guestUser || guestUser.expiresAt < Date.now()) {
         return res.status(401).json({
           success: false,
-          message: 'Guest session expired'
+          message: "Guest session expired",
         });
       }
 
@@ -412,7 +426,7 @@ router.get('/me', async (req: Request, res: Response) => {
           username: guestUser.username,
           rating: guestUser.rating,
           isGuest: true,
-        }
+        },
       });
     } else {
       // Return registered user info
@@ -420,7 +434,7 @@ router.get('/me', async (req: Request, res: Response) => {
       if (!user) {
         return res.status(401).json({
           success: false,
-          message: 'User not found'
+          message: "User not found",
         });
       }
 
@@ -433,47 +447,46 @@ router.get('/me', async (req: Request, res: Response) => {
           rating: user.rating,
           level: user.level,
           isGuest: false,
-        }
+        },
       });
     }
-
   } catch (error) {
-    logger.error('Error getting current user:', error);
+    logger.error("Error getting current user:", error);
     return res.status(401).json({
       success: false,
-      message: 'Invalid token'
+      message: "Invalid token",
     });
   }
 });
 
 // Debug endpoint to list all registered users (development only)
-router.get('/users', async (_req: Request, res: Response) => {
+router.get("/users", async (_req: Request, res: Response) => {
   try {
     const users = DatabaseManager.getAllMockUsers();
     logger.info(`📋 Registered users requested: ${users.length} users found`);
     return res.json({
       success: true,
       users,
-      message: `${users.length} users registered in the system`
+      message: `${users.length} users registered in the system`,
     });
   } catch (error) {
-    logger.error('Error getting users list:', error);
+    logger.error("Error getting users list:", error);
     return res.status(500).json({
       success: false,
-      message: 'Failed to get users list'
+      message: "Failed to get users list",
     });
   }
 });
 
 // Convert guest to registered user
-router.post('/convert-guest', async (req: Request, res: Response) => {
+router.post("/convert-guest", async (req: Request, res: Response) => {
   try {
     const { email, password, currentGuestToken } = req.body;
 
     if (!email || !password || !currentGuestToken) {
       return res.status(400).json({
         success: false,
-        message: 'Email, password, and current guest token are required'
+        message: "Email, password, and current guest token are required",
       });
     }
 
@@ -482,7 +495,7 @@ router.post('/convert-guest', async (req: Request, res: Response) => {
     if (!jwtSecret) {
       return res.status(500).json({
         success: false,
-        message: 'Server configuration error'
+        message: "Server configuration error",
       });
     }
 
@@ -491,7 +504,7 @@ router.post('/convert-guest', async (req: Request, res: Response) => {
     if (!decoded.isGuest) {
       return res.status(400).json({
         success: false,
-        message: 'Token is not a guest token'
+        message: "Token is not a guest token",
       });
     }
 
@@ -499,7 +512,7 @@ router.post('/convert-guest', async (req: Request, res: Response) => {
     if (!guestUser) {
       return res.status(401).json({
         success: false,
-        message: 'Guest session not found or expired'
+        message: "Guest session not found or expired",
       });
     }
 
@@ -508,7 +521,7 @@ router.post('/convert-guest', async (req: Request, res: Response) => {
     if (existingUser) {
       return res.status(409).json({
         success: false,
-        message: 'Email is already registered'
+        message: "Email is already registered",
       });
     }
 
@@ -526,7 +539,7 @@ router.post('/convert-guest', async (req: Request, res: Response) => {
     if (!newUser) {
       return res.status(500).json({
         success: false,
-        message: 'Failed to create user account'
+        message: "Failed to create user account",
       });
     }
 
@@ -543,10 +556,12 @@ router.post('/convert-guest', async (req: Request, res: Response) => {
         isGuest: false,
       },
       jwtSecret, // Already validated above
-      { expiresIn: '7d' }
+      { expiresIn: "7d" },
     );
 
-    logger.info(`🔄 Guest converted to registered user: ${guestUser.username} → ${newUser.id}`);
+    logger.info(
+      `🔄 Guest converted to registered user: ${guestUser.username} → ${newUser.id}`,
+    );
 
     return res.json({
       success: true,
@@ -559,14 +574,13 @@ router.post('/convert-guest', async (req: Request, res: Response) => {
         level: newUser.level,
         isGuest: false,
       },
-      message: 'Guest account converted successfully'
+      message: "Guest account converted successfully",
     });
-
   } catch (error) {
-    logger.error('Error converting guest account:', error);
+    logger.error("Error converting guest account:", error);
     return res.status(500).json({
       success: false,
-      message: 'Failed to convert guest account'
+      message: "Failed to convert guest account",
     });
   }
 });
@@ -582,22 +596,26 @@ export const getGuestUser = (guestId: string): GuestUser | null => {
 
 // Get or create guest user by ID (for WebSocket authentication with fallback)
 export const getOrCreateGuestUser = (guestId: string): GuestUser => {
-  let guest = guestSessions.get(guestId);
+  const guest = guestSessions.get(guestId);
 
   // If guest doesn't exist or expired, create new one
   if (!guest || guest.expiresAt <= Date.now()) {
     const guestNumber = guestCounter++;
     const newGuest: GuestUser = {
-      id: guestId || `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id:
+        guestId ||
+        `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       username: `Guest${guestNumber}`,
       rating: 1000 + Math.floor(Math.random() * 200), // Random rating between 1000-1200
       isGuest: true,
       createdAt: Date.now(),
-      expiresAt: Date.now() + (2 * 60 * 60 * 1000) // 2 hours
+      expiresAt: Date.now() + 2 * 60 * 60 * 1000, // 2 hours
     };
 
     guestSessions.set(newGuest.id, newGuest);
-    logger.info(`🆕 Created new guest user: ${newGuest.username} (${newGuest.id})`);
+    logger.info(
+      `🆕 Created new guest user: ${newGuest.username} (${newGuest.id})`,
+    );
     return newGuest;
   }
 
