@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { MatchmakingDemo } from './pages/MatchmakingDemo';
 import { GameRoom } from './components/gaming/GameRoom';
+import { GameInterface } from './components/gaming/GameInterface';
 import AuthDemo from './pages/AuthDemo';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -23,7 +24,7 @@ function AppContent() {
           <Route path="/" element={<HomePage />} />
           <Route path="/home" element={<AuthDemo />} />
           <Route path="/dashboard" element={<AuthDemo />} />
-          <Route path="/game" element={<MatchmakingDemo />} />
+          <Route path="/game" element={<GameInterface className="demo-mode" />} />
           <Route path="/game/:roomId" element={<GameRoom />} />
           <Route path="*" element={<AuthDemo />} />
         </Routes>
