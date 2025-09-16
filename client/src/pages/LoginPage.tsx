@@ -207,6 +207,23 @@ const LoginPage: React.FC = () => {
             )}
 
 
+            {/* Test Login Button (Development) */}
+            {process.env.NODE_ENV === 'development' && (
+              <button
+                type="button"
+                onClick={() => {
+                  setFormData({
+                    email: 'test@skemino.com',
+                    password: 'test123',
+                    rememberMe: true
+                  });
+                }}
+                className="w-full py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-colors text-sm"
+              >
+                🧪 Riempi dati test
+              </button>
+            )}
+
             {/* Login Button */}
             <button
               type="submit"

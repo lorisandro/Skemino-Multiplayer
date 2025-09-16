@@ -100,15 +100,17 @@ export const RequireAuth: React.FC<{ children: ReactNode; fallback?: ReactNode }
     // Give auth state time to initialize from storage
     const initTimer = setTimeout(() => {
       setIsInitializing(false);
-    }, 50);
+    }, 100);
 
-    // Set a maximum timeout for loading state
+    // Set a maximum timeout for loading state (reduced from 2000ms to 1000ms)
     const timeoutTimer = setTimeout(() => {
       if (isLoading) {
-        console.warn('⚠️ Auth loading timeout reached, checking stored tokens');
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('⚠️ Auth loading timeout reached, checking stored tokens');
+        }
         setLoadingTimeout(true);
       }
-    }, 2000);
+    }, 1000);
 
     return () => {
       clearTimeout(initTimer);
@@ -116,14 +118,17 @@ export const RequireAuth: React.FC<{ children: ReactNode; fallback?: ReactNode }
     };
   }, [isLoading]);
 
-  console.log('🔐 RequireAuth check:', {
-    isAuthenticated,
-    isLoading,
-    isInitializing,
-    loadingTimeout,
-    user: user?.username || 'none',
-    hasStoredToken: !!(localStorage.getItem('skemino_auth_token') || sessionStorage.getItem('skemino_auth_token'))
-  });
+  // Only log in development to avoid console noise
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🔐 RequireAuth check:', {
+      isAuthenticated,
+      isLoading,
+      isInitializing,
+      loadingTimeout,
+      user: user?.username || 'none',
+      hasStoredToken: !!(localStorage.getItem('skemino_auth_token') || sessionStorage.getItem('skemino_auth_token'))
+    });
+  }
 
   // During initialization, show loading
   if ((isLoading || isInitializing) && !loadingTimeout) {

@@ -1,71 +1,45 @@
-react-dom.development.js:29895 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
-AuthContext.tsx:119 🔐 RequireAuth check: Object
-AuthContext.tsx:119 🔐 RequireAuth check: Object
-AuthContext.tsx:119 🔐 RequireAuth check: Object
-AuthContext.tsx:119 🔐 RequireAuth check: Object
-AuthContext.tsx:119 🔐 RequireAuth check: Object
-AuthContext.tsx:119 🔐 RequireAuth check: Object
-AuthContext.tsx:119 🔐 RequireAuth check: Object
-AuthContext.tsx:119 🔐 RequireAuth check: Object
-history.ts:494  Uncaught Error: You cannot render a <Router> inside another <Router>. You should never have more than one in your app.
-    at invariant (history.ts:494:11)
-    at Router (components.tsx:429:3)
-    at renderWithHooks (react-dom.development.js:15486:18)
-    at mountIndeterminateComponent (react-dom.development.js:20103:13)
-    at beginWork (react-dom.development.js:21626:16)
-    at HTMLUnknownElement.callCallback2 (react-dom.development.js:4164:14)
-    at Object.invokeGuardedCallbackDev (react-dom.development.js:4213:16)
-    at invokeGuardedCallback (react-dom.development.js:4277:31)
-    at beginWork$1 (react-dom.development.js:27490:7)
-    at performUnitOfWork (react-dom.development.js:26596:12)
-AuthContext.tsx:119 🔐 RequireAuth check: Object
-AuthContext.tsx:119 🔐 RequireAuth check: Object
-history.ts:494  Uncaught Error: You cannot render a <Router> inside another <Router>. You should never have more than one in your app.
-    at invariant (history.ts:494:11)
-    at Router (components.tsx:429:3)
-    at renderWithHooks (react-dom.development.js:15486:18)
-    at mountIndeterminateComponent (react-dom.development.js:20103:13)
-    at beginWork (react-dom.development.js:21626:16)
-    at HTMLUnknownElement.callCallback2 (react-dom.development.js:4164:14)
-    at Object.invokeGuardedCallbackDev (react-dom.development.js:4213:16)
-    at invokeGuardedCallback (react-dom.development.js:4277:31)
-    at beginWork$1 (react-dom.development.js:27490:7)
-    at performUnitOfWork (react-dom.development.js:26596:12)
-react-dom.development.js:18704  The above error occurred in the <Router> component:
-
-    at Router (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=6006470b:4501:15)
-    at BrowserRouter (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=6006470b:5247:5)
-    at AppContent (http://localhost:3000/src/App.tsx?t=1758041101158:30:37)
-    at AuthProvider (http://localhost:3000/src/contexts/AuthContext.tsx?t=1758040449361:21:32)
-    at App
-    at GamePage
-    at RequireAuth (http://localhost:3000/src/contexts/AuthContext.tsx?t=1758040449361:110:3)
-    at RenderedRoute (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=6006470b:4088:5)
-    at Routes (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=6006470b:4558:5)
-    at AuthProvider (http://localhost:3000/src/contexts/AuthContext.tsx?t=1758040449361:21:32)
-    at DndProvider2 (http://localhost:3000/node_modules/.vite/deps/react-dnd.js?v=6006470b:1505:9)
-    at Router (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=6006470b:4501:15)
-    at BrowserRouter (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=6006470b:5247:5)
-    at Router
-    at ErrorBoundary (http://localhost:3000/src/components/ErrorBoundary.tsx:7:5)
-
-React will try to recreate this component tree from scratch using the error boundary you provided, ErrorBoundary.
-logCapturedError @ react-dom.development.js:18704
-ErrorBoundary.tsx:23  ErrorBoundary caught an error: Error: You cannot render a <Router> inside another <Router>. You should never have more than one in your app.
-    at invariant (history.ts:494:11)
-    at Router (components.tsx:429:3)
-    at renderWithHooks (react-dom.development.js:15486:18)
-    at mountIndeterminateComponent (react-dom.development.js:20103:13)
-    at beginWork (react-dom.development.js:21626:16)
-    at beginWork$1 (react-dom.development.js:27465:14)
-    at performUnitOfWork (react-dom.development.js:26596:12)
-    at workLoopSync (react-dom.development.js:26505:5)
-    at renderRootSync (react-dom.development.js:26473:7)
-    at recoverFromConcurrentError (react-dom.development.js:25889:20) Object
-componentDidCatch @ ErrorBoundary.tsx:23
-[NEW] Explain Console errors by using Copilot in Edge: click
-         
-         to explain an error. 
-        Learn more
-        Don't show again
-// Testing fix for Router nesting issue
+chunk-GKJBSOWT.js?v=6006470b:21551 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+LoginPage.tsx:26 Browser extension interference detected: Object
+(anonime) @ LoginPage.tsx:26
+LoginPage.tsx:26 Browser extension interference detected: Object
+(anonime) @ LoginPage.tsx:26
+useAuth.ts:205 ✅ Received JWT token: eyJhbGciOiJIUzI1NiIs...
+LoginPage.tsx:58 Login successful, navigating to dashboard
+useAuth.ts:63 ✅ Auth state restored from storage: maxandro
+useAuth.ts:63 ✅ Auth state restored from storage: maxandro
+useAuth.ts:63 ✅ Auth state restored from storage: maxandro
+useAuth.ts:63 ✅ Auth state restored from storage: maxandro
+DashboardPage.tsx:18 🎮 Navigating to game page from dashboard
+AuthContext.tsx:123 🔐 RequireAuth check: {isAuthenticated: false, isLoading: false, isInitializing: true, loadingTimeout: false, user: 'none', …}
+AuthContext.tsx:123 🔐 RequireAuth check: {isAuthenticated: false, isLoading: false, isInitializing: true, loadingTimeout: false, user: 'none', …}
+AuthContext.tsx:123 🔐 RequireAuth check: {isAuthenticated: false, isLoading: false, isInitializing: false, loadingTimeout: false, user: 'none', …}
+AuthContext.tsx:153 ❌ RequireAuth: User not authenticated, redirecting to login
+AuthContext.tsx:123 🔐 RequireAuth check: {isAuthenticated: false, isLoading: false, isInitializing: false, loadingTimeout: false, user: 'none', …}
+AuthContext.tsx:153 ❌ RequireAuth: User not authenticated, redirecting to login
+useAuth.ts:63 ✅ Auth state restored from storage: maxandro
+LoginPage.tsx:26 Browser extension interference detected: {detected: true, problematicExtensions: Array(0), suggestions: Array(5)}
+(anonime) @ LoginPage.tsx:26
+commitHookEffectListMount @ chunk-GKJBSOWT.js?v=6006470b:16915
+commitPassiveMountOnFiber @ chunk-GKJBSOWT.js?v=6006470b:18156
+commitPassiveMountEffects_complete @ chunk-GKJBSOWT.js?v=6006470b:18129
+commitPassiveMountEffects_begin @ chunk-GKJBSOWT.js?v=6006470b:18119
+commitPassiveMountEffects @ chunk-GKJBSOWT.js?v=6006470b:18109
+flushPassiveEffectsImpl @ chunk-GKJBSOWT.js?v=6006470b:19490
+flushPassiveEffects @ chunk-GKJBSOWT.js?v=6006470b:19447
+(anonime) @ chunk-GKJBSOWT.js?v=6006470b:19328
+workLoop @ chunk-GKJBSOWT.js?v=6006470b:197
+flushWork @ chunk-GKJBSOWT.js?v=6006470b:176
+performWorkUntilDeadline @ chunk-GKJBSOWT.js?v=6006470b:384
+useAuth.ts:63 ✅ Auth state restored from storage: maxandro
+LoginPage.tsx:26 Browser extension interference detected: {detected: true, problematicExtensions: Array(0), suggestions: Array(5)}
+(anonime) @ LoginPage.tsx:26
+commitHookEffectListMount @ chunk-GKJBSOWT.js?v=6006470b:16915
+invokePassiveEffectMountInDEV @ chunk-GKJBSOWT.js?v=6006470b:18324
+invokeEffectsInDev @ chunk-GKJBSOWT.js?v=6006470b:19701
+commitDoubleInvokeEffectsInDEV @ chunk-GKJBSOWT.js?v=6006470b:19686
+flushPassiveEffectsImpl @ chunk-GKJBSOWT.js?v=6006470b:19503
+flushPassiveEffects @ chunk-GKJBSOWT.js?v=6006470b:19447
+(anonime) @ chunk-GKJBSOWT.js?v=6006470b:19328
+workLoop @ chunk-GKJBSOWT.js?v=6006470b:197
+flushWork @ chunk-GKJBSOWT.js?v=6006470b:176
+performWorkUntilDeadline @ chunk-GKJBSOWT.js?v=6006470b:384

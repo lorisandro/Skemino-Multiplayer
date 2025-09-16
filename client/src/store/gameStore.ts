@@ -79,23 +79,9 @@ export const useGameStore = create<GameStore>()(
   devtools(
     immer((set) => ({
     // Initial state
-    gameState: { ...initialGameState, board: initializeBoard() },
-    currentPlayer: {
-      id: 'demo-player',
-      username: 'DemoPlayer',
-      rating: 1000,
-      color: 'white',
-      avatar: null,
-      isReady: false
-    },
-    opponent: {
-      id: 'demo-opponent',
-      username: 'DemoOpponent',
-      rating: 1000,
-      color: 'black',
-      avatar: null,
-      isReady: false
-    },
+    gameState: null,
+    currentPlayer: null,
+    opponent: null,
     selectedCard: null,
     validMoves: [],
     isMyTurn: false,
