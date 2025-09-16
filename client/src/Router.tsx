@@ -4,8 +4,6 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { AuthProvider, RequireAuth, useAuthContext } from './contexts/AuthContext';
 import { useAuth } from './hooks/useAuth';
 import toast from 'react-hot-toast';
-import App from './App';
-import AppDebug from './App.debug';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -13,9 +11,10 @@ import DashboardPage from './pages/DashboardPage';
 import PreGamePage from './pages/PreGamePage';
 import { MatchmakingDemo } from './pages/MatchmakingDemo';
 import GamePageWithSidebar from './components/gaming/GamePageWithSidebar';
+import { GameRoom } from './components/gaming/GameRoom';
 
 const GamePage = () => {
-  return <App />;
+  return <GameRoom />;
 };
 
 // Componente per gestire la route root "/"
