@@ -17,6 +17,19 @@ const GamePage = () => {
   return <App />;
 };
 
+// Componente per gestire la route /home con redirect automatico alla dashboard se autenticato
+const HomePageWrapper = () => {
+  const { isAuthenticated, user } = useAuth();
+
+  // Se l'utente è autenticato, mostra la dashboard
+  if (isAuthenticated && user) {
+    return <DashboardPage />;
+  }
+
+  // Altrimenti mostra la HomePage normale
+  return <HomePage />;
+};
+
 const RegisterPageWrapper = () => {
   const navigate = useNavigate();
   const { register } = useAuth();
@@ -72,7 +85,7 @@ export function Router() {
         <AuthProvider>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/home" element={<HomePage />} />
+            <Route path="/home" element={<HomePageWrapper />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPageWrapper />} />
             <Route path="/dashboard" element={

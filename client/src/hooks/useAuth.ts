@@ -102,7 +102,29 @@ export const useAuth = (): AuthContextType => {
 
       // Use the real user data from the service
       const authenticatedUser = response.user as User;
-      const authToken = response.token || `token_${Date.now()}`;
+
+      // CRITICAL: Only use real server tokens, never generate fake ones
+      if (!response.token) {
+        console.error('❌ Server login success but no token provided:', response);
+        return {
+          success: false,
+          message: 'Server authentication error: no token received',
+          errors: { identifier: 'Authentication failed - please try again' }
+        };
+      }
+
+      // Validate JWT format before storing
+      const authToken = response.token;
+      if (!authToken.includes('.') || authToken.split('.').length !== 3) {
+        console.error('❌ Invalid JWT format received from server:', authToken.substring(0, 20) + '...');
+        return {
+          success: false,
+          message: 'Server authentication error: invalid token format',
+          errors: { identifier: 'Authentication failed - invalid token' }
+        };
+      }
+
+      console.log('✅ Received valid JWT token:', authToken.substring(0, 20) + '... (length: ' + authToken.length + ')');
 
       // Store auth data
       if (credentials.rememberMe) {
@@ -167,7 +189,29 @@ export const useAuth = (): AuthContextType => {
 
       // Use the real user data from the service
       const registeredUser = response.user as User;
-      const authToken = response.token || `token_${Date.now()}`;
+
+      // CRITICAL: Only use real server tokens, never generate fake ones
+      if (!response.token) {
+        console.error('❌ Server registration success but no token provided:', response);
+        return {
+          success: false,
+          message: 'Server authentication error: no token received',
+          errors: { email: 'Registration failed - please try again' }
+        };
+      }
+
+      // Validate JWT format before storing
+      const authToken = response.token;
+      if (!authToken.includes('.') || authToken.split('.').length !== 3) {
+        console.error('❌ Invalid JWT format received from server during registration:', authToken.substring(0, 20) + '...');
+        return {
+          success: false,
+          message: 'Server authentication error: invalid token format',
+          errors: { email: 'Registration failed - invalid token' }
+        };
+      }
+
+      console.log('✅ Received valid JWT token during registration:', authToken.substring(0, 20) + '... (length: ' + authToken.length + ')');
 
       // Store auth data in localStorage for registration (always persistent)
       localStorage.setItem('skemino_auth_token', authToken);
@@ -280,7 +324,9 @@ export const useAuth = (): AuthContextType => {
         achievements: []
       };
 
+      // NOTE: This is mock implementation - in production, use real OAuth tokens
       const mockToken = `${provider}_token_${Date.now()}`;
+      console.warn('⚠️ Social login using MOCK token - replace with real OAuth implementation');
 
       // Store auth data
       localStorage.setItem('skemino_auth_token', mockToken);
@@ -325,7 +371,29 @@ export const useAuth = (): AuthContextType => {
 
       // Use the real guest user data from the service
       const guestUser = response.user as User;
-      const authToken = response.token || `guest_token_${Date.now()}`;
+
+      // CRITICAL: Only use real server tokens, even for guests
+      if (!response.token) {
+        console.error('❌ Server guest login success but no token provided:', response);
+        return {
+          success: false,
+          message: 'Server authentication error: no guest token received',
+          errors: { guest: 'Guest session failed - please try again' }
+        };
+      }
+
+      // Validate JWT format before storing
+      const authToken = response.token;
+      if (!authToken.includes('.') || authToken.split('.').length !== 3) {
+        console.error('❌ Invalid JWT format received from server for guest:', authToken.substring(0, 20) + '...');
+        return {
+          success: false,
+          message: 'Server authentication error: invalid guest token format',
+          errors: { guest: 'Guest session failed - invalid token' }
+        };
+      }
+
+      console.log('✅ Received valid guest JWT token:', authToken.substring(0, 20) + '... (length: ' + authToken.length + ')');
 
       // Store guest session (session storage only for temporary session)
       sessionStorage.setItem('skemino_auth_token', authToken);
