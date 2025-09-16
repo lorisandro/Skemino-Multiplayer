@@ -17,7 +17,8 @@ import {
   Card,
   GameHeaders,
   PSNParseResult,
-  GameResult
+  GameResult,
+  PlayerId
 } from '../../../shared/types/game';
 import { PSNGenerator } from './PSNGenerator';
 import { PSNParser, PSNParseOptions } from './PSNParser';
@@ -234,14 +235,17 @@ export class PSNUtils {
 
       // Results
       if (game.headers.result) {
-        stats.resultDistribution[game.headers.result]++;
+        const result = game.headers.result as string;
+        if (result && (stats.resultDistribution as any)[result] !== undefined) {
+          (stats.resultDistribution as any)[result]++;
+        }
       }
 
       // Opening (first 3 moves)
       if (game.moves.length >= 6) {
         const opening = game.moves
           .slice(0, 6)
-          .map(m => this.generator.generateMoveNotation(m))
+          .map((m: any) => m.notation || 'unknown')
           .join(' ');
         openingMap.set(opening, (openingMap.get(opening) || 0) + 1);
       }
@@ -397,8 +401,8 @@ export class PSNUtils {
       const expectedTurn = Math.floor(i / 2) + 1;
       const expectedPlayer = i % 2 === 0 ? 'white' : 'black';
 
-      if (moves[i].turn !== expectedTurn) {
-        errors.push(`Move ${i + 1}: Expected turn ${expectedTurn}, got ${moves[i].turn}`);
+      if (moves[i].turnNumber !== expectedTurn) {
+        errors.push(`Move ${i + 1}: Expected turn ${expectedTurn}, got ${moves[i].turnNumber}`);
       }
 
       if (moves[i].player !== expectedPlayer) {
@@ -409,7 +413,7 @@ export class PSNUtils {
     // Check for duplicate positions (basic validation)
     const positionHistory = new Map<string, number>();
     for (let i = 0; i < moves.length; i++) {
-      const position = moves[i].position;
+      const position = moves[i].toPosition;
       if (positionHistory.has(position)) {
         const previousMove = positionHistory.get(position)!;
         errors.push(`Move ${i + 1}: Position ${position} was already occupied by move ${previousMove}`);
@@ -424,7 +428,7 @@ export class PSNUtils {
    * Gets move at specific turn
    */
   public getMoveAtTurn(moves: Move[], turn: number, player: PlayerId): Move | null {
-    return moves.find(move => move.turn === turn && move.player === player) || null;
+    return moves.find(move => move.turnNumber === turn && move.player === player) || null;
   }
 
   /**

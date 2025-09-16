@@ -1,34 +1,29 @@
-// Skèmino Game Types for PSN System
-export type CardSuit = 'P' | 'F' | 'C'; // Pietra, Forbici, Carta
-export type CardValue = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13; // 1-13, where 11=J, 12=Q, 13=K
+// DEPRECATED: This file is deprecated in favor of GameTypes.ts
+// This file remains for backward compatibility but all new code should use GameTypes.ts
 
-export interface Card {
-  suit: CardSuit;
-  value: CardValue;
-}
+// Re-export all types from GameTypes.ts for backward compatibility
+export * from './GameTypes';
 
+// Legacy type aliases for compatibility - these are deprecated
+/**
+ * @deprecated Use types from GameTypes.ts instead
+ */
 export type BoardPosition = string; // 'a1' to 'f6' (6x6 board)
+
+/**
+ * @deprecated Use GameResult from GameTypes.ts instead
+ */
 export type GameResult = '1-0' | '0-1' | '1/2-1/2' | '*';
+
+/**
+ * @deprecated Use PlayerColor from GameTypes.ts instead
+ */
 export type PlayerId = 'white' | 'black';
 
-export interface Move {
-  turn: number;
-  player: PlayerId;
-  card: Card;
-  position: BoardPosition;
-  timestamp: Date;
-
-  // Game state effects
-  isCapture: boolean;
-  hasVertexControl: boolean;
-  createsLoop: boolean;
-  isCheck: boolean;
-  capturedCards?: Card[];
-
-  // Optional timing
-  timeSpent?: number; // seconds
-}
-
+// Legacy interfaces that are deprecated
+/**
+ * @deprecated Use PSNHeader from GameTypes.ts instead
+ */
 export interface GameHeaders {
   event: string;
   site: string;
@@ -45,22 +40,12 @@ export interface GameHeaders {
   nCard?: number;
 }
 
-export interface GameState {
-  id: string;
-  headers: GameHeaders;
-  moves: Move[];
-  currentPlayer: PlayerId;
-  turn: number;
-  status: 'setup' | 'playing' | 'ended';
-  result?: GameResult;
-  board: Map<BoardPosition, Card>;
-  whiteCards: Card[];
-  blackCards: Card[];
-}
-
+/**
+ * @deprecated This interface is no longer used
+ */
 export interface PSNParseResult {
   isValid: boolean;
-  game?: GameState;
+  game?: any;
   errors: string[];
   warnings: string[];
 }

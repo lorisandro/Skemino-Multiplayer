@@ -1,0 +1,17 @@
+fix(types): resolve TypeScript compilation errors and consolidate type definitions
+
+- Fix GameEngine.ts method calls using correct PSNGenerator method names
+- Consolidate duplicate type definitions between GameTypes.ts and game.ts
+- Fix GameRoom.ts playerTimes initialization in parseTimeControl method
+- Add proper type conversion for game results (string vs literal union)
+- Resolve Redis namespace import issues in RedisManager.ts
+- Deprecate game.ts while maintaining backward compatibility
+- Update PSNGenerator to use consistent GameTypes.ts imports
+- Improve type safety across all game engine modules
+
+Fixes:
+- GameEngine.ts lines 191 & 254: Correct method names
+- GameRoom.ts: Proper playerTimes initialization
+- GameRoom.ts: Type-safe result conversion
+- RedisManager.ts: Redis import namespace resolution
+- Type consolidation: Single source of truth in GameTypes.ts

@@ -76,17 +76,18 @@ export class PSNParser {
       warnings.push(...moveResult.warnings);
 
       // Create game state
-      const gameState: GameState = {
+      const gameState: any = {
         id: this.generateGameId(),
-        headers: headerResult.headers || this.getDefaultHeaders(),
-        moves: moveResult.moves || [],
-        currentPlayer: this.determineCurrentPlayer(moveResult.moves || []),
-        turn: this.calculateCurrentTurn(moveResult.moves || []),
         status: this.determineGameStatus(headerResult.headers?.result),
-        result: headerResult.headers?.result,
         board: this.constructBoard(moveResult.moves || []),
-        whiteCards: [], // Would be populated from setup or move analysis
-        blackCards: []  // Would be populated from setup or move analysis
+        currentTurn: this.determineCurrentPlayer(moveResult.moves || []) as 'white' | 'black',
+        moveCount: this.calculateCurrentTurn(moveResult.moves || []),
+        moveHistory: moveResult.moves || [],
+        startTime: new Date(),
+        players: {
+          white: { id: 'white', username: 'White', rating: 1200, color: 'white', hand: [], cardsPlayed: 0, timeRemaining: 600000 },
+          black: { id: 'black', username: 'Black', rating: 1200, color: 'black', hand: [], cardsPlayed: 0, timeRemaining: 600000 }
+        }
       };
 
       return {
@@ -324,16 +325,16 @@ export class PSNParser {
     const specialProps = this.parseSpecialSymbols(symbols);
 
     return {
-      turn,
+      id: `move_${turn}`,
+      turnNumber: turn,
       player,
       card,
-      position: position as BoardPosition,
-      timestamp: new Date(), // Would be set properly in real implementation
-      isCapture: specialProps.isCapture,
-      hasVertexControl: specialProps.hasVertexControl,
-      createsLoop: specialProps.createsLoop,
-      isCheck: specialProps.isCheck,
-      timeSpent
+      toPosition: position as any,
+      timestamp: new Date(),
+      isVertexControl: specialProps.hasVertexControl,
+      isLoopTrigger: specialProps.createsLoop || false,
+      notation: moveToken,
+      thinkTimeMs: 0
     };
   }
 
@@ -356,7 +357,12 @@ export class PSNParser {
       default: value = parseInt(valueStr); break;
     }
 
-    return { suit, value: value as any };
+    return {
+      id: `${suit}${value}`,
+      suit,
+      value: value.toString() as any,
+      displayName: `${suit}${value}`
+    };
   }
 
   /**
@@ -439,26 +445,34 @@ export class PSNParser {
   private calculateCurrentTurn(moves: Move[]): number {
     if (moves.length === 0) return 1;
     const lastMove = moves[moves.length - 1];
-    return lastMove.player === 'white' ? lastMove.turn : lastMove.turn + 1;
+    return lastMove.player === 'white' ? lastMove.turnNumber : lastMove.turnNumber + 1;
   }
 
-  private determineGameStatus(result?: GameResult): 'setup' | 'playing' | 'ended' {
-    if (!result || result === '*') return 'playing';
-    return 'ended';
+  private determineGameStatus(result?: GameResult): 'waiting' | 'active' | 'completed' {
+    if (!result || result === '*') return 'active';
+    return 'completed';
   }
 
-  private constructBoard(moves: Move[]): Map<BoardPosition, Card> {
-    const board = new Map<BoardPosition, Card>();
+  private constructBoard(moves: Move[]): any {
+    // Temporary simple board construction - should be properly implemented
+    const positions = new Map();
+    const vertexControl = { a1: null, f1: null, a6: null, f6: null };
+    const holes: any[] = [];
 
     // Apply moves to construct current board state
     for (const move of moves) {
-      if (move.isCapture) {
-        // Remove captured cards (would need capture logic here)
+      // Basic move application logic would go here
+      if (move.toPosition) {
+        positions.set(move.toPosition, {
+          cell: move.toPosition,
+          card: move.card,
+          isVertex: ['a1', 'f1', 'a6', 'f6'].includes(move.toPosition),
+          quadrant: 1 // Simplified quadrant assignment
+        });
       }
-      board.set(move.position, move.card);
     }
 
-    return board;
+    return { positions, vertexControl, holes };
   }
 
   /**

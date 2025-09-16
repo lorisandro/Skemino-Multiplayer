@@ -4,7 +4,6 @@ import { logger } from '../utils/logger';
 import { Move } from '../../shared/types/GameTypes';
 import * as path from 'path';
 import * as fs from 'fs';
-import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface User {
@@ -345,7 +344,7 @@ export class DatabaseManager {
     }
   }
 
-  public static async updateUserRating(userId: string, newRating: number): Promise<void> {
+  public static async updatePlayerRating(userId: string, newRating: number): Promise<void> {
     if (!this.db) throw new Error('Database not initialized');
 
     try {
@@ -356,6 +355,153 @@ export class DatabaseManager {
     } catch (error) {
       logger.error('Failed to update user rating:', error);
       throw error;
+    }
+  }
+
+  // Game management methods
+  public static async saveGame(gameRecord: GameRecord): Promise<void> {
+    if (!this.db) throw new Error('Database not initialized');
+
+    try {
+      await this.db.run(
+        `INSERT INTO games (
+          id, white_player_id, black_player_id, result, status,
+          start_time, end_time, move_count, psn_notation, time_control,
+          victory_condition, white_time, black_time
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          gameRecord.id,
+          gameRecord.whitePlayerId,
+          gameRecord.blackPlayerId,
+          gameRecord.result,
+          gameRecord.status,
+          gameRecord.startTime.toISOString(),
+          gameRecord.endTime.toISOString(),
+          gameRecord.moveCount,
+          gameRecord.psnNotation,
+          gameRecord.timeControl,
+          gameRecord.victoryCondition,
+          gameRecord.whiteTime,
+          gameRecord.blackTime
+        ]
+      );
+
+      logger.info(`💾 Game ${gameRecord.id} saved to database`);
+    } catch (error) {
+      logger.error('Failed to save game:', error);
+      throw error;
+    }
+  }
+
+  public static async saveMove(gameId: string, move: Move): Promise<void> {
+    if (!this.db) throw new Error('Database not initialized');
+
+    try {
+      const moveRecord: MoveRecord = {
+        id: move.id,
+        gameId: gameId,
+        turnNumber: move.turnNumber,
+        playerId: move.player === 'white' ? 'white_player_id' : 'black_player_id', // This needs proper player ID mapping
+        moveNotation: move.notation,
+        cardPlayed: `${move.card.suit}${move.card.value}`,
+        fromPosition: move.fromPosition,
+        toPosition: move.toPosition,
+        capturedCard: move.capturedCard ? `${move.capturedCard.suit}${move.capturedCard.value}` : undefined,
+        isVertexControl: move.isVertexControl,
+        isLoopTrigger: move.isLoopTrigger,
+        thinkTimeMs: move.thinkTimeMs,
+        timestamp: move.timestamp
+      };
+
+      await this.db.run(
+        `INSERT INTO moves (
+          id, game_id, turn_number, player_id, move_notation,
+          card_played, from_position, to_position, captured_card,
+          is_vertex_control, is_loop_trigger, think_time_ms, timestamp
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          moveRecord.id,
+          moveRecord.gameId,
+          moveRecord.turnNumber,
+          moveRecord.playerId,
+          moveRecord.moveNotation,
+          moveRecord.cardPlayed,
+          moveRecord.fromPosition,
+          moveRecord.toPosition,
+          moveRecord.capturedCard,
+          moveRecord.isVertexControl ? 1 : 0,
+          moveRecord.isLoopTrigger ? 1 : 0,
+          moveRecord.thinkTimeMs,
+          moveRecord.timestamp.toISOString()
+        ]
+      );
+
+      logger.debug(`📝 Move ${move.id} saved to database`);
+    } catch (error) {
+      logger.error('Failed to save move:', error);
+      throw error;
+    }
+  }
+
+  public static async getGameById(gameId: string): Promise<GameRecord | null> {
+    if (!this.db) throw new Error('Database not initialized');
+
+    try {
+      const row = await this.db.get(
+        'SELECT * FROM games WHERE id = ?',
+        [gameId]
+      );
+
+      if (!row) return null;
+
+      return {
+        id: row.id,
+        whitePlayerId: row.white_player_id,
+        blackPlayerId: row.black_player_id,
+        result: row.result,
+        status: row.status,
+        startTime: new Date(row.start_time),
+        endTime: new Date(row.end_time),
+        moveCount: row.move_count,
+        psnNotation: row.psn_notation,
+        timeControl: row.time_control,
+        victoryCondition: row.victory_condition,
+        whiteTime: row.white_time,
+        blackTime: row.black_time
+      };
+    } catch (error) {
+      logger.error('Failed to get game by ID:', error);
+      return null;
+    }
+  }
+
+  public static async getGameMoves(gameId: string): Promise<MoveRecord[]> {
+    if (!this.db) throw new Error('Database not initialized');
+
+    try {
+      const rows = await this.db.all(
+        'SELECT * FROM moves WHERE game_id = ? ORDER BY turn_number ASC',
+        [gameId]
+      );
+
+      return rows.map(row => ({
+        id: row.id,
+        gameId: row.game_id,
+        turnNumber: row.turn_number,
+        playerId: row.player_id,
+        moveNotation: row.move_notation,
+        cardPlayed: row.card_played,
+        fromPosition: row.from_position,
+        toPosition: row.to_position,
+        capturedCard: row.captured_card,
+        isVertexControl: Boolean(row.is_vertex_control),
+        isLoopTrigger: Boolean(row.is_loop_trigger),
+        thinkTimeMs: row.think_time_ms,
+        timestamp: new Date(row.timestamp)
+      }));
+    } catch (error) {
+      logger.error('Failed to get game moves:', error);
+      return [];
     }
   }
 

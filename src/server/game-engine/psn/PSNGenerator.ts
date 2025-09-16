@@ -16,21 +16,20 @@ import {
   GameState,
   Move,
   Card,
-  GameHeaders,
-  GameResult,
-  BoardPosition,
-  PlayerId
-} from '../../../shared/types/game';
+  PSNHeader,
+  BoardCell,
+  PlayerColor
+} from '../../../shared/types/GameTypes';
 
 export class PSNGenerator {
   /**
    * Generates complete PSN notation for a game
    */
   public generateGamePSN(gameState: GameState): string {
-    const headers = this.generateHeaders(gameState.headers);
+    const headers = this.generateHeaders(gameState);
     const setup = this.generateSetup(gameState);
-    const moves = this.generateMoves(gameState.moves);
-    const result = this.generateResult(gameState.headers.result);
+    const moves = this.generateMoves(gameState.moveHistory);
+    const result = this.generateResult(gameState);
 
     return [headers, setup, moves, result].filter(Boolean).join('\n\n');
   }
@@ -38,49 +37,69 @@ export class PSNGenerator {
   /**
    * Generates PSN headers section
    */
-  private generateHeaders(headers: GameHeaders): string {
+  private generateHeaders(gameState: GameState): string {
+    const headers: PSNHeader = {
+      event: 'Skèmino Game',
+      site: 'Skèmino Platform',
+      date: gameState.startTime.toISOString().split('T')[0].replace(/-/g, '.'),
+      white: gameState.players.white.username,
+      black: gameState.players.black.username,
+      result: this.getGameResult(gameState),
+      whiteRating: gameState.players.white.rating,
+      blackRating: gameState.players.black.rating,
+      timeControl: `${Math.floor(gameState.players.white.timeRemaining / 60000)}+0`
+    };
+
     const requiredHeaders = [
       `[Event "${headers.event}"]`,
       `[Site "${headers.site}"]`,
       `[Date "${headers.date}"]`,
-      `[Round "${headers.round}"]`,
+      `[Round "1"]`,
       `[White "${headers.white}"]`,
       `[Black "${headers.black}"]`,
       `[Result "${headers.result}"]`
     ];
 
     const optionalHeaders = [];
-    if (headers.whiteElo !== undefined) {
-      optionalHeaders.push(`[WhiteElo "${headers.whiteElo}"]`);
+    if (headers.whiteRating !== undefined) {
+      optionalHeaders.push(`[WhiteElo "${headers.whiteRating}"]`);
     }
-    if (headers.blackElo !== undefined) {
-      optionalHeaders.push(`[BlackElo "${headers.blackElo}"]`);
+    if (headers.blackRating !== undefined) {
+      optionalHeaders.push(`[BlackElo "${headers.blackRating}"]`);
     }
-    if (headers.strategy) {
-      optionalHeaders.push(`[Strategy "${headers.strategy}"]`);
-    }
-    if (headers.whiteTime !== undefined) {
-      optionalHeaders.push(`[WhiteTime "${headers.whiteTime}"]`);
-    }
-    if (headers.blackTime !== undefined) {
-      optionalHeaders.push(`[BlackTime "${headers.blackTime}"]`);
-    }
-    if (headers.nCard !== undefined) {
-      optionalHeaders.push(`[NCard "${headers.nCard}"]`);
+    if (headers.timeControl) {
+      optionalHeaders.push(`[TimeControl "${headers.timeControl}"]`);
     }
 
     return [...requiredHeaders, ...optionalHeaders].join('\n');
   }
 
   /**
+   * Determines game result for PSN header
+   */
+  private getGameResult(gameState: GameState): '1-0' | '0-1' | '1/2-1/2' | '*' {
+    if (gameState.status !== 'completed') {
+      return '*';
+    }
+
+    if (!gameState.winner) {
+      return '1/2-1/2'; // Draw
+    }
+
+    return gameState.winner === 'white' ? '1-0' : '0-1';
+  }
+
+  /**
    * Generates setup line (turn 0) for PSN
    */
   private generateSetup(gameState: GameState): string {
-    // Extract initial setup from first move or game configuration
-    // Format: 0.SETUP_CARD:position/white_cards:White/black_cards:Black
+    // Extract initial setup from dice configuration
+    if (gameState.setupDice) {
+      const { numeric, alphabetic, bicolor } = gameState.setupDice;
+      const setupCell = `${alphabetic}${numeric}` as BoardCell;
+      return `0.SETUP:${setupCell}/${bicolor}`;
+    }
 
-    // For now, return empty setup - this would be populated based on actual setup logic
-    // This should be implemented when setup dice system is available
     return '';
   }
 
@@ -95,12 +114,12 @@ export class PSNGenerator {
       const move = moves[i];
       const notation = this.generateMoveNotation(move);
 
-      // White moves (odd turns) start new line, Black moves (even turns) complete line
+      // White moves start new line, Black moves complete line
       if (move.player === 'white') {
         if (currentLine.length > 0) {
           moveLines.push(currentLine.join(' '));
         }
-        currentLine = [`${move.turn}.${notation}`];
+        currentLine = [`${move.turnNumber}.${notation}`];
       } else {
         currentLine.push(notation);
       }
@@ -119,17 +138,16 @@ export class PSNGenerator {
    */
   public generateMoveNotation(move: Move): string {
     const cardNotation = this.formatCard(move.card);
-    const positionNotation = move.position;
+    const positionNotation = move.toPosition;
 
     // Build special symbols
     let symbols = '';
-    if (move.isCapture) symbols += '*';
-    if (move.hasVertexControl) symbols += '#';
-    if (move.createsLoop) symbols += '@';
-    if (move.isCheck) symbols += '+';
+    if (move.capturedCard) symbols += '*';
+    if (move.isVertexControl) symbols += '#';
+    if (move.isLoopTrigger) symbols += '@';
 
     // Add timing if present
-    const timing = move.timeSpent ? `/${move.timeSpent}` : '';
+    const timing = move.thinkTimeMs ? `/${Math.round(move.thinkTimeMs / 1000)}` : '';
 
     return `${cardNotation}:${positionNotation}${symbols}${timing}`;
   }
@@ -138,16 +156,18 @@ export class PSNGenerator {
    * Formats a card for PSN notation
    */
   private formatCard(card: Card): string {
-    const valueStr = card.value <= 10 ? card.value.toString() :
-                     card.value === 11 ? 'J' :
-                     card.value === 12 ? 'Q' : 'K';
+    const valueStr = card.value === 'J' ? 'J' :
+                     card.value === 'Q' ? 'Q' :
+                     card.value === 'K' ? 'K' :
+                     card.value;
     return `${card.suit}${valueStr}`;
   }
 
   /**
    * Generates result line
    */
-  private generateResult(result: GameResult): string {
+  private generateResult(gameState: GameState): string {
+    const result = this.getGameResult(gameState);
     return result === '*' ? '' : result;
   }
 
@@ -271,15 +291,20 @@ export class PSNGenerator {
     const suit = cardStr[0] as 'P' | 'F' | 'C';
     const valueStr = cardStr.substring(1);
 
-    let value: number;
+    let value: string;
     switch (valueStr) {
-      case 'J': value = 11; break;
-      case 'Q': value = 12; break;
-      case 'K': value = 13; break;
-      default: value = parseInt(valueStr); break;
+      case 'J': value = 'J'; break;
+      case 'Q': value = 'Q'; break;
+      case 'K': value = 'K'; break;
+      default: value = valueStr; break;
     }
 
-    return { suit, value: value as any };
+    return {
+      id: `${suit}${value}`,
+      suit,
+      value: value as any,
+      displayName: `${suit}${value}`
+    };
   }
 
   /**
@@ -289,13 +314,11 @@ export class PSNGenerator {
     isCapture: boolean;
     hasVertexControl: boolean;
     createsLoop: boolean;
-    isCheck: boolean;
   } {
     return {
       isCapture: notation.includes('*'),
       hasVertexControl: notation.includes('#'),
-      createsLoop: notation.includes('@'),
-      isCheck: notation.includes('+')
+      createsLoop: notation.includes('@')
     };
   }
 
@@ -304,7 +327,7 @@ export class PSNGenerator {
    */
   public parseTimeSpent(notation: string): number | undefined {
     const timingMatch = notation.match(/\/(\d+)$/);
-    return timingMatch ? parseInt(timingMatch[1]) : undefined;
+    return timingMatch ? parseInt(timingMatch[1]) * 1000 : undefined; // Convert to milliseconds
   }
 
   /**
@@ -320,8 +343,8 @@ export class PSNGenerator {
    */
   public generateCompactPSN(gameState: GameState): string {
     // Generate moves without headers for compact storage
-    const moves = this.generateMoves(gameState.moves);
-    const result = this.generateResult(gameState.headers.result);
+    const moves = this.generateMoves(gameState.moveHistory);
+    const result = this.generateResult(gameState);
     return [moves, result].filter(Boolean).join('\n');
   }
 }

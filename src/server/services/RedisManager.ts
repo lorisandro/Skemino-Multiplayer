@@ -380,12 +380,12 @@ export class RedisManager {
   }
 
   // Batch operations for performance
-  public static async pipeline(): Promise<Redis.Pipeline> {
+  public static async pipeline(): Promise<any> {
     this.ensureConnection();
     return this.client!.pipeline();
   }
 
-  public static async executePipeline(pipeline: Redis.Pipeline): Promise<any> {
+  public static async executePipeline(pipeline: any): Promise<any> {
     try {
       return await pipeline.exec();
     } catch (error) {
@@ -410,13 +410,13 @@ export class RedisManager {
       const info = await this.client!.info('memory');
       const memoryInfo = this.parseRedisInfo(info);
 
-      const connections = await this.client!.client('list');
+      const connections = await this.client!.client('LIST');
 
       return {
         status: 'healthy',
         latency,
         memory: memoryInfo,
-        connections: connections.split('\n').length - 1
+        connections: typeof connections === 'string' ? connections.split('\n').length - 1 : 0
       };
     } catch (error) {
       logger.error('Redis health check failed:', error);

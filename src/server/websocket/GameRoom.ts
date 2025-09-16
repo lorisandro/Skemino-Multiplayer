@@ -46,14 +46,18 @@ export class GameRoom {
   private config: GameRoomConfig;
   private startTime: Date;
   private lastMoveTime: Date;
-  private playerTimes: PlayerTimeData;
+  private playerTimes: PlayerTimeData = {
+    white: 600000,
+    black: 600000,
+    lastMoveTime: Date.now()
+  };
   private disconnectedPlayers: Set<string> = new Set();
   private drawOffers: Map<PlayerColor, boolean> = new Map();
   private moveTimeouts: Map<PlayerColor, NodeJS.Timeout> = new Map();
 
   // Time control parsing
-  private baseTime: number; // in milliseconds
-  private increment: number; // in milliseconds
+  private baseTime: number = 600000; // in milliseconds - initialized with default
+  private increment: number = 0; // in milliseconds - initialized with default
 
   constructor(gameId: string, config: GameRoomConfig) {
     this.gameId = gameId;
@@ -62,6 +66,10 @@ export class GameRoom {
     this.players = new Map();
     this.players.set('white', config.white);
     this.players.set('black', config.black);
+
+    // Initialize dates with current time
+    this.startTime = new Date();
+    this.lastMoveTime = new Date();
 
     // Parse time control (format: "10+5" = 10 minutes + 5 seconds increment)
     this.parseTimeControl(config.timeControl);
@@ -74,6 +82,7 @@ export class GameRoom {
     this.baseTime = parseInt(parts[0]) * 60 * 1000; // Convert minutes to milliseconds
     this.increment = parts.length > 1 ? parseInt(parts[1]) * 1000 : 0; // Convert seconds to milliseconds
 
+    // Initialize playerTimes properly
     this.playerTimes = {
       white: this.baseTime,
       black: this.baseTime,
@@ -365,11 +374,22 @@ export class GameRoom {
       const gameState = this.gameEngine.getGameState();
       const psnNotation = this.gameEngine.generatePSN();
 
+      // Fix: Use proper result type conversion
+      const getGameResult = (): '1-0' | '0-1' | '1/2-1/2' => {
+        if (gameState.winner === 'white') {
+          return '1-0';
+        } else if (gameState.winner === 'black') {
+          return '0-1';
+        } else {
+          return '1/2-1/2'; // Draw
+        }
+      };
+
       const gameRecord = {
         id: this.gameId,
         whitePlayerId: gameState.players.white.id,
         blackPlayerId: gameState.players.black.id,
-        result: gameState.winner ? (gameState.winner === 'white' ? '1-0' : '0-1') : '1/2-1/2',
+        result: getGameResult(),
         status: gameState.status,
         startTime: this.startTime,
         endTime: gameState.endTime || new Date(),

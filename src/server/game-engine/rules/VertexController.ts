@@ -13,7 +13,8 @@ interface VertexControlResult {
 
 export class VertexController {
   private readonly vertices: BoardCell[] = ['a1', 'f1', 'a6', 'f6'];
-  private readonly quadrantCenters: Record<BoardCell, BoardCell> = {
+  // Fix: Complete the Record type mapping
+  private readonly quadrantCenters: Record<'a1' | 'f1' | 'a6' | 'f6', BoardCell> = {
     'a1': 'b2', // Quadrant 1
     'f1': 'e2', // Quadrant 2
     'a6': 'b5', // Quadrant 3
@@ -41,7 +42,7 @@ export class VertexController {
     result.controlledVertices.push(moveCell);
 
     // Check for exclusive control (vertex + central square)
-    const centralSquare = this.quadrantCenters[moveCell];
+    const centralSquare = this.quadrantCenters[moveCell as 'a1' | 'f1' | 'a6' | 'f6'];
     const centralPosition = board.positions.get(centralSquare);
 
     if (centralPosition?.card) {
@@ -65,7 +66,7 @@ export class VertexController {
 
     for (const vertex of this.vertices) {
       const vertexControl = board.vertexControl[vertex as 'a1' | 'f1' | 'a6' | 'f6'];
-      const centralSquare = this.quadrantCenters[vertex];
+      const centralSquare = this.quadrantCenters[vertex as 'a1' | 'f1' | 'a6' | 'f6'];
       const centralPosition = board.positions.get(centralSquare);
 
       status.set(vertex, {
@@ -111,7 +112,7 @@ export class VertexController {
     };
 
     const vertex = vertexMap[quadrant];
-    const center = this.quadrantCenters[vertex];
+    const center = this.quadrantCenters[vertex as 'a1' | 'f1' | 'a6' | 'f6'];
 
     const vertexPosition = board.positions.get(vertex);
     const centerPosition = board.positions.get(center);
@@ -178,7 +179,7 @@ export class VertexController {
     let value = 10; // Base value for vertex
 
     // Add value for central square control
-    const center = this.quadrantCenters[vertex];
+    const center = this.quadrantCenters[vertex as 'a1' | 'f1' | 'a6' | 'f6'];
     const centerPosition = board.positions.get(center);
     if (centerPosition?.card) {
       value += 5; // Exclusive control bonus
