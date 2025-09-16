@@ -91,7 +91,9 @@ export const RequireAuth: React.FC<{ children: ReactNode; fallback?: ReactNode }
   children,
   fallback
 }) => {
-  const { isAuthenticated, isLoading } = useAuthContext();
+  const { isAuthenticated, isLoading, user } = useAuthContext();
+
+  console.log('🔐 RequireAuth check:', { isAuthenticated, isLoading, user: user?.username || 'none' });
 
   if (isLoading) {
     return (
@@ -105,6 +107,7 @@ export const RequireAuth: React.FC<{ children: ReactNode; fallback?: ReactNode }
   }
 
   if (!isAuthenticated) {
+    console.log('❌ RequireAuth: User not authenticated, redirecting to login');
     return fallback || (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
         <div className="text-center max-w-md mx-auto p-8">

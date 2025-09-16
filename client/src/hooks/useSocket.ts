@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback, useState, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useGameStore } from '../store/gameStore';
 import { authService } from '../services/authService';
@@ -19,19 +19,24 @@ interface UseSocketReturn {
   cancelMatchmaking: () => void;
 }
 
-let socket: Socket | null = null;
+// Singleton socket instance - persists across component re-renders
+let globalSocket: Socket | null = null;
+let socketConnectionCount = 0;
 let lastErrorLogTime = 0;
-const ERROR_LOG_THROTTLE_MS = 5000; // Only log errors every 5 seconds
+const ERROR_LOG_THROTTLE_MS = 5000;
 
 export const useSocket = (): UseSocketReturn => {
   const [connected, setConnected] = useState(false);
   const [connecting, setConnecting] = useState(false);
   const [latency, setLatency] = useState(0);
+  const isInitialized = useRef(false);
+  const eventHandlersAttached = useRef(false);
 
-  // Store socket globally for access from other hooks
+  // Sync state with global socket when it changes
   useEffect(() => {
-    if (socket) {
-      (window as any).__skemino_socket = socket;
+    if (globalSocket) {
+      setConnected(globalSocket.connected);
+      (window as any).__skemino_socket = globalSocket;
     }
   }, []);
 
@@ -75,49 +80,54 @@ export const useSocket = (): UseSocketReturn => {
     return null;
   };
 
-  // Initialize socket connection
+  // Initialize socket connection only once per application lifecycle
   useEffect(() => {
-    if (!socket) {
+    if (!globalSocket && !isInitialized.current) {
+      isInitialized.current = true;
       setConnecting(true);
+      socketConnectionCount++;
 
       const initializeSocket = async () => {
         try {
+          console.log(`🔗 Initializing socket connection #${socketConnectionCount}`);
+
           // Ensure we have authentication
           const token = await ensureAuthentication();
 
           if (!token) {
             console.error('Failed to obtain authentication token');
             setConnecting(false);
+            isInitialized.current = false;
             return;
           }
 
-          socket = io(import.meta.env.VITE_SOCKET_URL || 'http://localhost:3005', {
+          globalSocket = io(import.meta.env.VITE_SOCKET_URL || 'http://localhost:3005', {
             transports: ['websocket', 'polling'],
             reconnection: true,
-            reconnectionDelay: 2000, // Start with 2 seconds
-            reconnectionDelayMax: 10000, // Max 10 seconds
+            reconnectionDelay: 2000,
+            reconnectionDelayMax: 10000,
             reconnectionAttempts: 5,
-            timeout: 15000, // Increased timeout
-            forceNew: true,
+            timeout: 15000,
+            forceNew: false, // Allow reuse of existing connection
             auth: {
               token: token,
               isGuest: !localStorage.getItem('skemino_auth_token')
             }
           });
 
-          // Connection events
-          socket.on('connect', () => {
-            console.log('Connected to server');
+          // Connection event handlers - set only once
+          globalSocket.on('connect', () => {
+            console.log(`✅ Connected to server (connection #${socketConnectionCount})`);
             setConnected(true);
             setConnecting(false);
           });
 
-          socket.on('disconnect', () => {
-            console.log('Disconnected from server');
+          globalSocket.on('disconnect', (reason) => {
+            console.log(`❌ Disconnected from server: ${reason}`);
             setConnected(false);
           });
 
-          socket.on('connect_error', (error) => {
+          globalSocket.on('connect_error', (error) => {
             const now = Date.now();
             if (now - lastErrorLogTime > ERROR_LOG_THROTTLE_MS) {
               console.error('Connection error:', error);
@@ -127,57 +137,90 @@ export const useSocket = (): UseSocketReturn => {
           });
 
           // Latency measurement
-          socket.on('pong', () => {
+          globalSocket.on('pong', () => {
             const now = Date.now();
-            const roundTripTime = now - (socket as any).lastPing;
+            const roundTripTime = now - (globalSocket as any).lastPing;
             setLatency(Math.round(roundTripTime / 2));
           });
 
-          // Ping every 5 seconds
+          // Ping every 5 seconds for latency measurement
           const pingInterval = setInterval(() => {
-            if (socket?.connected) {
-              (socket as any).lastPing = Date.now();
-              socket.emit('ping');
+            if (globalSocket?.connected) {
+              (globalSocket as any).lastPing = Date.now();
+              globalSocket.emit('ping');
             }
           }, 5000);
 
-          return () => {
+          // Cleanup interval when socket disconnects permanently
+          const handleSocketDestroy = () => {
             clearInterval(pingInterval);
           };
+
+          globalSocket.on('disconnect', handleSocketDestroy);
+
+          // Store cleanup function globally
+          (globalSocket as any).__cleanup = () => {
+            clearInterval(pingInterval);
+            handleSocketDestroy();
+          };
+
+          // Make socket available globally
+          (window as any).__skemino_socket = globalSocket;
+
         } catch (error) {
           console.error('Failed to initialize socket:', error);
           setConnecting(false);
+          isInitialized.current = false;
+          globalSocket = null;
         }
       };
 
       initializeSocket();
+    } else if (globalSocket) {
+      // Use existing socket
+      setConnected(globalSocket.connected);
+      setConnecting(false);
     }
 
-    // Cleanup on unmount
+    // Cleanup only happens when the entire application unmounts
+    // Individual component unmounts should NOT disconnect the shared socket
     return () => {
-      if (socket) {
-        socket.disconnect();
-        socket = null;
+      socketConnectionCount--;
+      console.log(`🔄 Component unmount, remaining connections: ${socketConnectionCount}`);
+
+      // Only disconnect when no more components are using the socket
+      if (socketConnectionCount <= 0 && globalSocket) {
+        console.log('🔌 Disconnecting socket - no more active connections');
+        globalSocket.disconnect();
+        if ((globalSocket as any).__cleanup) {
+          (globalSocket as any).__cleanup();
+        }
+        globalSocket = null;
+        isInitialized.current = false;
+        socketConnectionCount = 0;
       }
     };
   }, []);
 
-  // Game event handlers
+  // Game event handlers - attach only once per hook instance
   useEffect(() => {
-    if (!socket) return;
+    if (!globalSocket || eventHandlersAttached.current) return;
+
+    console.log('🎮 Attaching game event handlers');
+    eventHandlersAttached.current = true;
 
     // Game state updates
-    socket.on('game:state', (gameState: GameState) => {
+    globalSocket.on('game:state', (gameState: GameState) => {
       setGameState(gameState);
     });
 
     // Player info
-    socket.on('game:players', (data: { current: Player; opponent: Player }) => {
+    globalSocket.on('game:players', (data: { current: Player; opponent: Player }) => {
       setPlayers(data.current, data.opponent);
     });
 
     // Move made
-    socket.on('move:made', (data: {
+    globalSocket.on('move:made', (data: {
       card: Card;
       from?: BoardCell;
       to: BoardCell;
@@ -186,7 +229,7 @@ export const useSocket = (): UseSocketReturn => {
       // Update board with the move
       updateBoard(data.to, {
         card: data.card,
-        owner: data.card ? 'white' : 'black', // Determine from game state
+        owner: data.card ? 'white' : 'black',
       });
 
       // Play move sound
@@ -196,54 +239,50 @@ export const useSocket = (): UseSocketReturn => {
     });
 
     // Time updates
-    socket.on('time:update', (data: { white: number; black: number }) => {
+    globalSocket.on('time:update', (data: { white: number; black: number }) => {
       updateTime('white', data.white);
       updateTime('black', data.black);
     });
 
     // Game over
-    socket.on('game:over', (data: {
+    globalSocket.on('game:over', (data: {
       winner: 'white' | 'black';
       reason: string;
     }) => {
-      // Handle game over
       console.log('Game over:', data);
     });
 
     // Draw offer
-    socket.on('draw:offered', () => {
-      // Handle draw offer
+    globalSocket.on('draw:offered', () => {
       if (confirm('Your opponent offers a draw. Accept?')) {
-        socket?.emit('draw:response', { accept: true });
+        globalSocket?.emit('draw:response', { accept: true });
       } else {
-        socket?.emit('draw:response', { accept: false });
+        globalSocket?.emit('draw:response', { accept: false });
       }
     });
 
     // Chat message
-    socket.on('chat:message', (data: {
+    globalSocket.on('chat:message', (data: {
       player: string;
       message: string;
       timestamp: number;
     }) => {
-      // Handle chat message
       console.log('Chat:', data);
     });
 
-    // Matchmaking events (using server's actual event names)
-    socket.on('matchmaking:queued', (data: { timeControl: string }) => {
+    // Matchmaking events
+    globalSocket.on('matchmaking:queued', (data: { timeControl: string }) => {
       console.log('Queued for matchmaking:', data);
       setDistributionState?.({ phase: 'waiting', isDistributing: false, currentCard: 0, animationProgress: 0 });
     });
 
-    socket.on('match:found', (data: { gameId: string; color: string; opponent: any }) => {
+    globalSocket.on('match:found', (data: { gameId: string; color: string; opponent: any }) => {
       console.log('Match found:', data);
       setDistributionState?.({ phase: 'matchmaking', isDistributing: true, currentCard: 0, animationProgress: 0 });
 
-      // Set players from match data
       const currentPlayerData = {
         id: data.color === 'white' ? 'current' : 'opponent',
-        username: 'Current Player', // Will be updated with real data
+        username: 'Current Player',
         rating: 1000,
         color: data.color as 'white' | 'black',
       };
@@ -258,13 +297,13 @@ export const useSocket = (): UseSocketReturn => {
       setPlayers(currentPlayerData, opponentData);
     });
 
-    socket.on('game:starting', (data: { roomId: string; message: string; timestamp: number }) => {
+    globalSocket.on('game:starting', (data: { roomId: string; message: string; timestamp: number }) => {
       console.log('Game starting:', data);
       setDistributionState?.({ phase: 'starting', isDistributing: true, currentCard: 0, animationProgress: 0 });
     });
 
     // Card distribution events
-    socket.on('cards:distribution-start', (data: { phase: string; timestamp: number }) => {
+    globalSocket.on('cards:distribution-start', (data: { phase: string; timestamp: number }) => {
       console.log('Distribution started:', data);
       setDistributionState?.({
         phase: 'shuffling',
@@ -274,7 +313,7 @@ export const useSocket = (): UseSocketReturn => {
       });
     });
 
-    socket.on('cards:distribution-phase', (data: { phase: string; timestamp: number }) => {
+    globalSocket.on('cards:distribution-phase', (data: { phase: string; timestamp: number }) => {
       console.log('Distribution phase:', data);
       setDistributionState?.({
         phase: 'dealing',
@@ -284,7 +323,7 @@ export const useSocket = (): UseSocketReturn => {
       });
     });
 
-    socket.on('cards:card-dealt', (data: {
+    globalSocket.on('cards:card-dealt', (data: {
       cardNumber: number;
       totalCards: number;
       player: string;
@@ -300,17 +339,12 @@ export const useSocket = (): UseSocketReturn => {
         animationProgress: data.progress
       });
 
-      // Trigger individual card animation
       triggerCardDistribution?.(data);
     });
 
-    socket.on('cards:distribution-complete', (data: { gameState: GameState; timestamp: number }) => {
+    globalSocket.on('cards:distribution-complete', (data: { gameState: GameState; timestamp: number }) => {
       console.log('Distribution complete:', data);
-
-      // Set final game state
       setGameState(data.gameState);
-
-      // Complete distribution animation
       setDistributionState?.({
         phase: 'complete',
         isDistributing: false,
@@ -319,81 +353,83 @@ export const useSocket = (): UseSocketReturn => {
       });
     });
 
-    // Connection events
-    socket.on('connection:established', (data: { socketId: string; timestamp: number; serverTime: string }) => {
+    globalSocket.on('connection:established', (data: { socketId: string; timestamp: number; serverTime: string }) => {
       console.log('Connection established:', data);
     });
 
+    // Cleanup function removes only this hook's handlers on unmount
     return () => {
-      if (socket) {
-        socket.off('game:state');
-        socket.off('game:players');
-        socket.off('move:made');
-        socket.off('time:update');
-        socket.off('game:over');
-        socket.off('draw:offered');
-        socket.off('chat:message');
-        socket.off('matchmaking:waiting');
-        socket.off('game:found');
-        socket.off('game:starting');
-        socket.off('cards:distribution-start');
-        socket.off('cards:distribution-phase');
-        socket.off('cards:card-dealt');
-        socket.off('cards:distribution-complete');
-        socket.off('connection:established');
+      if (globalSocket && eventHandlersAttached.current) {
+        console.log('🧹 Cleaning up event handlers for this hook instance');
+        eventHandlersAttached.current = false;
+
+        // Remove only the handlers that this hook instance added
+        globalSocket.off('game:state');
+        globalSocket.off('game:players');
+        globalSocket.off('move:made');
+        globalSocket.off('time:update');
+        globalSocket.off('game:over');
+        globalSocket.off('draw:offered');
+        globalSocket.off('chat:message');
+        globalSocket.off('matchmaking:queued');
+        globalSocket.off('match:found');
+        globalSocket.off('game:starting');
+        globalSocket.off('cards:distribution-start');
+        globalSocket.off('cards:distribution-phase');
+        globalSocket.off('cards:card-dealt');
+        globalSocket.off('cards:distribution-complete');
+        globalSocket.off('connection:established');
       }
     };
-  }, [setGameState, setPlayers, updateBoard, updateTime, setDistributionState, triggerCardDistribution]);
+  }, [globalSocket, setGameState, setPlayers, updateBoard, updateTime, setDistributionState, triggerCardDistribution]);
 
-  // Emit functions
+  // Emit functions - use globalSocket reference
   const emitMove = useCallback((data: { card: Card; to: BoardCell }) => {
-    if (socket?.connected) {
-      socket.emit('move:make', data);
+    if (globalSocket?.connected) {
+      globalSocket.emit('move:make', data);
     }
   }, []);
 
   const emitResign = useCallback(() => {
-    if (socket?.connected) {
-      socket.emit('game:resign');
+    if (globalSocket?.connected) {
+      globalSocket.emit('game:resign');
     }
   }, []);
 
   const emitDrawOffer = useCallback(() => {
-    if (socket?.connected) {
-      socket.emit('draw:offer');
+    if (globalSocket?.connected) {
+      globalSocket.emit('draw:offer');
     }
   }, []);
 
   const emitDrawResponse = useCallback((accept: boolean) => {
-    if (socket?.connected) {
-      socket.emit('draw:response', { accept });
+    if (globalSocket?.connected) {
+      globalSocket.emit('draw:response', { accept });
     }
   }, []);
 
   const joinGame = useCallback((roomId: string) => {
-    if (socket?.connected) {
-      socket.emit('game:join', { roomId });
+    if (globalSocket?.connected) {
+      globalSocket.emit('game:join', { roomId });
     }
   }, []);
 
   const leaveGame = useCallback(() => {
-    if (socket?.connected) {
-      socket.emit('game:leave');
+    if (globalSocket?.connected) {
+      globalSocket.emit('game:leave');
     }
   }, []);
 
   const startMatchmaking = useCallback((playerData: { playerId: string; username: string; rating: number }) => {
-    if (socket?.connected) {
+    if (globalSocket?.connected) {
       console.log('🎮 Starting matchmaking with player data:', playerData);
 
-      // Check if this is a guest or registered user to emit the right event
       const token = localStorage.getItem('skemino_auth_token') || sessionStorage.getItem('skemino_auth_token');
       const isGuest = !token;
 
       if (isGuest) {
-        // Emit guest matchmaking event
-        socket.emit('matchmaking:join-guest', {
-          timeControl: 'rapid', // Default time control
+        globalSocket.emit('matchmaking:join-guest', {
+          timeControl: 'rapid',
           guestRating: playerData.rating || 1200,
           preferences: {
             maxRatingDifference: 400
@@ -401,8 +437,7 @@ export const useSocket = (): UseSocketReturn => {
         });
         console.log('🎭 Started guest matchmaking for rapid');
       } else {
-        // Emit regular matchmaking event
-        socket.emit('matchmaking:join', 'rapid');
+        globalSocket.emit('matchmaking:join', 'rapid');
         console.log('🔰 Started registered user matchmaking for rapid');
       }
     } else {
@@ -411,18 +446,17 @@ export const useSocket = (): UseSocketReturn => {
   }, []);
 
   const cancelMatchmaking = useCallback(() => {
-    if (socket?.connected) {
+    if (globalSocket?.connected) {
       console.log('❌ Cancelling matchmaking');
 
-      // Check if this is a guest or registered user to emit the right event
       const token = localStorage.getItem('skemino_auth_token') || sessionStorage.getItem('skemino_auth_token');
       const isGuest = !token;
 
       if (isGuest) {
-        socket.emit('matchmaking:leave-guest');
+        globalSocket.emit('matchmaking:leave-guest');
         console.log('🎭 Cancelled guest matchmaking');
       } else {
-        socket.emit('matchmaking:leave');
+        globalSocket.emit('matchmaking:leave');
         console.log('🔰 Cancelled registered user matchmaking');
       }
     }
@@ -432,7 +466,7 @@ export const useSocket = (): UseSocketReturn => {
     connected,
     connecting,
     latency,
-    socket,
+    socket: globalSocket,
     emitMove,
     emitResign,
     emitDrawOffer,
