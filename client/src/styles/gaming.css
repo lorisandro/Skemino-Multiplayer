@@ -149,8 +149,9 @@
 }
 
 /* FORCE GRAY BOARD SQUARES - Override any black backgrounds */
-.skemino-square-dark,
-.board-square,
+/* EXCLUDE central cells (c3, c4, d3, d4) to preserve their custom diagonal patterns */
+.skemino-square-dark:not(.skemino-central-c3):not(.skemino-central-c4):not(.skemino-central-d3):not(.skemino-central-d4),
+.board-square:not(.skemino-central-c3):not(.skemino-central-c4):not(.skemino-central-d3):not(.skemino-central-d4),
 .square-vertex,
 .square-central-diamond {
   background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 50%, #4a4a4a 100%) !important;
@@ -158,24 +159,27 @@
 }
 
 /* Additional specificity override for Tailwind conflicts */
-div[class*="bg-gradient-to-br"]:not([class*="cyan"]):not([class*="emerald"]):not([class*="red"]):not([class*="yellow"]) {
+/* EXCLUDE central cells to preserve their custom diagonal patterns */
+div[class*="bg-gradient-to-br"]:not([class*="cyan"]):not([class*="emerald"]):not([class*="red"]):not([class*="yellow"]):not(.skemino-central-c3):not(.skemino-central-c4):not(.skemino-central-d3):not(.skemino-central-d4) {
   background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 50%, #4a4a4a 100%) !important;
 }
 
 /* CRITICAL: Prevent any black backgrounds on board squares */
-div[class*="skemino-square"],
-div[data-position],
-.game-board > div,
-.grid div[class*="border"] {
+/* EXCLUDE central cells to preserve their custom diagonal patterns */
+div[class*="skemino-square"]:not(.skemino-central-c3):not(.skemino-central-c4):not(.skemino-central-d3):not(.skemino-central-d4),
+div[data-position]:not(.skemino-central-c3):not(.skemino-central-c4):not(.skemino-central-d3):not(.skemino-central-d4),
+.game-board > div:not(.skemino-central-c3):not(.skemino-central-c4):not(.skemino-central-d3):not(.skemino-central-d4),
+.grid div[class*="border"]:not(.skemino-central-c3):not(.skemino-central-c4):not(.skemino-central-d3):not(.skemino-central-d4) {
   background-color: transparent !important;
 }
 
 /* Force standard squares to use gray alternating pattern */
-.grid div[class*="border"]:nth-child(odd) {
+/* EXCLUDE central cells to preserve their custom diagonal patterns */
+.grid div[class*="border"]:nth-child(odd):not(.skemino-central-c3):not(.skemino-central-c4):not(.skemino-central-d3):not(.skemino-central-d4) {
   background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 50%, #4a4a4a 100%) !important;
 }
 
-.grid div[class*="border"]:nth-child(even) {
+.grid div[class*="border"]:nth-child(even):not(.skemino-central-c3):not(.skemino-central-c4):not(.skemino-central-d3):not(.skemino-central-d4) {
   background: linear-gradient(135deg, #5a5a5a 0%, #4a4a4a 50%, #5a5a5a 100%) !important;
 }
 
