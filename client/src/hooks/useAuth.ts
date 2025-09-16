@@ -81,32 +81,36 @@ export const useAuth = (): AuthContextType => {
   // Force invalidation of corrupted tokens (one-time cleanup)
   const forceInvalidateCorruptedTokens = async (): Promise<void> => {
     try {
-      const corruptedTokenPattern = 'eyJhbGci'; // Pattern that was failing
+      // Check if cleanup already completed
+      const cleanupFlag = localStorage.getItem('skemino_corrupted_tokens_cleaned');
+      if (cleanupFlag) {
+        return; // Already cleaned, skip
+      }
 
-      // Check localStorage
+      // Only clean up tokens that are actually malformed or specific known bad patterns
+      // NOT all JWT tokens (which correctly start with 'eyJhbGci')
+
+      // Check localStorage for malformed tokens
       const localToken = localStorage.getItem('skemino_auth_token');
-      if (localToken && localToken.startsWith(corruptedTokenPattern)) {
-        console.log('🧹 Detected corrupted token in localStorage, clearing...');
+      if (localToken && !isValidJWTFormat(localToken)) {
+        console.log('🧹 Detected malformed token in localStorage, clearing...');
         localStorage.removeItem('skemino_auth_token');
         localStorage.removeItem('skemino_user_data');
         localStorage.removeItem('skemino_token_version');
       }
 
-      // Check sessionStorage
+      // Check sessionStorage for malformed tokens
       const sessionToken = sessionStorage.getItem('skemino_auth_token');
-      if (sessionToken && sessionToken.startsWith(corruptedTokenPattern)) {
-        console.log('🧹 Detected corrupted token in sessionStorage, clearing...');
+      if (sessionToken && !isValidJWTFormat(sessionToken)) {
+        console.log('🧹 Detected malformed token in sessionStorage, clearing...');
         sessionStorage.removeItem('skemino_auth_token');
         sessionStorage.removeItem('skemino_user_data');
         sessionStorage.removeItem('skemino_token_version');
       }
 
       // Mark as cleaned to avoid repeated cleanups
-      const cleanupFlag = localStorage.getItem('skemino_corrupted_tokens_cleaned');
-      if (!cleanupFlag) {
-        localStorage.setItem('skemino_corrupted_tokens_cleaned', 'true');
-        console.log('✅ Corrupted tokens cleanup completed');
-      }
+      localStorage.setItem('skemino_corrupted_tokens_cleaned', 'true');
+      console.log('✅ Token corruption check completed - valid tokens preserved');
     } catch (error) {
       console.error('Error during corrupted token cleanup:', error);
     }
