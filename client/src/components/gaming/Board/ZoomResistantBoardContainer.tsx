@@ -80,14 +80,14 @@ export const ZoomResistantBoardContainer: React.FC<ZoomResistantBoardContainerPr
             ${demoMode ? 'demo-mode' : ''}
           `}
           style={{
-            // Demo mode overrides with smaller fixed sizes (rectangular for 5:7 cells) - viewport optimized
+            // Demo mode overrides with larger fixed sizes (rectangular for 5:7 cells) - INCREASED BY 25%
             ...(demoMode && {
-              width: '40.81rem',
-              height: '59.144rem', // Height elongated +3.5% for slightly taller board
-              minWidth: '40.81rem',
-              minHeight: '59.144rem',
-              maxWidth: '46.64rem',
-              maxHeight: '67.581rem', // Max height elongated +3.5% for slightly taller board
+              width: '51.0125rem', // Increased by 25% from 40.81rem
+              height: '73.93rem', // Increased by 25% from 59.144rem
+              minWidth: '51.0125rem',
+              minHeight: '73.93rem',
+              maxWidth: '58.3rem', // Increased by 25% from 46.64rem
+              maxHeight: '84.476rem', // Increased by 25% from 67.581rem
             })
           }}
         >
@@ -108,17 +108,17 @@ export const useBoardContainerSize = () => {
   const getBoardSize = () => {
     switch (currentBreakpoint) {
       case 'mobile':
-        return { width: '46.64rem', height: '67.581rem' }; // Height elongated +3.5% for slightly taller board - viewport optimized
+        return { width: '58.3rem', height: '84.476rem' }; // INCREASED BY 25% from 46.64rem/67.581rem
       case 'tablet':
-        return { width: '52.47rem', height: '76.029rem' }; // Height elongated +3.5% for slightly taller board - viewport optimized
+        return { width: '65.5875rem', height: '95.036rem' }; // INCREASED BY 25% from 52.47rem/76.029rem
       case 'desktop':
-        return { width: '58.3rem', height: '84.477rem' }; // Height elongated +3.5% for slightly taller board - viewport optimized
+        return { width: '72.875rem', height: '105.596rem' }; // INCREASED BY 25% from 58.3rem/84.477rem
       case '2k':
-        return { width: '64.13rem', height: '92.924rem' }; // Height elongated +3.5% for slightly taller board - viewport optimized
+        return { width: '80.1625rem', height: '116.155rem' }; // INCREASED BY 25% from 64.13rem/92.924rem
       case 'ultrawide':
-        return { width: '69.96rem', height: '101.362rem' }; // Height elongated +3.5% for slightly taller board - viewport optimized
+        return { width: '87.45rem', height: '126.703rem' }; // INCREASED BY 25% from 69.96rem/101.362rem
       default:
-        return { width: '52.47rem', height: '76.029rem' }; // Height elongated +3.5% for slightly taller board - viewport optimized
+        return { width: '65.5875rem', height: '95.036rem' }; // INCREASED BY 25% from 52.47rem/76.029rem
     }
   };
 

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
-import { MatchmakingDemo } from './pages/MatchmakingDemo';
 import { GameRoom } from './components/gaming/GameRoom';
 import { GameInterface } from './components/gaming/GameInterface';
 import AuthDemo from './pages/AuthDemo';
@@ -38,7 +37,7 @@ function AppContent() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/demo" element={<MatchmakingDemo />} />
+        <Route path="/demo" element={<GameInterface className="demo-mode" />} />
         <Route path="/game" element={<GameInterface className="demo-mode" />} />
         <Route path="/game/:roomId" element={<GameRoom />} />
         <Route path="*" element={<HomePage />} />

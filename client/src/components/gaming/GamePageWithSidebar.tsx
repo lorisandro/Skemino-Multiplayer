@@ -1,5 +1,5 @@
 import React from 'react';
-import { MatchmakingDemo } from '../../pages/MatchmakingDemo';
+import { GameInterface } from './GameInterface';
 import DashboardSidebar from './DashboardSidebar';
 
 const GamePageWithSidebar: React.FC = () => {
@@ -11,7 +11,7 @@ const GamePageWithSidebar: React.FC = () => {
 
         {/* Main Game Content */}
         <main className="flex-1">
-          <MatchmakingDemo />
+          <GameInterface className="demo-mode" />
         </main>
       </div>
     </div>

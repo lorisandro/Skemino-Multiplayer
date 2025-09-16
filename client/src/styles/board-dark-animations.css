@@ -808,15 +808,15 @@ div.skemino-square-dark.skemino-central-d4,
   container-type: size;
   container-name: gameboard;
 
-  /* Rectangular sizing for 6x6 strategic gaming board - height elongated +1.5% */
-  width: min(58.3rem, 90vw);  /* Proper width for 6x6 board with card cells - fits viewport */
-  height: min(82.845rem, 92vh); /* Height elongated +1.5% for slightly taller board - fits viewport */
+  /* Rectangular sizing for 6x6 strategic gaming board - height elongated +1.5% - INCREASED BY 25% */
+  width: min(72.875rem, 90vw);  /* Increased by 25% from 58.3rem for better visibility */
+  height: min(103.556rem, 92vh); /* Increased by 25% from 82.845rem for better visibility */
 
-  /* Prevent overflow and ensure proper proportions */
-  min-width: 40.81rem; /* Minimum playable size */
-  min-height: 57.992rem; /* Minimum height elongated +1.5% for taller board */
-  max-width: 87.45rem;  /* Maximum for large screens */
-  max-height: 124.422rem; /* Maximum height elongated +1.5% for taller board */
+  /* Prevent overflow and ensure proper proportions - INCREASED BY 25% */
+  min-width: 51.0125rem; /* Increased by 25% from 40.81rem */
+  min-height: 72.49rem; /* Increased by 25% from 57.992rem */
+  max-width: 109.3125rem;  /* Increased by 25% from 87.45rem */
+  max-height: 155.5275rem; /* Increased by 25% from 124.422rem */
 
   /* Centering and positioning */
   position: relative;
@@ -901,12 +901,12 @@ div.skemino-square-dark.skemino-central-d4,
 
 /* ===== CONTAINER QUERY BREAKPOINTS - ZOOM RESISTANT ===== */
 
-/* Mobile gaming optimized */
-@container gameboard (max-width: 89rem) {
+/* Mobile gaming optimized - INCREASED BY 25% */
+@container gameboard (max-width: 111.25rem) {
   .skemino-board-zoom-resistant {
-    width: 46.64rem;
-    height: min(66.276rem, 90vh); /* Height elongated +1.5% for slightly taller board - viewport optimized */
-    min-height: 66.276rem;
+    width: 58.3rem; /* Increased by 25% from 46.64rem */
+    height: min(82.845rem, 90vh); /* Increased by 25% from 66.276rem */
+    min-height: 82.845rem;
     border-width: 1px;
   }
 
@@ -926,12 +926,12 @@ div.skemino-square-dark.skemino-central-d4,
   }
 }
 
-/* Tablet gaming */
-@container gameboard (min-width: 89rem) and (max-width: 120rem) {
+/* Tablet gaming - INCREASED BY 25% */
+@container gameboard (min-width: 111.25rem) and (max-width: 150rem) {
   .skemino-board-zoom-resistant {
-    width: 52.47rem;
-    height: min(74.560rem, 90vh); /* Height elongated +1.5% for slightly taller board - viewport optimized */
-    min-height: 74.560rem;
+    width: 65.5875rem; /* Increased by 25% from 52.47rem */
+    height: min(93.2rem, 90vh); /* Increased by 25% from 74.560rem */
+    min-height: 93.2rem;
   }
 
   .skemino-grid-zoom-resistant {
@@ -950,12 +950,12 @@ div.skemino-square-dark.skemino-central-d4,
   }
 }
 
-/* Desktop gaming */
-@container gameboard (min-width: 120rem) and (max-width: 148rem) {
+/* Desktop gaming - INCREASED BY 25% */
+@container gameboard (min-width: 150rem) and (max-width: 185rem) {
   .skemino-board-zoom-resistant {
-    width: 58.3rem;
-    height: min(82.845rem, 92vh); /* Height elongated +1.5% for slightly taller board - viewport optimized */
-    min-height: 82.845rem;
+    width: 72.875rem; /* Increased by 25% from 58.3rem */
+    height: min(103.556rem, 92vh); /* Increased by 25% from 82.845rem */
+    min-height: 103.556rem;
     border-width: 2px;
   }
 
@@ -975,12 +975,12 @@ div.skemino-square-dark.skemino-central-d4,
   }
 }
 
-/* 2K gaming optimized */
-@container gameboard (min-width: 148rem) and (max-width: 178rem) {
+/* 2K gaming optimized - INCREASED BY 25% */
+@container gameboard (min-width: 185rem) and (max-width: 222.5rem) {
   .skemino-board-zoom-resistant {
-    width: 64.13rem;
-    height: min(91.129rem, 94vh); /* Height elongated +1.5% for slightly taller board - viewport optimized */
-    min-height: 91.129rem;
+    width: 80.1625rem; /* Increased by 25% from 64.13rem */
+    height: min(113.911rem, 94vh); /* Increased by 25% from 91.129rem */
+    min-height: 113.911rem;
     border-width: 3px;
   }
 
@@ -1000,12 +1000,12 @@ div.skemino-square-dark.skemino-central-d4,
   }
 }
 
-/* Ultrawide gaming */
-@container gameboard (min-width: 178rem) {
+/* Ultrawide gaming - INCREASED BY 25% */
+@container gameboard (min-width: 222.5rem) {
   .skemino-board-zoom-resistant {
-    width: 69.96rem;
-    height: min(99.414rem, 95vh); /* Height elongated +1.5% for slightly taller board - viewport optimized */
-    min-height: 99.414rem;
+    width: 87.45rem; /* Increased by 25% from 69.96rem */
+    height: min(124.268rem, 95vh); /* Increased by 25% from 99.414rem */
+    min-height: 124.268rem;
     border-width: 3px;
   }
 
