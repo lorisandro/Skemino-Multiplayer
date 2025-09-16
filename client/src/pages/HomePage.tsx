@@ -328,6 +328,7 @@ const HomePage: React.FC = () => {
             </div>
           </div>
           </div>
+          </div>
         </div>
       </section>
 
@@ -869,6 +870,7 @@ const HomePage: React.FC = () => {
                 </div>
               </div>
             </div>
+          </div>
           </div>
         </div>
       </section>
