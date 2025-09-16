@@ -174,7 +174,7 @@ export const GameBoardContainer: React.FC<GameBoardContainerProps> = ({
         ease: "easeInOut"
       }}
     >
-      {isMyTurn ? 'Your Turn' : opponent ? `${opponent.username}'s Turn` : 'Waiting...'}
+      Current Player's Turn
     </motion.div>
   ), [isMyTurn, opponent]);
 

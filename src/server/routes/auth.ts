@@ -18,6 +18,7 @@ interface GuestUser {
 
 // In-memory store for guest sessions (in production, use Redis)
 const guestSessions = new Map<string, GuestUser>();
+let guestCounter = 1000; // Counter for guest usernames
 
 // Clean up expired guest sessions every hour
 setInterval(() => {
@@ -516,6 +517,30 @@ export const getGuestUser = (guestId: string): GuestUser | null => {
     return guest;
   }
   return null;
+};
+
+// Get or create guest user by ID (for WebSocket authentication with fallback)
+export const getOrCreateGuestUser = (guestId: string): GuestUser => {
+  let guest = guestSessions.get(guestId);
+
+  // If guest doesn't exist or expired, create new one
+  if (!guest || guest.expiresAt <= Date.now()) {
+    const guestNumber = guestCounter++;
+    const newGuest: GuestUser = {
+      id: guestId || `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      username: `Guest${guestNumber}`,
+      rating: 1000 + Math.floor(Math.random() * 200), // Random rating between 1000-1200
+      isGuest: true,
+      createdAt: Date.now(),
+      expiresAt: Date.now() + (2 * 60 * 60 * 1000) // 2 hours
+    };
+
+    guestSessions.set(newGuest.id, newGuest);
+    logger.info(`🆕 Created new guest user: ${newGuest.username} (${newGuest.id})`);
+    return newGuest;
+  }
+
+  return guest;
 };
 
 export default router;

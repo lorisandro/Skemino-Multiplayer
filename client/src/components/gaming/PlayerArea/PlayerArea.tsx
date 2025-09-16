@@ -192,7 +192,7 @@ export const PlayerArea: React.FC<PlayerAreaProps> = ({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
             >
-              {isOpponent && player ? `${player.username}'s Turn` : 'Your Turn'}
+              Current Player's Turn
             </motion.div>
           )}
         </AnimatePresence>
