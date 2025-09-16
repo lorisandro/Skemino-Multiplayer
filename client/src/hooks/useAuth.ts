@@ -22,18 +22,38 @@ export const useAuth = (): AuthContextType => {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
+        // CRITICAL: Force invalidate potentially corrupted tokens
+        await forceInvalidateCorruptedTokens();
+
         // Check for existing token in localStorage first (persistent login)
         let token = localStorage.getItem('skemino_auth_token');
         let userData = localStorage.getItem('skemino_user_data');
+        let tokenVersion = localStorage.getItem('skemino_token_version');
 
         // If not found in localStorage, check sessionStorage (guest or temporary sessions)
         if (!token || !userData) {
           token = sessionStorage.getItem('skemino_auth_token');
           userData = sessionStorage.getItem('skemino_user_data');
+          tokenVersion = sessionStorage.getItem('skemino_token_version');
         }
 
         if (token && userData) {
           const parsedUser = JSON.parse(userData);
+
+          // Check token version compatibility
+          const currentTokenVersion = '2025-09-16';
+          if (!tokenVersion || tokenVersion !== currentTokenVersion) {
+            console.log('🔄 Token version outdated, forcing re-authentication');
+            await forceTokenInvalidation();
+            return;
+          }
+
+          // Validate token format before attempting server validation
+          if (!isValidJWTFormat(token)) {
+            console.error('❌ Invalid JWT format detected in storage, clearing tokens');
+            await forceTokenInvalidation();
+            return;
+          }
 
           // Validate token with server (in real app)
           const isValid = await validateToken(token);
@@ -42,15 +62,14 @@ export const useAuth = (): AuthContextType => {
             setUser(parsedUser);
             setIsAuthenticated(true);
           } else {
-            // Token expired, clean up both storages
-            localStorage.removeItem('skemino_auth_token');
-            localStorage.removeItem('skemino_user_data');
-            sessionStorage.removeItem('skemino_auth_token');
-            sessionStorage.removeItem('skemino_user_data');
+            // Token expired or invalid, clean up both storages
+            await forceTokenInvalidation();
           }
         }
       } catch (error) {
         console.error('Auth initialization error:', error);
+        // On any error, clear potentially corrupted data
+        await forceTokenInvalidation();
       } finally {
         setIsLoading(false);
       }
