@@ -82,12 +82,12 @@ export const ZoomResistantBoardContainer: React.FC<ZoomResistantBoardContainerPr
           style={{
             // Demo mode overrides with smaller fixed sizes (rectangular for 5:7 cells) - viewport optimized
             ...(demoMode && {
-              width: '35rem',
-              height: '49rem', // Height adjusted for 5:7 card cells (35 * 1.4)
-              minWidth: '35rem',
-              minHeight: '49rem',
-              maxWidth: '40rem',
-              maxHeight: '56rem', // Max height adjusted for 5:7 card cells (40 * 1.4)
+              width: '38.5rem',
+              height: '53.9rem', // Height adjusted for 5:7 card cells (38.5 * 1.4)
+              minWidth: '38.5rem',
+              minHeight: '53.9rem',
+              maxWidth: '44rem',
+              maxHeight: '61.6rem', // Max height adjusted for 5:7 card cells (44 * 1.4)
             })
           }}
         >
@@ -108,17 +108,17 @@ export const useBoardContainerSize = () => {
   const getBoardSize = () => {
     switch (currentBreakpoint) {
       case 'mobile':
-        return { width: '40rem', height: '56rem' }; // Height adjusted for 5:7 card cells (40 * 1.4) - viewport optimized
+        return { width: '44rem', height: '61.6rem' }; // Height adjusted for 5:7 card cells (44 * 1.4) - viewport optimized
       case 'tablet':
-        return { width: '45rem', height: '63rem' }; // Height adjusted for 5:7 card cells (45 * 1.4) - viewport optimized
+        return { width: '49.5rem', height: '69.3rem' }; // Height adjusted for 5:7 card cells (49.5 * 1.4) - viewport optimized
       case 'desktop':
-        return { width: '50rem', height: '70rem' }; // Height adjusted for 5:7 card cells (50 * 1.4) - viewport optimized
-      case '2k':
         return { width: '55rem', height: '77rem' }; // Height adjusted for 5:7 card cells (55 * 1.4) - viewport optimized
+      case '2k':
+        return { width: '60.5rem', height: '84.7rem' }; // Height adjusted for 5:7 card cells (60.5 * 1.4) - viewport optimized
       case 'ultrawide':
-        return { width: '60rem', height: '84rem' }; // Height adjusted for 5:7 card cells (60 * 1.4) - viewport optimized
+        return { width: '66rem', height: '92.4rem' }; // Height adjusted for 5:7 card cells (66 * 1.4) - viewport optimized
       default:
-        return { width: '45rem', height: '63rem' }; // Height adjusted for 5:7 card cells - viewport optimized
+        return { width: '49.5rem', height: '69.3rem' }; // Height adjusted for 5:7 card cells - viewport optimized
     }
   };
 
