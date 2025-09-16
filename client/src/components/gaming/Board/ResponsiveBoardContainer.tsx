@@ -93,10 +93,10 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
       }
 
       // Regular mode: improved calculations with better container fitting
-      // Account for 1.4:1 aspect ratio of board squares (rectangular cells)
+      // Account for 1.449:1 aspect ratio of board squares (rectangular cells, +3.5% taller)
       let baseSize = Math.min(
         width * 0.99, // ULTRA MAXIMIZED space utilization
-        (height - 20) * 1.0 / 1.4, // Divide by 1.4 to account for rectangular cells, ultra minimal margin
+        (height - 20) * 1.0 / 1.449, // Divide by 1.449 to account for taller rectangular cells (+3.5%), ultra minimal margin
         maxSize
       );
 
@@ -109,18 +109,18 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
           baseSize = Math.min(baseSize, width * 0.8, 600);
           break;
         case 'desktop':
-          baseSize = Math.min(baseSize, width * 0.97, height * 1.0 / 1.4, 1500); // Ultra maximum desktop utilization
+          baseSize = Math.min(baseSize, width * 0.97, height * 1.0 / 1.449, 1500); // Ultra maximum desktop utilization (+3.5% taller)
           break;
         case '2k':
           // Optimized sizing for 2K displays - better space utilization
           baseSize = Math.min(
             width * 0.85, // Ultra maximum 2K space utilization
-            height * 0.92 / 1.4, // Divide by 1.4 for rectangular cells
+            height * 0.92 / 1.449, // Divide by 1.449 for taller rectangular cells (+3.5%)
             1700 // Ultra maximum 2K size
           );
           break;
         case 'ultrawide':
-          baseSize = Math.min(baseSize, width * 0.4, height * 0.75 / 1.4, 1000);
+          baseSize = Math.min(baseSize, width * 0.4, height * 0.75 / 1.449, 1000); // (+3.5% taller)
           break;
       }
 
@@ -226,7 +226,7 @@ export const ResponsiveBoardContainer: React.FC<ResponsiveBoardContainerProps> =
         animate={breakpoint}
         style={{
           width: containerSize,
-          height: containerSize * 1.4, // Height accounts for 1.4:1 cell aspect ratio
+          height: containerSize * 1.449, // Height accounts for 1.449:1 aspect ratio (+3.5% taller)
           maxWidth: '100%',
           maxHeight: '100%',
         }}

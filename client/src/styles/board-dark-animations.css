@@ -808,9 +808,9 @@ div.skemino-square-dark.skemino-central-d4,
   container-type: size;
   container-name: gameboard;
 
-  /* Rectangular sizing for 6x6 strategic gaming board - height elongated +3.5% - viewport optimized */
+  /* Rectangular sizing for 6x6 strategic gaming board - height elongated +3.5% */
   width: min(58.3rem, 90vw);  /* Proper width for 6x6 board with card cells - fits viewport */
-  height: min(84.477rem, 90vh); /* Height elongated +3.5% for slightly taller board - fits viewport */
+  height: 84.477rem; /* Height elongated +3.5% for slightly taller board - NO viewport limit */
 
   /* Prevent overflow and ensure proper proportions */
   min-width: 40.81rem; /* Minimum playable size */
