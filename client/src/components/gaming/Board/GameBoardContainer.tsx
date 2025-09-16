@@ -257,7 +257,7 @@ export const GameBoardContainer: React.FC<GameBoardContainerProps> = ({
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <div className={`flex space-x-6 text-gray-600 bg-white/80 rounded-lg shadow-sm ${is2K ? 'text-base px-6 py-3' : 'text-sm px-4 py-2'}`}>
+          <div className={`flex space-x-6 text-gray-400 bg-black/80 rounded-lg shadow-sm ${is2K ? 'text-base px-6 py-3' : 'text-sm px-4 py-2'}`}>
             <div className="flex items-center space-x-1">
               <span className="font-medium">Board:</span>
               <span className="font-mono text-blue-600">6×6</span>
