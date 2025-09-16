@@ -809,14 +809,14 @@ div.skemino-square-dark.skemino-central-d4,
   container-name: gameboard;
 
   /* Rectangular sizing for 6x6 strategic gaming board with 5:7 aspect ratio cells - viewport optimized */
-  width: min(55rem, 90vw);  /* Proper width for 6x6 board with card cells - fits viewport */
-  height: min(77rem, 90vh); /* Height for 5:7 card cells (55 * 1.4) - fits viewport */
+  width: min(58.3rem, 90vw);  /* Proper width for 6x6 board with card cells - fits viewport */
+  height: min(81.62rem, 90vh); /* Height for 5:7 card cells (58.3 * 1.4) - fits viewport */
 
   /* Prevent overflow and ensure proper proportions */
-  min-width: 38.5rem; /* Minimum playable size */
-  min-height: 53.9rem; /* Minimum height for 5:7 card cells (38.5 * 1.4) */
-  max-width: 82.5rem;  /* Maximum for large screens */
-  max-height: 115.5rem; /* Maximum height for 5:7 card cells (82.5 * 1.4) */
+  min-width: 40.81rem; /* Minimum playable size */
+  min-height: 57.134rem; /* Minimum height for 5:7 card cells (40.81 * 1.4) */
+  max-width: 87.45rem;  /* Maximum for large screens */
+  max-height: 122.43rem; /* Maximum height for 5:7 card cells (87.45 * 1.4) */
 
   /* Centering and positioning */
   position: relative;
@@ -902,11 +902,11 @@ div.skemino-square-dark.skemino-central-d4,
 /* ===== CONTAINER QUERY BREAKPOINTS - ZOOM RESISTANT ===== */
 
 /* Mobile gaming optimized */
-@container gameboard (max-width: 84rem) {
+@container gameboard (max-width: 89rem) {
   .skemino-board-zoom-resistant {
-    width: 44rem;
-    height: 61.6rem; /* Height adjusted for 5:7 card cells (44 * 1.4) - viewport optimized */
-    min-height: 61.6rem;
+    width: 46.64rem;
+    height: 65.296rem; /* Height adjusted for 5:7 card cells (46.64 * 1.4) - viewport optimized */
+    min-height: 65.296rem;
     border-width: 1px;
   }
 
@@ -927,11 +927,11 @@ div.skemino-square-dark.skemino-central-d4,
 }
 
 /* Tablet gaming */
-@container gameboard (min-width: 84rem) and (max-width: 113rem) {
+@container gameboard (min-width: 89rem) and (max-width: 120rem) {
   .skemino-board-zoom-resistant {
-    width: 49.5rem;
-    height: 69.3rem; /* Height adjusted for 5:7 cells (49.5 * 1.4) - viewport optimized */
-    min-height: 69.3rem;
+    width: 52.47rem;
+    height: 73.458rem; /* Height adjusted for 5:7 cells (52.47 * 1.4) - viewport optimized */
+    min-height: 73.458rem;
   }
 
   .skemino-grid-zoom-resistant {
@@ -951,11 +951,11 @@ div.skemino-square-dark.skemino-central-d4,
 }
 
 /* Desktop gaming */
-@container gameboard (min-width: 113rem) and (max-width: 140rem) {
+@container gameboard (min-width: 120rem) and (max-width: 148rem) {
   .skemino-board-zoom-resistant {
-    width: 55rem;
-    height: 77rem; /* Height adjusted for 5:7 card cells (55 * 1.4) - viewport optimized */
-    min-height: 77rem;
+    width: 58.3rem;
+    height: 81.62rem; /* Height adjusted for 5:7 card cells (58.3 * 1.4) - viewport optimized */
+    min-height: 81.62rem;
     border-width: 2px;
   }
 
@@ -976,11 +976,11 @@ div.skemino-square-dark.skemino-central-d4,
 }
 
 /* 2K gaming optimized */
-@container gameboard (min-width: 140rem) and (max-width: 168rem) {
+@container gameboard (min-width: 148rem) and (max-width: 178rem) {
   .skemino-board-zoom-resistant {
-    width: 60.5rem;
-    height: 84.7rem; /* Height adjusted for 5:7 card cells (60.5 * 1.4) - viewport optimized */
-    min-height: 84.7rem;
+    width: 64.13rem;
+    height: 89.782rem; /* Height adjusted for 5:7 card cells (64.13 * 1.4) - viewport optimized */
+    min-height: 89.782rem;
     border-width: 3px;
   }
 
@@ -1001,11 +1001,11 @@ div.skemino-square-dark.skemino-central-d4,
 }
 
 /* Ultrawide gaming */
-@container gameboard (min-width: 168rem) {
+@container gameboard (min-width: 178rem) {
   .skemino-board-zoom-resistant {
-    width: 66rem;
-    height: 92.4rem; /* Height adjusted for 5:7 card cells (66 * 1.4) - viewport optimized */
-    min-height: 92.4rem;
+    width: 69.96rem;
+    height: 97.944rem; /* Height adjusted for 5:7 card cells (69.96 * 1.4) - viewport optimized */
+    min-height: 97.944rem;
     border-width: 3px;
   }
 
