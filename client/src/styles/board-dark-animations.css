@@ -796,8 +796,8 @@ div.skemino-square-dark.skemino-central-d4,
 
 /* Light theme fallback (for theme toggle) */
 .light .skemino-board-dark {
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
-  border-color: rgba(0, 0, 0, 0.1);
+  background: #000000;
+  border-color: rgba(75, 85, 99, 0.8);
 }
 
 /* ===== ZOOM-RESISTANT BOARD CONTAINER ===== */
@@ -822,11 +822,11 @@ div.skemino-square-dark.skemino-central-d4,
   position: relative;
   margin: 0 auto;
 
-  /* Light gaming theme with subtle background */
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
-  border: 2px solid rgba(0, 0, 0, 0.15);
+  /* Dark gaming theme background */
+  background: #000000;
+  border: 2px solid rgba(75, 85, 99, 0.8);
   border-radius: 0.75rem;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
 
   /* Performance optimization */
   transform: translateZ(0);
