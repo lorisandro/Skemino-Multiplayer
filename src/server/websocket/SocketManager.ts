@@ -440,22 +440,32 @@ export class SocketManager {
         whiteSocket.gameRoomId = match.gameId;
         whiteSocket.join(match.gameId);
         this.updateConnectionStatus(whiteSocket.userId, 'ingame', match.gameId);
-        whiteSocket.emit('match:found', {
+        const whiteMatchData = {
           gameId: match.gameId,
           color: 'white',
-          opponent: match.black
-        });
+          opponent: match.black,
+          timeControl: match.timeControl
+        };
+        whiteSocket.emit('match:found', whiteMatchData);
+        logger.info(`✅ Sent match:found event to white player: ${match.white.username}`, whiteMatchData);
+      } else {
+        logger.error(`❌ White socket not found for user: ${match.white.userId}`);
       }
 
       if (blackSocket) {
         blackSocket.gameRoomId = match.gameId;
         blackSocket.join(match.gameId);
         this.updateConnectionStatus(blackSocket.userId, 'ingame', match.gameId);
-        blackSocket.emit('match:found', {
+        const blackMatchData = {
           gameId: match.gameId,
           color: 'black',
-          opponent: match.white
-        });
+          opponent: match.white,
+          timeControl: match.timeControl
+        };
+        blackSocket.emit('match:found', blackMatchData);
+        logger.info(`✅ Sent match:found event to black player: ${match.black.username}`, blackMatchData);
+      } else {
+        logger.error(`❌ Black socket not found for user: ${match.black.userId}`);
       }
 
       // Start the game

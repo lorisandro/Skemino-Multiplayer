@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-// import { useWebSocket } from './useWebSocket'; // Temporarily disabled for demo
+import { useWebSocket } from './useWebSocket';
 
 export interface MatchmakingState {
   isSearching: boolean;
@@ -30,9 +30,7 @@ interface UseMatchmakingOptions {
 
 export const useMatchmaking = (options: UseMatchmakingOptions = {}) => {
   const { onMatchFound, onError, isGuest = false, userRating = 1200 } = options;
-  // const { socket, isConnected } = useWebSocket(); // Temporarily disabled for demo
-  const socket = null;
-  const isConnected = true; // Mock connection for demo
+  const { socket, isConnected } = useWebSocket();
 
   const [state, setState] = useState<MatchmakingState>({
     isSearching: false,
@@ -42,9 +40,14 @@ export const useMatchmaking = (options: UseMatchmakingOptions = {}) => {
     error: null,
   });
 
-  // Join matchmaking queue (Demo version)
+  // Join matchmaking queue
   const joinQueue = useCallback(async (timeControl: string) => {
-    console.log('🎮 Starting matchmaking demo for:', timeControl);
+    if (!socket || !isConnected) {
+      onError?.('Non connesso al server');
+      return false;
+    }
+
+    console.log('🎮 Starting real matchmaking for:', timeControl);
 
     try {
       setState(prev => ({
@@ -54,24 +57,23 @@ export const useMatchmaking = (options: UseMatchmakingOptions = {}) => {
         error: null,
       }));
 
-      // Demo: Timeout after 1 minute with no match found
-      const timeoutDelay = 60000; // 1 minute
-      setTimeout(() => {
-        setState(prev => ({
-          ...prev,
-          isSearching: false,
-          timeControl: null,
-          queuePosition: null,
-          estimatedWait: null,
-          error: 'Nessun avversario trovato!',
-        }));
+      // Emit matchmaking join event based on user type
+      if (isGuest) {
+        socket.emit('matchmaking:join-guest', {
+          timeControl,
+          guestRating: userRating,
+          preferences: {
+            maxRatingDifference: 400, // More flexible for guests
+          }
+        });
+      } else {
+        socket.emit('matchmaking:join', timeControl);
+      }
 
-        onError?.('Nessun avversario trovato!');
-        console.log('⏰ Matchmaking timeout - no opponent found');
-      }, timeoutDelay);
-
+      console.log(`🚀 Sent matchmaking request: ${isGuest ? 'guest' : 'registered'} player for ${timeControl}`);
       return true;
     } catch (error) {
+      console.error('Error joining matchmaking:', error);
       setState(prev => ({
         ...prev,
         isSearching: false,
@@ -80,11 +82,20 @@ export const useMatchmaking = (options: UseMatchmakingOptions = {}) => {
       onError?.('Failed to join matchmaking queue');
       return false;
     }
-  }, [isGuest, userRating, onError, onMatchFound]);
+  }, [socket, isConnected, isGuest, userRating, onError]);
 
-  // Leave matchmaking queue (Demo version)
+  // Leave matchmaking queue
   const leaveQueue = useCallback(() => {
-    console.log('❌ Leaving matchmaking queue (demo)');
+    if (!socket || !isConnected) return;
+
+    console.log('❌ Leaving matchmaking queue');
+
+    // Emit leave event based on user type
+    if (isGuest) {
+      socket.emit('matchmaking:leave-guest');
+    } else {
+      socket.emit('matchmaking:leave');
+    }
 
     setState(prev => ({
       ...prev,
@@ -93,15 +104,108 @@ export const useMatchmaking = (options: UseMatchmakingOptions = {}) => {
       queuePosition: null,
       estimatedWait: null,
     }));
-  }, []);
+  }, [socket, isConnected, isGuest]);
 
-  // Set up socket event listeners (Disabled for demo)
+  // Set up socket event listeners
   useEffect(() => {
-    // Disabled for demo - no WebSocket connection needed
-    return () => {};
-  }, []);
+    if (!socket) return;
 
-  // Auto-cleanup on unmount or disconnection (Demo version)
+    // Match found event
+    const handleMatchFound = (data: any) => {
+      console.log('🎯 Match found:', data);
+
+      setState(prev => ({
+        ...prev,
+        isSearching: false,
+        timeControl: null,
+        queuePosition: null,
+        estimatedWait: null,
+        error: null,
+      }));
+
+      // Transform server data to client format
+      const matchData: MatchFoundData = {
+        gameId: data.gameId,
+        color: data.color,
+        opponent: data.opponent,
+        timeControl: data.timeControl || state.timeControl || 'rapid'
+      };
+
+      onMatchFound?.(matchData);
+    };
+
+    // Matchmaking queue events
+    const handleQueuedEvent = (data: any) => {
+      console.log('⏳ Queued for matchmaking:', data);
+      setState(prev => ({
+        ...prev,
+        isSearching: true,
+        timeControl: data.timeControl,
+        error: null,
+      }));
+    };
+
+    const handleGuestQueuedEvent = (data: any) => {
+      console.log('🎭 Guest queued for matchmaking:', data);
+      setState(prev => ({
+        ...prev,
+        isSearching: true,
+        timeControl: data.timeControl,
+        error: null,
+      }));
+    };
+
+    // Error events
+    const handleMatchmakingError = (error: any) => {
+      console.error('❌ Matchmaking error:', error);
+      setState(prev => ({
+        ...prev,
+        isSearching: false,
+        error: error.message || 'Errore nel matchmaking',
+      }));
+      onError?.(error.message || 'Errore nel matchmaking');
+    };
+
+    const handleGuestMatchmakingError = (error: any) => {
+      console.error('❌ Guest matchmaking error:', error);
+      setState(prev => ({
+        ...prev,
+        isSearching: false,
+        error: error.message || 'Errore nel matchmaking guest',
+      }));
+      onError?.(error.message || 'Errore nel matchmaking guest');
+    };
+
+    // General error event
+    const handleError = (error: any) => {
+      console.error('❌ Socket error:', error);
+      setState(prev => ({
+        ...prev,
+        error: error.message || 'Errore di connessione',
+      }));
+      onError?.(error.message || 'Errore di connessione');
+    };
+
+    // Register event listeners
+    socket.on('match:found', handleMatchFound);
+    socket.on('matchmaking:queued', handleQueuedEvent);
+    socket.on('matchmaking:guest-queued', handleGuestQueuedEvent);
+    socket.on('matchmaking:error', handleMatchmakingError);
+    socket.on('matchmaking:guest-error', handleGuestMatchmakingError);
+    socket.on('error', handleError);
+
+    // Cleanup function
+    return () => {
+      socket.off('match:found', handleMatchFound);
+      socket.off('matchmaking:queued', handleQueuedEvent);
+      socket.off('matchmaking:guest-queued', handleGuestQueuedEvent);
+      socket.off('matchmaking:error', handleMatchmakingError);
+      socket.off('matchmaking:guest-error', handleGuestMatchmakingError);
+      socket.off('error', handleError);
+    };
+  }, [socket, onMatchFound, onError, state.timeControl]);
+
+  // Auto-cleanup on unmount or disconnection
   useEffect(() => {
     return () => {
       if (state.isSearching) {

@@ -8,6 +8,7 @@ import {
   WifiIcon,
   ExclamationTriangleIcon,
 } from '@heroicons/react/24/outline';
+import { useMatchmaking } from '../../../hooks/useMatchmaking';
 
 interface MatchmakingDialogProps {
   isOpen: boolean;
@@ -40,6 +41,26 @@ export const MatchmakingDialog: React.FC<MatchmakingDialogProps> = ({
   const [elapsed, setElapsed] = useState(0);
   const [opponent, setOpponent] = useState<any>(null);
 
+  // Use real matchmaking hook
+  const matchmaking = useMatchmaking({
+    isGuest,
+    userRating,
+    onMatchFound: (data) => {
+      console.log('🎯 Match found in dialog:', data);
+      setOpponent(data.opponent);
+      setStatus('found');
+
+      setTimeout(() => {
+        onMatchFound?.(data.gameId, data.opponent);
+      }, 3000);
+    },
+    onError: (error) => {
+      console.error('❌ Matchmaking error in dialog:', error);
+      setStatus('error');
+      setQueueStatus(null);
+    }
+  });
+
   // Timer for elapsed time
   useEffect(() => {
     if (!isOpen || status !== 'searching') return;
@@ -51,42 +72,31 @@ export const MatchmakingDialog: React.FC<MatchmakingDialogProps> = ({
     return () => clearInterval(interval);
   }, [isOpen, status]);
 
-  // Mock matchmaking simulation
+  // Real matchmaking integration
   useEffect(() => {
     if (!isOpen) return;
 
-    // Simulate queue status updates
+    // Start matchmaking when dialog opens
+    if (status === 'searching') {
+      matchmaking.joinQueue(timeControl);
+    }
+
+    // Mock queue status updates for UI (until we have real queue position API)
     const statusInterval = setInterval(() => {
-      setQueueStatus({
-        position: Math.max(1, Math.floor(Math.random() * 5)),
-        estimatedWait: Math.floor(Math.random() * 60) + 30,
-        playersInQueue: Math.floor(Math.random() * 50) + 10,
-        averageRating: userRating + (Math.random() - 0.5) * 400,
-      });
-    }, 2000);
-
-    // Simulate match found after random time
-    const matchTimeout = setTimeout(() => {
-      if (status === 'searching') {
-        const mockOpponent = {
-          username: isGuest ? 'Player_' + Math.floor(Math.random() * 1000) : 'SkeminoMaster',
-          rating: userRating + (Math.random() - 0.5) * 200,
-          isGuest: Math.random() > 0.5,
-        };
-        setOpponent(mockOpponent);
-        setStatus('found');
-
-        setTimeout(() => {
-          onMatchFound?.('game_' + Date.now(), mockOpponent);
-        }, 3000);
+      if (matchmaking.isSearching) {
+        setQueueStatus({
+          position: Math.max(1, Math.floor(Math.random() * 5)),
+          estimatedWait: Math.floor(Math.random() * 60) + 30,
+          playersInQueue: Math.floor(Math.random() * 50) + 10,
+          averageRating: userRating + (Math.random() - 0.5) * 400,
+        });
       }
-    }, Math.random() * 15000 + 5000); // 5-20 seconds
+    }, 2000);
 
     return () => {
       clearInterval(statusInterval);
-      clearTimeout(matchTimeout);
     };
-  }, [isOpen, userRating, status, onMatchFound, isGuest]);
+  }, [isOpen, timeControl, status, matchmaking, userRating]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -106,6 +116,7 @@ export const MatchmakingDialog: React.FC<MatchmakingDialogProps> = ({
 
   const handleCancel = () => {
     setStatus('cancelled');
+    matchmaking.leaveQueue(); // Leave real matchmaking queue
     onCancel?.();
     onClose();
   };
