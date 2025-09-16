@@ -119,7 +119,7 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
       } as React.CSSProperties}
       onClick={onClick}
       whileHover={{
-        scale: 1.02,
+        scale: 1.005,
         transition: { type: "spring", stiffness: 500, damping: 30 }
       }}
       whileTap={{
