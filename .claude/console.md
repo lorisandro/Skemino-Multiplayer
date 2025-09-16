@@ -1,40 +1,18 @@
 chunk-GKJBSOWT.js?v=6006470b:21551 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
-LoginPage.tsx:26 Browser extension interference detected: Object
-(anonime) @ LoginPage.tsx:26
-commitHookEffectListMount @ chunk-GKJBSOWT.js?v=6006470b:16915
-commitPassiveMountOnFiber @ chunk-GKJBSOWT.js?v=6006470b:18156
-commitPassiveMountEffects_complete @ chunk-GKJBSOWT.js?v=6006470b:18129
-commitPassiveMountEffects_begin @ chunk-GKJBSOWT.js?v=6006470b:18119
-commitPassiveMountEffects @ chunk-GKJBSOWT.js?v=6006470b:18109
-flushPassiveEffectsImpl @ chunk-GKJBSOWT.js?v=6006470b:19490
-flushPassiveEffects @ chunk-GKJBSOWT.js?v=6006470b:19447
-(anonime) @ chunk-GKJBSOWT.js?v=6006470b:19328
-workLoop @ chunk-GKJBSOWT.js?v=6006470b:197
-flushWork @ chunk-GKJBSOWT.js?v=6006470b:176
-performWorkUntilDeadline @ chunk-GKJBSOWT.js?v=6006470b:384
-LoginPage.tsx:26 Browser extension interference detected: Object
-(anonime) @ LoginPage.tsx:26
-commitHookEffectListMount @ chunk-GKJBSOWT.js?v=6006470b:16915
-invokePassiveEffectMountInDEV @ chunk-GKJBSOWT.js?v=6006470b:18324
-invokeEffectsInDev @ chunk-GKJBSOWT.js?v=6006470b:19701
-commitDoubleInvokeEffectsInDEV @ chunk-GKJBSOWT.js?v=6006470b:19686
-flushPassiveEffectsImpl @ chunk-GKJBSOWT.js?v=6006470b:19503
-flushPassiveEffects @ chunk-GKJBSOWT.js?v=6006470b:19447
-(anonime) @ chunk-GKJBSOWT.js?v=6006470b:19328
-workLoop @ chunk-GKJBSOWT.js?v=6006470b:197
-flushWork @ chunk-GKJBSOWT.js?v=6006470b:176
-performWorkUntilDeadline @ chunk-GKJBSOWT.js?v=6006470b:384
-useAuth.ts:207 ✅ Received JWT token: eyJhbGciOiJIUzI1NiIs...
-LoginPage.tsx:58 Login successful, navigating to dashboard
 useAuth.ts:64 ✅ Auth state restored from storage: maxandro
 useAuth.ts:64 ✅ Auth state restored from storage: maxandro
 useAuth.ts:64 ✅ Auth state restored from storage: maxandro
 useAuth.ts:64 ✅ Auth state restored from storage: maxandro
+home:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+home:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+home:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+home:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+home:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
 DashboardPage.tsx:18 🎮 Navigating to game page from dashboard
-AuthContext.tsx:116 🔐 RequireAuth check: {isAuthenticated: false, isLoading: false, isInitializing: false, loadingTimeout: false, user: 'none', …}
-AuthContext.tsx:151 ⚠️ RequireAuth: Token exists but isAuthenticated=false, allowing access during sync
-AuthContext.tsx:116 🔐 RequireAuth check: {isAuthenticated: false, isLoading: false, isInitializing: false, loadingTimeout: false, user: 'none', …}
-AuthContext.tsx:151 ⚠️ RequireAuth: Token exists but isAuthenticated=false, allowing access during sync
+AuthContext.tsx:116 🔐 RequireAuth check: {isAuthenticated: true, isLoading: false, isInitializing: false, loadingTimeout: false, user: 'maxandro', …}
+AuthContext.tsx:116 🔐 RequireAuth check: {isAuthenticated: true, isLoading: false, isInitializing: false, loadingTimeout: false, user: 'maxandro', …}
+MatchmakingDemo.tsx:13 🔍 MatchmakingDemo is loading! This is the WRONG interface!
+MatchmakingDemo.tsx:13 🔍 MatchmakingDemo is loading! This is the WRONG interface!
 useSocket.ts:88 🔗 Component mount, active connections: 1
 useSocket.ts:96 🔗 Initializing global socket connection
 useSocket.ts:88 🔗 Component mount, active connections: 2
@@ -47,9 +25,13 @@ useSocket.ts:193 🔄 Component unmount, remaining connections: 0
 useSocket.ts:88 🔗 Component mount, active connections: 1
 useSocket.ts:88 🔗 Component mount, active connections: 2
 useSocket.ts:88 🔗 Component mount, active connections: 3
+MatchmakingDemo.tsx:13 🔍 MatchmakingDemo is loading! This is the WRONG interface!
+MatchmakingDemo.tsx:13 🔍 MatchmakingDemo is loading! This is the WRONG interface!
 useSocket.ts:213 🎮 Attaching game event handlers
 useSocket.ts:213 🎮 Attaching game event handlers
 useSocket.ts:213 🎮 Attaching game event handlers
 useSocket.ts:124 ✅ Connected to server
 useSocket.ts:124 ✅ Connected to server
 useSocket.ts:124 ✅ Connected to server
+MatchmakingDemo.tsx:13 🔍 MatchmakingDemo is loading! This is the WRONG interface!
+MatchmakingDemo.tsx:13 🔍 MatchmakingDemo is loading! This is the WRONG interface!

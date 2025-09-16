@@ -17,6 +17,9 @@ interface GameInterfaceProps {
  * Optimized for competitive Skèmino gaming with full-screen responsive design
  */
 export const GameInterface: React.FC<GameInterfaceProps> = ({ className = '' }) => {
+  // DEBUG: Log when GameInterface loads
+  console.log('🎯 GameInterface is loading! This should show the GameBoard, not matchmaking!');
+
   const {
     gameState,
     currentPlayer,

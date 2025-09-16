@@ -51,7 +51,8 @@
       "Bash(start http://localhost:3000/home)",
       "Bash(tasklist)",
       "Bash(start http://localhost:3000/game)",
-      "Bash(timeout:*)"
+      "Bash(timeout:*)",
+      "Bash(start http://localhost:3000/dashboard)"
     ],
     "deny": [],
     "ask": []

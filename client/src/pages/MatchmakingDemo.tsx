@@ -9,6 +9,9 @@ import { useSocket } from '../hooks/useSocket';
 import { useAuthContext } from '../contexts/AuthContext';
 
 export const MatchmakingDemo: React.FC = () => {
+  // DEBUG: Log when MatchmakingDemo loads
+  console.log('🔍 MatchmakingDemo is loading! This is the WRONG interface!');
+
   const { gameState, currentPlayer, opponent, distributionState } = useGameStore();
   const { connected, latency, startMatchmaking } = useSocket();
   const { user } = useAuthContext();
