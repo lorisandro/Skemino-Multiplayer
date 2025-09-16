@@ -82,12 +82,12 @@ export const ZoomResistantBoardContainer: React.FC<ZoomResistantBoardContainerPr
           style={{
             // Demo mode overrides with smaller fixed sizes (rectangular for 5:7 cells)
             ...(demoMode && {
-              width: '36rem',
-              height: '50.4rem', // Height adjusted for 5:7 cells (36 * 1.4)
-              minWidth: '36rem',
-              minHeight: '50.4rem',
-              maxWidth: '42rem',
-              maxHeight: '58.8rem', // Max height adjusted for 5:7 cells (42 * 1.4)
+              width: '46rem',
+              height: '64.4rem', // Height adjusted for 5:7 cells (46 * 1.4)
+              minWidth: '46rem',
+              minHeight: '64.4rem',
+              maxWidth: '54rem',
+              maxHeight: '75.6rem', // Max height adjusted for 5:7 cells (54 * 1.4)
             })
           }}
         >
@@ -108,17 +108,17 @@ export const useBoardContainerSize = () => {
   const getBoardSize = () => {
     switch (currentBreakpoint) {
       case 'mobile':
-        return { width: '42rem', height: '58.8rem' }; // Height adjusted for 5:7 cells (42 * 1.4)
+        return { width: '54rem', height: '75.6rem' }; // Height adjusted for 5:7 cells (54 * 1.4)
       case 'tablet':
-        return { width: '50rem', height: '70rem' }; // Height adjusted for 5:7 cells (50 * 1.4)
-      case 'desktop':
-        return { width: '56rem', height: '78.4rem' }; // Height adjusted for 5:7 cells (56 * 1.4)
-      case '2k':
         return { width: '65rem', height: '91rem' }; // Height adjusted for 5:7 cells (65 * 1.4)
+      case 'desktop':
+        return { width: '72rem', height: '100.8rem' }; // Height adjusted for 5:7 cells (72 * 1.4)
+      case '2k':
+        return { width: '85rem', height: '119rem' }; // Height adjusted for 5:7 cells (85 * 1.4)
       case 'ultrawide':
-        return { width: '70rem', height: '98rem' }; // Height adjusted for 5:7 cells (70 * 1.4)
+        return { width: '90rem', height: '126rem' }; // Height adjusted for 5:7 cells (90 * 1.4)
       default:
-        return { width: '50rem', height: '70rem' }; // Height adjusted for 5:7 cells
+        return { width: '65rem', height: '91rem' }; // Height adjusted for 5:7 cells
     }
   };
 

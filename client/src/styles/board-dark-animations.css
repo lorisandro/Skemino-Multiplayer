@@ -809,14 +809,14 @@ div.skemino-square-dark.skemino-central-d4,
   container-name: gameboard;
 
   /* Rectangular sizing for 6x6 strategic gaming board with 5:7 aspect ratio cells */
-  width: min(62rem, 90vw);  /* Increased responsive width with max 62rem */
-  height: min(86.8rem, 90vh); /* Rectangular height for 5:7 cells (62 * 1.4) */
+  width: min(80rem, 90vw);  /* Significantly increased responsive width */
+  height: min(112rem, 90vh); /* Rectangular height for 5:7 cells (80 * 1.4) */
 
   /* Prevent overflow and ensure proper proportions */
-  min-width: 36rem; /* Increased minimum playable size */
-  min-height: 50.4rem; /* Increased minimum playable size (36 * 1.4) */
-  max-width: 84rem;  /* Increased maximum for large screens */
-  max-height: 117.6rem; /* Increased maximum for large screens (84 * 1.4) */
+  min-width: 46rem; /* Significantly increased minimum playable size */
+  min-height: 64.4rem; /* Significantly increased minimum playable size (46 * 1.4) */
+  max-width: 108rem;  /* Significantly increased maximum for large screens */
+  max-height: 151.2rem; /* Significantly increased maximum for large screens (108 * 1.4) */
 
   /* Centering and positioning */
   position: relative;
@@ -902,11 +902,11 @@ div.skemino-square-dark.skemino-central-d4,
 /* ===== CONTAINER QUERY BREAKPOINTS - ZOOM RESISTANT ===== */
 
 /* Mobile gaming optimized */
-@container gameboard (max-width: 48rem) {
+@container gameboard (max-width: 60rem) {
   .skemino-board-zoom-resistant {
-    width: 50rem;
-    height: 70rem; /* Height adjusted for 5:7 cells (50 * 1.4) */
-    min-height: 70rem;
+    width: 65rem;
+    height: 91rem; /* Height adjusted for 5:7 cells (65 * 1.4) */
+    min-height: 91rem;
     border-width: 1px;
   }
 
@@ -927,11 +927,11 @@ div.skemino-square-dark.skemino-central-d4,
 }
 
 /* Tablet gaming */
-@container gameboard (min-width: 48rem) and (max-width: 65rem) {
+@container gameboard (min-width: 60rem) and (max-width: 80rem) {
   .skemino-board-zoom-resistant {
-    width: 62rem;
-    height: 86.8rem; /* Height adjusted for 5:7 cells (62 * 1.4) */
-    min-height: 86.8rem;
+    width: 80rem;
+    height: 112rem; /* Height adjusted for 5:7 cells (80 * 1.4) */
+    min-height: 112rem;
   }
 
   .skemino-grid-zoom-resistant {
@@ -951,11 +951,11 @@ div.skemino-square-dark.skemino-central-d4,
 }
 
 /* Desktop gaming */
-@container gameboard (min-width: 65rem) and (max-width: 80rem) {
+@container gameboard (min-width: 80rem) and (max-width: 100rem) {
   .skemino-board-zoom-resistant {
-    width: 68rem;
-    height: 95.2rem; /* Height adjusted for 5:7 cells (68 * 1.4) */
-    min-height: 95.2rem;
+    width: 88rem;
+    height: 123.2rem; /* Height adjusted for 5:7 cells (88 * 1.4) */
+    min-height: 123.2rem;
     border-width: 2px;
   }
 
@@ -976,11 +976,11 @@ div.skemino-square-dark.skemino-central-d4,
 }
 
 /* 2K gaming optimized */
-@container gameboard (min-width: 80rem) and (max-width: 95rem) {
+@container gameboard (min-width: 100rem) and (max-width: 120rem) {
   .skemino-board-zoom-resistant {
-    width: 75rem;
-    height: 105rem; /* Height adjusted for 5:7 cells (75 * 1.4) */
-    min-height: 105rem;
+    width: 97rem;
+    height: 135.8rem; /* Height adjusted for 5:7 cells (97 * 1.4) */
+    min-height: 135.8rem;
     border-width: 3px;
   }
 
@@ -1001,11 +1001,11 @@ div.skemino-square-dark.skemino-central-d4,
 }
 
 /* Ultrawide gaming */
-@container gameboard (min-width: 95rem) {
+@container gameboard (min-width: 120rem) {
   .skemino-board-zoom-resistant {
-    width: 84rem;
-    height: 117.6rem; /* Height adjusted for 5:7 cells (84 * 1.4) */
-    min-height: 117.6rem;
+    width: 108rem;
+    height: 151.2rem; /* Height adjusted for 5:7 cells (108 * 1.4) */
+    min-height: 151.2rem;
     border-width: 3px;
   }
 
@@ -1103,7 +1103,7 @@ div.skemino-square-dark.skemino-central-d4,
 }
 
 /* Container query adjustments for notation */
-@container gameboard (max-width: 30rem) {
+@container gameboard (max-width: 40rem) {
   .skemino-notation-zoom-resistant::after {
     font-size: 0.75rem;  /* Increased from 0.5rem */
   }
@@ -1116,7 +1116,7 @@ div.skemino-square-dark.skemino-central-d4,
   }
 }
 
-@container gameboard (min-width: 60rem) {
+@container gameboard (min-width: 75rem) {
   .skemino-notation-zoom-resistant::after {
     font-size: 1rem;  /* Increased from 0.75rem */
   }
