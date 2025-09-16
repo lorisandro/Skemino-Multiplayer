@@ -81,10 +81,7 @@ export const useAuth = (): AuthContextType => {
   // Force invalidation of corrupted tokens (one-time cleanup)
   const forceInvalidateCorruptedTokens = async (): Promise<void> => {
     try {
-      // Force cleanup reset for this hotfix
-      localStorage.removeItem('skemino_corrupted_tokens_cleaned');
-
-      // Check if cleanup already completed
+      // Check if cleanup already completed BEFORE removing the flag
       const cleanupFlag = localStorage.getItem('skemino_corrupted_tokens_cleaned');
       if (cleanupFlag) {
         return; // Already cleaned, skip

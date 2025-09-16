@@ -1,95 +1,69 @@
-react-dom.development.js:29895 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+chunk-GKJBSOWT.js?v=6006470b:21551 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+useAuth.ts:116 ✅ Token corruption check completed - valid tokens preserved
+LoginPage.tsx:26 Browser extension interference detected: Object
+(anonime) @ LoginPage.tsx:26
+useAuth.ts:116 ✅ Token corruption check completed - valid tokens preserved
+useAuth.ts:116 ✅ Token corruption check completed - valid tokens preserved
+LoginPage.tsx:26 Browser extension interference detected: Object
+(anonime) @ LoginPage.tsx:26
+useAuth.ts:116 ✅ Token corruption check completed - valid tokens preserved
+useAuth.ts:240 ✅ Received valid JWT token: eyJhbGciOiJIUzI1NiIs... (length: 313)
+LoginPage.tsx:58 Login successful, navigating to dashboard
 useAuth.ts:116 ✅ Token corruption check completed - valid tokens preserved
 useAuth.ts:116 ✅ Token corruption check completed - valid tokens preserved
 useAuth.ts:116 ✅ Token corruption check completed - valid tokens preserved
 useAuth.ts:116 ✅ Token corruption check completed - valid tokens preserved
-AuthContext.tsx:96 🔐 RequireAuth check: {isAuthenticated: true, isLoading: false, user: 'maxandro'}
-AuthContext.tsx:96 🔐 RequireAuth check: {isAuthenticated: true, isLoading: false, user: 'maxandro'}
-useSocket.ts:159  WebSocket connection to 'ws://localhost:3005/socket.io/?EIO=4&transport=websocket' failed: WebSocket is closed before the connection is established.
-doClose @ websocket.js:81
-close @ transport.js:55
-_onClose @ socket.js:512
-close @ socket.js:448
-close @ socket.js:477
-onclose @ manager.js:305
-_close @ manager.js:283
-_destroy @ manager.js:251
-destroy @ socket.js:632
-disconnect @ socket.js:655
-(anonymous) @ useSocket.ts:159
-safelyCallDestroy @ react-dom.development.js:22971
-commitHookEffectListUnmount @ react-dom.development.js:23139
-commitPassiveUnmountInsideDeletedTreeOnFiber @ react-dom.development.js:25137
-commitPassiveUnmountEffectsInsideOfDeletedTree_begin @ react-dom.development.js:25087
-commitPassiveUnmountEffects_begin @ react-dom.development.js:24995
-commitPassiveUnmountEffects @ react-dom.development.js:24980
-flushPassiveEffectsImpl @ react-dom.development.js:27077
-flushPassiveEffects @ react-dom.development.js:27023
-(anonymous) @ react-dom.development.js:26808
-workLoop @ scheduler.development.js:266
-flushWork @ scheduler.development.js:239
-performWorkUntilDeadline @ scheduler.development.js:533
-[NEW] Explain Console errors by using Copilot in Edge: click
-         
-         to explain an error. 
-        Learn more
-        Don't show again
-useSocket.ts:110 Connected to server
-useSocket.ts:110 Connected to server
-useSocket.ts:110 Connected to server
-useSocket.ts:159  WebSocket connection to 'ws://localhost:3005/socket.io/?EIO=4&transport=websocket' failed: WebSocket is closed before the connection is established.
-doClose @ websocket.js:81
-close @ transport.js:55
-_onClose @ socket.js:512
-close @ socket.js:448
-close @ socket.js:477
-onclose @ manager.js:305
-_close @ manager.js:283
-_destroy @ manager.js:251
-destroy @ socket.js:632
-disconnect @ socket.js:655
-(anonymous) @ useSocket.ts:159
-safelyCallDestroy @ react-dom.development.js:22971
-commitHookEffectListUnmount @ react-dom.development.js:23139
-commitPassiveUnmountInsideDeletedTreeOnFiber @ react-dom.development.js:25137
-commitPassiveUnmountEffectsInsideOfDeletedTree_begin @ react-dom.development.js:25087
-commitPassiveUnmountEffects_begin @ react-dom.development.js:24995
-commitPassiveUnmountEffects @ react-dom.development.js:24980
-flushPassiveEffectsImpl @ react-dom.development.js:27077
-flushPassiveEffects @ react-dom.development.js:27023
-(anonymous) @ react-dom.development.js:26808
-workLoop @ scheduler.development.js:266
-flushWork @ scheduler.development.js:239
-performWorkUntilDeadline @ scheduler.development.js:533
-useSocket.ts:110 Connected to server
-useSocket.ts:159  WebSocket connection to 'ws://localhost:3005/socket.io/?EIO=4&transport=websocket' failed: WebSocket is closed before the connection is established.
-doClose @ websocket.js:81
-close @ transport.js:55
-_onClose @ socket.js:512
-close @ socket.js:448
-close @ socket.js:477
-onclose @ manager.js:305
-_close @ manager.js:283
-_destroy @ manager.js:251
-destroy @ socket.js:632
-disconnect @ socket.js:655
-(anonymous) @ useSocket.ts:159
-safelyCallDestroy @ react-dom.development.js:22971
-commitHookEffectListUnmount @ react-dom.development.js:23139
-commitPassiveUnmountInsideDeletedTreeOnFiber @ react-dom.development.js:25137
-commitPassiveUnmountEffectsInsideOfDeletedTree_begin @ react-dom.development.js:25087
-commitPassiveUnmountEffects_begin @ react-dom.development.js:24995
-commitPassiveUnmountEffects @ react-dom.development.js:24980
-flushPassiveEffectsImpl @ react-dom.development.js:27077
-flushPassiveEffects @ react-dom.development.js:27023
-(anonymous) @ react-dom.development.js:26808
-workLoop @ scheduler.development.js:266
-flushWork @ scheduler.development.js:239
-performWorkUntilDeadline @ scheduler.development.js:533
-useSocket.ts:110 Connected to server
-useSocket.ts:110 Connected to server
-useSocket.ts:110 Connected to server
-useSocket.ts:110 Connected to server
-useSocket.ts:110 Connected to server
-useSocket.ts:110 Connected to server
-useSocket.ts:110 Connected to server
+AuthContext.tsx:96 🔐 RequireAuth check: Object
+AuthContext.tsx:110 ❌ RequireAuth: User not authenticated, redirecting to login
+AuthContext.tsx:96 🔐 RequireAuth check: Object
+AuthContext.tsx:110 ❌ RequireAuth: User not authenticated, redirecting to login
+useAuth.ts:116 ✅ Token corruption check completed - valid tokens preserved
+LoginPage.tsx:26 Browser extension interference detected: Object
+(anonime) @ LoginPage.tsx:26
+useAuth.ts:116 ✅ Token corruption check completed - valid tokens preserved
+LoginPage.tsx:26 Browser extension interference detected: Object
+(anonime) @ LoginPage.tsx:26
+login:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+login:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+login:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+login:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+login:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+login:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+login:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+useAuth.ts:240 ✅ Received valid JWT token: eyJhbGciOiJIUzI1NiIs... (length: 313)
+LoginPage.tsx:58 Login successful, navigating to dashboard
+useAuth.ts:116 ✅ Token corruption check completed - valid tokens preserved
+useAuth.ts:116 ✅ Token corruption check completed - valid tokens preserved
+useAuth.ts:116 ✅ Token corruption check completed - valid tokens preserved
+useAuth.ts:116 ✅ Token corruption check completed - valid tokens preserved
+AuthContext.tsx:96 🔐 RequireAuth check: {isAuthenticated: false, isLoading: false, user: 'none'}
+AuthContext.tsx:110 ❌ RequireAuth: User not authenticated, redirecting to login
+AuthContext.tsx:96 🔐 RequireAuth check: {isAuthenticated: false, isLoading: false, user: 'none'}
+AuthContext.tsx:110 ❌ RequireAuth: User not authenticated, redirecting to login
+useAuth.ts:116 ✅ Token corruption check completed - valid tokens preserved
+LoginPage.tsx:26 Browser extension interference detected: {detected: true, problematicExtensions: Array(0), suggestions: Array(5)}
+(anonime) @ LoginPage.tsx:26
+commitHookEffectListMount @ chunk-GKJBSOWT.js?v=6006470b:16915
+commitPassiveMountOnFiber @ chunk-GKJBSOWT.js?v=6006470b:18156
+commitPassiveMountEffects_complete @ chunk-GKJBSOWT.js?v=6006470b:18129
+commitPassiveMountEffects_begin @ chunk-GKJBSOWT.js?v=6006470b:18119
+commitPassiveMountEffects @ chunk-GKJBSOWT.js?v=6006470b:18109
+flushPassiveEffectsImpl @ chunk-GKJBSOWT.js?v=6006470b:19490
+flushPassiveEffects @ chunk-GKJBSOWT.js?v=6006470b:19447
+(anonime) @ chunk-GKJBSOWT.js?v=6006470b:19328
+workLoop @ chunk-GKJBSOWT.js?v=6006470b:197
+flushWork @ chunk-GKJBSOWT.js?v=6006470b:176
+performWorkUntilDeadline @ chunk-GKJBSOWT.js?v=6006470b:384
+useAuth.ts:116 ✅ Token corruption check completed - valid tokens preserved
+LoginPage.tsx:26 Browser extension interference detected: {detected: true, problematicExtensions: Array(0), suggestions: Array(5)}
+(anonime) @ LoginPage.tsx:26
+commitHookEffectListMount @ chunk-GKJBSOWT.js?v=6006470b:16915
+invokePassiveEffectMountInDEV @ chunk-GKJBSOWT.js?v=6006470b:18324
+invokeEffectsInDev @ chunk-GKJBSOWT.js?v=6006470b:19701
+commitDoubleInvokeEffectsInDEV @ chunk-GKJBSOWT.js?v=6006470b:19686
+flushPassiveEffectsImpl @ chunk-GKJBSOWT.js?v=6006470b:19503
+flushPassiveEffects @ chunk-GKJBSOWT.js?v=6006470b:19447
+(anonime) @ chunk-GKJBSOWT.js?v=6006470b:19328
+workLoop @ chunk-GKJBSOWT.js?v=6006470b:197
+flushWork @ chunk-GKJBSOWT.js?v=6006470b:176
+performWorkUntilDeadline @ chunk-GKJBSOWT.js?v=6006470b:384
