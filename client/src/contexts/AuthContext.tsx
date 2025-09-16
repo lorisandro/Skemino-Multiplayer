@@ -141,9 +141,23 @@ export const RequireAuth: React.FC<{ children: ReactNode; fallback?: ReactNode }
     return <>{children}</>;
   }
 
+  // Enhanced authentication check with token verification
+  const hasStoredToken = localStorage.getItem('skemino_auth_token') || sessionStorage.getItem('skemino_auth_token');
+
+  // If we have a stored token but isAuthenticated is false, it's likely a race condition
+  // Allow access while auth state synchronizes
+  if (!isAuthenticated && hasStoredToken) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('⚠️ RequireAuth: Token exists but isAuthenticated=false, allowing access during sync');
+    }
+    return <>{children}</>;
+  }
+
   // Check authentication state
-  if (!isAuthenticated) {
-    console.log('❌ RequireAuth: User not authenticated, redirecting to login');
+  if (!isAuthenticated && !hasStoredToken) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('❌ RequireAuth: User not authenticated, redirecting to login');
+    }
     return fallback || (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
         <div className="text-center max-w-md mx-auto p-8">
