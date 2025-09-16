@@ -83,7 +83,7 @@ app.post('/debug/reset-status/:userId?', (req, res) => {
 
     if (userId) {
       // Reset specific user
-      const result = wsManager.resetPlayerStatus(userId);
+      const result = (wsManager as any).resetPlayerStatus(userId);
       res.json({
         status: result ? 'Player status reset' : 'Player not found',
         userId,
@@ -91,7 +91,7 @@ app.post('/debug/reset-status/:userId?', (req, res) => {
       });
     } else {
       // Reset all non-active game players
-      const count = wsManager.resetAllInactivePlayerStatuses();
+      const count = (wsManager as any).resetAllInactivePlayerStatuses();
       res.json({
         status: 'All inactive player statuses reset',
         playersReset: count,
@@ -111,7 +111,7 @@ app.get('/debug/player-statuses', (_req, res) => {
   }
 
   try {
-    const statuses = wsManager.getAllPlayerStatuses();
+    const statuses = (wsManager as any).getAllPlayerStatuses();
     res.json({
       players: statuses,
       count: statuses.length,
@@ -181,7 +181,7 @@ async function startServer(): Promise<void> {
   await initializeServices();
 
   httpServer.listen(PORT, () => {
-    console.log(`🎮 Skèmino Server running on port ${PORT}`);
+    console.log(`🎮 Skèmino Server running on port ${PORT} `);
     console.log(`🌐 WebSocket server ready`);
     console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
   });

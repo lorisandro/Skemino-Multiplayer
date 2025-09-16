@@ -18,25 +18,33 @@ useSocket.ts:110 Connected to server
 useSocket.ts:110 Connected to server
 useMatchmaking.ts:50 🎮 Starting real matchmaking for: classical
 useMatchmaking.ts:73 🚀 Sent matchmaking request: registered player for classical
-useMatchmaking.ts:115 🎯 Match found: Object
+useMatchmaking.ts:115 🎯 Match found: {gameId: '4c871f64-f4d0-43da-8f9c-bd84460773d8', color: 'black', opponent: {…}, timeControl: 'classical'}
 useMatchmaking.ts:91 ❌ Leaving matchmaking queue
 useMatchmaking.ts:50 🎮 Starting real matchmaking for: classical
 useMatchmaking.ts:73 🚀 Sent matchmaking request: registered player for classical
-useMatchmaking.ts:181 ❌ Socket error: Object
+useMatchmaking.ts:181 ❌ Socket error: {code: 'INVALID_STATE', message: 'Cannot join matchmaking while in game'}
 handleError @ useMatchmaking.ts:181
-PlayTab.tsx:34 Matchmaking error: Cannot join matchmaking while in game
+Emitter.emit @ socket__io-client.js?v=6006470b:354
+emitEvent @ socket__io-client.js?v=6006470b:2655
+onevent @ socket__io-client.js?v=6006470b:2643
+onpacket @ socket__io-client.js?v=6006470b:2614
+Emitter.emit @ socket__io-client.js?v=6006470b:354
+(anonime) @ socket__io-client.js?v=6006470b:3218
+useMatchmaking.ts:185 ⚠️ Player stuck in game state - attempting recovery
+handleError @ useMatchmaking.ts:185
+Emitter.emit @ socket__io-client.js?v=6006470b:354
+emitEvent @ socket__io-client.js?v=6006470b:2655
+onevent @ socket__io-client.js?v=6006470b:2643
+onpacket @ socket__io-client.js?v=6006470b:2614
+Emitter.emit @ socket__io-client.js?v=6006470b:354
+(anonime) @ socket__io-client.js?v=6006470b:3218
+PlayTab.tsx:34 Matchmaking error: Stato di gioco non sincronizzato. Riprova tra qualche secondo.
 onError @ PlayTab.tsx:34
-useSocket.ts:116 Disconnected from server
-useSocket.ts:116 Disconnected from server
-useSocket.ts:116 Disconnected from server
-useSocket.ts:116 Disconnected from server
-useSocket.ts:116 Disconnected from server
-useSocket.ts:116 Disconnected from server
-useSocket.ts:116 Disconnected from server
-useSocket.ts:116 Disconnected from server
-useSocket.ts:116 Disconnected from server
+handleError @ useMatchmaking.ts:200
+Emitter.emit @ socket__io-client.js?v=6006470b:354
+emitEvent @ socket__io-client.js?v=6006470b:2655
+onevent @ socket__io-client.js?v=6006470b:2643
+onpacket @ socket__io-client.js?v=6006470b:2614
+Emitter.emit @ socket__io-client.js?v=6006470b:354
+(anonime) @ socket__io-client.js?v=6006470b:3218
 useMatchmaking.ts:91 ❌ Leaving matchmaking queue
-useSocket.ts:116 Disconnected from server
-useSocket.ts:116 Disconnected from server
-useSocket.ts:110 Connected to server
-useSocket.ts:110 Connected to server

@@ -41,7 +41,7 @@ export const useAuth = (): AuthContextType => {
           const parsedUser = JSON.parse(userData);
 
           // Check token version compatibility
-          const currentTokenVersion = '2025-09-16';
+          const currentTokenVersion = '2025-09-16-hotfix';
           if (!tokenVersion || tokenVersion !== currentTokenVersion) {
             console.log('🔄 Token version outdated, forcing re-authentication');
             await forceTokenInvalidation();
@@ -81,6 +81,9 @@ export const useAuth = (): AuthContextType => {
   // Force invalidation of corrupted tokens (one-time cleanup)
   const forceInvalidateCorruptedTokens = async (): Promise<void> => {
     try {
+      // Force cleanup reset for this hotfix
+      localStorage.removeItem('skemino_corrupted_tokens_cleaned');
+
       // Check if cleanup already completed
       const cleanupFlag = localStorage.getItem('skemino_corrupted_tokens_cleaned');
       if (cleanupFlag) {
@@ -120,6 +123,13 @@ export const useAuth = (): AuthContextType => {
   const isValidJWTFormat = (token: string): boolean => {
     try {
       if (!token || typeof token !== 'string') return false;
+
+      // Check for known corrupted token patterns
+      const knownCorruptedPattern = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9';
+      if (token.startsWith(knownCorruptedPattern) && token.endsWith('UgjVXwXsdk')) {
+        console.warn('🚨 Detected known corrupted token pattern, marking as invalid');
+        return false;
+      }
 
       // JWT should have 3 parts separated by dots
       const parts = token.split('.');
