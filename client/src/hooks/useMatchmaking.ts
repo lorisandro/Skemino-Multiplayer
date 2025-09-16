@@ -255,11 +255,15 @@ export const useMatchmaking = (options: UseMatchmakingOptions = {}) => {
   // Auto-cleanup on unmount or disconnection
   useEffect(() => {
     return () => {
+      // Only cleanup if we're still searching and the component is truly unmounting
+      // We need to prevent premature cleanup during re-renders
       if (state.isSearching) {
-        leaveQueue();
+        console.log('⚠️ Component unmounting while searching - preserving matchmaking state');
+        // Don't automatically leave queue on unmount to prevent cancellation during re-renders
+        // The user should explicitly cancel or the server should handle disconnections
       }
     };
-  }, [state.isSearching, leaveQueue]);
+  }, [state.isSearching]);
 
   // Handle connection recovery
   useEffect(() => {
@@ -283,6 +287,21 @@ export const useMatchmaking = (options: UseMatchmakingOptions = {}) => {
       socket.off('connect', handleReconnect);
     };
   }, [socket]);
+
+  // Handle window/tab close to properly leave matchmaking
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (state.isSearching) {
+        leaveQueue();
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [state.isSearching, leaveQueue]);
 
   return {
     ...state,

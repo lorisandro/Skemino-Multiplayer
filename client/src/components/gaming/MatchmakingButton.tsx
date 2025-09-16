@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useSocket } from '../../hooks/useSocket';
+import { useMatchmaking } from '../../hooks/useMatchmaking';
 import { useGameStore } from '../../store/gameStore';
 import { useAuthContext } from '../../contexts/AuthContext';
 
@@ -10,35 +11,41 @@ interface MatchmakingButtonProps {
 }
 
 export const MatchmakingButton: React.FC<MatchmakingButtonProps> = ({ className, autoStart = false }) => {
-  const { connected, startMatchmaking, cancelMatchmaking } = useSocket();
+  const { connected } = useSocket();
   const { distributionState, currentPlayer, opponent } = useGameStore();
   const { user } = useAuthContext();
-  const [isSearching, setIsSearching] = useState(false);
+  const [selectedTimeControl, setSelectedTimeControl] = useState<string>('classical');
   const [hasAutoStarted, setHasAutoStarted] = useState(false);
 
-  const handleStartMatchmaking = () => {
+  // Use the matchmaking hook with proper options
+  const {
+    isSearching,
+    joinQueue,
+    leaveQueue,
+    error: matchmakingError
+  } = useMatchmaking({
+    isGuest: !user?.id,
+    userRating: user?.rating || 1200
+  });
+
+  const handleStartMatchmaking = async () => {
     if (!connected) return;
 
-    // Use real user data if available, otherwise fallback to demo
-    const playerData = user ? {
-      playerId: user.id || `player_${Math.random().toString(36).substr(2, 9)}`,
-      username: user.displayName || user.email?.split('@')[0] || 'Guest',
-      rating: user.rating || 1000,
-      level: user.level?.name || 'Principiante',
-    } : {
-      playerId: `player_${Math.random().toString(36).substr(2, 9)}`,
-      username: `Player${Math.floor(Math.random() * 1000)}`,
-      rating: 1000, // Default initial rating
-    };
+    console.log('Starting matchmaking with time control:', selectedTimeControl);
+    const success = await joinQueue(selectedTimeControl);
 
-    console.log('Starting matchmaking:', playerData);
-    setIsSearching(true);
-    startMatchmaking(playerData);
+    if (success) {
+      // Save session for recovery
+      localStorage.setItem('skemino_matchmaking_session', JSON.stringify({
+        timeControl: selectedTimeControl,
+        timestamp: Date.now()
+      }));
+    }
   };
 
   const handleCancelMatchmaking = () => {
-    setIsSearching(false);
-    cancelMatchmaking();
+    console.log('Cancelling matchmaking');
+    leaveQueue();
     // Clear session if canceling
     localStorage.removeItem('skemino_matchmaking_session');
   };
@@ -47,19 +54,17 @@ export const MatchmakingButton: React.FC<MatchmakingButtonProps> = ({ className,
   useEffect(() => {
     if (autoStart && connected && !hasAutoStarted && !isSearching && !currentPlayer) {
       console.log('Auto-starting matchmaking from button');
+      setHasAutoStarted(true); // Set this first to prevent re-runs
       handleStartMatchmaking();
-      setHasAutoStarted(true);
     }
   }, [autoStart, connected, hasAutoStarted, isSearching, currentPlayer]);
 
-  // Update searching state based on distribution phase
+  // Show error if any
   useEffect(() => {
-    if (distributionState.phase === 'waiting' || distributionState.phase === 'matchmaking') {
-      setIsSearching(true);
-    } else if (distributionState.phase === 'complete' || distributionState.phase === 'idle') {
-      setIsSearching(false);
+    if (matchmakingError) {
+      console.error('Matchmaking error:', matchmakingError);
     }
-  }, [distributionState.phase]);
+  }, [matchmakingError]);
 
   // Don't show button if already in game or distributing
   if (distributionState.phase === 'active' || distributionState.phase === 'complete') {
