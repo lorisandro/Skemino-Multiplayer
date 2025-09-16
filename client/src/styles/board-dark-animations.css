@@ -475,12 +475,12 @@ div.skemino-square-dark.skemino-vertex-yellow,
 
 /* ===== CENTRAL STRATEGIC CELLS - SPECIFIC DIAGONAL PATTERNS ===== */
 
-/* C3: Blue (a1 color) and Black diagonal division */
+/* C3: Blue (a1 color) and Black diagonal division - diagonale verso l'interno */
 .skemino-square-dark.skemino-central-c3,
 div.skemino-square-dark.skemino-central-c3,
 .skemino-central-c3 {
   background: linear-gradient(
-    135deg,
+    315deg,
     rgba(59, 130, 246, 1.0) 0%,
     rgba(59, 130, 246, 1.0) 49.5%,
     rgba(0, 0, 0, 1.0) 50.5%,
@@ -491,12 +491,12 @@ div.skemino-square-dark.skemino-central-c3,
   box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4), inset 0 0 10px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* C4: Red (a6 color) and Black diagonal division */
+/* C4: Red (a6 color) and Black diagonal division - diagonale verso l'interno */
 .skemino-square-dark.skemino-central-c4,
 div.skemino-square-dark.skemino-central-c4,
 .skemino-central-c4 {
   background: linear-gradient(
-    45deg,
+    225deg,
     rgba(239, 68, 68, 1.0) 0%,
     rgba(239, 68, 68, 1.0) 49.5%,
     rgba(0, 0, 0, 1.0) 50.5%,
@@ -507,12 +507,12 @@ div.skemino-square-dark.skemino-central-c4,
   box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4), inset 0 0 10px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* D3: Green (f1 color) and Black diagonal division - diagonale esterna */
+/* D3: Green (f1 color) and Black diagonal division - diagonale verso l'interno */
 .skemino-square-dark.skemino-central-d3,
 div.skemino-square-dark.skemino-central-d3,
 .skemino-central-d3 {
   background: linear-gradient(
-    225deg,
+    45deg,
     rgba(34, 197, 94, 1.0) 0%,
     rgba(34, 197, 94, 1.0) 49.5%,
     rgba(0, 0, 0, 1.0) 50.5%,
@@ -523,12 +523,12 @@ div.skemino-square-dark.skemino-central-d3,
   box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4), inset 0 0 10px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* D4: Yellow (f6 color) and Black diagonal division - diagonale esterna */
+/* D4: Yellow (f6 color) and Black diagonal division - diagonale verso l'interno */
 .skemino-square-dark.skemino-central-d4,
 div.skemino-square-dark.skemino-central-d4,
 .skemino-central-d4 {
   background: linear-gradient(
-    315deg,
+    135deg,
     rgba(250, 204, 21, 1.0) 0%,
     rgba(250, 204, 21, 1.0) 49.5%,
     rgba(0, 0, 0, 1.0) 50.5%,
@@ -808,14 +808,14 @@ div.skemino-square-dark.skemino-central-d4,
   container-type: size;
   container-name: gameboard;
 
-  /* Rectangular sizing for 6x6 strategic gaming board - height elongated +1.5% - INCREASED BY 43.75% TOTAL */
-  width: min(83.806rem, 90vw);  /* Increased by additional 15% from 72.875rem for even better visibility */
+  /* Rectangular sizing for 6x6 strategic gaming board - height elongated +1.5% - INCREASED BY 43.75% TOTAL + WIDTH ONLY INCREASE */
+  width: min(92.187rem, 90vw);  /* Increased width only by additional 10% from 83.806rem for better visibility */
   height: min(119.089rem, 92vh); /* Increased by additional 15% from 103.556rem for even better visibility */
 
-  /* Prevent overflow and ensure proper proportions - INCREASED BY 43.75% TOTAL */
-  min-width: 58.664rem; /* Increased by additional 15% from 51.0125rem */
+  /* Prevent overflow and ensure proper proportions - INCREASED BY 43.75% TOTAL + WIDTH ONLY INCREASE */
+  min-width: 64.531rem; /* Increased width only by additional 10% from 58.664rem */
   min-height: 83.364rem; /* Increased by additional 15% from 72.49rem */
-  max-width: 125.709rem;  /* Increased by additional 15% from 109.3125rem */
+  max-width: 138.28rem;  /* Increased width only by additional 10% from 125.709rem */
   max-height: 178.857rem; /* Increased by additional 15% from 155.5275rem */
 
   /* Centering and positioning */
@@ -904,7 +904,7 @@ div.skemino-square-dark.skemino-central-d4,
 /* Mobile gaming optimized - INCREASED BY 43.75% TOTAL */
 @container gameboard (max-width: 127.94rem) {
   .skemino-board-zoom-resistant {
-    width: 67.045rem; /* Increased by additional 15% from 58.3rem */
+    width: 73.75rem; /* Increased width only by additional 10% from 67.045rem */
     height: min(95.272rem, 90vh); /* Increased by additional 15% from 82.845rem */
     min-height: 95.272rem;
     border-width: 1px;
@@ -929,7 +929,7 @@ div.skemino-square-dark.skemino-central-d4,
 /* Tablet gaming - INCREASED BY 43.75% TOTAL */
 @container gameboard (min-width: 127.94rem) and (max-width: 172.5rem) {
   .skemino-board-zoom-resistant {
-    width: 75.426rem; /* Increased by additional 15% from 65.5875rem */
+    width: 82.969rem; /* Increased width only by additional 10% from 75.426rem */
     height: min(107.18rem, 90vh); /* Increased by additional 15% from 93.2rem */
     min-height: 107.18rem;
   }
@@ -953,7 +953,7 @@ div.skemino-square-dark.skemino-central-d4,
 /* Desktop gaming - INCREASED BY 43.75% TOTAL */
 @container gameboard (min-width: 172.5rem) and (max-width: 212.75rem) {
   .skemino-board-zoom-resistant {
-    width: 83.806rem; /* Increased by additional 15% from 72.875rem */
+    width: 92.187rem; /* Increased width only by additional 10% from 83.806rem */
     height: min(119.089rem, 92vh); /* Increased by additional 15% from 103.556rem */
     min-height: 119.089rem;
     border-width: 2px;
@@ -978,7 +978,7 @@ div.skemino-square-dark.skemino-central-d4,
 /* 2K gaming optimized - INCREASED BY 43.75% TOTAL */
 @container gameboard (min-width: 212.75rem) and (max-width: 255.88rem) {
   .skemino-board-zoom-resistant {
-    width: 92.187rem; /* Increased by additional 15% from 80.1625rem */
+    width: 101.406rem; /* Increased width only by additional 10% from 92.187rem */
     height: min(130.997rem, 94vh); /* Increased by additional 15% from 113.911rem */
     min-height: 130.997rem;
     border-width: 3px;
@@ -1003,7 +1003,7 @@ div.skemino-square-dark.skemino-central-d4,
 /* Ultrawide gaming - INCREASED BY 43.75% TOTAL */
 @container gameboard (min-width: 255.88rem) {
   .skemino-board-zoom-resistant {
-    width: 100.568rem; /* Increased by additional 15% from 87.45rem */
+    width: 110.625rem; /* Increased width only by additional 10% from 100.568rem */
     height: min(142.908rem, 95vh); /* Increased by additional 15% from 124.268rem */
     min-height: 142.908rem;
     border-width: 3px;

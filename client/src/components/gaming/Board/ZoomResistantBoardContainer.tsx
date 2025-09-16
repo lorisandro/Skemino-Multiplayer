@@ -82,12 +82,12 @@ export const ZoomResistantBoardContainer: React.FC<ZoomResistantBoardContainerPr
           style={{
             // Demo mode overrides with larger fixed sizes (rectangular for 5:7 cells) - INCREASED BY 43.75% TOTAL
             ...(demoMode && {
-              width: '58.664rem', // Increased by additional 15% from 51.0125rem
-              height: '85.02rem', // Increased by additional 15% from 73.93rem
-              minWidth: '58.664rem',
+              width: '64.531rem', // Increased width only by additional 10% from 58.664rem
+              height: '85.02rem', // Height unchanged
+              minWidth: '64.531rem',
               minHeight: '85.02rem',
-              maxWidth: '67.045rem', // Increased by additional 15% from 58.3rem
-              maxHeight: '97.147rem', // Increased by additional 15% from 84.476rem
+              maxWidth: '73.75rem', // Increased width only by additional 10% from 67.045rem
+              maxHeight: '97.147rem', // Height unchanged
             })
           }}
         >
@@ -108,17 +108,17 @@ export const useBoardContainerSize = () => {
   const getBoardSize = () => {
     switch (currentBreakpoint) {
       case 'mobile':
-        return { width: '67.045rem', height: '97.147rem' }; // INCREASED BY 43.75% TOTAL from 46.64rem/67.581rem
+        return { width: '73.75rem', height: '97.147rem' }; // Width increased +10% from 67.045rem, height unchanged
       case 'tablet':
-        return { width: '75.426rem', height: '109.291rem' }; // INCREASED BY 43.75% TOTAL from 52.47rem/76.029rem
+        return { width: '82.969rem', height: '109.291rem' }; // Width increased +10% from 75.426rem, height unchanged
       case 'desktop':
-        return { width: '83.806rem', height: '121.435rem' }; // INCREASED BY 43.75% TOTAL from 58.3rem/84.477rem
+        return { width: '92.187rem', height: '121.435rem' }; // Width increased +10% from 83.806rem, height unchanged
       case '2k':
-        return { width: '92.187rem', height: '133.578rem' }; // INCREASED BY 43.75% TOTAL from 64.13rem/92.924rem
+        return { width: '101.406rem', height: '133.578rem' }; // Width increased +10% from 92.187rem, height unchanged
       case 'ultrawide':
-        return { width: '100.568rem', height: '145.709rem' }; // INCREASED BY 43.75% TOTAL from 69.96rem/101.362rem
+        return { width: '110.625rem', height: '145.709rem' }; // Width increased +10% from 100.568rem, height unchanged
       default:
-        return { width: '75.426rem', height: '109.291rem' }; // INCREASED BY 43.75% TOTAL from 52.47rem/76.029rem
+        return { width: '82.969rem', height: '109.291rem' }; // Width increased +10% from 75.426rem, height unchanged
     }
   };
 
