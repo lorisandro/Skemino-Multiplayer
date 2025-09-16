@@ -250,7 +250,7 @@ export const useMatchmaking = (options: UseMatchmakingOptions = {}) => {
       socket.off('matchmaking:guest-error', handleGuestMatchmakingError);
       socket.off('error', handleError);
     };
-  }, [socket, onMatchFound, onError, state.timeControl]);
+  }, [socket, onMatchFound, onError, state.timeControl, navigate]);
 
   // Auto-cleanup on unmount or disconnection
   useEffect(() => {
