@@ -2,16 +2,27 @@ import React, { useState } from 'react';
 import { AuthProvider } from './contexts/AuthContext';
 import { MatchmakingDemo } from './pages/MatchmakingDemo';
 import AuthDemo from './pages/AuthDemo';
+import { useAuth } from './hooks/useAuth';
 
 type AppMode = 'game' | 'auth';
 
-function App() {
-  // Switch between game demo and auth demo for testing
-  const [mode, setMode] = useState<AppMode>('auth'); // Start with auth for testing
+function AppContent() {
+  const { isAuthenticated, user } = useAuth();
+  const [mode, setMode] = useState<AppMode>('game');
+
+  // If user is authenticated, always show dashboard (handled by AuthDemo)
+  if (isAuthenticated && user) {
+    return <AuthDemo />;
+  }
+
+  // If not authenticated, show auth demo
+  if (!isAuthenticated) {
+    return <AuthDemo />;
+  }
 
   return (
-    <AuthProvider>
-      {/* Development Navigation */}
+    <>
+      {/* Development Navigation - only show when not authenticated */}
       <div className="fixed top-4 right-4 z-50 flex space-x-2">
         <button
           onClick={() => setMode('auth')}
@@ -37,6 +48,14 @@ function App() {
 
       {/* Render current mode */}
       {mode === 'auth' ? <AuthDemo /> : <MatchmakingDemo />}
+    </>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
     </AuthProvider>
   );
 }
