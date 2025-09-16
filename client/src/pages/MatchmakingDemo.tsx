@@ -65,17 +65,48 @@ export const MatchmakingDemo: React.FC = () => {
   // Auto-start matchmaking based on stored intent
   useEffect(() => {
     // Check if we should auto-start matchmaking using stored intent
-    if (urlIntent.intent === 'quickmatch' && connected && !autoMatchmakingStarted && !currentPlayer && user) {
+    // Also check for stored token to handle auth race condition
+    const hasStoredToken = localStorage.getItem('skemino_auth_token') || sessionStorage.getItem('skemino_auth_token');
+    const hasUserData = localStorage.getItem('skemino_user_data') || sessionStorage.getItem('skemino_user_data');
+
+    if (urlIntent.intent === 'quickmatch' && connected && !autoMatchmakingStarted && !currentPlayer && (user || hasUserData)) {
       console.log('Auto-starting matchmaking from dashboard intent');
 
-      // Prepare player data from authenticated user
-      const playerData = {
-        playerId: user.id || `player_${Math.random().toString(36).substr(2, 9)}`,
-        username: user.displayName || user.email?.split('@')[0] || 'Guest',
-        rating: user.rating || 1000,
-        level: user.level?.name || 'Principiante',
-        mode: urlIntent.mode || 'ranked'
-      };
+      // Prepare player data from authenticated user or stored data
+      let playerData;
+
+      if (user) {
+        // Use live user data if available
+        playerData = {
+          playerId: user.id || `player_${Math.random().toString(36).substr(2, 9)}`,
+          username: user.displayName || user.username || user.email?.split('@')[0] || 'Guest',
+          rating: user.rating || 1000,
+          level: user.level?.name || 'Principiante',
+          mode: urlIntent.mode || 'ranked'
+        };
+      } else if (hasUserData) {
+        // Fallback to stored user data during auth sync
+        try {
+          const storedUser = JSON.parse(hasUserData);
+          playerData = {
+            playerId: storedUser.id || `player_${Math.random().toString(36).substr(2, 9)}`,
+            username: storedUser.displayName || storedUser.username || storedUser.email?.split('@')[0] || 'Guest',
+            rating: storedUser.rating || 1000,
+            level: storedUser.level?.name || 'Principiante',
+            mode: urlIntent.mode || 'ranked'
+          };
+        } catch (error) {
+          console.error('Error parsing stored user data for matchmaking:', error);
+          // Create fallback player data
+          playerData = {
+            playerId: `player_${Math.random().toString(36).substr(2, 9)}`,
+            username: 'Guest',
+            rating: 1000,
+            level: 'Principiante',
+            mode: urlIntent.mode || 'ranked'
+          };
+        }
+      }
 
       // Start matchmaking automatically
       startMatchmaking(playerData);

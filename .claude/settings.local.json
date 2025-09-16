@@ -50,7 +50,8 @@
       "Bash(start http://localhost:3000/login)",
       "Bash(start http://localhost:3000/home)",
       "Bash(tasklist)",
-      "Bash(start http://localhost:3000/game)"
+      "Bash(start http://localhost:3000/game)",
+      "Bash(timeout:*)"
     ],
     "deny": [],
     "ask": []
