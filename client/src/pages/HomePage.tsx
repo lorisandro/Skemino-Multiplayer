@@ -97,36 +97,15 @@ const HomePage: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Content - Game Preview */}
+          {/* Right Content - Game Board Image */}
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-r from-amber-500/20 to-orange-600/20 blur-3xl"></div>
             <div className="relative bg-black/40 backdrop-blur-xl rounded-2xl p-8 border border-white/10">
-              {/* Mini Board Preview */}
-              <div className="grid grid-cols-6 gap-1 mb-6">
-                {Array.from({ length: 36 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className={`aspect-square rounded ${
-                      [0, 5, 30, 35].includes(i)
-                        ? 'bg-amber-500/30 border-2 border-amber-500'
-                        : 'bg-white/5 border border-white/10'
-                    }`}
-                  />
-                ))}
-              </div>
-
-              {/* Card Display */}
-              <div className="flex justify-center space-x-2">
-                <div className="w-16 h-24 bg-gradient-to-br from-red-500 to-red-700 rounded-lg flex items-center justify-center text-white font-bold">
-                  P7
-                </div>
-                <div className="w-16 h-24 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center text-white font-bold">
-                  C3
-                </div>
-                <div className="w-16 h-24 bg-gradient-to-br from-green-500 to-green-700 rounded-lg flex items-center justify-center text-white font-bold">
-                  F11
-                </div>
-              </div>
+              <img
+                src="/img/Tabellone/tabellone_skemino.webp"
+                alt="Skèmino Game Board"
+                className="w-full h-auto rounded-xl"
+              />
             </div>
           </div>
         </div>
