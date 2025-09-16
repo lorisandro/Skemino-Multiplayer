@@ -112,8 +112,8 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Bot Arena Section */}
-      <section className="py-20 bg-gray-950 border-t border-white/10">
-        <div className="container mx-auto px-6">
+      <section className="py-16 bg-gray-950">
+        <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
@@ -230,8 +230,8 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Global Community Section */}
-      <section className="py-20 bg-gray-900">
-        <div className="container mx-auto px-6">
+      <section className="py-16 bg-gray-900 mt-12">
+        <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-green-400">
@@ -329,8 +329,8 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Game Analysis Section */}
-      <section className="py-20 bg-gray-950">
-        <div className="container mx-auto px-6">
+      <section className="py-16 bg-gray-950 mt-12">
+        <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
@@ -470,8 +470,8 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Strategic Puzzles Section */}
-      <section className="py-20 bg-gray-900">
-        <div className="container mx-auto px-6">
+      <section className="py-16 bg-gray-900 mt-12">
+        <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-400">
@@ -592,8 +592,8 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Learning Academy Section */}
-      <section className="py-20 bg-gray-950">
-        <div className="container mx-auto px-6">
+      <section className="py-16 bg-gray-950 mt-12">
+        <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-400">
@@ -720,8 +720,8 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Tournament Center Section */}
-      <section className="py-20 bg-gray-900">
-        <div className="container mx-auto px-6">
+      <section className="py-16 bg-gray-900 mt-12">
+        <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-red-400">
