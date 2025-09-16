@@ -15,6 +15,7 @@ export const MatchmakingDemo: React.FC = () => {
   const location = useLocation();
   const [preGameState, setPreGameState] = useState<'waiting' | 'matched' | 'distributing' | 'ready' | 'starting'>('waiting');
   const [autoMatchmakingStarted, setAutoMatchmakingStarted] = useState(false);
+  const [urlIntent, setUrlIntent] = useState<{ intent: string | null; mode: string | null }>({ intent: null, mode: null });
 
   // Determine the current phase
   const getGamePhase = () => {
@@ -47,14 +48,24 @@ export const MatchmakingDemo: React.FC = () => {
     // Reset game store state
   };
 
-  // Auto-start matchmaking when coming from dashboard with intent
+  // Immediately clean URL and store intent parameters
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const intent = urlParams.get('intent');
     const mode = urlParams.get('mode');
 
-    // Check if we should auto-start matchmaking
-    if (intent === 'quickmatch' && connected && !autoMatchmakingStarted && !currentPlayer && user) {
+    // If there are URL parameters, store them and clean the URL immediately
+    if (intent || mode) {
+      setUrlIntent({ intent, mode });
+      // Clean URL immediately - don't wait for any conditions
+      window.history.replaceState(null, '', '/game');
+    }
+  }, []); // Run only once on mount
+
+  // Auto-start matchmaking based on stored intent
+  useEffect(() => {
+    // Check if we should auto-start matchmaking using stored intent
+    if (urlIntent.intent === 'quickmatch' && connected && !autoMatchmakingStarted && !currentPlayer && user) {
       console.log('Auto-starting matchmaking from dashboard intent');
 
       // Prepare player data from authenticated user
@@ -63,7 +74,7 @@ export const MatchmakingDemo: React.FC = () => {
         username: user.displayName || user.email?.split('@')[0] || 'Guest',
         rating: user.rating || 1000,
         level: user.level?.name || 'Principiante',
-        mode: mode || 'ranked'
+        mode: urlIntent.mode || 'ranked'
       };
 
       // Start matchmaking automatically
@@ -73,15 +84,12 @@ export const MatchmakingDemo: React.FC = () => {
       // Save session for recovery
       localStorage.setItem('skemino_matchmaking_session', JSON.stringify({
         playerData,
-        intent,
-        mode,
+        intent: urlIntent.intent,
+        mode: urlIntent.mode,
         timestamp: Date.now()
       }));
-
-      // Clean URL after processing intent - remove query parameters
-      window.history.replaceState(null, '', '/game');
     }
-  }, [location.search, connected, autoMatchmakingStarted, currentPlayer, startMatchmaking, user]);
+  }, [urlIntent, connected, autoMatchmakingStarted, currentPlayer, startMatchmaking, user]);
 
   // Session recovery on reconnect
   useEffect(() => {
