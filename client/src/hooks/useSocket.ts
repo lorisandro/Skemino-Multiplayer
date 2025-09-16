@@ -20,6 +20,8 @@ interface UseSocketReturn {
 }
 
 let socket: Socket | null = null;
+let lastErrorLogTime = 0;
+const ERROR_LOG_THROTTLE_MS = 5000; // Only log errors every 5 seconds
 
 export const useSocket = (): UseSocketReturn => {
   const [connected, setConnected] = useState(false);
@@ -92,9 +94,10 @@ export const useSocket = (): UseSocketReturn => {
           socket = io(import.meta.env.VITE_SOCKET_URL || 'http://localhost:3005', {
             transports: ['websocket', 'polling'],
             reconnection: true,
-            reconnectionDelay: 1000,
+            reconnectionDelay: 2000, // Start with 2 seconds
+            reconnectionDelayMax: 10000, // Max 10 seconds
             reconnectionAttempts: 5,
-            timeout: 10000,
+            timeout: 15000, // Increased timeout
             forceNew: true,
             auth: {
               token: token,
@@ -115,7 +118,11 @@ export const useSocket = (): UseSocketReturn => {
           });
 
           socket.on('connect_error', (error) => {
-            console.error('Connection error:', error);
+            const now = Date.now();
+            if (now - lastErrorLogTime > ERROR_LOG_THROTTLE_MS) {
+              console.error('Connection error:', error);
+              lastErrorLogTime = now;
+            }
             setConnecting(false);
           });
 
@@ -145,6 +152,14 @@ export const useSocket = (): UseSocketReturn => {
 
       initializeSocket();
     }
+
+    // Cleanup on unmount
+    return () => {
+      if (socket) {
+        socket.disconnect();
+        socket = null;
+      }
+    };
   }, []);
 
   // Game event handlers

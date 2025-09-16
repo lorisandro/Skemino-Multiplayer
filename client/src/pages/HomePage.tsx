@@ -176,18 +176,18 @@ const HomePage: React.FC = () => {
                 </button>
               </div>
 
-              {/* Enhanced Trust Indicators - Fixed Visibility */}
+              {/* Enhanced Trust Indicators - Left Aligned */}
               <div className="pt-8">
                 <div className="grid grid-cols-3 gap-8">
-                  <div className="text-center group cursor-pointer">
+                  <div className="text-left group cursor-pointer">
                     <div className="text-4xl font-black text-amber-400 group-hover:scale-110 transition-transform duration-300">12M+</div>
                     <div className="text-sm text-gray-300 font-medium mt-1">Partite Epiche</div>
                   </div>
-                  <div className="text-center group cursor-pointer">
+                  <div className="text-left group cursor-pointer">
                     <div className="text-4xl font-black text-green-400 group-hover:scale-110 transition-transform duration-300">750K+</div>
                     <div className="text-sm text-gray-300 font-medium mt-1">Strateghi Attivi</div>
                   </div>
-                  <div className="text-center group cursor-pointer">
+                  <div className="text-left group cursor-pointer">
                     <div className="text-4xl font-black text-purple-400 group-hover:scale-110 transition-transform duration-300">€50K+</div>
                     <div className="text-sm text-gray-300 font-medium mt-1">Premi Mensili</div>
                   </div>

@@ -82,11 +82,11 @@ export const useMatchmaking = (options: UseMatchmakingOptions = {}) => {
       onError?.('Failed to join matchmaking queue');
       return false;
     }
-  }, [socket, isConnected, isGuest, userRating, onError]);
+  }, [socket, connected, isGuest, userRating, onError]);
 
   // Leave matchmaking queue
   const leaveQueue = useCallback(() => {
-    if (!socket || !isConnected) return;
+    if (!socket || !connected) return;
 
     console.log('❌ Leaving matchmaking queue');
 
@@ -104,7 +104,7 @@ export const useMatchmaking = (options: UseMatchmakingOptions = {}) => {
       queuePosition: null,
       estimatedWait: null,
     }));
-  }, [socket, isConnected, isGuest]);
+  }, [socket, connected, isGuest]);
 
   // Set up socket event listeners
   useEffect(() => {
@@ -218,6 +218,6 @@ export const useMatchmaking = (options: UseMatchmakingOptions = {}) => {
     ...state,
     joinQueue,
     leaveQueue,
-    isConnected,
+    isConnected: connected,
   };
 };
