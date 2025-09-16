@@ -30,3 +30,8 @@ useSocket.ts:109 Connection error: Error: Invalid token
     at socket__io-client.js?v=6006470b:3218:12
 (anonime) @ useSocket.ts:109
 useMatchmaking.ts:47 🎮 Starting matchmaking demo for: classical
+game?intent=quickmatch&mode=ranked:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+game?intent=quickmatch&mode=ranked:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+game?intent=quickmatch&mode=ranked:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+game?intent=quickmatch&mode=ranked:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+game?intent=quickmatch&mode=ranked:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
