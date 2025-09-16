@@ -78,6 +78,80 @@ export const useAuth = (): AuthContextType => {
     initializeAuth();
   }, []);
 
+  // Force invalidation of corrupted tokens (one-time cleanup)
+  const forceInvalidateCorruptedTokens = async (): Promise<void> => {
+    try {
+      const corruptedTokenPattern = 'eyJhbGci'; // Pattern that was failing
+
+      // Check localStorage
+      const localToken = localStorage.getItem('skemino_auth_token');
+      if (localToken && localToken.startsWith(corruptedTokenPattern)) {
+        console.log('🧹 Detected corrupted token in localStorage, clearing...');
+        localStorage.removeItem('skemino_auth_token');
+        localStorage.removeItem('skemino_user_data');
+        localStorage.removeItem('skemino_token_version');
+      }
+
+      // Check sessionStorage
+      const sessionToken = sessionStorage.getItem('skemino_auth_token');
+      if (sessionToken && sessionToken.startsWith(corruptedTokenPattern)) {
+        console.log('🧹 Detected corrupted token in sessionStorage, clearing...');
+        sessionStorage.removeItem('skemino_auth_token');
+        sessionStorage.removeItem('skemino_user_data');
+        sessionStorage.removeItem('skemino_token_version');
+      }
+
+      // Mark as cleaned to avoid repeated cleanups
+      const cleanupFlag = localStorage.getItem('skemino_corrupted_tokens_cleaned');
+      if (!cleanupFlag) {
+        localStorage.setItem('skemino_corrupted_tokens_cleaned', 'true');
+        console.log('✅ Corrupted tokens cleanup completed');
+      }
+    } catch (error) {
+      console.error('Error during corrupted token cleanup:', error);
+    }
+  };
+
+  // JWT format validation helper
+  const isValidJWTFormat = (token: string): boolean => {
+    try {
+      if (!token || typeof token !== 'string') return false;
+
+      // JWT should have 3 parts separated by dots
+      const parts = token.split('.');
+      if (parts.length !== 3) return false;
+
+      // Each part should be base64url encoded
+      for (const part of parts) {
+        if (!part || part.length === 0) return false;
+        // Basic check for base64url characters
+        if (!/^[A-Za-z0-9_-]+$/.test(part)) return false;
+      }
+
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
+  // Force token invalidation helper
+  const forceTokenInvalidation = async (): Promise<void> => {
+    // Clear all auth storage completely
+    localStorage.removeItem('skemino_auth_token');
+    localStorage.removeItem('skemino_user_data');
+    localStorage.removeItem('skemino_token_version');
+    sessionStorage.removeItem('skemino_auth_token');
+    sessionStorage.removeItem('skemino_user_data');
+    sessionStorage.removeItem('skemino_token_version');
+    sessionStorage.removeItem('skemino_guest_session'); // Legacy cleanup
+
+    // Reset auth state
+    setUser(null);
+    setIsAuthenticated(false);
+
+    console.log('🔄 Forced token invalidation completed - user must re-authenticate');
+  };
+
   // Robust token validation with extension interference handling
   const validateToken = async (token: string): Promise<boolean> => {
     try {
@@ -85,6 +159,12 @@ export const useAuth = (): AuthContextType => {
       // In production, this should make an API call to validate the token
       // using the same robust fetch mechanism as authService
       if (!token || token.length === 0) return false;
+
+      // First validate JWT format
+      if (!isValidJWTFormat(token)) {
+        console.error('❌ Token validation failed: invalid JWT format');
+        return false;
+      }
 
       // Simulate API validation with timeout handling
       return await Promise.race([
@@ -145,13 +225,16 @@ export const useAuth = (): AuthContextType => {
 
       console.log('✅ Received valid JWT token:', authToken.substring(0, 20) + '... (length: ' + authToken.length + ')');
 
-      // Store auth data
+      // Store auth data with versioning
+      const tokenVersion = '2025-09-16'; // Current token version
       if (credentials.rememberMe) {
         localStorage.setItem('skemino_auth_token', authToken);
         localStorage.setItem('skemino_user_data', JSON.stringify(authenticatedUser));
+        localStorage.setItem('skemino_token_version', tokenVersion);
       } else {
         sessionStorage.setItem('skemino_auth_token', authToken);
         sessionStorage.setItem('skemino_user_data', JSON.stringify(authenticatedUser));
+        sessionStorage.setItem('skemino_token_version', tokenVersion);
       }
 
       // Important: Update any active WebSocket connections with new token
@@ -232,9 +315,11 @@ export const useAuth = (): AuthContextType => {
 
       console.log('✅ Received valid JWT token during registration:', authToken.substring(0, 20) + '... (length: ' + authToken.length + ')');
 
-      // Store auth data in localStorage for registration (always persistent)
+      // Store auth data in localStorage for registration (always persistent) with versioning
+      const tokenVersion = '2025-09-16'; // Current token version
       localStorage.setItem('skemino_auth_token', authToken);
       localStorage.setItem('skemino_user_data', JSON.stringify(registeredUser));
+      localStorage.setItem('skemino_token_version', tokenVersion);
 
       setUser(registeredUser);
       setIsAuthenticated(true);
@@ -263,11 +348,13 @@ export const useAuth = (): AuthContextType => {
     setIsLoading(true);
 
     try {
-      // Clear all auth storage
+      // Clear all auth storage including versions
       localStorage.removeItem('skemino_auth_token');
       localStorage.removeItem('skemino_user_data');
+      localStorage.removeItem('skemino_token_version');
       sessionStorage.removeItem('skemino_auth_token');
       sessionStorage.removeItem('skemino_user_data');
+      sessionStorage.removeItem('skemino_token_version');
       sessionStorage.removeItem('skemino_guest_session'); // Legacy guest session cleanup
 
       // Reset state
@@ -414,9 +501,11 @@ export const useAuth = (): AuthContextType => {
 
       console.log('✅ Received valid guest JWT token:', authToken.substring(0, 20) + '... (length: ' + authToken.length + ')');
 
-      // Store guest session (session storage only for temporary session)
+      // Store guest session (session storage only for temporary session) with versioning
+      const tokenVersion = '2025-09-16'; // Current token version
       sessionStorage.setItem('skemino_auth_token', authToken);
       sessionStorage.setItem('skemino_user_data', JSON.stringify(guestUser));
+      sessionStorage.setItem('skemino_token_version', tokenVersion);
 
       setUser(guestUser);
       setIsAuthenticated(true);

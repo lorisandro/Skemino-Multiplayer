@@ -109,6 +109,23 @@ export class SocketClient {
         console.log('🔑 Retrieved token from storage:', authToken.substring(0, 20) + '...');
       }
 
+      // Validate JWT format before sending to server
+      if (authToken && !this.isValidJWTFormat(authToken)) {
+        console.error('❌ Invalid JWT format detected, clearing corrupted token');
+        this.handleCorruptedTokenError();
+        reject(new Error('Invalid JWT format - token cleared'));
+        return;
+      }
+
+      // Check for known corrupted token patterns
+      const knownCorruptedPattern = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9';
+      if (authToken && authToken.startsWith(knownCorruptedPattern)) {
+        console.error('🚨 Known corrupted token pattern detected, clearing token');
+        this.handleCorruptedTokenError();
+        reject(new Error('Known corrupted token pattern - token cleared'));
+        return;
+      }
+
       // Check if user is guest
       const userData = localStorage.getItem('skemino_user_data') ||
                       sessionStorage.getItem('skemino_user_data');
@@ -223,8 +240,56 @@ export class SocketClient {
 
   private handleConnectionError(error: Error): void {
     this.connectionStatus.connecting = false;
+
+    // Handle specific JWT authentication errors from server
+    if (error.message.includes('JWT_SIGNATURE_INVALID') || error.name === 'JWT_SIGNATURE_INVALID') {
+      console.error('🚨 Server detected corrupted JWT token - forcing client token invalidation');
+      this.handleCorruptedTokenError();
+    } else if (error.message.includes('KNOWN_CORRUPTED_TOKEN') || error.name === 'KNOWN_CORRUPTED_TOKEN') {
+      console.error('🚨 Server detected known corrupted token pattern - clearing storage');
+      this.handleCorruptedTokenError();
+    } else if (error.message.includes('Authentication token expired')) {
+      console.error('⏰ Authentication token expired - user needs to re-authenticate');
+      this.emit('error', {
+        code: 'TOKEN_EXPIRED',
+        message: 'Your session has expired. Please login again.'
+      });
+    } else if (error.message.includes('Authentication token required')) {
+      console.error('🔑 No valid authentication token - user needs to login');
+      this.emit('error', {
+        code: 'AUTH_REQUIRED',
+        message: 'Authentication required. Please login to continue.'
+      });
+    }
+
     this.emit('connect_error', error);
     console.error('❌ Connection error:', error.message);
+  }
+
+  // Handle corrupted token errors by clearing storage and redirecting to auth
+  private handleCorruptedTokenError(): void {
+    console.log('🧹 Clearing corrupted authentication data from browser storage');
+
+    // Clear all authentication data
+    localStorage.removeItem('skemino_auth_token');
+    localStorage.removeItem('skemino_user_data');
+    localStorage.removeItem('skemino_token_version');
+    sessionStorage.removeItem('skemino_auth_token');
+    sessionStorage.removeItem('skemino_user_data');
+    sessionStorage.removeItem('skemino_token_version');
+    sessionStorage.removeItem('skemino_guest_session'); // Legacy cleanup
+
+    // Mark tokens as cleaned
+    localStorage.setItem('skemino_corrupted_tokens_cleaned', 'true');
+
+    // Emit specific error for UI to handle (redirect to login)
+    this.emit('error', {
+      code: 'CORRUPTED_TOKEN',
+      message: 'Your authentication data was corrupted and has been cleared. Please login again.'
+    });
+
+    // Force disconnect to prevent retry loops
+    this.disconnect();
   }
 
   private handleDisconnect(reason: string): void {
@@ -455,6 +520,28 @@ export class SocketClient {
       this.connect().catch(error => {
         console.error('Manual reconnection failed:', error);
       });
+    }
+  }
+
+  // JWT format validation helper
+  private isValidJWTFormat(token: string): boolean {
+    try {
+      if (!token || typeof token !== 'string') return false;
+
+      // JWT should have 3 parts separated by dots
+      const parts = token.split('.');
+      if (parts.length !== 3) return false;
+
+      // Each part should be base64url encoded
+      for (const part of parts) {
+        if (!part || part.length === 0) return false;
+        // Basic check for base64url characters
+        if (!/^[A-Za-z0-9_-]+$/.test(part)) return false;
+      }
+
+      return true;
+    } catch (error) {
+      return false;
     }
   }
 

@@ -157,7 +157,22 @@ export class SocketManager {
       }
 
       logger.info(`🔑 JWT_SECRET for verification: ${jwtSecret.substring(0, 10)}...${jwtSecret.substring(jwtSecret.length - 4)} (length: ${jwtSecret.length})`);
-      logger.info(`🔑 Full token to verify: ${token}`);
+
+      // Check for the specific corrupted token pattern we've been seeing
+      const knownCorruptedPattern = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9';
+      const isKnownCorruptedToken = token.startsWith(knownCorruptedPattern);
+
+      if (isKnownCorruptedToken) {
+        logger.error('🚨 DETECTED KNOWN CORRUPTED TOKEN PATTERN - This is the problematic token!');
+        logger.error(`🔍 Corrupted token: ${token.substring(0, 30)}...${token.substring(token.length - 10)}`);
+
+        // Immediately reject known corrupted tokens
+        const authError = new Error('KNOWN_CORRUPTED_TOKEN - Please clear browser storage and re-authenticate');
+        authError.name = 'KNOWN_CORRUPTED_TOKEN';
+        return next(authError);
+      }
+
+      logger.debug(`🔑 Token to verify: ${token.substring(0, 30)}...${token.substring(token.length - 10)}`);
 
       let decoded: any;
       try {
@@ -185,23 +200,17 @@ export class SocketManager {
             logger.error('🚨 CRITICAL: Client still generating fake tokens instead of using server tokens');
             return next(new Error('Invalid authentication: fake token detected'));
           } else {
-            logger.error(`🚫 Invalid JWT signature for legitimate token - possible secret mismatch or token corruption`);
+            logger.error(`🚫 Invalid JWT signature for legitimate token - possible token corruption or version mismatch`);
             logger.error(`🔍 Token structure: parts=${token.split('.').length}, length=${token.length}`);
             logger.error(`🔑 Current JWT_SECRET hash: ${require('crypto').createHash('md5').update(jwtSecret).digest('hex').substring(0, 8)}`);
 
-            // For legitimate JWT signature issues, still create emergency guest but log it as critical
-            logger.info('🎭 Legitimate JWT signature failed, creating emergency guest session (investigate server config)');
-            const emergencyGuestId = `emergency_guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-            const emergencyGuest = getOrCreateGuestUser(emergencyGuestId);
+            // CRITICAL: Instead of creating emergency guest, force client to re-authenticate
+            logger.error('🚨 CORRUPTED TOKEN DETECTED - Forcing client re-authentication');
 
-            (socket as AuthenticatedSocket).userId = emergencyGuest.id;
-            (socket as AuthenticatedSocket).username = emergencyGuest.username;
-            (socket as AuthenticatedSocket).rating = emergencyGuest.rating;
-            (socket as AuthenticatedSocket).isGuest = true;
-
-            logger.info(`🆘 Emergency guest created: ${emergencyGuest.username} (${emergencyGuest.id})`);
-            next();
-            return;
+            // Send specific error that client should handle by clearing tokens and redirecting to login
+            const authError = new Error('JWT_SIGNATURE_INVALID - Token corrupted, please re-authenticate');
+            authError.name = 'JWT_SIGNATURE_INVALID';
+            return next(authError);
           }
         } else if (errorMsg.includes('jwt expired')) {
           logger.error(`⏰ JWT token expired`);
