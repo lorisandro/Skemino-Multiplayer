@@ -77,6 +77,9 @@ export const MatchmakingDemo: React.FC = () => {
         mode,
         timestamp: Date.now()
       }));
+
+      // Clean URL after processing intent - remove query parameters
+      window.history.replaceState(null, '', '/game');
     }
   }, [location.search, connected, autoMatchmakingStarted, currentPlayer, startMatchmaking, user]);
 
