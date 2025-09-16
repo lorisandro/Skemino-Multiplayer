@@ -62,16 +62,22 @@ router.post('/guest', async (req: Request, res: Response) => {
       });
     }
 
+    const tokenPayload = {
+      userId: guestId,
+      username: guestUsername,
+      isGuest: true,
+      rating: 1200,
+      iat: Math.floor(Date.now() / 1000) // Explicit issued at time
+    };
+
     const token = jwt.sign(
-      {
-        userId: guestId,
-        username: guestUsername,
-        isGuest: true,
-        rating: 1200,
-      },
+      tokenPayload,
       jwtSecret,
-      { expiresIn: '24h' }
+      { expiresIn: '24h', algorithm: 'HS256' } // Explicit algorithm
     );
+
+    logger.info(`🔐 Guest JWT created - Preview: ${token.substring(0, 20)}... (${token.length} chars)`);
+    logger.info(`🔐 Payload: ${JSON.stringify(tokenPayload)}`);
 
     logger.info(`👤 Guest user created: ${guestUsername} (${guestId})`);
 
@@ -142,17 +148,23 @@ router.post('/login', async (req: Request, res: Response) => {
       });
     }
 
+    const tokenPayload = {
+      userId: user.id,
+      username: user.username,
+      email: user.email,
+      rating: user.rating,
+      isGuest: false,
+      iat: Math.floor(Date.now() / 1000) // Explicit issued at time
+    };
+
     const token = jwt.sign(
-      {
-        userId: user.id,
-        username: user.username,
-        email: user.email,
-        rating: user.rating,
-        isGuest: false,
-      },
+      tokenPayload,
       jwtSecret,
-      { expiresIn: '7d' }
+      { expiresIn: '7d', algorithm: 'HS256' } // Explicit algorithm
     );
+
+    logger.info(`🔐 User JWT created - Preview: ${token.substring(0, 20)}... (${token.length} chars)`);
+    logger.info(`🔐 Payload: ${JSON.stringify(tokenPayload)}`);
 
     // Update last login
     await DatabaseManager.updateUserLastLogin(user.id);
@@ -274,17 +286,23 @@ router.post('/register', async (req: Request, res: Response) => {
       });
     }
 
+    const tokenPayload = {
+      userId: newUser.id,
+      username: newUser.username,
+      email: newUser.email,
+      rating: newUser.rating,
+      isGuest: false,
+      iat: Math.floor(Date.now() / 1000) // Explicit issued at time
+    };
+
     const token = jwt.sign(
-      {
-        userId: newUser.id,
-        username: newUser.username,
-        email: newUser.email,
-        rating: newUser.rating,
-        isGuest: false,
-      },
+      tokenPayload,
       jwtSecret,
-      { expiresIn: '7d' }
+      { expiresIn: '7d', algorithm: 'HS256' } // Explicit algorithm
     );
+
+    logger.info(`🔐 Registration JWT created - Preview: ${token.substring(0, 20)}... (${token.length} chars)`);
+    logger.info(`🔐 Payload: ${JSON.stringify(tokenPayload)}`);
 
     logger.info(`✨ New user registered: ${username} (${newUser.id})`);
 

@@ -31,19 +31,19 @@ export const useWebSocket = (options: UseWebSocketOptions = {}) => {
     if (socketRef.current?.connected) return;
 
     try {
-      // Get auth token from localStorage or use guest mode
-      const token = localStorage.getItem('auth_token');
+      // Get auth token from localStorage first (persistent login), then sessionStorage (guest)
+      let token = localStorage.getItem('skemino_auth_token') || sessionStorage.getItem('skemino_auth_token');
       const isGuest = !token;
 
-      const socketUrl = process.env.REACT_APP_WEBSOCKET_URL || 'http://localhost:3001';
+      const socketUrl = process.env.REACT_APP_WEBSOCKET_URL || 'http://localhost:3005';
 
       socketRef.current = io(socketUrl, {
         auth: {
-          token: token || 'guest_' + Date.now(),
-          isGuest,
+          token: token || null,
+          isGuest: isGuest
         },
         transports: ['websocket', 'polling'],
-        timeout: 5000,
+        timeout: 10000,
         forceNew: true,
       });
 
@@ -83,7 +83,26 @@ export const useWebSocket = (options: UseWebSocketOptions = {}) => {
     });
 
     socket.on('connect_error', (error) => {
-      const errorMsg = `Connection failed: ${error.message}`;
+      let errorMsg = `Connection failed: ${error.message}`;
+
+      // Handle specific authentication errors
+      if (error.message.includes('Authentication token')) {
+        errorMsg = 'Token di autenticazione non valido. Effettua nuovamente il login.';
+        // Clear invalid tokens
+        localStorage.removeItem('skemino_auth_token');
+        sessionStorage.removeItem('skemino_auth_token');
+      } else if (error.message.includes('signature')) {
+        errorMsg = 'Token corrotto. Effettua nuovamente il login.';
+        // Clear corrupted tokens
+        localStorage.removeItem('skemino_auth_token');
+        sessionStorage.removeItem('skemino_auth_token');
+      } else if (error.message.includes('expired')) {
+        errorMsg = 'Sessione scaduta. Effettua nuovamente il login.';
+        // Clear expired tokens
+        localStorage.removeItem('skemino_auth_token');
+        sessionStorage.removeItem('skemino_auth_token');
+      }
+
       setState(prev => ({ ...prev, error: errorMsg, isConnected: false }));
       onError?.(errorMsg);
     });
@@ -132,6 +151,20 @@ export const useWebSocket = (options: UseWebSocketOptions = {}) => {
     }
   };
 
+  // Update authentication token and reconnect
+  const updateAuthToken = (newToken: string) => {
+    if (socketRef.current) {
+      // Store the new token
+      localStorage.setItem('skemino_auth_token', newToken);
+
+      // Force reconnection with new token
+      disconnect();
+      setTimeout(() => {
+        connect();
+      }, 1000);
+    }
+  };
+
   // Auto-connect on mount
   useEffect(() => {
     if (autoConnect) {
@@ -160,5 +193,6 @@ export const useWebSocket = (options: UseWebSocketOptions = {}) => {
     latency: state.latency,
     connect,
     disconnect,
+    updateAuthToken,
   };
 };

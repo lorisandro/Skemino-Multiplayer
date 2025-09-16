@@ -118,10 +118,25 @@ export class SocketManager {
       logger.info(`🔑 WebSocket auth attempt - Token: ${!!token}, Guest flag: ${isGuestFlag}`);
       logger.info(`🌍 JWT_SECRET loaded: ${!!process.env.JWT_SECRET}, length: ${process.env.JWT_SECRET?.length || 0}`);
 
-      // Handle case where no token is provided
-      if (!token) {
-        logger.warn('❌ No authentication token provided');
-        return next(new Error('Authentication token required'));
+      // Handle case where no token is provided (only allow if explicitly guest)
+      if (!token || token === 'null' || token === 'undefined') {
+        if (isGuestFlag === true || isGuestFlag === 'true') {
+          logger.info('🎭 No token provided but guest flag set - allowing guest access');
+          // Create emergency guest user for explicit guest connections
+          const emergencyGuestId = `no_token_guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+          const emergencyGuest = getOrCreateGuestUser(emergencyGuestId);
+
+          (socket as AuthenticatedSocket).userId = emergencyGuest.id;
+          (socket as AuthenticatedSocket).username = emergencyGuest.username;
+          (socket as AuthenticatedSocket).rating = emergencyGuest.rating;
+          (socket as AuthenticatedSocket).isGuest = true;
+
+          logger.info(`🎭 Guest user created for no-token connection: ${emergencyGuest.username}`);
+          return next();
+        } else {
+          logger.warn('❌ No authentication token provided and not marked as guest');
+          return next(new Error('Authentication token required'));
+        }
       }
 
       // Clean up token format (remove Bearer prefix if present)
@@ -141,26 +156,57 @@ export class SocketManager {
         return next(new Error('Server configuration error'));
       }
 
+      logger.info(`🔑 JWT_SECRET for verification: ${jwtSecret.substring(0, 10)}...${jwtSecret.substring(jwtSecret.length - 4)} (length: ${jwtSecret.length})`);
+      logger.info(`🔑 Full token to verify: ${token}`);
+
       let decoded: any;
       try {
-        // Always verify JWT signature for security
-        decoded = jwt.verify(token, jwtSecret) as any;
+        // Always verify JWT signature for security with explicit algorithm
+        decoded = jwt.verify(token, jwtSecret, { algorithms: ['HS256'] }) as any;
         logger.info(`✅ JWT verification successful - User: ${decoded.userId}, Guest: ${decoded.isGuest}`);
+        logger.info(`✅ JWT details: Issued: ${new Date((decoded.iat || 0) * 1000).toISOString()}, Expires: ${new Date((decoded.exp || 0) * 1000).toISOString()}`);
       } catch (jwtError: any) {
         logger.error(`❌ JWT verification failed: ${jwtError.message}`);
+        logger.error(`❌ Token preview: ${token.substring(0, 20)}...`);
 
-        // If JWT verification fails, create a new guest user (graceful degradation)
-        logger.info('🎭 JWT failed, creating emergency guest session');
-        const emergencyGuestId = `emergency_guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        const emergencyGuest = getOrCreateGuestUser(emergencyGuestId);
+        // Only create emergency guest for specific cases, otherwise reject
+        const errorMsg = jwtError.message || 'Unknown JWT error';
 
-        (socket as AuthenticatedSocket).userId = emergencyGuest.id;
-        (socket as AuthenticatedSocket).username = emergencyGuest.username;
-        (socket as AuthenticatedSocket).rating = emergencyGuest.rating;
-        (socket as AuthenticatedSocket).isGuest = true;
+        // Check if this is a token format issue vs signature issue
+        if (errorMsg.includes('invalid signature')) {
+          logger.error(`🚫 Invalid JWT signature - possible token corruption or wrong secret`);
+          logger.info('🎭 JWT failed, creating emergency guest session');
+          const emergencyGuestId = `emergency_guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+          const emergencyGuest = getOrCreateGuestUser(emergencyGuestId);
 
-        logger.info(`🆘 Emergency guest created: ${emergencyGuest.username} (${emergencyGuest.id})`);
-        return next();
+          (socket as AuthenticatedSocket).userId = emergencyGuest.id;
+          (socket as AuthenticatedSocket).username = emergencyGuest.username;
+          (socket as AuthenticatedSocket).rating = emergencyGuest.rating;
+          (socket as AuthenticatedSocket).isGuest = true;
+
+          logger.info(`🆘 Emergency guest created: ${emergencyGuest.username} (${emergencyGuest.id})`);
+          next();
+          return;
+        } else if (errorMsg.includes('jwt expired')) {
+          logger.error(`⏰ JWT token expired`);
+          return next(new Error('Authentication token expired'));
+        } else if (errorMsg.includes('jwt malformed') || errorMsg.includes('invalid token')) {
+          logger.error(`🔧 Malformed JWT token`);
+          return next(new Error('Malformed authentication token'));
+        } else {
+          // For other JWT errors, still create emergency guest as fallback
+          logger.info('🎭 Other JWT error, creating emergency guest session');
+          const emergencyGuestId = `emergency_guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+          const emergencyGuest = getOrCreateGuestUser(emergencyGuestId);
+
+          (socket as AuthenticatedSocket).userId = emergencyGuest.id;
+          (socket as AuthenticatedSocket).username = emergencyGuest.username;
+          (socket as AuthenticatedSocket).rating = emergencyGuest.rating;
+          (socket as AuthenticatedSocket).isGuest = true;
+
+          logger.info(`🆘 Emergency guest created: ${emergencyGuest.username} (${emergencyGuest.id})`);
+          return next();
+        }
       }
 
       // Process authenticated user based on token content

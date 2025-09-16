@@ -113,10 +113,10 @@ export const useAuth = (): AuthContextType => {
         sessionStorage.setItem('skemino_user_data', JSON.stringify(authenticatedUser));
       }
 
-      // Important: Update the SocketClientManager with new token
-      if ((window as any).SocketClientManager) {
-        (window as any).SocketClientManager.updateAuthToken(authToken);
-        console.log('🔄 Updated SocketClientManager with new auth token');
+      // Important: Update any active WebSocket connections with new token
+      if ((window as any).websocketUpdateAuth) {
+        (window as any).websocketUpdateAuth(authToken);
+        console.log('🔄 Updated WebSocket connection with new auth token');
       }
 
       setUser(authenticatedUser);

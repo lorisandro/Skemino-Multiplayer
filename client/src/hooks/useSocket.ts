@@ -38,7 +38,8 @@ export const useSocket = (): UseSocketReturn => {
 
   // Helper function to ensure authentication
   const ensureAuthentication = async (): Promise<string | null> => {
-    const token = localStorage.getItem('skemino_auth_token') || sessionStorage.getItem('skemino_auth_token');
+    // Check for existing token using consistent key names
+    let token = localStorage.getItem('skemino_auth_token') || sessionStorage.getItem('skemino_auth_token');
 
     if (token) {
       return token;
@@ -360,15 +361,47 @@ export const useSocket = (): UseSocketReturn => {
 
   const startMatchmaking = useCallback((playerData: { playerId: string; username: string; rating: number }) => {
     if (socket?.connected) {
-      // Use server's expected event name
-      socket.emit('matchmaking:join', 'rapid'); // Default to rapid time control
+      console.log('🎮 Starting matchmaking with player data:', playerData);
+
+      // Check if this is a guest or registered user to emit the right event
+      const token = localStorage.getItem('skemino_auth_token') || sessionStorage.getItem('skemino_auth_token');
+      const isGuest = !token;
+
+      if (isGuest) {
+        // Emit guest matchmaking event
+        socket.emit('matchmaking:join-guest', {
+          timeControl: 'rapid', // Default time control
+          guestRating: playerData.rating || 1200,
+          preferences: {
+            maxRatingDifference: 400
+          }
+        });
+        console.log('🎭 Started guest matchmaking for rapid');
+      } else {
+        // Emit regular matchmaking event
+        socket.emit('matchmaking:join', 'rapid');
+        console.log('🔰 Started registered user matchmaking for rapid');
+      }
+    } else {
+      console.error('❌ Cannot start matchmaking: socket not connected');
     }
   }, []);
 
   const cancelMatchmaking = useCallback(() => {
     if (socket?.connected) {
-      // Use server's expected event name
-      socket.emit('matchmaking:leave');
+      console.log('❌ Cancelling matchmaking');
+
+      // Check if this is a guest or registered user to emit the right event
+      const token = localStorage.getItem('skemino_auth_token') || sessionStorage.getItem('skemino_auth_token');
+      const isGuest = !token;
+
+      if (isGuest) {
+        socket.emit('matchmaking:leave-guest');
+        console.log('🎭 Cancelled guest matchmaking');
+      } else {
+        socket.emit('matchmaking:leave');
+        console.log('🔰 Cancelled registered user matchmaking');
+      }
     }
   }, []);
 
