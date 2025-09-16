@@ -19,7 +19,7 @@ export const GameBoardContainer: React.FC<GameBoardContainerProps> = ({
   className = '',
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { gameState, currentPlayer, isMyTurn } = useGameStore();
+  const { gameState, currentPlayer, opponent, isMyTurn } = useGameStore();
   const { connected, latency } = useSocket();
   const { breakpoint, boardSize, isMobile, isTablet, isDesktop, isUltrawide, containerWidth, containerHeight } = useResponsiveGameLayout(containerRef);
   const is2K = breakpoint === '2k';
@@ -174,9 +174,9 @@ export const GameBoardContainer: React.FC<GameBoardContainerProps> = ({
         ease: "easeInOut"
       }}
     >
-      {isMyTurn ? 'Your Turn' : 'Opponent Turn'}
+      {isMyTurn ? 'Your Turn' : opponent ? `${opponent.username}'s Turn` : 'Waiting...'}
     </motion.div>
-  ), [isMyTurn]);
+  ), [isMyTurn, opponent]);
 
   return (
     <div

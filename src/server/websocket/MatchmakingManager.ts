@@ -33,7 +33,7 @@ interface MatchmakingQueue {
 
 export class MatchmakingManager extends EventEmitter {
   private queues: Map<string, MatchmakingQueue> = new Map();
-  private readonly MATCH_INTERVAL = 2000; // Check for matches every 2 seconds
+  private readonly MATCH_INTERVAL = 500; // Check for matches every 0.5 seconds for better responsivity
   private readonly MAX_WAIT_TIME = 300000; // Maximum wait time: 5 minutes
   private readonly INITIAL_RATING_RANGE = 200; // Initial rating difference allowed
   private readonly RATING_RANGE_EXPANSION = 50; // Expand range by 50 every 30 seconds
