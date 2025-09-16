@@ -17,9 +17,46 @@ const GamePage = () => {
   return <App />;
 };
 
+// Componente per gestire la route root "/"
+const RootPageWrapper = () => {
+  const { isAuthenticated, user, isLoading } = useAuth();
+
+  // Mostra loading durante la verifica dell'autenticazione per evitare flash
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4" />
+          <p className="text-white text-lg">Caricamento...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Se l'utente è autenticato, redirect alla dashboard
+  if (isAuthenticated && user) {
+    return <Navigate to="/home" replace />;
+  }
+
+  // Se non è autenticato, mostra la HomePage
+  return <HomePage />;
+};
+
 // Componente per gestire la route /home con redirect automatico alla dashboard se autenticato
 const HomePageWrapper = () => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, isLoading } = useAuth();
+
+  // Mostra loading durante la verifica dell'autenticazione per evitare flash
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4" />
+          <p className="text-white text-lg">Caricamento...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Se l'utente è autenticato, mostra la dashboard
   if (isAuthenticated && user) {
@@ -32,7 +69,19 @@ const HomePageWrapper = () => {
 
 // Componente per redirectare /dashboard a /home per utenti autenticati
 const DashboardWrapper = () => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, isLoading } = useAuth();
+
+  // Mostra loading durante la verifica dell'autenticazione
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4" />
+          <p className="text-white text-lg">Reindirizzamento...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Se l'utente è autenticato, redirect a /home dove vedrà la dashboard
   if (isAuthenticated && user) {
@@ -97,7 +146,7 @@ export function Router() {
       <DndProvider backend={HTML5Backend}>
         <AuthProvider>
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<RootPageWrapper />} />
             <Route path="/home" element={<HomePageWrapper />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPageWrapper />} />
