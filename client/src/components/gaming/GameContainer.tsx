@@ -21,7 +21,7 @@ export const GameContainer: React.FC = () => {
     const mockCurrentPlayer = {
       id: 'player1',
       username: 'YourName',
-      rating: 1650,
+      rating: 1000,
       color: 'white' as const,
       timeRemaining: 300,
       isOnline: true,
@@ -30,7 +30,7 @@ export const GameContainer: React.FC = () => {
     const mockOpponent = {
       id: 'player2',
       username: 'Opponent',
-      rating: 1580,
+      rating: 1000,
       color: 'black' as const,
       timeRemaining: 300,
       isOnline: true,

@@ -101,9 +101,25 @@ export class SocketClient {
     return new Promise((resolve, reject) => {
       this.connectionStatus.connecting = true;
 
+      // Get token from storage if not provided
+      let authToken = this.config.authToken;
+      if (!authToken) {
+        authToken = localStorage.getItem('skemino_auth_token') ||
+                   sessionStorage.getItem('skemino_auth_token') || '';
+        console.log('🔑 Retrieved token from storage:', authToken.substring(0, 20) + '...');
+      }
+
+      // Check if user is guest
+      const userData = localStorage.getItem('skemino_user_data') ||
+                      sessionStorage.getItem('skemino_user_data');
+      const isGuest = userData ? JSON.parse(userData).isGuest : false;
+
+      console.log(`🔌 Connecting to WebSocket - Token: ${!!authToken}, Guest: ${isGuest}, URL: ${this.config.serverUrl}`);
+
       const socketConfig = {
         auth: {
-          token: this.config.authToken
+          token: authToken,
+          isGuest: isGuest
         },
         timeout: this.config.timeout,
         forceNew: true,
@@ -479,13 +495,17 @@ export function createSocketClient(authToken: string, serverUrl?: string): Socke
 // Singleton pattern for global socket client
 class SocketClientManager {
   private static instance: SocketClient | null = null;
+  private static currentToken: string | null = null;
+  private static currentServerUrl: string | null = null;
 
   public static initialize(authToken: string, serverUrl?: string): SocketClient {
     if (this.instance) {
       this.instance.disconnect();
     }
 
-    this.instance = createSocketClient(authToken, serverUrl);
+    this.currentToken = authToken;
+    this.currentServerUrl = serverUrl || process.env.REACT_APP_SERVER_URL || 'http://localhost:5000';
+    this.instance = createSocketClient(authToken, this.currentServerUrl);
     return this.instance;
   }
 
@@ -493,11 +513,27 @@ class SocketClientManager {
     return this.instance;
   }
 
+  public static updateAuthToken(newToken: string): void {
+    this.currentToken = newToken;
+
+    // If we have an active instance, reconnect with new token
+    if (this.instance) {
+      console.log('🔄 Updating socket client with new auth token');
+      this.instance.disconnect();
+      this.instance = createSocketClient(newToken, this.currentServerUrl || undefined);
+      this.instance.connect().catch(error => {
+        console.error('Failed to reconnect with new token:', error);
+      });
+    }
+  }
+
   public static disconnect(): void {
     if (this.instance) {
       this.instance.disconnect();
       this.instance = null;
     }
+    this.currentToken = null;
+    this.currentServerUrl = null;
   }
 }
 

@@ -112,12 +112,24 @@ export class SocketManager {
 
   private async authenticateSocket(socket: Socket, next: (err?: Error) => void): Promise<void> {
     try {
-      const token = socket.handshake.auth.token || socket.handshake.headers.authorization;
+      let token = socket.handshake.auth.token || socket.handshake.headers.authorization;
       const isGuest = socket.handshake.auth.isGuest;
 
+      logger.info(`🔑 Socket auth attempt - Token present: ${!!token}, Guest: ${isGuest}`);
+
       if (!token) {
+        logger.warn('❌ No token provided for socket authentication');
         return next(new Error('Authentication required'));
       }
+
+      // Remove "Bearer " prefix if present
+      if (typeof token === 'string' && token.startsWith('Bearer ')) {
+        token = token.substring(7);
+        logger.info('🔧 Removed Bearer prefix from token');
+      }
+
+      // Log token info for debugging (first few chars only for security)
+      logger.info(`🔐 Verifying token: ${token.substring(0, 20)}...`);
 
       const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
 
@@ -151,8 +163,17 @@ export class SocketManager {
 
       next();
     } catch (error) {
-      logger.error('Socket authentication failed:', error);
-      next(new Error('Invalid token'));
+      if (error instanceof jwt.JsonWebTokenError) {
+        logger.error(`❌ JWT verification failed: ${error.message}`);
+        logger.error(`JWT_SECRET configured: ${!!process.env.JWT_SECRET}`);
+        next(new Error(`Invalid token: ${error.message}`));
+      } else if (error instanceof jwt.TokenExpiredError) {
+        logger.error('❌ Token expired');
+        next(new Error('Token expired'));
+      } else {
+        logger.error('❌ Socket authentication failed:', error);
+        next(new Error('Authentication failed'));
+      }
     }
   }
 

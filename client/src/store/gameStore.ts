@@ -83,7 +83,7 @@ export const useGameStore = create<GameStore>()(
     currentPlayer: {
       id: 'demo-player',
       username: 'DemoPlayer',
-      rating: 1500,
+      rating: 1000,
       color: 'white',
       avatar: null,
       isReady: false
@@ -91,7 +91,7 @@ export const useGameStore = create<GameStore>()(
     opponent: {
       id: 'demo-opponent',
       username: 'DemoOpponent',
-      rating: 1450,
+      rating: 1000,
       color: 'black',
       avatar: null,
       isReady: false

@@ -13,7 +13,7 @@ const PreGamePage: React.FC = () => {
   const currentPlayer: Player = {
     id: 'demo-user',
     username: 'Utente Demo',
-    rating: 1547,
+    rating: 1000,
     isReady: false,
     isGuest: false
   };
@@ -52,7 +52,7 @@ const PreGamePage: React.FC = () => {
         setOpponent({
           id: 'demo-opponent',
           username: 'SkeminoMaster',
-          rating: 1623,
+          rating: 1000,
           isReady: false,
           isGuest: false
         });

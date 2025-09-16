@@ -113,6 +113,12 @@ export const useAuth = (): AuthContextType => {
         sessionStorage.setItem('skemino_user_data', JSON.stringify(authenticatedUser));
       }
 
+      // Important: Update the SocketClientManager with new token
+      if ((window as any).SocketClientManager) {
+        (window as any).SocketClientManager.updateAuthToken(authToken);
+        console.log('🔄 Updated SocketClientManager with new auth token');
+      }
+
       setUser(authenticatedUser);
       setIsAuthenticated(true);
 
@@ -237,7 +243,7 @@ export const useAuth = (): AuthContextType => {
         email: `user@${provider}.com`,
         displayName: `${provider} User`,
         countryCode: 'IT', // Default to Italy for social login
-        rating: 1100 + Math.floor(Math.random() * 600),
+        rating: 1000,
         level: {
           name: 'Principiante',
           tier: 'Principiante',

@@ -28,7 +28,7 @@ export const PlayerInfo: React.FC<PlayerInfoProps> = ({
   const displayPlayer = player || {
     id: 'guest',
     username: isOpponent ? 'Opponent' : 'You',
-    rating: 1500,
+    rating: 1000,
     color: isOpponent ? 'black' : 'white',
     timeRemaining: 300,
     isOnline: true,

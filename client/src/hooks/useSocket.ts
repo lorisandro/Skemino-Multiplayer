@@ -220,7 +220,7 @@ export const useSocket = (): UseSocketReturn => {
       const currentPlayerData = {
         id: data.color === 'white' ? 'current' : 'opponent',
         username: 'Current Player', // Will be updated with real data
-        rating: 1200,
+        rating: 1000,
         color: data.color as 'white' | 'black',
       };
 
