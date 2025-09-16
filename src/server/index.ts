@@ -143,7 +143,7 @@ process.on('unhandledRejection', (reason, promise) => {
   process.exit(1);
 });
 
-// Start the server with auth fixes
+// Start the server with auth fixes and env loaded
 startServer().catch((error) => {
   console.error('Failed to start server:', error);
   process.exit(1);

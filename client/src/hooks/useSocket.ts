@@ -1,6 +1,7 @@
 import { useEffect, useCallback, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useGameStore } from '../store/gameStore';
+import { authService } from '../services/authService';
 import type { Card, BoardCell, GameState, Player } from '../types/game';
 
 interface UseSocketReturn {
@@ -35,60 +36,105 @@ export const useSocket = (): UseSocketReturn => {
   const setDistributionState = useGameStore(state => state.setDistributionState);
   const triggerCardDistribution = useGameStore(state => state.triggerCardDistribution);
 
+  // Helper function to ensure authentication
+  const ensureAuthentication = async (): Promise<string | null> => {
+    const token = localStorage.getItem('skemino_auth_token') || sessionStorage.getItem('skemino_auth_token');
+
+    if (token) {
+      return token;
+    }
+
+    // No token found, create guest session
+    console.log('No auth token found, creating guest session...');
+    try {
+      const guestResponse = await authService.loginAsGuest();
+      if (guestResponse.success && guestResponse.token) {
+        // Store guest token in session storage
+        sessionStorage.setItem('skemino_auth_token', guestResponse.token);
+        if (guestResponse.user) {
+          sessionStorage.setItem('skemino_user_data', JSON.stringify(guestResponse.user));
+        }
+        console.log('Guest session created successfully');
+        return guestResponse.token;
+      }
+    } catch (error) {
+      console.error('Failed to create guest session:', error);
+    }
+
+    return null;
+  };
+
   // Initialize socket connection
   useEffect(() => {
     if (!socket) {
       setConnecting(true);
 
-      try {
-        socket = io(import.meta.env.VITE_SOCKET_URL || 'http://localhost:3005', {
-          transports: ['websocket', 'polling'],
-          reconnection: true,
-          reconnectionDelay: 1000,
-          reconnectionAttempts: 5,
-          timeout: 10000,
-          forceNew: true,
-        });
+      const initializeSocket = async () => {
+        try {
+          // Ensure we have authentication
+          const token = await ensureAuthentication();
 
-      // Connection events
-      socket.on('connect', () => {
-        console.log('Connected to server');
-        setConnected(true);
-        setConnecting(false);
-      });
-
-      socket.on('disconnect', () => {
-        console.log('Disconnected from server');
-        setConnected(false);
-      });
-
-        socket.on('connect_error', (error) => {
-          console.error('Connection error:', error);
-          setConnecting(false);
-        });
-
-        // Latency measurement
-        socket.on('pong', () => {
-          const now = Date.now();
-          const roundTripTime = now - (socket as any).lastPing;
-          setLatency(Math.round(roundTripTime / 2));
-        });
-
-        // Ping every 5 seconds
-        const pingInterval = setInterval(() => {
-          if (socket?.connected) {
-            (socket as any).lastPing = Date.now();
-            socket.emit('ping');
+          if (!token) {
+            console.error('Failed to obtain authentication token');
+            setConnecting(false);
+            return;
           }
-        }, 5000);
 
-        return () => {
-          clearInterval(pingInterval);
-        };
-      } catch (error) {
-        console.error('Failed to initialize socket:', error);
-        setConnecting(false);
-      }
+          socket = io(import.meta.env.VITE_SOCKET_URL || 'http://localhost:3005', {
+            transports: ['websocket', 'polling'],
+            reconnection: true,
+            reconnectionDelay: 1000,
+            reconnectionAttempts: 5,
+            timeout: 10000,
+            forceNew: true,
+            auth: {
+              token: token,
+              isGuest: !localStorage.getItem('skemino_auth_token')
+            }
+          });
+
+          // Connection events
+          socket.on('connect', () => {
+            console.log('Connected to server');
+            setConnected(true);
+            setConnecting(false);
+          });
+
+          socket.on('disconnect', () => {
+            console.log('Disconnected from server');
+            setConnected(false);
+          });
+
+          socket.on('connect_error', (error) => {
+            console.error('Connection error:', error);
+            setConnecting(false);
+          });
+
+          // Latency measurement
+          socket.on('pong', () => {
+            const now = Date.now();
+            const roundTripTime = now - (socket as any).lastPing;
+            setLatency(Math.round(roundTripTime / 2));
+          });
+
+          // Ping every 5 seconds
+          const pingInterval = setInterval(() => {
+            if (socket?.connected) {
+              (socket as any).lastPing = Date.now();
+              socket.emit('ping');
+            }
+          }, 5000);
+
+          return () => {
+            clearInterval(pingInterval);
+          };
+        } catch (error) {
+          console.error('Failed to initialize socket:', error);
+          setConnecting(false);
+        }
+      };
+
+      initializeSocket();
     }
   }, []);
 
@@ -160,37 +206,32 @@ export const useSocket = (): UseSocketReturn => {
       console.log('Chat:', data);
     });
 
-    // Matchmaking events
-    socket.on('matchmaking:waiting', (data: { roomId: string; position: number; estimatedWait: number }) => {
-      console.log('Waiting for opponent:', data);
+    // Matchmaking events (using server's actual event names)
+    socket.on('matchmaking:queued', (data: { timeControl: string }) => {
+      console.log('Queued for matchmaking:', data);
       setDistributionState?.({ phase: 'waiting', isDistributing: false, currentCard: 0, animationProgress: 0 });
     });
 
-    socket.on('game:found', (data: { roomId: string; players: any[]; timestamp: number }) => {
-      console.log('Game found:', data);
+    socket.on('match:found', (data: { gameId: string; color: string; opponent: any }) => {
+      console.log('Match found:', data);
       setDistributionState?.({ phase: 'matchmaking', isDistributing: true, currentCard: 0, animationProgress: 0 });
 
-      // Set players from matchmaking data
-      if (data.players && data.players.length === 2) {
-        const [player1, player2] = data.players;
-        const currentPlayerData = player1.color === 'white' ? player1 : player2;
-        const opponentData = player1.color === 'white' ? player2 : player1;
+      // Set players from match data
+      const currentPlayerData = {
+        id: data.color === 'white' ? 'current' : 'opponent',
+        username: 'Current Player', // Will be updated with real data
+        rating: 1200,
+        color: data.color as 'white' | 'black',
+      };
 
-        setPlayers(
-          {
-            id: currentPlayerData.playerId || currentPlayerData.socketId,
-            username: currentPlayerData.username,
-            rating: currentPlayerData.rating,
-            color: currentPlayerData.color,
-          },
-          {
-            id: opponentData.playerId || opponentData.socketId,
-            username: opponentData.username,
-            rating: opponentData.rating,
-            color: opponentData.color,
-          }
-        );
-      }
+      const opponentData = {
+        id: data.opponent.userId,
+        username: data.opponent.username,
+        rating: data.opponent.rating,
+        color: data.color === 'white' ? 'black' : 'white' as 'white' | 'black',
+      };
+
+      setPlayers(currentPlayerData, opponentData);
     });
 
     socket.on('game:starting', (data: { roomId: string; message: string; timestamp: number }) => {
@@ -319,13 +360,15 @@ export const useSocket = (): UseSocketReturn => {
 
   const startMatchmaking = useCallback((playerData: { playerId: string; username: string; rating: number }) => {
     if (socket?.connected) {
-      socket.emit('matchmaking:start', playerData);
+      // Use server's expected event name
+      socket.emit('matchmaking:join', 'rapid'); // Default to rapid time control
     }
   }, []);
 
   const cancelMatchmaking = useCallback(() => {
     if (socket?.connected) {
-      socket.emit('matchmaking:cancel');
+      // Use server's expected event name
+      socket.emit('matchmaking:leave');
     }
   }, []);
 
