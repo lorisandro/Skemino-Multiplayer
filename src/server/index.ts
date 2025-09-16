@@ -71,6 +71,57 @@ app.get('/debug/matchmaking', (_req, res) => {
   }
 });
 
+// Debug route to reset player status
+app.post('/debug/reset-status/:userId?', (req, res) => {
+  if (!wsManager) {
+    res.status(503).json({ error: 'WebSocket manager not initialized' });
+    return;
+  }
+
+  try {
+    const userId = req.params.userId;
+
+    if (userId) {
+      // Reset specific user
+      const result = wsManager.resetPlayerStatus(userId);
+      res.json({
+        status: result ? 'Player status reset' : 'Player not found',
+        userId,
+        timestamp: new Date().toISOString()
+      });
+    } else {
+      // Reset all non-active game players
+      const count = wsManager.resetAllInactivePlayerStatuses();
+      res.json({
+        status: 'All inactive player statuses reset',
+        playersReset: count,
+        timestamp: new Date().toISOString()
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to reset status' });
+  }
+});
+
+// Debug route to get all player statuses
+app.get('/debug/player-statuses', (_req, res) => {
+  if (!wsManager) {
+    res.status(503).json({ error: 'WebSocket manager not initialized' });
+    return;
+  }
+
+  try {
+    const statuses = wsManager.getAllPlayerStatuses();
+    res.json({
+      players: statuses,
+      count: statuses.length,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to get player statuses' });
+  }
+});
+
 // API Routes
 app.use('/api/auth', authRouter);
 app.use('/api/games', gameRouter);

@@ -176,14 +176,45 @@ export const useMatchmaking = (options: UseMatchmakingOptions = {}) => {
       onError?.(error.message || 'Errore nel matchmaking guest');
     };
 
-    // General error event
+    // General error event with improved recovery
     const handleError = (error: any) => {
       console.error('❌ Socket error:', error);
-      setState(prev => ({
-        ...prev,
-        error: error.message || 'Errore di connessione',
-      }));
-      onError?.(error.message || 'Errore di connessione');
+
+      // Check for specific error codes
+      if (error.code === 'INVALID_STATE' && error.message?.includes('Cannot join matchmaking while in game')) {
+        console.warn('⚠️ Player stuck in game state - attempting recovery');
+
+        // Reset local state immediately
+        setState(prev => ({
+          ...prev,
+          isSearching: false,
+          match: null,
+          error: 'Stato di gioco non sincronizzato. Ricarica la pagina se il problema persiste.',
+        }));
+
+        // Notify the server to check and reset status if needed
+        if (socket.connected) {
+          socket.emit('request:status-reset');
+        }
+
+        onError?.('Stato di gioco non sincronizzato. Riprova tra qualche secondo.');
+      } else if (error.code === 'GAME_CREATE_ERROR') {
+        // Game creation failed - ensure clean state
+        setState(prev => ({
+          ...prev,
+          isSearching: false,
+          match: null,
+          error: 'Errore nella creazione della partita. Riprova.',
+        }));
+        onError?.('Errore nella creazione della partita. Riprova.');
+      } else {
+        // Generic error
+        setState(prev => ({
+          ...prev,
+          error: error.message || 'Errore di connessione',
+        }));
+        onError?.(error.message || 'Errore di connessione');
+      }
     };
 
     // Register event listeners
@@ -213,6 +244,29 @@ export const useMatchmaking = (options: UseMatchmakingOptions = {}) => {
       }
     };
   }, [state.isSearching, leaveQueue]);
+
+  // Handle connection recovery
+  useEffect(() => {
+    if (!socket?.connected) return;
+
+    const handleReconnect = () => {
+      console.log('🔄 Socket reconnected - resetting matchmaking state');
+      setState(prev => ({
+        ...prev,
+        isSearching: false,
+        match: null,
+        error: null,
+      }));
+    };
+
+    socket.on('reconnect', handleReconnect);
+    socket.on('connect', handleReconnect);
+
+    return () => {
+      socket.off('reconnect', handleReconnect);
+      socket.off('connect', handleReconnect);
+    };
+  }, [socket]);
 
   return {
     ...state,
