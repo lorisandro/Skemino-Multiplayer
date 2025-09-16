@@ -1,630 +1,1011 @@
-# CLAUDE.md - Guida Sviluppo Skèmino
+# CLAUDE.md
 
-**🎮 Piattaforma Gaming Competitiva Multiplayer - Livello Chess.com con Svelte**
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
----
+## 🎮 Project Overview: Skèmino - Chess.com-Grade Competitive Gaming Platform
 
-## 🎯 **PANORAMICA PROGETTO**
+Skèmino is an enterprise-level competitive multiplayer board game platform engineered with Chess.com-proven technologies and superior Svelte performance:
 
-### **Skèmino - Gaming Platform Strategico con Svelte**
-Piattaforma multiplayer competitiva **performance-first** con:
-- **39 Chain Cards** (13 × 3 semi: Pietra/Forbici/Carta)
-- **Tabellone 6×6** con controllo strategico dei vertici  
-- **Sistema ELO** (range 1000-2700+) per ranking giocatori
-- **Real-time WebSocket** per multiplayer sincronizzato ultraveloce
-- **PSN Notation** (Portable Skèmino Notation) per registrazione partite
-- **Sistema Tournament** e matchmaking avanzato
-- **🔥 SVELTE-POWERED** per performance gaming superiore (come chess.com)
+### 🏆 Core Game Features
+- **39 Chain Cards** (13 Pietra, 13 Forbici, 13 Carta) with server-authoritative validation
+- **6×6 Strategic Board** with vertex control and quadrant-based gameplay  
+- **Dynamic ELO Rating System** (1000-2700+ range) using Chess.com-grade algorithm
+- **PSN (Portable Skèmino Notation)** for complete game recording and analysis
+- **Real-time Multiplayer** with <20ms WebSocket latency target
+- **Tournament & Matchmaking** system with intelligent queue management
+- **ML-Powered Anti-Cheat** detection with <100ms analysis time
 
----
+### 🚀 Technology Stack (Chess.com-Inspired Excellence)
+- **Frontend**: Svelte 5 + SvelteKit (superior performance vs Chess.com React)
+- **Backend**: Node.js + PHP/Symfony hybrid microservices
+- **Database**: PostgreSQL + ScyllaDB + Redis cluster
+- **Event Streaming**: Redpanda (Chess.com choice, -$400K/anno vs Kafka)
+- **Infrastructure**: Kubernetes + Google Cloud Platform multi-regional
+- **CDN & Security**: Cloudflare enterprise (same as Chess.com)
+- **Performance**: 200M+ users ready, 50K+ moves/second capability
 
-## 🚨 **WORKFLOW SVILUPPO OBBLIGATORIO**
+## 🚨 MANDATORY DEVELOPMENT WORKFLOW (CHESS.COM STANDARDS)
 
-### **⚡ GIT COMMIT REQUIREMENTS (NON-NEGOZIABILE)**
-
-Claude **DEVE** committare dopo **OGNI** implementazione significativa:
+### Git Commit Requirements (NON-NEGOTIABLE)
+**Claude MUST commit after EVERY significant implementation:**
 
 ```bash
-# COMMIT OBBLIGATORIO dopo ogni task
+# MANDATORY commit triggers:
 git add .
-git commit -m "feat(scope): descrizione significativa"  
+git commit -m "feat(scope): descriptive message with performance metrics"
 git push origin current-branch
+
+# COMMIT REQUIRED AFTER:
+✅ Any user request completion
+✅ Any feature/component implementation
+✅ Any bug fix with regression test
+✅ Any refactoring with performance comparison
+✅ Before switching task types
+✅ After sub-agent consultation implementation
+✅ End of each development session with metrics
+✅ Major performance optimization with benchmarks
 ```
 
-**🔥 TRIGGER COMMIT AUTOMATICI:**
-- ✅ Dopo completamento QUALSIASI richiesta utente
-- ✅ Dopo implementazione QUALSIASI feature/component Svelte
-- ✅ Dopo fixing QUALSIASI bug
-- ✅ Dopo refactoring major
-- ✅ Prima di cambiare tipo di task
-- ✅ Dopo consultazione e implementazione sub-agent
-- ✅ A fine OGNI sessione sviluppo
+**Commit Message Convention (Chess.com Standards):**
+- `feat(svelte): board component with <16ms render + bundle analysis`
+- `feat(backend): game engine with <50ms validation + concurrent test`
+- `feat(realtime): websocket with <20ms latency + stress test results`
+- `fix(performance): memory optimization + before/after metrics`
+- `perf(frontend): bundle reduction 40% + lighthouse score`
+- `security(auth): OAuth 2.0 + penetration test results`
+- `docs(api): openapi spec + integration examples`
+- `test(e2e): tournament flow + performance benchmarks`
 
-**📝 Convention Messaggi Commit (RIGOROSA):**
-```bash
-feat(svelte): nuovi componenti Svelte/SvelteKit
-feat(game): features gaming logic
-fix(websocket): correzioni real-time  
-docs(scope): aggiornamenti documentazione
-refactor(scope): refactoring codice Svelte
-perf(scope): ottimizzazioni performance gaming
-test(scope): aggiunte/modifiche test
-chore(scope): build/dipendenze SvelteKit
+### Progress Tracking (Enterprise-Grade)
+**📌 CURRENT ACTIVE LOG FILE (UPDATE DAILY):**
+```
+CURRENT LOG: docs/development-log/chat-history-2025-01-15.md
 ```
 
-### **📊 TRACKING PROGRESSO OBBLIGATORIO**
-
-**🎯 FILE LOG ATTIVO CORRENTE:**
-```
-docs/development-log/chat-history-2025-01-15.md
-```
-*Aggiorna quotidianamente questo path nel CLAUDE.md*
-
-**📋 Template Entry Log (FORMATO OBBLIGATORIO):**
+**Log Entry Template (REQUIRED FORMAT):**
 ```markdown
-## Session [N]: [HH:MM] - [TOPIC_PRINCIPALE]
+## Session [N]: [HH:MM] - [MAIN_TOPIC]
 
-### 📝 Richiesta Utente:
-[Testo esatto richiesta]
+### 📝 User Request:
+[Exact user request text]
 
-### 🤖 Consultazione Sub-Agent:
-- Consultato: [nome-sub-agent]  
-- Expertise Applicata: [guidance ricevuta]
+### 🎯 Chess.com Pattern Applied:
+[Specific Chess.com technology/pattern referenced]
 
-### 🚀 Implementazione Effettuata:
-- [x] Task 1: [dettaglio] - Files: [lista .svelte/.js modificati]
-- [x] Task 2: [dettaglio] - Files: [lista componenti Svelte]  
-- [ ] Task 3: [passi successivi identificati]
+### 🤖 Sub-Agent Consultation:
+- Consulted: [sub-agent-name]
+- Expertise Applied: [key guidance received]
 
-### 🔗 Git Commit: `[hash]` - "[messaggio commit]"
+### 🚀 Implementation Summary:
+- [x] Task 1: [specific detail] - Files: [list] - Performance: [metrics]
+- [x] Task 2: [specific detail] - Files: [list] - Performance: [metrics]
+- [ ] Task 3: [next steps identified]
 
-### 📊 Impatto Performance Gaming:
-- WebSocket latency: [misurazione se applicabile]
-- Bundle size Svelte: [cambio se applicabile]  
-- Memory usage: [impatto se applicabile]
-- Svelte compilation time: [misurazione se applicabile]
+### 📊 Performance Impact (Chess.com Targets):
+- WebSocket latency: [measurement vs <20ms target]
+- Bundle size: [change vs <25KB target]  
+- Memory usage: [impact vs <100MB target]
+- Database queries: [performance vs <30ms target]
+- Concurrent users: [capability vs 10K+ target]
+
+### 🔗 Git Commit: `[hash]` - "[commit message with metrics]"
+
+### 🏗️ Architecture Decisions:
+- Microservices affected: [list]
+- Scalability considerations: [Chess.com patterns]
+- Event streaming impact: [Redpanda integration]
 
 ### 🔄 Status: [COMPLETED/IN_PROGRESS/BLOCKED]
 
-### 🎯 Prossime Azioni:
-- [Passi implementazione specifici]
-- [Blockers da risolvere]
-- [Sub-agents da consultare]
+### 🎯 Next Actions:
+- [Specific implementation steps with sub-agent consultation]
+- [Performance targets and validation methods]
+- [Chess.com pattern applications needed]
 
 ---
 ```
 
----
+## 🤖 SUB-AGENT INTEGRATION (CHESS.COM-LEVEL EXPERTISE)
 
-## 🤖 **INTEGRAZIONE SUB-AGENT CRITICA**
-
-### **🎯 CONSULTAZIONE PROATTIVA OBBLIGATORIA**
-
-**SEMPRE** consultare sub-agent rilevanti **PRIMA** di implementare QUALSIASI feature:
+### Proactive Consultation Required (MANDATORY)
+**ALWAYS consult relevant sub-agents BEFORE implementing:**
 
 ```bash
-1. Identifica task → 2. Consulta sub-agent → 3. Applica expertise → 4. Valida → 5. Commit con reference
+# Workflow: Task Identification → Sub-Agent Consultation → Chess.com Pattern Application → Implementation → Performance Validation → Commit
 ```
 
-### **📋 MATRICE CONSULTAZIONE SUB-AGENT (SVELTE-ORIENTED)**
+### Sub-Agent Consultation Matrix (Chess.com Expertise)
+| Task Type | Primary Sub-Agent | Chess.com Pattern | Performance Target |
+|-----------|------------------|-------------------|-------------------|
+| Svelte UI Components | `skemino-ui` | Component optimization | <16ms render, <25KB bundle |
+| Game Rules Engine | `skemino-game-engine` | Server-authoritative validation | <50ms move validation |
+| ELO Rating System | `skemino-elo` | Dynamic K-factor algorithm | Real-time calculation |
+| Event Streaming Real-time | `skemino-realtime-specialist` | Event-driven architecture | <20ms WebSocket latency |
+| Database Performance | `skemino-database-specialist` | Multi-regional sharding | <30ms query response |
+| ML Anti-Cheat | `skemino-security-specialist` | Pattern recognition ML | <100ms analysis |
+| Tournament System | `skemino-tournament` | Queue-based matchmaking | Fair play algorithms |
+| Microservices Architecture | `skemino-architecture` | Domain-driven design | Horizontal scalability |
+| Performance Optimization | `skemino-performance` | Multi-tier caching | 200M+ users ready |
+| Analytics & BI | `skemino-analytics-specialist` | Real-time metrics | Business intelligence |
+| Mobile Gaming | `skemino-mobile-specialist` | Cross-platform optimization | Native performance |
+| API Gateway & Security | `skemino-api-specialist` | OAuth 2.0 + JWT enterprise | Rate limiting |
+| DevOps & Infrastructure | `skemino-devops-specialist` | Kubernetes + Docker | CI/CD automation |
+| Load Testing & QA | `skemino-testing-specialist` | Chaos engineering | 99.9% uptime |
 
-| **Tipo Task** | **Sub-Agent Primario** | **Sub-Agent Secondario** |
-|---------------|------------------------|--------------------------|
-| **Game Rules Implementation** | `skemino-game-engine` | `skemino-architecture` |
-| **UI/UX Gaming & Svelte Components** | `skemino-ui` | `skemino-performance` |
-| **Sistema ELO Rating** | `skemino-elo` | `skemino-rating` |
-| **WebSocket/Real-time Svelte** | `skemino-realtime-specialist` | `skemino-architecture` |
-| **PSN Notation** | `skemino-game-engine` | `skemino-architecture` |
-| **Performance Optimization Svelte** | `skemino-performance` | `skemino-architecture` |
-| **Sistema Tournament** | `skemino-legue` | `skemino-elo` |
-| **Database & Persistence** | `skemino-database-specialist` | `skemino-persistenza` |
-| **Decisioni Architetturali SvelteKit** | `skemino-architecture` | `skemino-performance` |
-| **Refactoring Major Svelte** | `skemino-refactoring` | `skemino-architecture` |
-| **Mobile Gaming Svelte** | `skemino-mobile-specialist` | `skemino-performance` |
-| **Frontend Performance Svelte** | `skemino-ui` | `skemino-performance` |
-| **Validazione Game Logic** | `skemino-game-engine` | `skemino-testing-specialist` |
-| **Testing & QA Svelte** | `skemino-testing-specialist` | `skemino-game-engine` |
-| **Features Real-time** | `skemino-realtime-specialist` | `skemino-performance` |
-| **Strategia Persistenza** | `skemino-persistenza` | `skemino-database-specialist` |
-| **Algoritmi Rating Giocatori** | `skemino-rating` | `skemino-elo` |
-| **Analytics & Metrics** | `skemino-analytics-specialist` | `skemino-performance` |
-| **Features Social** | `skemino-social-specialist` | `skemino-ui` |
+## 🏗️ Architecture & Project Structure (Chess.com-Inspired)
 
-### **💬 Formato Comandi Sub-Agent (SINTASSI ESATTA)**
-
-```bash
-"Consulta skemino-game-engine per implementazione regole gioco"
-"Usa skemino-ui per componenti Svelte gaming performanti"
-"Applica expertise skemino-performance per ottimizzazione Svelte bundle"
-"Chiedi a skemino-architecture per decisioni architetturali SvelteKit"
-"Utilizza skemino-elo per calcoli rating"
-"Consulta skemino-realtime-specialist per WebSocket con Svelte stores"
-"Usa skemino-database-specialist per gestione database"
-"Applica skemino-testing-specialist per strategia testing Svelte"
-"Consulta skemino-analytics-specialist per metriche"
-"Utilizza skemino-social-specialist per funzioni social"
-```
-
----
-
-## 🏗️ **ARCHITETTURA & STRUTTURA PROGETTO**
-
-### **📁 Struttura Directory Completa (SVELTE)**
+### Current Structure (Enterprise-Grade)
 ```
 skemino/
 ├── src/
-│   ├── lib/                        # Svelte components library
-│   │   ├── components/gaming/      # Componenti UI Gaming Svelte
-│   │   │   ├── Board/             # Tabellone interattivo 6×6 (.svelte)
-│   │   │   ├── Cards/             # Componenti carte Svelte
-│   │   │   ├── GameUI/            # Timer, rating, controlli
-│   │   │   └── Lobby/             # Matchmaking e stanze gioco
-│   │   ├── stores/                # Svelte stores per state management
-│   │   ├── services/              # Client API e WebSocket
-│   │   └── utils/                 # Utilities condivise
-│   ├── routes/                     # SvelteKit routes (file-based routing)
-│   │   ├── game/                  # Route gioco (/game)
-│   │   ├── lobby/                 # Route lobby (/lobby)  
-│   │   ├── tournament/            # Route tornei (/tournament)
-│   │   └── +layout.svelte         # Layout principale
-│   ├── app.html                   # Template HTML base
-│   └── hooks.client.js            # Client-side hooks SvelteKit
-├── server/                         # Backend Node.js Server
-│   ├── routes/                    # REST API endpoints
-│   ├── game-engine/               # Core logica gioco Skèmino
-│   │   ├── rules/                # Implementazione regole gioco
-│   │   ├── validation/           # Validazione mosse
-│   │   ├── elo/                  # Calcoli rating ELO
-│   │   └── psn/                  # Sistema notazione PSN
-│   ├── websocket/                 # Handler gioco real-time
-│   ├── database/                  # Modelli DB e migrations
-│   ├── services/                  # Logica business services
-│   └── middleware/                # Middleware Express (auth, validation)
-├── shared/                         # Tipi e utilities condivise
-├── static/                         # Assets statici SvelteKit
-├── tests/                          # Suite test complete
-│   ├── unit/                      # Test unitari Svelte
-│   ├── integration/               # Test integrazione
-│   └── e2e/                       # Test end-to-end gaming
-├── docs/                           # Documentazione
-│   └── development-log/            # OBBLIGATORIO: Tracking chat history
-├── deployment/                     # Configurazioni Docker/K8s
-├── svelte.config.js               # Configurazione SvelteKit
-├── vite.config.js                 # Configurazione Vite
-└── .claude/                        # Claude Code sub-agents
-    └── agents/                     # Knowledge bases sub-agent
-        ├── skemino-analytics-specialist.md
-        ├── skemino-architecture.md
-        ├── skemino-database-specialist.md
-        ├── skemino-elo.md
-        ├── skemino-game-engine.md
-        ├── skemino-legue.md
-        ├── skemino-mobile-specialist.md
-        ├── skemino-performance.md
-        ├── skemino-persistenza.md
-        ├── skemino-rating.md
-        ├── skemino-realtime-specialist.md
-        ├── skemino-refactoring.md
-        ├── skemino-social-specialist.md
-        ├── skemino-testing-specialist.md
-        └── skemino-ui.md
+│   ├── frontend/                    # Svelte 5 + SvelteKit Application  
+│   │   ├── src/
+│   │   │   ├── lib/                # Svelte component library
+│   │   │   │   ├── components/     # Gaming UI components
+│   │   │   │   │   ├── Board/      # Interactive 6x6 game board (<16ms render)
+│   │   │   │   │   ├── Cards/      # 39 Chain Cards with animations
+│   │   │   │   │   ├── GameUI/     # Timer, ELO display, controls
+│   │   │   │   │   ├── Tournament/ # Tournament brackets & matchmaking
+│   │   │   │   │   └── Analytics/  # Real-time stats & insights
+│   │   │   │   ├── stores/         # Svelte stores + event streaming
+│   │   │   │   ├── utils/          # Gaming utilities & algorithms
+│   │   │   │   └── types/          # TypeScript interfaces
+│   │   │   ├── routes/             # SvelteKit file-based routing
+│   │   │   ├── hooks/              # SvelteKit hooks & middleware
+│   │   │   ├── app.html            # App shell with PWA manifest
+│   │   │   └── service-worker.ts   # PWA service worker
+│   │   ├── static/                 # Static assets
+│   │   ├── tests/                  # Vitest + Playwright tests
+│   │   ├── vite.config.ts          # Vite configuration
+│   │   ├── playwright.config.ts    # E2E test configuration
+│   │   └── package.json            # Dependencies & scripts
+│   ├── backend/                     # Microservices Architecture
+│   │   ├── api-gateway/            # Kong/Envoy API Gateway
+│   │   │   ├── src/                # Gateway routing & middleware
+│   │   │   ├── config/             # Rate limiting & security
+│   │   │   └── monitoring/         # Gateway metrics
+│   │   ├── game-engine/            # Core Skèmino Game Logic Service
+│   │   │   ├── src/
+│   │   │   │   ├── rules/          # Server-authoritative game rules
+│   │   │   │   ├── validation/     # Move validation pipeline
+│   │   │   │   ├── elo/            # ELO rating calculations
+│   │   │   │   ├── psn/            # PSN notation parser/generator
+│   │   │   │   ├── anti-cheat/     # ML cheat detection
+│   │   │   │   └── engine.ts       # Main game engine
+│   │   │   ├── tests/              # Comprehensive test suite
+│   │   │   └── Dockerfile          # Container configuration
+│   │   ├── user-service/           # User management & authentication
+│   │   │   ├── src/
+│   │   │   │   ├── auth/           # OAuth 2.0 + JWT implementation
+│   │   │   │   ├── profiles/       # User profiles & preferences
+│   │   │   │   ├── ratings/        # ELO rating management
+│   │   │   │   └── sessions/       # Session management
+│   │   │   └── migrations/         # Database migrations
+│   │   ├── tournament-service/     # Tournament & matchmaking
+│   │   │   ├── src/
+│   │   │   │   ├── matchmaking/    # Intelligent player matching
+│   │   │   │   ├── tournaments/    # Tournament management
+│   │   │   │   ├── queues/         # Gaming queues
+│   │   │   │   └── brackets/       # Tournament brackets
+│   │   ├── notification-service/   # Real-time notifications
+│   │   │   ├── src/
+│   │   │   │   ├── websocket/      # WebSocket management
+│   │   │   │   ├── events/         # Event handling
+│   │   │   │   └── push/           # Push notifications
+│   │   ├── analytics-service/      # Business intelligence
+│   │   │   ├── src/
+│   │   │   │   ├── metrics/        # Real-time metrics collection
+│   │   │   │   ├── dashboards/     # BI dashboard APIs
+│   │   │   │   └── reports/        # Automated reporting
+│   │   └── shared/                 # Shared libraries
+│   │       ├── types/              # TypeScript shared types
+│   │       ├── utils/              # Common utilities
+│   │       ├── config/             # Configuration management
+│   │       └── middleware/         # Shared middleware
+│   └── database/                    # Database Layer
+│       ├── postgresql/             # Primary OLTP database
+│       │   ├── migrations/         # Database migrations
+│       │   ├── seeds/              # Test data seeds
+│       │   └── queries/            # Optimized queries
+│       ├── scylladb/              # High-performance gaming data
+│       │   ├── keyspaces/         # Keyspace definitions
+│       │   └── tables/            # Table schemas
+│       └── redis/                 # Caching & sessions
+│           ├── config/            # Redis configuration
+│           └── scripts/           # Lua scripts
+├── infrastructure/                 # Infrastructure as Code
+│   ├── kubernetes/                # K8s deployments
+│   │   ├── namespaces/           # Environment separation
+│   │   ├── deployments/          # Service deployments
+│   │   ├── services/             # Service definitions
+│   │   ├── ingress/              # Load balancing
+│   │   └── monitoring/           # Prometheus/Grafana
+│   ├── terraform/                # Infrastructure provisioning
+│   │   ├── modules/              # Reusable modules
+│   │   ├── environments/         # Environment configurations
+│   │   └── providers/            # Cloud provider configs
+│   ├── helm/                     # Helm charts
+│   │   ├── charts/               # Application charts
+│   │   └── values/               # Environment values
+│   └── docker/                   # Docker configurations
+│       ├── dockerfiles/          # Service Dockerfiles
+│       └── compose/              # Local development
+├── event-streaming/               # Event Architecture
+│   ├── redpanda/                 # Redpanda configuration
+│   │   ├── config/               # Cluster configuration
+│   │   └── schemas/              # Avro schemas
+│   ├── producers/                # Event producers
+│   ├── consumers/                # Event consumers
+│   └── processors/               # Stream processing
+├── monitoring/                   # Observability Stack
+│   ├── prometheus/               # Metrics collection
+│   │   ├── config/               # Prometheus configuration
+│   │   └── rules/                # Alerting rules
+│   ├── grafana/                  # Dashboards & visualization
+│   │   ├── dashboards/           # Gaming metrics dashboards
+│   │   └── alerts/               # Alert configurations
+│   ├── jaeger/                   # Distributed tracing
+│   └── elasticsearch/            # Log aggregation
+│       ├── indices/              # Index templates
+│       └── mappings/             # Field mappings
+├── security/                     # Security Configuration
+│   ├── vault/                    # Secrets management
+│   ├── certificates/             # TLS certificate management
+│   ├── policies/                 # Security policies
+│   └── scanning/                 # Security scanning configs
+├── tests/                        # Test Suites
+│   ├── unit/                     # Unit tests
+│   ├── integration/              # Integration tests
+│   ├── e2e/                      # End-to-end tests
+│   ├── performance/              # Load & stress tests
+│   └── chaos/                    # Chaos engineering tests
+├── docs/                         # Documentation
+│   ├── api/                      # OpenAPI specifications
+│   ├── architecture/             # System design docs
+│   ├── runbooks/                 # Operational procedures
+│   ├── development-log/          # MANDATORY: Chat history tracking
+│   │   └── chat-history-2025-01-15.md  # Current active log
+│   └── guides/                   # Development guides
+├── scripts/                      # Automation Scripts
+│   ├── deployment/               # Deployment automation
+│   ├── database/                 # Database management
+│   ├── monitoring/               # Monitoring setup
+│   └── development/              # Development utilities
+└── .claude/                      # Claude Code Configuration
+    └── agents/                   # Sub-agent knowledge bases
+        ├── skemino-ui.md                      # Svelte UI expertise
+        ├── skemino-game-engine.md             # Game logic specialist
+        ├── skemino-elo.md                     # ELO rating expert
+        ├── skemino-realtime-specialist.md     # Real-time systems
+        ├── skemino-database-specialist.md     # Database optimization
+        ├── skemino-security-specialist.md     # ML anti-cheat & security
+        ├── skemino-tournament.md              # Tournament systems
+        ├── skemino-architecture.md            # System architecture
+        ├── skemino-performance.md             # Performance optimization
+        ├── skemino-analytics-specialist.md    # Business intelligence
+        ├── skemino-mobile-specialist.md       # Mobile optimization
+        ├── skemino-api-specialist.md          # API design & security
+        ├── skemino-devops-specialist.md       # DevOps & infrastructure
+        └── skemino-testing-specialist.md      # QA & testing strategies
 ```
 
-### **⚙️ STACK TECNOLOGICO (SVELTE-POWERED)**
-- **🔥 Frontend**: **Svelte 5 + SvelteKit** + TypeScript + Tailwind CSS + Socket.io-client
-- **Backend**: Node.js + Express + TypeScript + Socket.io + PostgreSQL
-- **Real-time**: WebSocket con Socket.io + **Svelte stores** per reattività istantanea
-- **Database**: PostgreSQL per persistenza + Redis per caching/sessioni
-- **Build Tool**: **Vite** (ultra-veloce per sviluppo Svelte)
-- **Deployment**: Docker + Nginx + CI/CD pipeline
-- **Testing**: **Vitest** + **@testing-library/svelte** + Playwright per E2E
+### Technology Stack (Chess.com-Grade)
 
----
+#### Frontend Stack (Svelte Advantage)
+- **Framework**: Svelte 5 + SvelteKit + TypeScript + TailwindCSS
+- **State Management**: Svelte stores + Redpanda event streaming integration
+- **Real-time**: Socket.io-client + Server-Sent Events + WebRTC
+- **Build System**: Vite + Rollup with advanced optimization
+- **PWA**: Service workers + offline gaming capability
+- **Testing**: Vitest + @testing-library/svelte + Playwright E2E
+- **Performance**: <25KB bundle size + <16ms component render
 
-## 🎲 **REGOLE GIOCO SKÈMINO (IMPLEMENTAZIONE CORE)**
+#### Backend Stack (Chess.com-Inspired Microservices)
+- **Runtime**: Node.js 20+ LTS + PHP 8.2+ (Symfony framework)
+- **API Gateway**: Kong/Envoy Proxy with enterprise rate limiting
+- **Authentication**: OAuth 2.0 + JWT + refresh tokens + Redis sessions
+- **Validation**: Zod schema validation + server-authoritative game rules
+- **Documentation**: OpenAPI 3.0 + Swagger UI + automated testing
 
-### **🃏 Componenti Gioco**
-- **39 Chain Cards**: P1-P13, F1-F13, C1-C13 (semi Pietra/Forbici/Carta)
-- **Tabellone 6×6**: 36 caselle con notazione algebrica (a1-f6)
-- **4 Quadranti**: Ognuno con vertice (a1, f1, a6, f6) e casella centrale
-- **Sistema Setup**: 3 dadi (numerico, alfabetico, bicolore) per piazzamento iniziale
-- **11 Loop Cards**: Per segnalare situazioni "hole" durante partita
+#### Database Stack (Multi-Regional Performance)
+- **Primary OLTP**: PostgreSQL 15+ with multi-master replication
+  - Read replicas per geographic region
+  - Connection pooling (PgBouncer)
+  - Automated failover & backup
+- **High-Performance Gaming**: ScyllaDB cluster for real-time data
+  - Sub-millisecond latency
+  - Horizontal scaling
+  - Gaming-specific data models
+- **Caching Layer**: Redis Cluster + Redis Sentinel
+  - Session storage
+  - Game state caching
+  - Real-time leaderboards
+- **Search & Analytics**: Elasticsearch for complex queries
+  - User search
+  - Game history search
+  - Advanced analytics
 
-### **⚔️ Meccaniche Core**
-- **Regole Morra Cinese**: Pietra > Forbici, Forbici > Carta, Carta > Pietra
-- **Piazzamento Carte**: Solo adiacente/contiguo, mai diagonali
-- **Rilevamento Loop**: Loop simbolici (≥3 simboli diversi) e numerici (Asso+Re)
-- **Controllo Vertice**: Obiettivo strategico chiave con controllo "esclusivo"
-- **Condizioni Vittoria**: ERA1-ERA4 (controllo vertice, saturazione tabellone, esaurimento mazzo, carta ribaltone)
+#### Event Streaming (Chess.com Architecture)
+- **Platform**: Redpanda (Chess.com proven, -$400K/anno vs Kafka)
+- **Schema Management**: Confluent Schema Registry
+- **Event Formats**: Avro + Protocol Buffers for efficiency
+- **Stream Processing**: Apache Flink + custom processors
 
-### **📊 Sistema Rating ELO**
-- **Formula**: EA = 1/(1 + 10^((RB-RA)/(K²-K)))
-- **K-factor Dinamico**: k = 160 * e^(-R̄/721.35)
-- **10 Livelli Abilità**: Beginner (1000-1199) → Super Grand Master (≥2700)
-- **Aggiornamenti Rating**: Post-partita con precisione matematica
+#### Infrastructure (Global Scale)
+- **Containerization**: Docker with multi-stage builds + security hardening
+- **Orchestration**: Kubernetes + Helm charts + GitOps deployment
+- **Service Mesh**: Istio for microservice communication & security
+- **Load Balancing**: Nginx + HAProxy with intelligent routing
+- **CDN**: Cloudflare Enterprise (same as Chess.com)
+  - Global edge caching
+  - DDoS protection
+  - Web Application Firewall
+- **Cloud**: Google Cloud Platform multi-regional (Chess.com choice)
+  - Cloud SQL for PostgreSQL
+  - GKE for Kubernetes
+  - Cloud CDN + Load Balancing
 
-### **📝 Formato Notazione PSN**
+#### Security Stack (Enterprise-Grade)
+- **Transport Security**: TLS 1.3 with perfect forward secrecy
+- **Web Security**: Cloudflare WAF + custom security rules
+- **Authentication**: Multi-factor authentication + SSO integration
+- **Anti-Cheat**: Custom ML models + behavioral analysis (Chess.com pattern)
+- **Secrets Management**: HashiCorp Vault + Kubernetes secrets
+- **Compliance**: SOC 2 + GDPR + PCI DSS ready
+
+#### Monitoring & Observability (Chess.com-Level)
+- **Metrics**: Prometheus + Grafana with custom gaming dashboards
+- **Logging**: ELK Stack (Elasticsearch + Logstash + Kibana)
+- **Tracing**: Jaeger distributed tracing across microservices
+- **APM**: Custom application performance monitoring
+- **Alerting**: PagerDuty integration + custom webhooks
+- **Business Intelligence**: Custom analytics pipeline
+
+## 🎲 Skèmino Game Rules (Server-Authoritative Implementation)
+
+### Core Game Components
+- **39 Chain Cards**: P1-P13, F1-F13, C1-C13 with cryptographic validation
+- **6×6 Strategic Board**: 36 squares with algebraic notation (a1-f6)
+- **4 Quadrants**: Vertex control system (a1, f1, a6, f6) with central squares
+- **Setup System**: 3 dice system (numeric, alphabetic, bicolor) for fairness
+- **11 Loop Cards**: "Hole" situation signaling during gameplay
+
+### Core Game Mechanics (Performance-Optimized)
+- **Morra Cinese Rules**: Pietra > Forbici, Forbici > Carta, Carta > Pietra
+- **Card Placement**: Adjacent/contiguous validation with O(1) lookup
+- **Loop Detection**: Efficient algorithms for symbolic and numeric loops
+- **Vertex Control**: Strategic objective with "exclusive" control validation
+- **Victory Conditions**: ERA1-ERA4 automated detection
+
+### ELO Rating System (Chess.com-Grade Precision)
+- **Formula**: EA = 1/(1 + 10^((RB-RA)/(K²-K))) - exact Chess.com implementation
+- **Dynamic K-factor**: k = 160 * e^(-R̄/721.35) - mathematically precise
+- **Rating Levels**: 10 skill tiers from Beginner (1000-1199) to Super Grand Master (≥2700)
+- **Real-time Updates**: Post-game rating recalculation with ML validation
+- **Rating Protection**: Anti-sandbagging measures + provisional ratings
+
+### PSN Notation (Portable Skèmino Notation)
 ```
 [Event "Tournament Name"]
-[Site "Rome, Lazio ITA"]  
-[Date "2025.09.14"]
+[Site "Rome, Lazio ITA"]
+[Date "2025.09.16"]
 [White "Player1"] [Black "Player2"]
 [Result "1-0"]
 
 1.C4:d3 F1:f6*
-2.P2:a1 F7:e4  
+2.P2:a1 F7:e4
 3.C7:c2=# 1-0
 ```
 
----
+## 🚀 Performance Requirements (Chess.com-Superior Targets)
 
-## 🚀 **REQUISITI PERFORMANCE (TARGET CRITICI SVELTE)**
+### Critical Performance Targets
+- **WebSocket Latency**: <20ms (superior to Chess.com <100ms)
+- **UI Rendering**: 60fps+ gaming experience (Svelte advantage)
+- **Database Queries**: <30ms average response time
+- **Concurrent Users**: 50,000+ simultaneous players capability
+- **Memory Usage**: <100MB per 1000 concurrent users
+- **API Response**: <200ms for complex operations
+- **Bundle Size**: <25KB (Svelte advantage vs React 150KB+)
 
-- **🔥 WebSocket Latency**: <50ms (target migliorato con Svelte - consulta `skemino-performance`)
-- **🎮 UI Rendering**: 60fps garantiti con Svelte compilation (sempre)  
-- **📦 Bundle Size**: <30KB (vantaggio Svelte vs 150KB+ React)
-- **🧠 Memory Usage**: <200MB per 1000 utenti (efficienza Svelte)
-- **⚡ Component Update**: <16ms per update (no Virtual DOM overhead)
-- **🚅 Cold Start**: <1s first paint (Svelte compilation advantage)
-- **💾 Database Queries**: <50ms tempo risposta (media)
-- **👥 Utenti Concorrenti**: Supporto 2000+ giocatori simultanei (performance boost)
-- **⚡ API Response**: <200ms per endpoint non real-time
+### Svelte Performance Advantages
+- **No Virtual DOM**: Direct DOM manipulation = faster rendering
+- **Compile-time Optimization**: Smaller bundle size
+- **Reactive Updates**: Surgical DOM updates only when needed
+- **Memory Efficiency**: Lower memory footprint vs React
+- **Startup Performance**: Faster initial page load
 
----
+## 🗄️ Database Schema (Chess.com-Inspired Design)
 
-## 🎯 **COMANDI SVILUPPO (SVELTE)**
-
-```bash
-# Setup progetto SvelteKit
-npm create svelte@latest skemino    # Inizializza progetto SvelteKit
-npm install                         # Installa dipendenze
-npm run dev                         # Dev server SvelteKit + backend
-npm run dev:client                  # Solo frontend SvelteKit  
-npm run dev:server                  # Solo backend Node.js + WebSocket
-npm run build                       # Build produzione SvelteKit
-npm run preview                     # Preview build produzione
-npm run test                        # Test suite completa (Vitest)
-npm run test:unit                   # Solo test unitari componenti Svelte
-npm run test:integration            # Test integrazione
-npm run test:e2e                    # Test E2E con Playwright
-npm run lint                        # ESLint per Svelte
-npm run lint:fix                    # Auto-fix linting Svelte
-npm run check                       # Svelte check (type checking)
-npm run db:migrate                  # Database migrations
-npm run db:seed                     # Seed DB con dati test
-npm run docker:dev                  # Sviluppo con Docker
-npm run docker:prod                 # Build Docker produzione
-```
-
----
-
-## 🗄️ **SCHEMA DATABASE (TABELLE CORE)**
-
-### **🎮 Tabelle Gaming**
+### Core Gaming Tables (Optimized for Scale)
 ```sql
--- Entità gaming core
-players (id, username, email, rating, level, created_at)
-games (id, white_player_id, black_player_id, result, psn_notation, duration)
-moves (game_id, turn_number, move_notation, timestamp)
-ratings_history (player_id, old_rating, new_rating, game_id, k_factor)
+-- Users & Authentication (Multi-regional)
+users (
+    id UUID PRIMARY KEY,
+    username VARCHAR(32) UNIQUE,
+    email VARCHAR(255) UNIQUE,
+    rating_rapid INTEGER DEFAULT 1000,
+    rating_blitz INTEGER DEFAULT 1000,
+    rating_bullet INTEGER DEFAULT 1000,
+    peak_rating INTEGER,
+    country_code CHAR(2),
+    premium_tier VARCHAR(20),
+    created_at TIMESTAMPTZ,
+    last_active TIMESTAMPTZ
+);
 
--- Sistema tournament
-tournaments (id, name, type, status, start_time, max_players)
-tournament_players (tournament_id, player_id, seed, current_score)
+-- Games (Partitioned by date for scale)
+games (
+    id UUID PRIMARY KEY,
+    white_player_id UUID REFERENCES users(id),
+    black_player_id UUID REFERENCES users(id),
+    time_control VARCHAR(20),
+    result VARCHAR(10),
+    termination VARCHAR(20),
+    psn_notation TEXT,
+    duration_seconds INTEGER,
+    tournament_id UUID,
+    white_rating_before INTEGER,
+    black_rating_before INTEGER,
+    white_rating_after INTEGER,
+    black_rating_after INTEGER,
+    created_at TIMESTAMPTZ
+) PARTITION BY RANGE (created_at);
+
+-- Moves (High-volume table, heavily optimized)
+moves (
+    game_id UUID REFERENCES games(id),
+    move_number INTEGER,
+    move_notation VARCHAR(10),
+    time_spent_ms INTEGER,
+    time_remaining_ms INTEGER,
+    created_at TIMESTAMPTZ,
+    PRIMARY KEY (game_id, move_number)
+);
+
+-- Rating History (Chess.com-style tracking)
+rating_history (
+    id UUID PRIMARY KEY,
+    player_id UUID REFERENCES users(id),
+    game_id UUID REFERENCES games(id),
+    old_rating INTEGER,
+    new_rating INTEGER,
+    k_factor DECIMAL(5,2),
+    opponent_rating INTEGER,
+    time_control VARCHAR(20),
+    created_at TIMESTAMPTZ
+);
+
+-- Tournaments (Enterprise tournament system)
+tournaments (
+    id UUID PRIMARY KEY,
+    name VARCHAR(255),
+    type VARCHAR(50), -- swiss, knockout, round_robin, arena
+    time_control VARCHAR(20),
+    status VARCHAR(20),
+    max_players INTEGER,
+    entry_fee_cents INTEGER,
+    prize_pool_cents INTEGER,
+    start_time TIMESTAMPTZ,
+    end_time TIMESTAMPTZ,
+    created_at TIMESTAMPTZ
+);
+
+-- Tournament Participants
+tournament_participants (
+    tournament_id UUID REFERENCES tournaments(id),
+    player_id UUID REFERENCES users(id),
+    seed INTEGER,
+    score DECIMAL(3,1),
+    current_rank INTEGER,
+    registered_at TIMESTAMPTZ,
+    PRIMARY KEY (tournament_id, player_id)
+);
+
+-- Anti-cheat Analysis (Chess.com-inspired)
+cheat_analysis (
+    id UUID PRIMARY KEY,
+    player_id UUID REFERENCES users(id),
+    game_id UUID REFERENCES games(id),
+    analysis_type VARCHAR(50),
+    confidence_score DECIMAL(5,4),
+    flags JSONB,
+    reviewer_id UUID,
+    status VARCHAR(20),
+    created_at TIMESTAMPTZ
+);
+
+-- Sessions & Security
+user_sessions (
+    id UUID PRIMARY KEY,
+    user_id UUID REFERENCES users(id),
+    token_hash VARCHAR(128),
+    refresh_token_hash VARCHAR(128),
+    ip_address INET,
+    user_agent TEXT,
+    expires_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ
+);
 ```
 
----
+## 🔌 WebSocket Events (Real-time Gaming)
 
-## 🔌 **EVENTI WEBSOCKET (GAMING REAL-TIME SVELTE)**
-
-### **⚡ Eventi Core Gioco + Svelte Stores**
+### Core Game Events
 ```typescript
-// Outbound (server → client → Svelte stores)
-'game:started' | 'game:state-update' | 'game:ended' | 'move:validated' | 'move:invalid'
+// Outbound (server → client)
+type ServerEvents = {
+  'game:started': GameStartedEvent;
+  'game:state-update': GameStateUpdate;
+  'game:move': MoveEvent;
+  'game:ended': GameEndedEvent;
+  'game:time-update': TimeUpdateEvent;
+  'player:joined': PlayerJoinedEvent;
+  'player:disconnected': PlayerDisconnectedEvent;
+  'rating:updated': RatingUpdateEvent;
+  'tournament:update': TournamentUpdateEvent;
+  'anti-cheat:flag': AntiCheatFlagEvent;
+};
 
-// Inbound (client Svelte → server)
-'game:join' | 'move:make' | 'game:resign' | 'game:offer-draw'
-
-// Eventi lobby con Svelte reattività
-'lobby:join' | 'matchmaking:start' | 'match:found'
-
-// Svelte Stores Pattern per WebSocket
-// stores/gameStore.js
-import { writable } from 'svelte/store';
-export const gameState = writable({});
-export const players = writable([]);
-export const currentMove = writable(null);
+// Inbound (client → server)
+type ClientEvents = {
+  'game:join': JoinGameRequest;
+  'game:move': MakeMoveRequest;
+  'game:resign': ResignGameRequest;
+  'game:offer-draw': OfferDrawRequest;
+  'game:accept-draw': AcceptDrawRequest;
+  'game:claim-time': ClaimTimeRequest;
+  'matchmaking:join': JoinMatchmakingRequest;
+  'matchmaking:cancel': CancelMatchmakingRequest;
+  'tournament:join': JoinTournamentRequest;
+};
 ```
 
----
+### Event Streaming Architecture
+```typescript
+// Redpanda Topics (Chess.com-inspired)
+const TOPICS = {
+  GAME_EVENTS: 'skemino.games.events',
+  MOVE_EVENTS: 'skemino.moves.events',
+  RATING_EVENTS: 'skemino.ratings.events',
+  TOURNAMENT_EVENTS: 'skemino.tournaments.events',
+  ANALYTICS_EVENTS: 'skemino.analytics.events',
+  ANTI_CHEAT_EVENTS: 'skemino.anticheat.events'
+};
 
-## 🛡️ **SICUREZZA & ANTI-CHEAT**
-
-### **🔒 Validazione Server-Authoritative**
-- **Tutte le mosse validate server-side** - consulta `skemino-architecture`
-- **Zero logica gioco client-side** per operazioni critiche
-- **Timeout mosse** per prevenire stalli
-- **Sanitizzazione input** per tutti i dati utente  
-- **Rate limiting** su tutti gli endpoint
-
-### **🔐 Autenticazione & Autorizzazione**
-- **Token JWT** con meccanismo refresh sicuro
-- **Gestione sessioni** con Redis
-- **Permessi role-based** (player, moderator, admin)
-- **Svelte stores** per auth state management
-
----
-
-## 📝 **CONVENZIONI SVILUPPO SVELTE**
-
-### **✨ Stile Codice Svelte**
-- **Naming File**: kebab-case per .svelte, PascalCase per componenti
-- **File Structure**: `Component.svelte` con script, style, markup
-- **TypeScript**: Strict mode attivo, zero tipi `any` permessi
-- **Import**: Path mapping SvelteKit (`$lib/components`, `$lib/utils`)
-- **Component Structure**: Props export, reactive declarations, proper binding
-
-### **🧩 Pattern Svelte Specifici**
-```svelte
-<!-- Component.svelte pattern standard -->
-<script lang="ts">
-  // Props export
-  export let gameId: string;
-  export let playerName: string;
-  
-  // Reactive declarations
-  $: isActivePlayer = playerName === currentPlayer;
-  $: canMakeMove = isActivePlayer && !gameEnded;
-  
-  // Functions
-  function handleMove(move: Move) {
-    // Handle move logic
-  }
-</script>
-
-<div class="game-component">
-  {#if isActivePlayer}
-    <button on:click={() => handleMove(selectedMove)}>
-      Make Move
-    </button>
-  {/if}
-</div>
-
-<style>
-  .game-component {
-    /* Component-scoped styles */
-  }
-</style>
+// Event Schema (Avro)
+interface GameMoveEvent {
+  gameId: string;
+  playerId: string;
+  moveNotation: string;
+  timeSpent: number;
+  timeRemaining: number;
+  gameState: GameState;
+  timestamp: number;
+}
 ```
 
-### **🌳 Git Workflow**
+## 🛡️ Security & Anti-Cheat (Chess.com-Level)
+
+### Server-Authoritative Validation
+- **All moves validated server-side** - no client trust
+- **Game state immutability** - complete audit trail
+- **Move timeouts** - prevent stalling tactics
+- **Input sanitization** - comprehensive validation
+- **Rate limiting** - per-user action limits
+
+### ML Anti-Cheat Pipeline (Chess.com-Inspired)
+```typescript
+interface AntiCheatAnalysis {
+  moveTimeAnalysis: {
+    averageThinkTime: number;
+    consistency: number;
+    suspiciousPatterns: string[];
+  };
+  strengthAnalysis: {
+    eloConsistency: number;
+    playStrength: number;
+    accuracyScore: number;
+  };
+  behaviorAnalysis: {
+    clickPatterns: MouseEvent[];
+    focusEvents: FocusEvent[];
+    browserFingerprint: string;
+  };
+  suspicionScore: number; // 0-1, >0.8 flagged
+}
+```
+
+### Authentication & Authorization
+- **OAuth 2.0 + JWT** enterprise implementation
+- **Refresh token rotation** - security best practices
+- **Session management** - Redis-backed with expiration
+- **Multi-factor authentication** - optional security layer
+- **Role-based access control** - granular permissions
+
+## 📊 Monitoring & Analytics (Chess.com-Level Intelligence)
+
+### Real-time Metrics (Prometheus + Grafana)
+```yaml
+# Gaming Business Metrics
+- skemino_games_started_total: Counter
+- skemino_games_completed_total: Counter  
+- skemino_concurrent_games: Gauge
+- skemino_players_online: Gauge
+- skemino_moves_per_second: Gauge
+- skemino_rating_updates_total: Counter
+- skemino_tournament_participants: Gauge
+- skemino_cheat_flags_total: Counter
+
+# Technical Performance Metrics
+- skemino_websocket_latency_seconds: Histogram
+- skemino_database_query_duration_seconds: Histogram
+- skemino_api_request_duration_seconds: Histogram
+- skemino_memory_usage_bytes: Gauge
+- skemino_cpu_usage_percent: Gauge
+- skemino_error_rate: Counter
+- skemino_cache_hit_ratio: Gauge
+```
+
+### Custom Gaming Dashboards
+- **Real-time Gaming Overview**: Active games, players online, moves/sec
+- **Performance Monitoring**: WebSocket latency, API response times, error rates
+- **Business Intelligence**: User engagement, tournament participation, revenue
+- **Security Dashboard**: Anti-cheat alerts, authentication failures, security events
+- **Infrastructure Health**: Service status, resource utilization, scaling events
+
+## 🚀 Development Commands (Enterprise-Grade)
+
+### Svelte Frontend Development
 ```bash
-# Branch naming convention (Svelte-aware)
-feature/svelte-game-board-implementation
-fix/svelte-store-reactivity-bug
-refactor/sveltekit-routing-optimization
+# Project setup
+npm create svelte@latest skemino-frontend
+cd skemino-frontend && npm install
 
-# Commit format (conventional commits)
-feat(svelte): implement game board component with stores
-fix(store): handle WebSocket state synchronization
-docs(sveltekit): add routing documentation
-perf(svelte): optimize component rendering performance
+# Development
+npm run dev              # SvelteKit dev server with HMR
+npm run dev:debug        # Debug mode with detailed logging
+npm run build            # Production build with optimization
+npm run preview          # Production preview
+npm run package          # Create package for distribution
+
+# Testing
+npm run test:unit        # Vitest unit tests
+npm run test:e2e         # Playwright end-to-end tests
+npm run test:coverage    # Test coverage report
+npm run test:visual      # Visual regression testing
+
+# Performance
+npm run analyze          # Bundle analyzer
+npm run lighthouse       # Performance audit
+npm run perf:profile     # Performance profiling
 ```
 
-### **🧪 Strategia Testing Svelte**
-- **Unit Tests**: Tutti i componenti Svelte (>90% coverage richiesta)
-- **Store Tests**: Test per Svelte stores con @testing-library/svelte
-- **Integration Tests**: API endpoints ed eventi WebSocket
-- **E2E Tests**: Scenari gioco completi con Playwright
-- **Performance Tests**: Load testing per utenti concorrenti
-
----
-
-## 🎯 **FASI SVILUPPO ATTUALI**
-
-### **Phase 1: Foundation Svelte (CURRENT)**
-- [x] Setup SvelteKit project structure
-- [ ] Core game engine implementation
-- [ ] Database schema e migrations
-- [ ] WebSocket infrastructure con Svelte stores
-
-### **Phase 2: Core Gaming Svelte**  
-- [ ] Componenti Svelte per gioco
-- [ ] Svelte stores per state management
-- [ ] Real-time multiplayer con stores reattivi
-- [ ] Sistema validazione mosse
-
-### **Phase 3: Features Competitive**
-- [ ] Sistema rating ELO  
-- [ ] Algoritmo matchmaking
-- [ ] Registrazione notazione PSN
-- [ ] Framework tournament
-
-### **Phase 4: Production Ready**
-- [ ] Ottimizzazione performance Svelte
-- [ ] Sicurezza hardening
-- [ ] Monitoring e analytics
-- [ ] Pipeline deployment SvelteKit
-
----
-
-## 🚨 **REGOLE IMPLEMENTAZIONE CRITICHE**
-
-### **📋 PRIMA DI QUALSIASI IMPLEMENTAZIONE (CHECKLIST OBBLIGATORIA)**
-1. **✅ Consulta sub-agent rilevante** per expertise prima
-2. **✅ Rivedi codice esistente Svelte** per pattern e coerenza
-3. **✅ Controlla impatto performance** vs target critici (<50ms WebSocket)
-4. **✅ Valida compliance TypeScript** strict in .svelte
-5. **✅ Aggiorna chat history log** con dettagli sessione  
-6. **✅ Testa componenti Svelte** accuratamente prima di committare
-7. **✅ Commit con messaggio descrittivo** seguendo convention
-8. **✅ Aggiorna development log** con tracking progresso
-
-### **🎮 Requisiti Specifici Gaming Svelte**
-- **Validazione server** per tutti i cambi stato gioco (consulta `skemino-architecture`)
-- **Svelte stores immutabili** nel game engine (consulta `skemino-game-engine`)
-- **Error boundaries equivalent** nei componenti Svelte (consulta `skemino-ui`)
-- **Degradazione graceful** per problemi rete con stores (consulta `skemino-performance`)
-- **Accessibilità** considerazioni per UI gaming Svelte (consulta `skemino-ui`)
-
----
-
-## 💡 **ESEMPI CONSULTAZIONE SUB-AGENT (SVELTE)**
-
+### Backend Microservices Development
 ```bash
-# Prima implementazione componenti Svelte:
-"Consulta skemino-ui per pattern componenti Svelte gaming performanti"
+# Services development
+npm run dev:services     # All microservices in development mode
+npm run dev:game-engine  # Game engine service only
+npm run dev:user-service # User service only
+npm run dev:tournament   # Tournament service only
+npm run dev:gateway      # API gateway only
 
-# Prima implementazione regole gioco:
-"Consulta skemino-game-engine per validazione regole morra cinese"
+# Building & containerization
+npm run build:all        # Build all microservices
+npm run docker:build     # Build Docker images
+npm run docker:push      # Push to registry
+npm run compose:dev      # Docker Compose for development
 
-# Prima ottimizzazione performance Svelte:  
-"Applica expertise skemino-performance per ottimizzazione bundle Svelte"
-
-# Prima decisioni architetturali SvelteKit:
-"Chiedi a skemino-architecture per pattern scalabilità multiplayer SvelteKit"
-
-# Prima implementazione stores:
-"Usa skemino-ui per design Svelte stores reattivi gaming"
-
-# Prima implementazione real-time:
-"Consulta skemino-realtime-specialist per WebSocket con Svelte stores"
+# Testing microservices
+npm run test:unit        # All unit tests
+npm run test:integration # Integration tests
+npm run test:contract    # Contract testing
+npm run test:load        # Load testing with k6
 ```
 
----
-
-## 🚀 **RIFERIMENTI RAPIDI COMANDI**
-
-### **🤖 Comandi Sub-Agent Essenziali (SVELTE)**
+### Database Operations
 ```bash
-# Svelte Components & UI
-"Usa skemino-ui per [componente/interfaccia Svelte specifica]"
+# PostgreSQL operations
+npm run db:create        # Create databases
+npm run db:migrate       # Run migrations
+npm run db:migrate:down  # Rollback migrations
+npm run db:seed          # Seed development data
+npm run db:backup        # Create backup
+npm run db:restore       # Restore from backup
 
-# Game Rules & Logic
-"Consulta skemino-game-engine per [domanda regole gioco specifica]"
+# ScyllaDB operations  
+npm run scylla:setup     # Initialize keyspaces
+npm run scylla:migrate   # Schema migrations
+npm run scylla:seed      # Sample gaming data
 
-# Performance Optimization Svelte
-"Applica expertise skemino-performance per [task ottimizzazione Svelte]"
-
-# SvelteKit Architecture 
-"Chiedi a skemino-architecture per [domanda architetturale SvelteKit]"
-
-# Database & Persistence
-"Utilizza skemino-database-specialist per [task database]"
-
-# ELO Rating System
-"Consulta skemino-elo per [calcolo/implementazione rating]"
-
-# Real-time Features con Svelte  
-"Consulta skemino-realtime-specialist per [WebSocket + Svelte stores]"
-
-# Testing Svelte Components
-"Utilizza skemino-testing-specialist per [strategia testing Svelte]"
-
-# Analytics & Metrics
-"Consulta skemino-analytics-specialist per [implementazione analytics]"
-
-# Social Features
-"Usa skemino-social-specialist per [funzionalità social]"
+# Redis operations
+npm run redis:flush      # Clear all caches
+npm run redis:monitor    # Monitor Redis commands
+npm run redis:backup     # Backup Redis data
 ```
 
-### **📋 Comandi Git Obbligatori**
+### Infrastructure & Deployment
 ```bash
-# Dopo ogni implementazione
+# Kubernetes operations
+kubectl apply -f infrastructure/k8s/
+helm install skemino ./infrastructure/helm/
+helm upgrade skemino ./infrastructure/helm/
+
+# Terraform infrastructure
+cd infrastructure/terraform
+terraform plan
+terraform apply
+terraform destroy
+
+# Monitoring setup
+docker-compose -f monitoring/docker-compose.yml up
+kubectl apply -f infrastructure/monitoring/
+
+# Event streaming
+./scripts/redpanda-setup.sh
+npm run events:test      # Test event publishing/consuming
+```
+
+## 📋 Performance Benchmarks (Chess.com-Superior Targets)
+
+### Frontend Performance (Svelte Advantage)
+```yaml
+Lighthouse Performance Targets:
+  Performance Score: >95
+  First Contentful Paint: <1.0s
+  Largest Contentful Paint: <2.0s  
+  Time to Interactive: <2.5s
+  Cumulative Layout Shift: <0.1
+  Bundle Size: <25KB (vs Chess.com React ~150KB)
+  Memory Usage: <100MB (vs Chess.com React ~200MB)
+  Component Render: <16ms (no Virtual DOM overhead)
+```
+
+### Backend Performance (Enterprise SLA)
+```yaml
+API Response Time Targets:
+  Move Validation: <50ms p95
+  Game State Retrieval: <30ms p95
+  User Authentication: <100ms p95
+  Rating Calculation: <200ms p95
+  Tournament Operations: <500ms p95
+  Database Queries: <30ms average
+  Cache Operations: <5ms p95
+
+Throughput Targets:
+  Concurrent Users: 50,000+
+  Moves per Second: 50,000+
+  Games Started per Hour: 100,000+
+  Database Transactions: 100,000 TPS
+  WebSocket Connections: 50,000 concurrent
+```
+
+### Infrastructure Performance
+```yaml
+System Availability:
+  Uptime SLA: 99.9% (8.77 hours downtime/year)
+  Database Availability: 99.95%
+  Real-time Messaging: 99.8%
+  CDN Availability: 99.99%
+
+Security & Anti-cheat:
+  Failed Login Rate: <0.1%
+  Cheat Detection Accuracy: >99.5%
+  False Positive Rate: <0.01%
+  Security Response: <1 hour MTTR
+```
+
+## 🎯 Development Phases (Strategic Roadmap)
+
+### Phase 1: Foundation (Months 1-3)
+- [x] Project structure setup (Chess.com-inspired)
+- [x] Svelte 5 + SvelteKit configuration with TypeScript
+- [x] PostgreSQL + ScyllaDB + Redis database layer
+- [x] Basic WebSocket infrastructure
+- [ ] OAuth 2.0 + JWT authentication system
+- [ ] API Gateway with Kong/Envoy
+- [ ] Docker containerization + Kubernetes setup
+- [ ] Basic monitoring (Prometheus + Grafana)
+
+### Phase 2: Core Gaming Engine (Months 4-6)
+- [ ] Server-authoritative game rules implementation
+- [ ] 39 Chain Cards logic with validation
+- [ ] 6x6 board mechanics with vertex control
+- [ ] PSN notation parser/generator
+- [ ] Basic ELO rating system
+- [ ] Move validation pipeline (<50ms target)
+- [ ] Real-time game state synchronization
+- [ ] Basic Svelte gaming components
+
+### Phase 3: Advanced Features (Months 7-9)
+- [ ] ML-powered anti-cheat system (Chess.com-inspired)
+- [ ] Tournament system with matchmaking
+- [ ] Advanced Svelte UI components with animations
+- [ ] Redpanda event streaming integration
+- [ ] Performance optimization (<20ms WebSocket latency)
+- [ ] Advanced ELO calculations with K-factor dynamics
+- [ ] Multi-regional database deployment
+- [ ] Comprehensive testing suite
+
+### Phase 4: Production Ready (Months 10-12)
+- [ ] Security hardening and penetration testing
+- [ ] Advanced monitoring and alerting
+- [ ] Chaos engineering and reliability testing
+- [ ] Performance optimization for 50K+ concurrent users
+- [ ] Advanced business intelligence and analytics
+- [ ] Mobile app development and optimization
+- [ ] Beta testing program
+- [ ] Production deployment with CI/CD
+
+## 🚨 Critical Implementation Rules (NON-NEGOTIABLE)
+
+### Before ANY Implementation (MANDATORY CHECKLIST)
+1. **✅ Consult relevant sub-agent** for domain expertise
+2. **✅ Apply Chess.com patterns** for proven scalability
+3. **✅ Review performance impact** against critical targets
+4. **✅ Validate TypeScript** strict compliance
+5. **✅ Update chat history log** with detailed session info
+6. **✅ Test comprehensively** including performance benchmarks
+7. **✅ Commit with descriptive message** including metrics
+8. **✅ Update development log** with architecture decisions
+
+### Gaming-Specific Requirements (Chess.com Standards)
+- **Server-authoritative validation** for all game state changes
+- **Immutable state management** with complete audit trail
+- **Error boundaries and graceful degradation** for network issues
+- **Performance monitoring** with real-time alerting
+- **Security-first approach** with comprehensive input validation
+- **Accessibility compliance** for inclusive gaming experience
+
+## 🔧 Troubleshooting Common Issues
+
+### WebSocket Performance Issues
+1. **Check Redpanda event streaming** throughput and latency
+2. **Verify load balancer configuration** for sticky sessions
+3. **Monitor connection pool** utilization and limits
+4. **Analyze network latency** between services and regions
+5. **Consult**: `skemino-realtime-specialist` for optimization strategies
+
+### Svelte Component Performance
+1. **Profile component rendering** with browser dev tools
+2. **Check store subscriptions** for unnecessary updates
+3. **Verify reactive statements** efficiency
+4. **Monitor bundle size** impact of new components
+5. **Consult**: `skemino-ui` for Svelte-specific optimizations
+
+### Database Performance Issues
+1. **Analyze query execution plans** with EXPLAIN
+2. **Check index usage** and optimization opportunities
+3. **Monitor connection pool** health and utilization
+4. **Verify sharding strategy** effectiveness
+5. **Consult**: `skemino-database-specialist` for scaling strategies
+
+### Anti-Cheat System Issues
+1. **Review ML model accuracy** and false positive rates
+2. **Analyze behavioral patterns** for new cheat vectors
+3. **Check real-time analysis performance** vs <100ms target
+4. **Monitor flagging rates** and review workflows
+5. **Consult**: `skemino-security-specialist` for ML model tuning
+
+## 📚 Sub-Agent Consultation Examples (Chess.com-Level)
+
+### Before implementing Svelte components:
+```bash
+"Consulta skemino-ui per ottimizzazione componenti Svelte gaming con performance target <16ms render e bundle size <25KB"
+```
+
+### Before implementing game rules:
+```bash  
+"Consulta skemino-game-engine per validazione regole server-authoritative Skèmino con pattern Chess.com"
+```
+
+### Before performance optimization:
+```bash
+"Applica expertise skemino-performance per ottimizzazione WebSocket latency target <20ms con monitoring real-time"
+```
+
+### Before architectural decisions:
+```bash
+"Chiedi a skemino-architecture per pattern scalabilità microservices Chess.com-inspired con event streaming Redpanda"
+```
+
+### Before database optimization:
+```bash
+"Utilizza skemino-database-specialist per sharding strategy PostgreSQL+ScyllaDB con target <30ms query response"
+```
+
+### Before anti-cheat implementation:
+```bash
+"Consulta skemino-security-specialist per ML pipeline anti-cheat Chess.com-grade con <100ms analysis time"
+```
+
+## 📋 Quick Reference Commands
+
+### Essential Sub-Agent Commands
+```bash
+# UI/UX Development
+"Usa skemino-ui per [componente Svelte gaming specifico con performance target]"
+
+# Game Engine Logic
+"Consulta skemino-game-engine per [implementazione regole server-authoritative]"
+
+# Performance Optimization
+"Applica expertise skemino-performance per [ottimizzazione specifica con target misurabili]"
+
+# System Architecture
+"Chiedi a skemino-architecture per [decisione architetturale microservices]"
+
+# Database Performance
+"Utilizza skemino-database-specialist per [ottimizzazione database con metrics]"
+
+# Real-time Systems
+"Consulta skemino-realtime-specialist per [WebSocket + event streaming optimization]"
+
+# Security & Anti-cheat
+"Utilizza skemino-security-specialist per [ML anti-cheat + security hardening]"
+
+# Testing & QA
+"Utilizza skemino-testing-specialist per [strategia testing enterprise-level]"
+
+# Business Intelligence
+"Consulta skemino-analytics-specialist per [metrics + dashboards business]"
+
+# DevOps & Infrastructure
+"Consulta skemino-devops-specialist per [Kubernetes + CI/CD + monitoring]"
+```
+
+### Mandatory Git Commands
+```bash
+# After every significant implementation
 git add .
-git commit -m "feat(svelte): messaggio descrittivo"
-git push origin current-branch
+git commit -m "feat(scope): description with performance metrics + Chess.com pattern applied"
+git push origin feature-branch
 
-# Aggiorna development log (FILE ATTIVO CORRENTE)  
-# DEVE EDITARE: docs/development-log/chat-history-2025-01-15.md
-# ⚠️ AGGIORNA QUESTO PATH QUOTIDIANAMENTE IN CLAUDE.MD
+# Update development log (CURRENT FILE)
+# ⚠️ UPDATE THIS PATH DAILY IN CLAUDE.MD
+docs/development-log/chat-history-2025-01-15.md
 ```
 
----
-
-## 🔧 **TROUBLESHOOTING PROBLEMI COMUNI (SVELTE)**
-
-### **🔌 Problemi Connessione WebSocket + Svelte Stores**
-1. Controlla binding Svelte stores con WebSocket events
-2. Verifica reattività stores su state updates
-3. Assicura proper cleanup su component destroy
-4. **Consulta**: `skemino-performance` per strategie ottimizzazione Svelte
-
-### **🎮 Bug Componenti Svelte Gaming**
-1. Riproduci sempre in test unitari @testing-library/svelte
-2. **Consulta**: `skemino-ui` per pattern componenti gaming
-3. Controlla reactive declarations ($:) per updates
-4. **Consulta**: `skemino-architecture` per pattern validazione
-
-### **⚡ Problemi Performance Svelte**
-1. Profile con Svelte DevTools
-2. Controlla compilation output size
-3. **Consulta**: `skemino-performance` per bundle optimization
-4. Monitor vs target critici (<50ms WebSocket, <30KB bundle)
-
-### **🎨 Problemi UI/UX Gaming Svelte**
-1. **Consulta**: `skemino-ui` per pattern specifici gaming Svelte
-2. Testa animazioni e transizioni Svelte built-in
-3. Valida compliance accessibilità Svelte
-4. Controlla performance rendering 60fps garantiti
-
----
-
-## 🚀 **CHECKLIST GETTING STARTED (SVELTE)**
-
-- [ ] Crea progetto SvelteKit: `npm create svelte@latest skemino`
-- [ ] Setup istanze locali PostgreSQL e Redis
-- [ ] Configura svelte.config.js e vite.config.js
-- [ ] Installa dipendenze: TypeScript, Tailwind, Socket.io-client
-- [ ] Setup directory structure src/lib/components/gaming/
-- [ ] Configura variabili ambiente (.env.example → .env)
-- [ ] Esegui migrations e seed database
-- [ ] Avvia development server SvelteKit + backend
-- [ ] Verifica connessione WebSocket + Svelte stores in browser
-- [ ] Esegui test suite Vitest per verificare setup corretto
-- [ ] **Crea log chat history iniziale**: `docs/development-log/chat-history-[DATE].md`
-- [ ] **Consulta `skemino-architecture`** per primo task implementazione Svelte
-- [ ] **Commit setup iniziale** con formato messaggio proper
-
----
-
-## 📋 **GESTIONE FILE LOG QUOTIDIANA**
+### Daily Log Management
 ```bash
-# Workflow inizio nuovo giorno:
-1. Crea nuovo file log: docs/development-log/chat-history-[NUOVA-DATE].md
-2. Aggiorna CLAUDE.md riga con nuovo filename  
-3. Continua logging tutte le sessioni nel nuovo file
+# Daily workflow:
+1. Create new log: docs/development-log/chat-history-[NEW-DATE].md
+2. Update CLAUDE.md with new active filename
+3. Log all sessions with detailed performance metrics
+4. Include Chess.com pattern references and sub-agent consultations
 ```
 
+## 📚 Key Documentation & References
+
+- **Svelte 5 Documentation**: Latest features and performance optimizations
+- **Chess.com Architecture Patterns**: Proven scalability and performance patterns
+- **Game Rules Implementation**: Complete server-authoritative validation
+- **Event Streaming Best Practices**: Redpanda configuration and optimization
+- **Anti-cheat ML Models**: Behavioral analysis and pattern recognition
+- **ELO Rating Algorithm**: Mathematical precision and real-time calculation
+- **Performance Monitoring**: Comprehensive observability and alerting
+- **Security Best Practices**: Enterprise-grade security implementation
+- **Microservices Patterns**: Domain-driven design and service communication
+- **Database Optimization**: Multi-regional scaling and performance tuning
+
+## ⚠️ Important Reminders (NON-NEGOTIABLE)
+
+- **🤖 Sub-agent consultation is MANDATORY** before any significant implementation
+- **📝 Git commit after every task** with performance metrics and Chess.com patterns
+- **📊 Chat history tracking** must be maintained in current active log file
+- **📅 UPDATE LOG FILE DAILY**: Change filename and update CLAUDE.md reference
+- **⚡ <20ms WebSocket latency** absolute priority for competitive gaming
+- **📦 <25KB bundle size** Svelte advantage over Chess.com React implementation
+- **🛡️ Server-authoritative validation** prevents all cheating and ensures fair play
+- **📝 PSN notation required** for all game recording and replay functionality
+- **🔒 Enterprise-grade security** with comprehensive threat protection
+- **📈 Real-time monitoring** against all performance targets and SLAs
+- **🎯 Chess.com-superior performance** in all measurable metrics
+- **🚀 200M+ users ready infrastructure** for global scale
+
+## 🎯 Mission Statement
+
+**Skèmino is an enterprise-level competitive gaming platform that surpasses Chess.com performance using Svelte's superior frontend capabilities, Chess.com-proven backend architecture, and cutting-edge ML anti-cheat technology. Every implementation must achieve Chess.com-level reliability, security, and performance while delivering superior user experience through modern technology advantages.**
+
 ---
 
-## 📚 **DOCUMENTAZIONE & RIFERIMENTI CHIAVE**
-
-- **Regole Gioco**: Specifiche complete nelle immagini caricate
-- **Svelte Docs**: https://svelte.dev/docs per reference
-- **SvelteKit Docs**: https://kit.svelte.dev/docs per routing e SSR
-- **Config Sub-Agent**: Directory `.claude/agents/` per expertise specializzata
-- **Development Log**: `docs/development-log/` per tracking progresso
-- **Documentazione API**: Auto-generata da specifiche OpenAPI  
-- **Docs Database**: Diagrammi ER e guide migration
-- **Guide Deployment**: Setup Docker, Kubernetes, e CI/CD per SvelteKit
-
----
-
-## ⚠️ **REMINDER IMPORTANTI (NON-NEGOZIABILI)**
-
-- **🤖 Consultazione sub-agent è OBBLIGATORIA** prima di qualsiasi implementazione
-- **📝 Git commit dopo ogni task** è NON-NEGOZIABILE
-- **📊 Tracking chat history** deve essere mantenuto in: `docs/development-log/chat-history-2025-01-15.md`
-- **📅 AGGIORNA FILE LOG QUOTIDIANAMENTE**: Cambia data filename e aggiorna reference CLAUDE.md
-- **⚡ <50ms latenza WebSocket** è target priorità assoluta (migliorato con Svelte)
-- **📦 <30KB bundle size** target Svelte vs 150KB+ React equivalente
-- **🔒 Validazione server-authoritative** previene tutti i cheating
-- **📝 Notazione PSN** richiesta per tutte le registrazioni gioco
-- **🔧 TypeScript strict mode** in .svelte files - zero tolleranza per tipi `any`
-- **🛡️ Error handling comprensivo** per edge case multiplayer
-- **📊 Performance monitoring** vs tutti i target critici Svelte
-
----
-
-**🎮 RICORDA: Skèmino è una piattaforma gaming competitiva PERFORMANCE-FIRST che usa Svelte (come chess.com) per massimizzare velocità, reattività e efficienza. Ogni componente deve sfruttare i vantaggi unici di Svelte per gaming real-time di livello professionale.**
+**🎮 Remember: Skèmino is not just a game - it's a competitive gaming platform that requires Chess.com-level quality, performance, and reliability with the additional advantage of Svelte's superior frontend performance. Every line of code should reflect this enterprise-grade standard while pushing the boundaries of competitive gaming technology.**
