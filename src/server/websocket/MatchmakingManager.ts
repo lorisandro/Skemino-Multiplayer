@@ -273,8 +273,14 @@ export class MatchmakingManager extends EventEmitter {
     // Determine colors
     const { white, black } = this.assignColors(player1, player2);
 
+    // Generate unique game ID in format: game/123456789
+    // Using timestamp + random for uniqueness and readability
+    const timestamp = Date.now().toString().slice(-9); // Last 9 digits of timestamp
+    const random = Math.random().toString(36).substr(2, 5).toUpperCase(); // 5 random chars
+    const gameId = `game/${timestamp}${random}`;
+
     const match: Match = {
-      gameId: uuidv4(),
+      gameId,
       white,
       black,
       timeControl: player1.timeControl,
@@ -283,6 +289,7 @@ export class MatchmakingManager extends EventEmitter {
     };
 
     logger.info(`🎮 Match created: ${white.username} (${white.rating}) vs ${black.username} (${black.rating}) - ${match.timeControl}`);
+    logger.info(`🆔 Game ID: ${gameId}`);
 
     return match;
   }

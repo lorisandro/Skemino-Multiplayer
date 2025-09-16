@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { MatchmakingDemo } from './pages/MatchmakingDemo';
+import { GameRoom } from './components/gaming/GameRoom';
 import AuthDemo from './pages/AuthDemo';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -23,6 +24,7 @@ function AppContent() {
           <Route path="/home" element={<AuthDemo />} />
           <Route path="/dashboard" element={<AuthDemo />} />
           <Route path="/game" element={<MatchmakingDemo />} />
+          <Route path="/game/:roomId" element={<GameRoom />} />
           <Route path="*" element={<AuthDemo />} />
         </Routes>
       </Router>
@@ -36,6 +38,8 @@ function AppContent() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/demo" element={<MatchmakingDemo />} />
+        <Route path="/game" element={<MatchmakingDemo />} />
+        <Route path="/game/:roomId" element={<GameRoom />} />
         <Route path="*" element={<HomePage />} />
       </Routes>
 

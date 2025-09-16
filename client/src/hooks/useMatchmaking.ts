@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useSocket } from './useSocket';
 
 export interface MatchmakingState {
@@ -31,6 +32,7 @@ interface UseMatchmakingOptions {
 export const useMatchmaking = (options: UseMatchmakingOptions = {}) => {
   const { onMatchFound, onError, isGuest = false, userRating = 1200 } = options;
   const { connected, socket } = useSocket();
+  const navigate = useNavigate();
 
   const [state, setState] = useState<MatchmakingState>({
     isSearching: false,
@@ -131,6 +133,20 @@ export const useMatchmaking = (options: UseMatchmakingOptions = {}) => {
         timeControl: data.timeControl || state.timeControl || 'rapid'
       };
 
+      // Navigate to the game room with the new game ID
+      // Convert game/123456789 to game-123456789 for URL safety
+      const urlSafeGameId = data.gameId.replace('/', '-');
+      console.log(`🚀 Navigating to game room: /game/${urlSafeGameId}`);
+
+      // Navigate immediately for seamless transition
+      navigate(`/game/${urlSafeGameId}`, {
+        state: {
+          matchData,
+          fromMatchmaking: true
+        }
+      });
+
+      // Still call the callback if provided
       onMatchFound?.(matchData);
     };
 
