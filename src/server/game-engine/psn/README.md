@@ -56,8 +56,8 @@ const parsedMove = parser.parseMove(moveNotation);
 [WhiteElo "1500"]
 [BlackElo "1600"]
 [Strategy "Aggressive"]
-[WhiteTime "300"]
-[BlackTime "300"]
+[WhiteTime "1800"]
+[BlackTime "1800"]
 [NCard "39"]
 ```
 

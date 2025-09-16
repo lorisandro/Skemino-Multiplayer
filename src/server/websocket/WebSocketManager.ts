@@ -244,8 +244,8 @@ export class WebSocketManager {
       currentTurn: 'white',
       whiteHand: gameCards.whiteCards,
       blackHand: gameCards.blackCards,
-      whiteTime: 300, // 5 minutes
-      blackTime: 300,
+      whiteTime: 1800, // 30 minutes
+      blackTime: 1800,
       moveHistory: [],
       status: 'active'
     };

@@ -19,7 +19,7 @@ export async function up(knex: Knex): Promise<void> {
       'era3_exhaustion',
       'era4_reverser'
     ]).notNullable();
-    table.string('time_control', 50).notNullable(); // e.g., "300+5" (5 min + 5 sec increment)
+    table.string('time_control', 50).notNullable(); // e.g., "1800+5" (30 min + 5 sec increment)
     table.integer('white_time_remaining'); // in seconds
     table.integer('black_time_remaining'); // in seconds
     table.integer('white_rating_before').notNullable();
