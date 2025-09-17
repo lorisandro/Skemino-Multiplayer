@@ -33,7 +33,7 @@ export const PlayerInfo: React.FC<PlayerInfoProps> = ({
     rating: 1000,
     color: isOpponent ? 'black' : 'white',
     timeRemaining: 1800,
-    isOnline: true,
+    isOnline: false,
   };
 
   // Get rating color based on rating range (Gaming-optimized for dark backgrounds)

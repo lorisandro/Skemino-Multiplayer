@@ -123,7 +123,7 @@ export const useAuth = (): AuthContextType => {
             icon: '⚡'
           },
           isEmailVerified: true,
-          isOnline: true,
+          isOnline: false,
           lastActive: new Date(),
           registrationDate: new Date(),
           preferences: {
@@ -376,7 +376,7 @@ export const useAuth = (): AuthContextType => {
           icon: '🌱'
         },
         isEmailVerified: true,
-        isOnline: true,
+        isOnline: false,
         lastActive: new Date(),
         registrationDate: new Date(),
         preferences: {

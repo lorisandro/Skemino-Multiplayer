@@ -311,7 +311,7 @@ export const registerNewUser = (
       icon: '🌱'
     },
     isEmailVerified: false,
-    isOnline: true,
+    isOnline: false,
     lastActive: new Date(),
     registrationDate: new Date(),
     preferences: {

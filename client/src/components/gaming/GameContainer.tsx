@@ -24,7 +24,7 @@ export const GameContainer: React.FC = () => {
       rating: 1000,
       color: 'white' as const,
       timeRemaining: 1800,
-      isOnline: true,
+      isOnline: false,
     };
 
     const mockOpponent = {
@@ -33,7 +33,7 @@ export const GameContainer: React.FC = () => {
       rating: 1000,
       color: 'black' as const,
       timeRemaining: 1800,
-      isOnline: true,
+      isOnline: false,
     };
 
     // Mock cards for testing

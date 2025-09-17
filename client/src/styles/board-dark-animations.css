@@ -1191,6 +1191,26 @@ div.skemino-square-dark.skemino-central-d4::before,
   backdrop-filter: blur(2px);
 }
 
+/* Central cells (c3, c4, d3, d4) and corner cells (a1, a6, f1, f6) - white notation for better contrast */
+.skemino-notation-zoom-resistant[data-notation="c3"]::after,
+.skemino-notation-zoom-resistant[data-notation="c4"]::after,
+.skemino-notation-zoom-resistant[data-notation="d3"]::after,
+.skemino-notation-zoom-resistant[data-notation="d4"]::after,
+.skemino-notation-zoom-resistant[data-notation="a1"]::after,
+.skemino-notation-zoom-resistant[data-notation="a6"]::after,
+.skemino-notation-zoom-resistant[data-notation="f1"]::after,
+.skemino-notation-zoom-resistant[data-notation="f6"]::after {
+  color: #ffffff;
+  font-weight: 900;
+  background: rgba(0, 0, 0, 0.7);
+  text-shadow:
+    1px 1px 2px rgba(0, 0, 0, 0.9),
+    -1px -1px 2px rgba(0, 0, 0, 0.9),
+    1px -1px 2px rgba(0, 0, 0, 0.9),
+    -1px 1px 2px rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(4px);
+}
+
 /* Container query adjustments for notation */
 @container gameboard (max-width: 40rem) {
   .skemino-notation-zoom-resistant::after {
