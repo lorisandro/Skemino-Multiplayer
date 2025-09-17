@@ -22,7 +22,7 @@ export interface PlayerSessionData {
   userId: string;
   username: string;
   rating: number;
-  status: "online" | "ingame" | "disconnected";
+  status: "offline" | "online" | "ingame" | "disconnected";
   gameRoomId?: string;
   lastActivity: number;
 }

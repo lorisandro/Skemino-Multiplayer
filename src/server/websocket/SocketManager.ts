@@ -23,7 +23,7 @@ export interface AuthenticatedSocket extends Socket {
 
 interface PlayerConnection {
   socket: AuthenticatedSocket;
-  status: "online" | "ingame" | "disconnected";
+  status: "offline" | "online" | "ingame" | "disconnected";
   lastPing: number;
   gameRoomId?: string;
   reconnectionAttempts: number;
@@ -440,7 +440,7 @@ export class SocketManager {
   private createNewConnection(socket: AuthenticatedSocket): void {
     const connection: PlayerConnection = {
       socket,
-      status: "online",
+      status: "offline",
       lastPing: Date.now(),
       reconnectionAttempts: 0,
     };
@@ -472,16 +472,16 @@ export class SocketManager {
         );
       } else {
         // Game is no longer active - reset status
-        existingConnection.status = "online";
+        existingConnection.status = "offline";
         existingConnection.gameRoomId = undefined;
         socket.gameRoomId = undefined;
         logger.info(
-          `🔄 Player ${socket.username} reconnected but game no longer active - status reset to online`,
+          `🔄 Player ${socket.username} reconnected but game no longer active - status reset to offline`,
         );
       }
     } else {
-      // Not in a game - set to online
-      existingConnection.status = "online";
+      // Not in a game - set to offline
+      existingConnection.status = "offline";
     }
 
     existingConnection.lastPing = Date.now();
@@ -783,16 +783,16 @@ export class SocketManager {
         this.gameRooms.delete(match.gameId);
 
         // Reset any player statuses that were set
-        this.updateConnectionStatus(match.white.userId, "online");
-        this.updateConnectionStatus(match.black.userId, "online");
+        this.updateConnectionStatus(match.white.userId, "offline");
+        this.updateConnectionStatus(match.black.userId, "offline");
       }
     } catch (error) {
       logger.error("Error creating game from match:", error);
 
       // Rollback on error - reset player statuses
       try {
-        this.updateConnectionStatus(match.white.userId, "online");
-        this.updateConnectionStatus(match.black.userId, "online");
+        this.updateConnectionStatus(match.white.userId, "offline");
+        this.updateConnectionStatus(match.black.userId, "offline");
 
         // Clean up game room if it was created
         if (this.gameRooms.has(match.gameId)) {
@@ -1000,7 +1000,7 @@ export class SocketManager {
         if (socket) {
           socket.leave(gameRoomId);
           socket.gameRoomId = undefined;
-          this.updateConnectionStatus(playerId, "online");
+          this.updateConnectionStatus(playerId, "offline");
         }
       });
 
@@ -1042,15 +1042,15 @@ export class SocketManager {
           this.handleReconnectionTimeout(socket.userId);
         }, 30000); // 30 seconds to reconnect
       } else {
-        // Game room doesn't exist or is not active - reset status to online
+        // Game room doesn't exist or is not active - reset status to offline
         logger.info(
-          `🔄 Resetting status to online for ${socket.username} - game room not active`,
+          `🔄 Resetting status to offline for ${socket.username} - game room not active`,
         );
-        connection.status = "online";
+        connection.status = "offline";
         connection.gameRoomId = undefined;
       }
     } else {
-      // Not in a game - ensure status is reset to online if it was 'ingame'
+      // Not in a game - ensure status is reset to offline if it was 'ingame'
       if (connection.status === "disconnected" && !connection.gameRoomId) {
         // Player disconnected but wasn't in a game - can safely remove connection
         logger.info(
@@ -1199,14 +1199,14 @@ export class SocketManager {
       }
     }
 
-    // Reset status to online
-    connection.status = "online";
+    // Reset status to offline
+    connection.status = "offline";
     connection.gameRoomId = undefined;
     if (connection.socket) {
       connection.socket.gameRoomId = undefined;
     }
 
-    logger.info(`✅ Reset status to online for player ${userId}`);
+    logger.info(`✅ Reset status to offline for player ${userId}`);
     return true;
   }
 
@@ -1220,7 +1220,7 @@ export class SocketManager {
           const gameRoom = this.gameRooms.get(connection.gameRoomId);
           if (!gameRoom || !gameRoom.isActive()) {
             // Game no longer active - reset status
-            connection.status = "online";
+            connection.status = "offline";
             connection.gameRoomId = undefined;
             if (connection.socket) {
               connection.socket.gameRoomId = undefined;
@@ -1230,7 +1230,7 @@ export class SocketManager {
           }
         } else {
           // Status is 'ingame' but no gameRoomId - definitely stuck
-          connection.status = "online";
+          connection.status = "offline";
           resetCount++;
           logger.info(
             `✅ Reset stuck 'ingame' status (no game) for player ${userId}`,
@@ -1276,16 +1276,18 @@ export class SocketManager {
     // Log all connections status
     let inGameCount = 0;
     let onlineCount = 0;
+    let offlineCount = 0;
     let disconnectedCount = 0;
 
     this.connections.forEach((connection, userId) => {
       if (connection.status === "ingame") inGameCount++;
       else if (connection.status === "online") onlineCount++;
+      else if (connection.status === "offline") offlineCount++;
       else disconnectedCount++;
     });
 
     logger.info(
-      `👥 Connection stats: ${onlineCount} online, ${inGameCount} in-game, ${disconnectedCount} disconnected`,
+      `👥 Connection stats: ${offlineCount} offline, ${onlineCount} online, ${inGameCount} in-game, ${disconnectedCount} disconnected`,
     );
 
     // Log matchmaking detailed status
