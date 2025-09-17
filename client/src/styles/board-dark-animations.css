@@ -102,7 +102,7 @@
   left: 0.25rem;
   font-size: 0.875rem;
   font-family: 'Inter', 'Segoe UI', monospace;
-  font-weight: 800;
+  font-weight: 900;
   letter-spacing: 0.03em;
   z-index: 30;
   opacity: 1;
@@ -110,17 +110,27 @@
   text-transform: uppercase;
   pointer-events: none;
   user-select: none;
+  color: #000000;
+
+  /* Sfondino semitrasparente per migliore leggibilità */
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.375rem;
+  backdrop-filter: blur(2px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .skemino-cell-label-vertex {
-  color: #ffffff;
+  color: #000000;
   text-shadow:
-    0 0 3px rgba(0, 0, 0, 1),
-    0 1px 2px rgba(0, 0, 0, 0.9),
-    0 2px 4px rgba(0, 0, 0, 0.8);
-  background: rgba(0, 0, 0, 0.4);
+    0 0 1px rgba(255, 255, 255, 0.9),
+    0 1px 1px rgba(255, 255, 255, 0.5);
+  /* Sfondo migliorato per vertici - più opaco per massimo contrasto */
+  background: rgba(255, 255, 255, 0.8) !important;
   border-radius: 0.25rem;
   padding: 0.125rem 0.375rem;
+  backdrop-filter: blur(3px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
 .skemino-cell-label-normal {
@@ -128,6 +138,12 @@
   text-shadow:
     0 0 1px rgba(255, 255, 255, 0.9),
     0 1px 1px rgba(255, 255, 255, 0.5);
+  /* Sfondo chiaro per testo scuro su celle bianche/chiare */
+  background: rgba(255, 255, 255, 0.6) !important;
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.375rem;
+  backdrop-filter: blur(2px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .skemino-valid-move-container {
@@ -891,12 +907,13 @@ div.skemino-square-dark.skemino-central-d4::before,
 
 /* ===== ZOOM-RESISTANT BOARD CONTAINER ===== */
 
-/* Main zoom-resistant board container using CSS Container Queries */
+/* Main zoom-resistant board container with proper spacing */
 .skemino-board-zoom-resistant {
   /* Container setup for zoom resistance */
   container-type: size;
   container-name: gameboard;
 
+<<<<<<< HEAD
   /* Rectangular sizing for 6x6 strategic gaming board - height elongated +1.5% - INCREASED BY 43.75% TOTAL + WIDTH ONLY INCREASE */
   width: min(92.187rem, 90vw);  /* Increased width only by additional 10% from 83.806rem for better visibility */
   height: min(119.089rem, 92vh); /* Increased by additional 15% from 103.556rem for even better visibility */
@@ -906,41 +923,79 @@ div.skemino-square-dark.skemino-central-d4::before,
   min-height: 83.364rem; /* Increased by additional 15% from 72.49rem */
   max-width: 138.28rem;  /* Increased width only by additional 10% from 125.709rem */
   max-height: 178.857rem; /* Increased by additional 15% from 155.5275rem */
+=======
+  /* Fixed rem-based sizing - immune to browser zoom - INCREASED BY 12% */
+  width: 43.904rem;  /* Default size increased from 39.2rem (+12%) */
+  height: 61.4656rem; /* Height calculated for 6x6 grid with 1:1.4 aspect ratio cells - increased from 54.88rem (+12%) */
+>>>>>>> 41074f74de8bf59adbe35cc2236ec7c22d29f4d4
 
-  /* Centering and positioning */
+  /* ANTI-TAILWIND OVERRIDE: Perfect centering with box-sizing override */
   position: relative;
-  margin: 0 auto;
+  margin: 1rem auto; /* Spacing esterno invece di padding interno */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: content-box !important; /* CRITICAL: Override global box-sizing: border-box from index.css */
 
+<<<<<<< HEAD
   /* Dark gaming theme background */
   background: #000000;
   border: 2px solid rgba(75, 85, 99, 0.8);
+=======
+  /* MATHEMATICAL CENTERING FORCED - Beats Tailwind utilities */
+  left: 50% !important;
+  transform: translateX(-50%) translateZ(0) !important; /* Perfect mathematical center + GPU optimization */
+
+  /* Dark gaming theme - this creates the black area around the board */
+  background: var(--skemino-bg-primary);
+  border: 2px solid var(--skemino-border-primary);
+>>>>>>> 41074f74de8bf59adbe35cc2236ec7c22d29f4d4
   border-radius: 0.75rem;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
 
   /* Performance optimization */
-  transform: translateZ(0);
   will-change: transform;
   contain: layout style paint;
 }
 
 /* Zoom-resistant grid container */
 .skemino-grid-zoom-resistant {
+<<<<<<< HEAD
   /* CSS Grid for perfect 6x6 layout with 5:7 cell proportions */
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   grid-template-rows: repeat(6, 1.4fr); /* 1.4fr for each row to create 5:7 proportions */
+=======
+  /* CSS Grid for perfect 6x6 layout */
+  display: grid !important;
+  grid-template-columns: repeat(6, 1fr) !important;
+  grid-template-rows: repeat(6, 1fr) !important;
+>>>>>>> 41074f74de8bf59adbe35cc2236ec7c22d29f4d4
 
   /* Rem-based spacing */
-  gap: 0.125rem;
-  padding: 0.5rem;
+  gap: 0.125rem !important;
 
+<<<<<<< HEAD
   /* Fill container perfectly */
   width: 100%;
   height: 100%;
+=======
+  /* Perfect centering sizing - ANTI-TAILWIND: Neutralize any width/height utilities */
+  width: 41.3952rem !important;  /* Fixed size increased by 12% from 36.96rem */
+  height: 58.9568rem !important; /* Fixed height increased by 12% from 52.64rem */
+
+  /* MATHEMATICAL PERFECT CENTERING - Beats all Tailwind positioning */
+  position: relative !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translateX(-50%) translateY(-50%) !important; /* Perfect mathematical center */
+  margin: 0 !important; /* Reset any margin utilities from Tailwind */
+>>>>>>> 41074f74de8bf59adbe35cc2236ec7c22d29f4d4
 
   /* Gaming aesthetics */
   background: inherit;
   border-radius: inherit;
+  box-sizing: content-box !important; /* Override global box-sizing conflict */
 }
 
 /* Zoom-resistant board cells */
@@ -988,20 +1043,62 @@ div.skemino-square-dark.skemino-central-d4::before,
   backface-visibility: hidden;
 }
 
-/* ===== CONTAINER QUERY BREAKPOINTS - ZOOM RESISTANT ===== */
+/* Zoom-resistant white gradient cells for normal squares */
+.skemino-cell-gradient-zoom-resistant {
+  /* White circular gradient background for normal cells */
+  background: radial-gradient(circle at center,
+    rgba(230, 230, 230, 1.0) 0%,      /* Light gray center */
+    rgba(235, 235, 235, 1.0) 15%,     /* Very light gray */
+    rgba(240, 240, 240, 1.0) 30%,     /* Lighter gray */
+    rgba(245, 245, 245, 1.0) 45%,     /* Almost white */
+    rgba(250, 250, 250, 1.0) 60%,     /* Near white */
+    rgba(255, 255, 255, 1.0) 80%,     /* Pure white */
+    rgba(255, 255, 255, 1.0) 100%     /* Pure white edge */
+  ) !important;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05) !important; /* Subtle inner shadow for depth */
+  color: #000000 !important; /* Black text on white background */
+}
 
+<<<<<<< HEAD
 /* Mobile gaming optimized - INCREASED BY 43.75% TOTAL */
 @container gameboard (max-width: 127.94rem) {
   .skemino-board-zoom-resistant {
     width: 73.75rem; /* Increased width only by additional 10% from 67.045rem */
     height: min(95.272rem, 90vh); /* Increased by additional 15% from 82.845rem */
     min-height: 95.272rem;
+=======
+/* ===== RESPONSIVE BREAKPOINTS - ZOOM RESISTANT ===== */
+
+/* Mobile gaming optimized - INCREASED BY 12% */
+@media (max-width: 768px) {
+  .skemino-board-zoom-resistant {
+    width: 31.36rem !important; /* Increased from 28rem */
+    height: 43.68rem !important; /* Increased from 39rem */
+>>>>>>> 41074f74de8bf59adbe35cc2236ec7c22d29f4d4
     border-width: 1px;
+    margin: 0.5rem auto; /* External spacing - no internal padding */
+
+    /* ANTI-TAILWIND MOBILE OVERRIDE: Mathematical centering */
+    box-sizing: content-box !important;
+    left: 50% !important;
+    transform: translateX(-50%) translateZ(0) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 
   .skemino-grid-zoom-resistant {
-    gap: 0.0625rem;
-    padding: 0.375rem;
+    width: 29.12rem !important; /* Fixed size per perfect centering */
+    height: 41.44rem !important; /* Fixed height per perfect centering */
+    gap: 0.0625rem !important;
+
+    /* MATHEMATICAL PERFECT CENTERING - MOBILE */
+    position: relative !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translateX(-50%) translateY(-50%) !important;
+    margin: 0 !important;
+    box-sizing: content-box !important;
   }
 
   .skemino-cell-zoom-resistant {
@@ -1015,17 +1112,43 @@ div.skemino-square-dark.skemino-central-d4::before,
   }
 }
 
+<<<<<<< HEAD
 /* Tablet gaming - INCREASED BY 43.75% TOTAL */
 @container gameboard (min-width: 127.94rem) and (max-width: 172.5rem) {
   .skemino-board-zoom-resistant {
     width: 82.969rem; /* Increased width only by additional 10% from 75.426rem */
     height: min(107.18rem, 90vh); /* Increased by additional 15% from 93.2rem */
     min-height: 107.18rem;
+=======
+/* Tablet gaming */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .skemino-board-zoom-resistant {
+    width: 39.2rem !important; /* Increased by 12% from 35rem */
+    height: 54.88rem !important; /* Increased by 12% from 49rem */
+    margin: 1rem auto; /* External spacing - no internal padding */
+
+    /* ANTI-TAILWIND TABLET OVERRIDE: Mathematical centering */
+    box-sizing: content-box !important;
+    left: 50% !important;
+    transform: translateX(-50%) translateZ(0) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+>>>>>>> 41074f74de8bf59adbe35cc2236ec7c22d29f4d4
   }
 
   .skemino-grid-zoom-resistant {
-    gap: 0.125rem;
-    padding: 0.5rem;
+    width: 36.96rem !important; /* Fixed size per perfect centering - increased by 12% from 33rem */
+    height: 52.64rem !important; /* Fixed height per perfect centering - increased by 12% from 47rem */
+    gap: 0.125rem !important;
+
+    /* MATHEMATICAL PERFECT CENTERING - TABLET */
+    position: relative !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translateX(-50%) translateY(-50%) !important;
+    margin: 0 !important;
+    box-sizing: content-box !important;
   }
 
   .skemino-cell-zoom-resistant {
@@ -1039,18 +1162,44 @@ div.skemino-square-dark.skemino-central-d4::before,
   }
 }
 
+<<<<<<< HEAD
 /* Desktop gaming - INCREASED BY 43.75% TOTAL */
 @container gameboard (min-width: 172.5rem) and (max-width: 212.75rem) {
   .skemino-board-zoom-resistant {
     width: 92.187rem; /* Increased width only by additional 10% from 83.806rem */
     height: min(119.089rem, 92vh); /* Increased by additional 15% from 103.556rem */
     min-height: 119.089rem;
+=======
+/* Desktop gaming */
+@media (min-width: 1025px) and (max-width: 1439px) {
+  .skemino-board-zoom-resistant {
+    width: 40.32rem !important; /* Increased by 12% from 36rem */
+    height: 56rem !important; /* Increased by 12% from 50rem */
+>>>>>>> 41074f74de8bf59adbe35cc2236ec7c22d29f4d4
     border-width: 2px;
+    margin: 1rem auto; /* External spacing - no internal padding */
+
+    /* ANTI-TAILWIND DESKTOP OVERRIDE: Mathematical centering */
+    box-sizing: content-box !important;
+    left: 50% !important;
+    transform: translateX(-50%) translateZ(0) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 
   .skemino-grid-zoom-resistant {
-    gap: 0.1875rem;
-    padding: 0.625rem;
+    width: 38.08rem !important; /* Fixed size per perfect centering - increased by 12% from 34rem */
+    height: 53.76rem !important; /* Fixed height per perfect centering - increased by 12% from 48rem */
+    gap: 0.1875rem !important;
+
+    /* MATHEMATICAL PERFECT CENTERING - DESKTOP */
+    position: relative !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translateX(-50%) translateY(-50%) !important;
+    margin: 0 !important;
+    box-sizing: content-box !important;
   }
 
   .skemino-cell-zoom-resistant {
@@ -1064,18 +1213,44 @@ div.skemino-square-dark.skemino-central-d4::before,
   }
 }
 
+<<<<<<< HEAD
 /* 2K gaming optimized - INCREASED BY 43.75% TOTAL */
 @container gameboard (min-width: 212.75rem) and (max-width: 255.88rem) {
   .skemino-board-zoom-resistant {
     width: 101.406rem; /* Increased width only by additional 10% from 92.187rem */
     height: min(130.997rem, 94vh); /* Increased by additional 15% from 113.911rem */
     min-height: 130.997rem;
+=======
+/* 2K gaming optimized */
+@media (min-width: 1440px) and (max-width: 1919px) {
+  .skemino-board-zoom-resistant {
+    width: 47.04rem !important; /* Increased by 12% from 42rem */
+    height: 66.08rem !important; /* Increased by 12% from 59rem */
+>>>>>>> 41074f74de8bf59adbe35cc2236ec7c22d29f4d4
     border-width: 3px;
+    margin: 1rem auto; /* External spacing - no internal padding */
+
+    /* ANTI-TAILWIND 2K OVERRIDE: Mathematical centering */
+    box-sizing: content-box !important;
+    left: 50% !important;
+    transform: translateX(-50%) translateZ(0) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 
   .skemino-grid-zoom-resistant {
-    gap: 0.25rem;
-    padding: 0.75rem;
+    width: 44.8rem !important; /* Fixed size per perfect centering - increased by 12% from 40rem */
+    height: 63.84rem !important; /* Fixed height per perfect centering - increased by 12% from 57rem */
+    gap: 0.25rem !important;
+
+    /* MATHEMATICAL PERFECT CENTERING - 2K */
+    position: relative !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translateX(-50%) translateY(-50%) !important;
+    margin: 0 !important;
+    box-sizing: content-box !important;
   }
 
   .skemino-cell-zoom-resistant {
@@ -1089,18 +1264,44 @@ div.skemino-square-dark.skemino-central-d4::before,
   }
 }
 
+<<<<<<< HEAD
 /* Ultrawide gaming - INCREASED BY 43.75% TOTAL */
 @container gameboard (min-width: 255.88rem) {
   .skemino-board-zoom-resistant {
     width: 110.625rem; /* Increased width only by additional 10% from 100.568rem */
     height: min(142.908rem, 95vh); /* Increased by additional 15% from 124.268rem */
     min-height: 142.908rem;
+=======
+/* Ultrawide gaming */
+@media (min-width: 1920px) {
+  .skemino-board-zoom-resistant {
+    width: 53.76rem !important; /* Increased by 12% from 48rem */
+    height: 75.04rem !important; /* Increased by 12% from 67rem */
+>>>>>>> 41074f74de8bf59adbe35cc2236ec7c22d29f4d4
     border-width: 3px;
+    margin: 1rem auto; /* External spacing - no internal padding */
+
+    /* ANTI-TAILWIND ULTRAWIDE OVERRIDE: Mathematical centering */
+    box-sizing: content-box !important;
+    left: 50% !important;
+    transform: translateX(-50%) translateZ(0) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 
   .skemino-grid-zoom-resistant {
-    gap: 0.3125rem;
-    padding: 0.875rem;
+    width: 51.52rem !important; /* Fixed size per perfect centering - increased by 12% from 46rem */
+    height: 72.8rem !important; /* Fixed height per perfect centering - increased by 12% from 65rem */
+    gap: 0.3125rem !important;
+
+    /* MATHEMATICAL PERFECT CENTERING - ULTRAWIDE */
+    position: relative !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translateX(-50%) translateY(-50%) !important;
+    margin: 0 !important;
+    box-sizing: content-box !important;
   }
 
   .skemino-cell-zoom-resistant {
@@ -1133,6 +1334,7 @@ div.skemino-square-dark.skemino-central-d4::before,
   transition: all 0.2s ease;
 }
 
+<<<<<<< HEAD
 /* Vertex colors - zoom resistant - Direct background override */
 .skemino-cell-zoom-resistant.skemino-vertex-a1 {
   background: radial-gradient(circle at center,
@@ -1172,6 +1374,39 @@ div.skemino-square-dark.skemino-central-d4::before,
     rgba(234, 179, 8, 1.0) 100%      /* Darker yellow edge */
   ) !important;
   box-shadow: 0 2px 8px rgba(250, 204, 21, 0.4) !important;
+=======
+/* Vertex colors - zoom resistant - Direct background colors */
+.skemino-vertex-a1 {
+  background: radial-gradient(circle at center,
+    rgba(96, 165, 250, 1.0) 0%,
+    rgba(59, 130, 246, 1.0) 100%
+  ) !important;
+  box-shadow: 0 0 0.5rem rgba(59, 130, 246, 0.6) !important;
+}
+
+.skemino-vertex-f1 {
+  background: radial-gradient(circle at center,
+    rgba(74, 222, 128, 1.0) 0%,
+    rgba(34, 197, 94, 1.0) 100%
+  ) !important;
+  box-shadow: 0 0 0.5rem rgba(16, 185, 129, 0.6) !important;
+}
+
+.skemino-vertex-a6 {
+  background: radial-gradient(circle at center,
+    rgba(248, 113, 113, 1.0) 0%,
+    rgba(239, 68, 68, 1.0) 100%
+  ) !important;
+  box-shadow: 0 0 0.5rem rgba(239, 68, 68, 0.6) !important;
+}
+
+.skemino-vertex-f6 {
+  background: radial-gradient(circle at center,
+    rgba(251, 191, 36, 1.0) 0%,
+    rgba(245, 158, 11, 1.0) 100%
+  ) !important;
+  box-shadow: 0 0 0.5rem rgba(245, 158, 11, 0.6) !important;
+>>>>>>> 41074f74de8bf59adbe35cc2236ec7c22d29f4d4
 }
 
 /* Algebraic notation - zoom resistant */
@@ -1180,6 +1415,7 @@ div.skemino-square-dark.skemino-central-d4::before,
   position: absolute;
   bottom: 0.125rem;
   right: 0.25rem;
+<<<<<<< HEAD
   font-size: 0.875rem;  /* Increased from 0.625rem */
   color: #000000;
   font-weight: 700;
@@ -1213,6 +1449,24 @@ div.skemino-square-dark.skemino-central-d4::before,
 
 /* Container query adjustments for notation */
 @container gameboard (max-width: 40rem) {
+=======
+  font-size: 0.625rem;
+  color: #000000;
+  font-weight: 900;
+  font-family: 'Monaco', 'Consolas', monospace;
+  z-index: 1;
+  opacity: 0.8;
+  /* Sfondino semitrasparente per notazioni zoom-resistant */
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 0.1875rem;
+  padding: 0.0625rem 0.25rem;
+  backdrop-filter: blur(1px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Media query adjustments for notation */
+@media (max-width: 768px) {
+>>>>>>> 41074f74de8bf59adbe35cc2236ec7c22d29f4d4
   .skemino-notation-zoom-resistant::after {
     font-size: 0.75rem;  /* Increased from 0.5rem */
   }
@@ -1225,7 +1479,11 @@ div.skemino-square-dark.skemino-central-d4::before,
   }
 }
 
+<<<<<<< HEAD
 @container gameboard (min-width: 75rem) {
+=======
+@media (min-width: 1440px) {
+>>>>>>> 41074f74de8bf59adbe35cc2236ec7c22d29f4d4
   .skemino-notation-zoom-resistant::after {
     font-size: 1rem;  /* Increased from 0.75rem */
   }

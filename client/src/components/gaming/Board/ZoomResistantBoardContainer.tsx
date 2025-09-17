@@ -108,6 +108,7 @@ export const useBoardContainerSize = () => {
   const getBoardSize = () => {
     switch (currentBreakpoint) {
       case 'mobile':
+<<<<<<< HEAD
         return { width: '73.75rem', height: '97.147rem' }; // Width increased +10% from 67.045rem, height unchanged
       case 'tablet':
         return { width: '82.969rem', height: '109.291rem' }; // Width increased +10% from 75.426rem, height unchanged
@@ -119,6 +120,19 @@ export const useBoardContainerSize = () => {
         return { width: '110.625rem', height: '145.709rem' }; // Width increased +10% from 100.568rem, height unchanged
       default:
         return { width: '82.969rem', height: '109.291rem' }; // Width increased +10% from 75.426rem, height unchanged
+=======
+        return { width: '28rem', height: '39rem' };
+      case 'tablet':
+        return { width: '35rem', height: '49rem' };
+      case 'desktop':
+        return { width: '36rem', height: '50rem' };
+      case '2k':
+        return { width: '42rem', height: '59rem' };
+      case 'ultrawide':
+        return { width: '48rem', height: '67rem' };
+      default:
+        return { width: '35rem', height: '49rem' };
+>>>>>>> 41074f74de8bf59adbe35cc2236ec7c22d29f4d4
     }
   };
 

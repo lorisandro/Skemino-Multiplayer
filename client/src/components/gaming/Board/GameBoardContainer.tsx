@@ -38,7 +38,7 @@ export const GameBoardContainer: React.FC<GameBoardContainerProps> = ({
 
   // Gaming-optimized responsive layout with 2K support
   const layoutClasses = useMemo(() => {
-    const baseClasses = 'relative w-full max-w-none gaming-board-container';
+    const baseClasses = 'relative w-full gaming-board-container';
 
     if (isMobile) {
       return `${baseClasses} mobile-gaming-layout flex flex-col items-center space-y-4 p-2`;
@@ -49,11 +49,11 @@ export const GameBoardContainer: React.FC<GameBoardContainerProps> = ({
     }
 
     if (is2K) {
-      return `${baseClasses} 2k-gaming-layout grid grid-cols-1 gap-8 p-8 max-w-7xl mx-auto`;
+      return `${baseClasses} 2k-gaming-layout grid grid-cols-1 gap-8 p-8 mx-auto`;
     }
 
     if (isUltrawide) {
-      return `${baseClasses} ultrawide-gaming-layout grid grid-cols-1 gap-10 p-10 max-w-8xl mx-auto`;
+      return `${baseClasses} ultrawide-gaming-layout grid grid-cols-1 gap-10 p-10 mx-auto`;
     }
 
     return `${baseClasses} desktop-gaming-layout grid grid-cols-3 gap-6 p-6`;
@@ -196,8 +196,8 @@ export const GameBoardContainer: React.FC<GameBoardContainerProps> = ({
           style={{
             width: boardSize,
             height: boardSize,
-            maxWidth: isMobile ? '90vw' : is2K ? '85vh' : '70vh',
-            maxHeight: isMobile ? '90vw' : is2K ? '85vh' : '70vh',
+            maxWidth: isMobile ? '90vw' : is2K ? '90vh' : '75vh',
+            maxHeight: isMobile ? '90vw' : is2K ? '90vh' : '75vh',
             // Enhanced styling for 2K displays
             ...(is2K && {
               boxShadow: '0 35px 70px -12px rgba(0, 0, 0, 0.15), 0 0 0 2px rgba(0, 0, 0, 0.05)',

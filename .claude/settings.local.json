@@ -53,7 +53,9 @@
       "Bash(start http://localhost:3000/game)",
       "Bash(timeout:*)",
       "Bash(start http://localhost:3000/dashboard)",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "Bash(npx tailwindcss:*)",
+      "Bash(sed:*)"
     ],
     "deny": [],
     "ask": []

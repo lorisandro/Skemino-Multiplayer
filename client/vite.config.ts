@@ -19,7 +19,7 @@ export default defineConfig({
   server: {
     port: 3000,
     host: true,
-    strictPort: true, // Usa sempre porta 3000, non cambiare se occupata
+    strictPort: false, // Permetti di usare porte alternative se 3000 è occupata
     proxy: {
       '/api': {
         target: 'http://localhost:3005', // Backend sulla porta 3005
